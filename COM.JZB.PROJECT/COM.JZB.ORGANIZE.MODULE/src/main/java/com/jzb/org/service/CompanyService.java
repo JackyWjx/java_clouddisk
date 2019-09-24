@@ -708,12 +708,16 @@ public class CompanyService {
         // 将日期格式化为年月日,时分秒
         SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = sim.format(new Date());
-        Map<String, Object> codeMap = new HashMap<>(3);
+        Map<String, Object> codeMap = new HashMap<>();
+        // 创建单位成功判断是否有密码需要发送给用户
+        if(!JzbDataType.isEmpty(JzbDataType.getString(map.get("password")))){
+            codeMap.put("password", JzbDataType.getString(map.get("password")));
+        }
         codeMap.put("username", JzbDataType.getString(map.get("username")));
         codeMap.put("companyname", JzbDataType.getString(map.get("companyname")));
         codeMap.put("date", date);
         Map<String, Object> smsMap = new HashMap<>(1);
-        smsMap.put("sms",codeMap);
+        smsMap.put("sms", codeMap);
         map.put("sendpara", JSON.toJSONString(smsMap));
         //短信发送参数填写
         map.put("usertype", "1");
@@ -767,13 +771,26 @@ public class CompanyService {
     }
 
     /**
-    * 修改伙伴单位状态
-    * @Author: DingSC
-    * @DateTime: 2019/9/23 16:48
-    * @param param
-    * @return int
-    */
-    public int updateCompanyFriend(Map<String, Object> param){
+     * 判断是否已申请
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     * @DateTime: 2019/9/24 16:51
+     */
+    public int queryCompanyFriend(Map<String, Object> param) {
+        return companyMapper.queryCompanyFriend(param);
+    }
+
+    /**
+     * 修改伙伴单位状态
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     * @DateTime: 2019/9/23 16:48
+     */
+    public int updateCompanyFriend(Map<String, Object> param) {
         return companyMapper.updateCompanyFriend(param);
     }
 }

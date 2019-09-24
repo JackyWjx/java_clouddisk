@@ -45,13 +45,18 @@
         i.content,
         i.license,
         i.cardid,
-        i.systemname
+        s.systemname,
+        s.curl
         from
         tb_company_list l
         left join
         tb_company_info i
         on
         l.cid = i.cid
+        left join
+        tb_company_sysconfig s
+        on
+        l.cid = s.cid
         where
         l.cid = #{cid}
     </select>
@@ -630,6 +635,10 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         GROUP BY
         du.uid
     </select>
+    <!--确认是否已申请形象大使-->
+    <select id="queryCompanyFriend" resultType="java.lang.Integer">
+        select count(1)  from  tb_company_friend where  cid=#{cid} and  status in ('2','1')
+    </select>
 
     <!--邀请用户加入企业-->
     <insert id="insertInvitee" parameterType="java.util.Map">
@@ -739,7 +748,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
     <!--主页中单位设置基本资料进行Info表修改-->
     <insert id="updateCompanyBasicInfo" parameterType="java.util.Map">
         insert INTO
-        tb_company_info(cid, curl, address, systemname, ouid, updtime)
+        tb_company_info(cid, curl, address, ouid, updtime)
         VALUES
         (
         #{cid},
@@ -759,14 +768,6 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
                 null,
             </otherwise>
         </choose>
-        <choose>
-            <when test="systemname != null and systemname != ''">
-                #{systemname},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
         #{uid},
         #{updtime}
         )
@@ -775,7 +776,6 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         updtime = #{updtime}
         <if test="curl != null ">,curl = #{curl}</if>
         <if test="address != null ">,address = #{address}</if>
-        <if test="systemname != null ">,systemname = #{systemname}</if>
     </insert>
     <!--保存伙伴单位信息-->
     <insert id="insertCompanyFriend">

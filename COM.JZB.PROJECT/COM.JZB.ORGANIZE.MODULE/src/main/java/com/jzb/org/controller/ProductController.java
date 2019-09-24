@@ -594,4 +594,34 @@ public class ProductController {
             return result;
         }
     }
+
+    /**
+     * CRM-单位用户-所有用户-单位列表
+     * 导出新增单位模板
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/createCompanyTemplate", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createCompanyTemplate(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            String srcFilePath = "D:/v3/static/excel/ImportCompanyTemplate.xlsx";
+            FileInputStream in = new FileInputStream(srcFilePath);
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=ImportCompanyTemplate.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
 } // End class ProductController

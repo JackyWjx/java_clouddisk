@@ -579,7 +579,7 @@ public class CompanyController {
                 for (int i = 0; i < list.size(); i++) {
                     Map<String, Object> map = list.get(i);
                     // 拼接所有的电话
-                    phone.append(JzbDataType.getString(map.get("relphone")) );
+                    phone.append(JzbDataType.getString(map.get("relphone")));
 
                     // 拼接所有的名字
                     name.append(JzbDataType.getString(map.get("cname")));
@@ -838,16 +838,24 @@ public class CompanyController {
                 String manager = JzbDataType.getString(administratorId.get("manager"));
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 String uid = JzbDataType.getString(userInfo.get("uid"));
+                Map<String, Object> code = new HashMap<>(2);
                 if (uid.equals(manager)) {
-                    long time = System.currentTimeMillis();
-                    param.put("time", time);
-                    param.put("status", "1");
-                    param.put("uid", uid);
-                    param.put("requid", uid);
-                    int add = companyService.addCompanyFriend(param);
-                    result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                    int count = companyService.queryCompanyFriend(param);
+                    if (count > 0) {
+                        //已申请
+                        result = Response.getResponseError();
+                        code.put("code", "2");
+                        result.setResponseEntity(code);
+                    } else {
+                        long time = System.currentTimeMillis();
+                        param.put("time", time);
+                        param.put("status", "1");
+                        param.put("uid", uid);
+                        param.put("requid", uid);
+                        int add = companyService.addCompanyFriend(param);
+                        result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                    }
                 } else {
-                    Map<String, Object> code = new HashMap<>(2);
                     result = Response.getResponseError();
                     code.put("code", "0");
                     result.setResponseEntity(code);

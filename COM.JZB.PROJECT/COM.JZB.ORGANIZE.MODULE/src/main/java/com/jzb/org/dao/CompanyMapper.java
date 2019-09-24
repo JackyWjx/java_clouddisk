@@ -268,6 +268,16 @@ public interface CompanyMapper {
     List<Map<String, Object>> queryCompanyByUid(Map<String, Object> param);
 
     /**
+     * 确认是否已申请形象大使
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     * @DateTime: 2019/9/24 16:47
+     */
+    int queryCompanyFriend(Map<String, Object> param);
+
+    /**
      * 保存伙伴单位信息
      *
      * @param param

@@ -1,12 +1,14 @@
 package com.jzb.api.controller.auth;
 
 import com.jzb.api.api.auth.UserAuthApi;
+import com.jzb.api.api.org.CompanyUserApi;
 import com.jzb.api.config.ApiConfigProperties;
 import com.jzb.api.service.CompanyService;
 import com.jzb.api.service.JzbUserAuthService;
 import com.jzb.api.util.ApiToken;
 import com.jzb.base.data.JzbDataType;
 
+import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.JzbReturnCode;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbCheckParam;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import com.jzb.base.message.Response;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -44,6 +47,9 @@ public class UserController {
 
     @Autowired
     private ApiToken apiToken;
+
+    @Autowired
+    private CompanyUserApi companyUserApi;
 
     /**
      * 企业服务
@@ -198,6 +204,7 @@ public class UserController {
     /**
      * CRM-单位用户-所有用户-单位列表
      * 点击添加单位时加入单位和用户并发送消息提醒
+     *
      * @param param
      * @Author: Kuang Bin
      * @DateTime: 2019/9/16 16:31
@@ -212,30 +219,37 @@ public class UserController {
                 param.put("userinfo", userInfo);
                 param.put("uid", userInfo.get("uid"));
                 // 获取随机密码
-                String passwd = "jzb"+JzbRandom.getRandom(6);
-                param.put("passwd", passwd);
+                String passwd = "*jzb" + JzbRandom.getRandomNum(3);
+                param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
+                System.out.println(passwd);
+                System.out.println(JzbDataCheck.Md5(passwd));
+                System.out.println(JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
+                param.put("password", passwd);
                 // 创建用户返回用户UID
                 result = authService.addRegistration(param);
                 Object objUser = result.getResponseEntity();
                 // 判断返回的是否是MAP
-                if (JzbDataType.isMap(objUser)){
-                    Map<String, Object> map = ( Map<String, Object>) objUser;
+                if (JzbDataType.isMap(objUser)) {
+                    Map<String, Object> map = (Map<String, Object>) objUser;
                     // 判断map中是否包含uid
-                    if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("uid")))){
+                    if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("uid")))) {
                         // 加入状态,1为创建单位
                         param.put("type", "1");
                         result = companyService.addCompany(param);
                         Object objCompany = result.getResponseEntity();
                         // 判断返回的是否是MAP
                         if (JzbDataType.isMap(objCompany)) {
-                            Map<String, Object> mapCompany = (Map<String, Object>) objUser;
+                            Map<String, Object> mapCompany = (Map<String, Object>) objCompany;
                             // 判断map中是否包含uid
                             if (!JzbDataType.isEmpty(JzbDataType.getString(mapCompany.get("cid")))) {
+                                Response send = companyUserApi.sendRemind(param);
                                 result = Response.getResponseSuccess(userInfo);
+                                // 获取短信接口返回值并加入到此接口返回值中
+                                result.setResponseEntity(send.getResponseEntity());
                             }
                         }
                     }
-                }else {
+                } else {
                     result = Response.getResponseError();
                 }
             } else {

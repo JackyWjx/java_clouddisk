@@ -127,7 +127,7 @@ public class MessageGroupService {
             e.printStackTrace();
             resultMap = null;
         }
-        return groupMapper.searchMessageGroup(map);
+        return resultMap;
     }
 
     /**

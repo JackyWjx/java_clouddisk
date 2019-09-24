@@ -35,6 +35,9 @@ public class CompanyUserController {
     @Autowired
     private OrgRedisServiceApi orgRedisServiceApi;
 
+    @Autowired
+    private CompanyService companyService;
+
     /**
      * CRM-单位用户-所有单位-单位列表
      * 点击所有单位显示所有单位列表信息
@@ -83,6 +86,29 @@ public class CompanyUserController {
             // 返回所有的企业列表
             int count = companyUserService.addCompanyCommon(param);
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-单位用户-所有单位-单位列表
+     * 单位创建成功发送短信提醒
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/sendRemind", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response sendRemind(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            param.put("username",JzbDataType.getString(param.get("name")));
+            param.put("companyname",JzbDataType.getString(param.get("cname")));
+            param.put("relphone",JzbDataType.getString(param.get("phone")));
+            param.put("groupid", "1014");
+            result = companyService.sendRemind(param);
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
