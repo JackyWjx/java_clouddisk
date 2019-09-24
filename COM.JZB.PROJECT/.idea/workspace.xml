@@ -2,43 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2cf1b5a0-fb1c-4870-8e48-677da0febda2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/COM.JZB.PROJECT.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/COM.JZB.PROJECT.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE/COM.JZB.ACTIVITY.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE/COM.JZB.ACTIVITY.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.API.MODULE/COM.JZB.API.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.API.MODULE/COM.JZB.API.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.API.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.API.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.AUTH.MODULE/COM.JZB.AUTH.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.AUTH.MODULE/COM.JZB.AUTH.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.AUTH.MODULE/src/main/java/com/jzb/auth/config/AuthConfigProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.AUTH.MODULE/src/main/java/com/jzb/auth/config/AuthConfigProperties.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.AUTH.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.AUTH.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.BASE.MODULE/COM.JZB.BASE.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.BASE.MODULE/COM.JZB.BASE.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.CONFIG.MODULE/COM.JZB.CONFIG.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.CONFIG.MODULE/COM.JZB.CONFIG.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.CONFIG.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.CONFIG.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.EUREKA.MODULE/COM.JZB.EUREKA.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.EUREKA.MODULE/COM.JZB.EUREKA.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.LOGGER.MODULE/COM.JZB.LOGGER.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.LOGGER.MODULE/COM.JZB.LOGGER.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.LOGGER.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.LOGGER.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.MEDIA.MODULE/COM.JZB.MEDIA.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.MEDIA.MODULE/COM.JZB.MEDIA.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.MEDIA.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.MEDIA.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE/COM.JZB.MESSAGE.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE/COM.JZB.MESSAGE.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/COM.JZB.OAUTH.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/COM.JZB.OAUTH.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OPEN.MODULE/COM.JZB.OPEN.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OPEN.MODULE/COM.JZB.OPEN.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OPEN.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OPEN.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/COM.JZB.OPERATE.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/COM.JZB.OPERATE.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/COM.JZB.ORGANIZE.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/COM.JZB.ORGANIZE.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/java/com/jzb/org/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/java/com/jzb/org/controller/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.PROJECT.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.PROJECT.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/COM.JZB.REDIS.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/COM.JZB.REDIS.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/COM.JZB.RESOURCE.MOUDLE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/COM.JZB.RESOURCE.MOUDLE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/application.yml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/COM.JZB.API.MODULE/target/" />
     <ignored path="$PROJECT_DIR$/COM.JZB.EUREKA.MODULE/target/" />
@@ -77,12 +42,12 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/COM.JZB.AUTH.MODULE/src/test/java/com/jzb/auth/TestMain.java">
+        <entry file="file://$PROJECT_DIR$/COM.JZB.API.MODULE/src/main/java/com/jzb/api/controller/auth/UserController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="17" column="71" lean-forward="true" selection-start-line="17" selection-start-column="71" selection-end-line="17" selection-end-column="71" />
+            <state relative-caret-position="236">
+              <caret line="54" column="11" lean-forward="true" selection-start-line="54" selection-start-column="11" selection-end-line="54" selection-end-column="11" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -136,6 +101,9 @@
       <find>staus</find>
       <find>tb_message_organize</find>
     </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -211,24 +179,6 @@
       <expand>
         <path>
           <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="COM.JZB.MEDIA.MODULE" type="9519ce18:MavenProjectsStructure$ProjectNode" />
-        </path>
-        <path>
-          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="COM.JZB.MEDIA.MODULE" type="9519ce18:MavenProjectsStructure$ProjectNode" />
-          <item name="Lifecycle" type="58874e2:MavenProjectsStructure$LifecycleNode" />
-        </path>
-        <path>
-          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="COM.JZB.MESSAGE.MODULE" type="9519ce18:MavenProjectsStructure$ProjectNode" />
-        </path>
-        <path>
-          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="COM.JZB.MESSAGE.MODULE" type="9519ce18:MavenProjectsStructure$ProjectNode" />
-          <item name="Lifecycle" type="58874e2:MavenProjectsStructure$LifecycleNode" />
-        </path>
-        <path>
-          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
           <item name="COM.JZB.PROJECT" type="9519ce18:MavenProjectsStructure$ProjectNode" />
         </path>
         <path>
@@ -246,7 +196,7 @@
     <option name="width" value="1400" />
     <option name="height" value="860" />
   </component>
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectView">
@@ -254,7 +204,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -262,263 +211,11 @@
               <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
               <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.API.MODULE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.API.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.AUTH.MODULE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.AUTH.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.AUTH.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.AUTH.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.AUTH.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="auth" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.MESSAGE.MODULE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.MESSAGE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.MESSAGE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.MESSAGE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.MESSAGE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OAUTH.MODULE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OAUTH.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OPEN.MODULE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OPEN.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OPERATE.MODULE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OPERATE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OPERATE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OPERATE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OPERATE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.OPERATE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.ORGANIZE.MODULE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.ORGANIZE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.ORGANIZE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.ORGANIZE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.ORGANIZE.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.REDIS.MODULE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.REDIS.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.REDIS.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.REDIS.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.REDIS.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="redis" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.REDIS.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.REDIS.MODULE" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.RESOURCE.MOUDLE" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.RESOURCE.MOUDLE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.RESOURCE.MOUDLE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.RESOURCE.MOUDLE" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="COM.JZB.PROJECT" type="b2602c69:ProjectViewProjectNode" />
-              <item name="COM.JZB.PROJECT" type="462c0819:PsiDirectoryNode" />
-              <item name="COM.JZB.RESOURCE.MOUDLE" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -545,8 +242,8 @@
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1569318298962" />
-    <property name="last_opened_file_path" value="G:/STEEL/COM.STEEL.FANG.PROJECT/01.CI/1.7 Code/1.7.1 Project/COM.STEEL.FG.PROJECT" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1569324259700" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -790,88 +487,6 @@
     <configuration>C:\Users\pc\AppData\Roaming\Subversion</configuration>
     <supportedVersion>125</supportedVersion>
   </component>
-  <component name="SvnFileUrlMappingImpl">
-    <option name="myMappingRoots">
-      <list>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\.idea" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\.idea" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.ACTIVITY.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.ACTIVITY.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.API.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.API.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.AUTH.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.AUTH.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.BASE.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.BASE.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.CONFIG.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.CONFIG.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.EUREKA.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.EUREKA.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.LOGGER.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.LOGGER.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.MEDIA.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.MEDIA.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.MESSAGE.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.MESSAGE.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.OAUTH.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.OAUTH.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.OPEN.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.OPEN.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.OPERATE.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.OPERATE.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.ORGANIZE.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.ORGANIZE.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.REDIS.MODULE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.REDIS.MODULE" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.RESOURCE.MOUDLE" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.RESOURCE.MOUDLE" />
-        </SvnCopyRootSimple>
-      </list>
-    </option>
-    <option name="myMoreRealMappingRoots">
-      <list>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT" />
-          <option name="myCopyRoot" value="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT" />
-        </SvnCopyRootSimple>
-      </list>
-    </option>
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="2cf1b5a0-fb1c-4870-8e48-677da0febda2" name="Default Changelist" comment="" />
@@ -935,17 +550,18 @@
       <workItem from="1568939527500" duration="12359000" />
       <workItem from="1569238699152" duration="3851000" />
       <workItem from="1569291495809" duration="7579000" />
+      <workItem from="1569324094174" duration="268000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="601183000" />
+    <option name="totallyTimeSpent" value="601451000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24100257" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21079692" />
       <window_info id="Designer" order="1" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Capture Tool" order="3" />
@@ -955,7 +571,7 @@
       <window_info id="Structure" order="7" weight="0.18251929" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.42741936" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4993573" visible="true" weight="0.25403225" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4993573" visible="true" weight="0.25302827" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.37096775" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -971,7 +587,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Maven" order="3" visible="true" weight="0.124678664" />
+      <window_info anchor="right" id="Maven" order="3" visible="true" weight="0.10732648" />
       <window_info anchor="right" id="Palette" order="4" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
       <window_info anchor="right" id="Palette&#9;" order="6" />
@@ -1176,13 +792,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/COM.JZB.API.MODULE/src/main/java/com/jzb/api/controller/auth/UserController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="136" column="6" selection-start-line="136" selection-start-column="6" selection-end-line="136" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/src/main/resources/logback.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
@@ -1359,8 +968,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/COM.JZB.AUTH.MODULE/src/test/java/com/jzb/auth/TestMain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="17" column="71" lean-forward="true" selection-start-line="17" selection-start-column="71" selection-end-line="17" selection-end-column="71" />
+        <state relative-caret-position="207">
+          <caret line="9" column="50" selection-start-line="9" selection-start-column="50" selection-end-line="9" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/COM.JZB.API.MODULE/src/main/java/com/jzb/api/controller/auth/UserController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="54" column="11" lean-forward="true" selection-start-line="54" selection-start-column="11" selection-end-line="54" selection-end-column="11" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
