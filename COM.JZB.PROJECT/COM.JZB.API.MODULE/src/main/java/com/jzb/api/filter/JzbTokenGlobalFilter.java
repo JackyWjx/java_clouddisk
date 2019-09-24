@@ -167,6 +167,8 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/standardDocument/getStandartDocumentDesc", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/standardDocument/getStandartHotDom", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/systemMenu/getProductSystemMenuList", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/systemMenu/addProductSystemMenuList", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/systemMenu/editProductSystemMenuList", "");
 
         //---- end resource
 

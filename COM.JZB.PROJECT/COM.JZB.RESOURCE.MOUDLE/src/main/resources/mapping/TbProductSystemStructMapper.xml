@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbProductSystemStructMapper">
+
+    <!-- 查询Struct -->
+    <select id="queryStructList" parameterType="java.util.Map" resultType="java.util.Map">
+        select menuid,structid,structname,structno,structdesc,structopen,parentid,addtime from  tb_product_system_struct
+        where status='1'  and  menuid=#{menuid}
+    </select>
+
+    <!-- 添加Struct -->
+    <insert id="addStructList" parameterType="java.util.Map">
+        insert into  tb_product_system_struct (menuid,structid,structname,structno,structdesc,structopen,parentid,adduid,addtime,upduid,updtime,status,summary)
+        values
+        (
+        #{menuid},
+        #{structid},
+        <choose>
+            <when test="structname!=null and structname.length()>0">
+                #{structname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="structno!=null and structno.length()>0">
+                #{structno},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="structdesc!=null and structdesc.length()>0">
+                #{structdesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="structopen!=null and structopen.length()>0">
+                #{structopen},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="parentid!=null and parentid.length()>0">
+                #{parentid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid.length()>0">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime.length()>0">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid.length()>0">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime.length()>0">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status.length()>0">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary.length()>0">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+
+    </insert>
+
+
+    <!-- 修改Struct -->
+    <update id="updateStructList" parameterType="java.util.Map">
+        update tb_product_system_struct
+        <trim prefix="set" suffixOverrides="," suffix=" where structid = #{structid} ">
+            　　　　<if test="structname != null and structname.length()>0"> structname=#{structname} ,</if>
+            　　　　<if test="structno != null and structno.length()>0"> structno=#{structno} ,</if>
+            　　　　<if test="structdesc != null and structdesc.length()>0"> structdesc=#{structdesc} ,</if>
+            　　　　<if test="structopen != null and structopen.length()>0"> structopen=#{structopen} ,</if>
+            　　　　<if test="parentid != null and parentid.length()>0"> parentid=#{parentid} ,</if>
+            　　　　<if test="updtime != null and updtime.length()>0"> updtime=#{updtime} ,</if>
+            　　　　<if test="summary != null and summary.length()>0"> summary=#{summary} ,</if>
+        </trim>
+    </update>
+</mapper>
