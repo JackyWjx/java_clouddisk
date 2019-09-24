@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbSolutionDomMapper">
+
+
+    <!--1.查询方案文档-->
+    <select id="querySolutionDom" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        domid,
+        typeid,
+        cname,
+        photo,
+        domdesc,
+        domurl,
+        idx,
+        uid,
+        addtime,
+        visits,
+        forwards,
+        downloads,
+        price,
+        ouid,
+        updtime
+        FROM
+        tb_solution_document
+        WHERE
+        status = '1'
+        <if test="typeid!=null and typeid!=''">
+            and typeid=#{typeid}
+        </if>
+        limit #{rows} offset #{page}
+    </select>
+
+
+    <!--1.查询方案文档(模糊查询)-->
+    <select id="querySolutionDomCname" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        domid,
+        typeid,
+        cname,
+        photo,
+        domdesc,
+        domurl,
+        idx,
+        uid,
+        addtime,
+        visits,
+        forwards,
+        downloads,
+        price,
+        ouid,
+        updtime
+        FROM
+        tb_solution_document
+        WHERE
+        status = '1'
+        <if test="keyword!=null and keyword!=''">
+            and cname ~ #{keyword}
+        </if>
+        <if test="typeid!=null and typeid!=''">
+            and typeid = #{typeid}
+        </if>
+    </select>
+
+
+    <!--查询总数-->
+    <select id="queryCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_solution_document where status='1'
+        <if test="keyword!=null and keyword!=''">
+            and cname ~ #{keyword}
+        </if>
+        <if test="typeid!=null and typeid!=''">
+            and typeid=#{typeid}
+        </if>
+    </select>
+    <!--查询单片文章详情-->
+    <select id="queryDomByDomid" parameterType="java.util.Map" resultType="java.util.Map">
+       SELECT
+        domid,
+        typeid,
+        cname,
+        photo,
+        domdesc,
+        domurl,
+        context,
+        idx,
+        uid,
+        addtime,
+        pagekey,
+        pagedesc,
+        visits,
+        forwards,
+        downloads,
+        price,
+        ouid,
+        updtime
+    FROM
+        tb_solution_document
+    WHERE
+	status = '1'
+	and domid=#{domid}
+    </select>
+
+    <!--查询热门榜-->
+    <select id="queryHotDom" parameterType="java.util.Map" resultType="java.util.Map">
+        select domid,cname,idx,visits from tb_standard_document where status='1' order by visits desc limit #{count}
+    </select>
+
+</mapper>

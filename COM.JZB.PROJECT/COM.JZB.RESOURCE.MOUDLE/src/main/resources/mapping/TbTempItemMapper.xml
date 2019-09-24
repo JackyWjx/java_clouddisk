@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbTempItemMapper">
+
+    <!--根据模板查询条目的父子级（迭代查询）-->
+    <select id="queryTempItem" parameterType="java.util.Map" resultType="java.util.Map">
+      WITH RECURSIVE item as(
+        select * from tb_template_item   where typeid=#{typeid} and status in ('1','2')
+        union all
+        select itema.* from tb_template_item itema join item on itema.parentid=item.itemid  and itema.status in ('1','2')
+    )select item.* from item
+    </select>
+
+    <!--添加条目-->
+    <insert id="saveTempItem" parameterType="java.util.Map">
+        insert into
+        tb_template_item(typeid,itemid,itemcode,cname,parentid,itemunit,itemfit,cid,typedesc,idx,ouid,addtime,updtime,status,summary)
+        values
+        (
+        #{typeid},
+        #{itemid},
+        <choose>
+            <when test="itemcode != null">
+                #{itemcode},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        #{cname},
+        <choose>
+            <when test="parentid != null">
+                #{parentid},
+            </when>
+            <otherwise>
+                00000000000,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemunit != null">
+                #{itemunit},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemfit != null">
+                #{itemfit},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cid != null">
+                #{cid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typedesc != null">
+                #{typedesc},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null">
+                #{idx},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid != null">
+                #{ouid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                1 ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                1
+            </otherwise>
+        </choose>
+
+        );
+    </insert>
+
+    <!--根据同级id查询父级id-->
+    <select id="queryParentByBrotherId" parameterType="java.util.Map" resultType="java.lang.String">
+        select parentid from tb_template_item where itemid=#{brotherid}
+    </select>
+
+    <!--修改条目-->
+    <update id="updateTempItem" parameterType="java.util.Map">
+        update tb_template_item set
+        <if test="cname != null">cname=#{cname},</if>
+        <if test="itemcode != null">itemcode=#{itemcode},</if>
+        <if test="typedesc != null">typedesc=#{typedesc},</if>
+        <if test="updtime != null">updtime=#{updtime}</if>
+        where itemid=#{itemid}
+    </update>
+
+    <!--修改状态（删除）-->
+    <update id="updateStatus" parameterType="java.util.Map">
+		update tb_template_item set status=#{status} where itemid=#{itemid}
+	</update>
+
+    <!--获取排序-->
+    <select id="getTempItemIdx" resultType="java.lang.Integer">
+        select count(1)+1 from tb_template_item
+    </select>
+
+</mapper>

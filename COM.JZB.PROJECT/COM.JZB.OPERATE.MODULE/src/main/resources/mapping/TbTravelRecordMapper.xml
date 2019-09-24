@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbTravelRecordMapper">
+
+    <!--获取我的出差申请-->
+    <select id="queryTravelRecordByUid" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            travelid,
+            curcid,
+            cname,
+            travedesc,
+            tarcity,
+            tarcid,
+            tarname,
+            relperson,
+            relphone,
+            projectid,
+            project,
+            starttime,
+            finishtime,
+            METHOD,
+            fare,
+            expenses,
+            amount,
+            participants,
+            speed,
+            speeddesc,
+            payfare,
+            payexpenses,
+            times,
+            nexttime,
+            status,
+            summary
+        FROM tb_travel_record
+        WHERE
+            travelid IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
+            and status != 8
+            <if test="beginTime != null and beginTime != '' ">
+                and starttime &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and finishtime &lt;= #{endTime}
+            </if>
+        order by id asc
+        LIMIT #{rows} OFFSET #{page}
+    </select>
+
+    <!--  获取总数-->
+    <select id="quertTravelRecordCountByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_travel_record
+        WHERE
+            travelid IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
+    </select>
+
+    <!-- 添加出差记录-->
+    <insert id="addTravelRecord" parameterType="java.util.List">
+        insert into tb_travel_record
+        (
+            travelid,
+            curcid,
+            cname,
+            travedesc,
+            tarcity,
+            tarcid,
+            tarname,
+            relperson,
+            relphone,
+            projectid,
+            project,
+            starttime,
+            finishtime,
+            METHOD,
+            fare,
+            expenses,
+            amount,
+            participants,
+            speed,
+            speeddesc,
+            payfare,
+            payexpenses,
+            times,
+            nexttime,
+            status,
+            summary
+        )
+        values
+        <foreach collection="list" item="travel" separator=",">
+            (
+            #{travel.travelid},
+            #{travel.curcid},
+            <choose>
+              <when test="travel.cname != null">
+                  #{travel.cname},
+              </when>
+              <otherwise>
+                  null ,
+              </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.travedesc != null">
+                    #{travel.travedesc},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.tarcity != null">
+                    #{travel.tarcity},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.tarcid != null">
+                    #{travel.tarcid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.tarname != null">
+                    #{travel.tarname},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.relperson != null">
+                    #{travel.relperson},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.relphone != null">
+                    #{travel.relphone},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.projectid != null">
+                    #{travel.projectid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.project != null">
+                    #{travel.project},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.starttime != null">
+                    #{travel.starttime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.finishtime != null">
+                    #{travel.finishtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.method != null">
+                    #{travel.method},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.fare != null">
+                    #{travel.fare},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.expenses != null">
+                    #{travel.expenses},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.amount != null">
+                    #{travel.amount},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.participants != null">
+                    #{travel.participants},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.speed != null">
+                    #{travel.speed},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.speeddesc != null">
+                    #{travel.speeddesc},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.times != null">
+                    #{travel.times},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.nexttime != null">
+                    #{travel.nexttime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.status != null">
+                    #{travel.status},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.summary != null">
+                    #{travel.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+
+    </insert>
+
+    <!-- 修改出差记录-->
+    <update id="updateTravelRecord" parameterType="java.util.Map">
+        update tb_travel_record set
+        <if test="cname!='' and cname !=null">
+            cname=#{cname},
+        </if>
+        <if test="travedesc!='' and travedesc !=null">
+            travedesc=#{travedesc},
+        </if>
+        <if test="tarcity!='' and tarcity !=null">
+            tarcity=#{tarcity},
+        </if>
+        <if test="tarcid!='' and tarcid !=null">
+            tarcid=#{tarcid},
+        </if>
+        <if test="tarname!='' and tarname !=null">
+            tarname=#{tarname},
+        </if>
+        <if test="relperson!='' and relperson !=null">
+            relperson=#{relperson},
+        </if>
+        <if test="relphone!='' and relphone !=null">
+            relphone=#{relphone},
+        </if>
+        <if test="projectid!='' and projectid !=null">
+            projectid=#{projectid},
+        </if>
+        <if test="project!='' and project !=null">
+            project=#{project},
+        </if>
+        <if test="starttime!='' and starttime !=null">
+            starttime=#{starttime},
+        </if>
+        <if test="finishtime!='' and finishtime !=null">
+            finishtime=#{finishtime},
+        </if>
+        <if test="method!='' and method !=null">
+            method=#{method},
+        </if>
+        <if test="fare!='' and fare !=null">
+            fare=#{fare},
+        </if>
+        <if test="expenses!='' and expenses !=null">
+            expenses=#{expenses},
+        </if>
+        <if test="amount!='' and amount !=null">
+            amount=#{amount},
+        </if>
+        <if test="participants!='' and participants !=null">
+            participants=#{participants},
+        </if>
+        <if test="speed!='' and speed !=null">
+            speed=#{speed},
+        </if>
+        <if test="speeddesc!='' and speeddesc !=null">
+            speeddesc=#{speeddesc},
+        </if>
+        <if test="payfare!='' and payfare !=null">
+            payfare=#{payfare},
+        </if>
+        <if test="payexpenses!='' and payexpenses !=null">
+            payexpenses=#{payexpenses},
+        </if>
+        <if test="times!='' and times !=null">
+            times=#{times},
+        </if>
+        <if test="nexttime!='' and nexttime !=null">
+            nexttime=#{nexttime},
+        </if>
+        <if test="status!='' and status !=null">
+            status=#{status},
+        </if>
+        <if test="summary!='' and summary !=null">
+            summary=#{summary},
+        </if>
+        where travelid=#{travelid}
+    </update>
+
+    <!-- 设置删除状态-->
+    <update id="setDeleteStatus" parameterType="java.util.Map">
+        update tb_travel_record set status=8  where   travelid=#{travelid} and (status=1 or status =4)
+    </update>
+
+
+
+
+
+    <!-- 获取归我审批的出差记录-->
+    <select id="queryMyVerifyTravel" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            travelid,
+            curcid,
+            cname,
+            travedesc,
+            tarcity,
+            tarcid,
+            tarname,
+            relperson,
+            relphone,
+            projectid,
+            project,
+            starttime,
+            finishtime,
+            METHOD,
+            fare,
+            expenses,
+            amount,
+            participants,
+            speed,
+            speeddesc,
+            payfare,
+            payexpenses,
+            times,
+            nexttime,
+            status,
+            summary
+        FROM tb_travel_record
+        where 1=1
+        <if test="beginTime != '' and beginTime !=null ">
+            and starttime &gt;= #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != '' ">
+            and finishtime &lt;= #{endTime}
+        </if>
+        <if test="uid !='' and uid!=null">
+            and uid=#{uid}
+        </if>
+        <if test="status !='' and status!=null">
+            and status=#{status}
+        </if>
+    </select>
+
+
+
+    <!-- 根据出差id查询出差记录-->
+    <select id="queryTravelRecordByTravelid" parameterType="java.util.List" resultType="java.util.Map">
+        SELECT
+            travelid,
+            curcid,
+            cname,
+            travedesc,
+            tarcity,
+            tarcid,
+            tarname,
+            relperson,
+            relphone,
+            projectid,
+            project,
+            starttime,
+            finishtime,
+            METHOD,
+            fare,
+            expenses,
+            amount,
+            participants,
+            speed,
+            speeddesc,
+            payfare,
+            payexpenses,
+            times,
+            nexttime,
+            status,
+            summary
+        FROM tb_travel_record
+        where 1=1
+        <foreach collection="list" item="travel" separator=",">
+            <choose>
+                <when test="travel.travelid != '' and travel.travelid != null">
+                    or travelid=#{travel.travelid}
+                </when>
+            </choose>
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="COM.JZB.ACTIVITY.MODULE" />
+        <module name="COM.JZB.API.MODULE" />
+        <module name="COM.JZB.AUTH.MODULE" />
+        <module name="COM.JZB.BASE.MODULE" />
+        <module name="COM.JZB.CONFIG.MODULE" />
+        <module name="COM.JZB.EUREKA.MODULE" />
+        <module name="COM.JZB.LOGGER.MODULE" />
+        <module name="COM.JZB.MEDIA.MODULE" />
+        <module name="COM.JZB.MESSAGE.MODULE" />
+        <module name="COM.JZB.OAUTH.MODULE" />
+        <module name="COM.JZB.OPEN.MODULE" />
+        <module name="COM.JZB.OPERATE.MODULE" />
+        <module name="COM.JZB.ORGANIZE.MODULE" />
+        <module name="COM.JZB.REDIS.MODULE" />
+        <module name="COM.JZB.RESOURCE.MOUDLE" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="COM.JZB.ACTIVITY.MODULE" target="1.8" />
+      <module name="COM.JZB.API.MODULE" target="1.8" />
+      <module name="COM.JZB.AUTH.MODULE" target="1.8" />
+      <module name="COM.JZB.BASE.MODULE" target="1.8" />
+      <module name="COM.JZB.CONFIG.MODULE" target="1.8" />
+      <module name="COM.JZB.EUREKA.MODULE" target="1.8" />
+      <module name="COM.JZB.LOGGER.MODULE" target="1.8" />
+      <module name="COM.JZB.MEDIA.MODULE" target="1.8" />
+      <module name="COM.JZB.MESSAGE.MODULE" target="1.8" />
+      <module name="COM.JZB.OAUTH.MODULE" target="1.8" />
+      <module name="COM.JZB.OPEN.MODULE" target="1.8" />
+      <module name="COM.JZB.OPERATE.MODULE" target="1.8" />
+      <module name="COM.JZB.ORGANIZE.MODULE" target="1.8" />
+      <module name="COM.JZB.PROJECT" target="1.8" />
+      <module name="COM.JZB.REDIS.MODULE" target="1.8" />
+      <module name="COM.JZB.RESOURCE.MOUDLE" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="COM.JZB.ACTIVITY.MODULE" options="-parameters" />
+      <module name="COM.JZB.API.MODULE" options="-parameters" />
+      <module name="COM.JZB.AUTH.MODULE" options="-parameters" />
+      <module name="COM.JZB.BASE.MODULE" options="-parameters" />
+      <module name="COM.JZB.CONFIG.MODULE" options="-parameters" />
+      <module name="COM.JZB.EUREKA.MODULE" options="-parameters" />
+      <module name="COM.JZB.LOGGER.MODULE" options="-parameters" />
+      <module name="COM.JZB.MEDIA.MODULE" options="-parameters" />
+      <module name="COM.JZB.MESSAGE.MODULE" options="-parameters" />
+      <module name="COM.JZB.OAUTH.MODULE" options="-parameters" />
+      <module name="COM.JZB.OPEN.MODULE" options="-parameters" />
+      <module name="COM.JZB.OPERATE.MODULE" options="-parameters" />
+      <module name="COM.JZB.ORGANIZE.MODULE" options="-parameters" />
+      <module name="COM.JZB.REDIS.MODULE" options="-parameters" />
+      <module name="COM.JZB.RESOURCE.MOUDLE" options="-parameters" />
+    </option>
+  </component>
+</project>

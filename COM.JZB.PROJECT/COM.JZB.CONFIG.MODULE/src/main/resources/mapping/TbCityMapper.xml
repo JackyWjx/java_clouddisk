@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.config.dao.TbCityMapper">
+
+    <!-- 添加城市-->
+    <insert id="addCityList" parameterType="java.util.List">
+        insert into tb_city_list
+        (creaid,
+        sliceid,
+        pcode,
+        province,
+        ccode,
+        city,
+        tcode,
+        county,
+        rcode,
+        rural,
+        idx,
+        postal,
+        areacode,
+        admincode,
+        carcode,
+        spell,
+        en,
+        shortname,
+        newid,
+        status,
+        summary
+        )
+        values
+        <foreach separator="," index="index" item="item" collection="list">
+            (
+            #{item.creaid},
+            #{item.sliceid},
+            #{item.pcode},
+            #{item.province},
+            #{item.ccode},
+            #{item.city},
+            #{item.tcode},
+            #{item.county},
+            <choose>
+                <when test="item.rcode !=null">
+                    #{item.rcode},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.rural !=null">
+                    #{item.rural},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.idx !=null">
+                    #{item.idx},
+                </when>
+                <otherwise>
+                    (select count(1)+1 from tb_city_list) ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.postal !=null">
+                    #{item.postal},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.areacode !=null">
+                    #{item.areacode},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+
+
+            <choose>
+                <when test="item.admincode !=null">
+                    #{item.admincode},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.carcode !=null">
+                    #{item.carcode},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.spell !=null">
+                    #{item.spell},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.en !=null">
+                    #{item.en},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.shortname !=null">
+                    #{item.shortname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.newid !=null">
+                    #{item.newid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.status !=null">
+                    #{item.status},
+                </when>
+                <otherwise>
+                    1,
+                </otherwise>
+            </choose>
+
+            <choose>
+                <when test="item.summary !=null">
+                    #{item.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+    <!--获取城市-->
+    <select id="getCityList" parameterType="java.util.Map" resultType="java.util.Map">
+        select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where status='1' ORDER BY creaid asc;
+    </select>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.CompanyUserMapper">
+    <!--获取单位总数-->
+    <select id="queryCompanyListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_company_list l
+        left join
+        tb_company_info i
+        on
+        l.cid = i.cid
+        left join
+        tb_product_list p
+        on
+        l.cid = p.cid
+        where
+        l.status = #{status}
+        <if test="authid == 0 and authid != ''">and authid = ${authid}</if>
+        <if test="authid == 1 and authid != ''">and authid > ${authid}</if>
+    </select>
+
+    <!--查询所有的企业列表-->
+    <select id="queryCompanyList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        l.cid,
+        l.region,
+        l.manager as uid,
+        l.regtime,
+        l.authid,
+        l.cname as name,
+        i.address,
+        p.cname as pname
+        FROM
+        tb_company_list l
+        left join
+        tb_company_info i
+        on
+        l.cid = i.cid
+        left join
+        tb_product_list p
+        on
+        l.cid = p.cid
+        where
+        l.status = #{status}
+        <if test="authid == 0 and authid != ''">and authid = ${authid}</if>
+        <if test="authid == 1 and authid != ''">and authid > ${authid}</if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--点击调入公海是加入公海单位表-->
+    <insert id="insertCompanyCommon" parameterType="java.util.Map">
+        INSERT INTO
+        tb_company_common (cid, idx, ouid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{cid},
+        (select count(1)+1 from tb_company_common),
+        #{uid},
+        #{addtime},
+        #{updtime},
+        #{status}
+        <choose>
+            <when test="summary != null and summary != ''">
+                ,#{summary}
+            </when>
+            <otherwise>
+                ,null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+</mapper>

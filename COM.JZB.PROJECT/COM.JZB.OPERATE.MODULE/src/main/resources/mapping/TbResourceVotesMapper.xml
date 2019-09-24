@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbResourceVotesMapper">
+
+    <!--添加点赞-->
+    <insert id="addResourceVotes" parameterType="java.util.Map">
+        insert into tb_resource_votes(restype,resid,ouid,addtime)
+        values
+        (
+        #{restype},#{actid},#{ouid},#{addtime}
+        )
+    </insert>
+
+    <!--查询已点赞次数-->
+    <select id="queryResourceVotes" parameterType="java.util.Map" resultType="java.util.Map">
+        select count(1) as count
+        <if test="ouid!=null and ouid!=''">
+            ,(select count(1) from tb_resource_votes where resid=#{actid} and ouid=#{ouid} and restype=#{restype})
+            as alreadycount
+        </if>
+        from tb_resource_votes where resid=#{actid}
+    </select>
+
+    <!--查询是否已经点赞-->
+    <select id="queryIsAlreadyVotes" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count (1) from tb_resource_votes where resid=#{actid} and restype=#{restype} and ouid =#{ouid}
+    </select>
+
+
+
+    <!-- 无登录添加点赞-->
+    <update id="updateActivityVotes" parameterType="java.util.Map">
+        update tb_activity_list set votes=votes+1 where actid=#{actid}
+    </update>
+
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbTravelNotifyMapper">
+
+
+    <!-- 添加出差抄送记录-->
+    <insert id="addTravelNotify" parameterType="java.util.List">
+        insert into tb_travel_notify(travelid,type,uid,cname,phone,mail,wechat,addtime,sendtime,status,summary)
+        values
+        <foreach collection="list" item="notify" separator=",">
+            (
+            #{notify.travelid},
+            1,
+            #{notify.uid},
+            <choose>
+                <when test="notify.cname!=null and notify.cname!=''">
+                  #{notify.cname},
+                </when>
+                <otherwise>
+                  null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="notify.phone!=null and notify.phone!=''">
+                    #{notify.phone},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="notify.mail!=null and notify.mail!=''">
+                    #{notify.mail},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="notify.wechat!=null and notify.wechat!=''">
+                    #{notify.wechat},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="notify.addtime!=null and notify.addtime!=''">
+                    #{notify.addtime},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="notify.sendtime!=null and notify.sendtime!=''">
+                    #{notify.sendtime},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="notify.status!=null and notify.status!=''">
+                    #{notify.status},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="notify.summary!=null and notify.summary!=''">
+                    #{notify.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+</mapper>

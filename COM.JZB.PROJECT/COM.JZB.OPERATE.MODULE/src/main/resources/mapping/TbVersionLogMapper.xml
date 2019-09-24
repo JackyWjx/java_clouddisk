@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbVersionLogMapper">
+
+    <select id="queryVersionLog" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_version_log where status = '1'  limit #{rows}  offset #{page}
+    </select>
+
+    <select id="queryVersionLogCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_version_log where status = '1'
+    </select>
+
+    <select id="searchVersionLog" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_version_log where status = '1'
+        and vsndesc like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <select id="searchVersionLogCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_version_log where status = '1'
+        and vsndesc like CONCAT('%',#{keys},'%')
+    </select>
+
+    <insert id="insertVersionLog" parameterType="java.util.Map">
+        INSERT INTO PUBLIC.tb_version_log ( pid, vsnen, vsncn, vsnno, vsncode, vsnnote, vsndate, vsndesc, ouid, tuid, gadate, status, summary )
+        VALUES
+	    (#{pid},
+	    <choose><when test="vsnen != null">#{vsnen},</when><otherwise>null,</otherwise></choose>
+	     #{vsncn},
+	     #{vsnno},
+	     #{vsncode},
+	     #{vsnnote},
+	     #{vsndate},
+	     #{vsndesc},
+	     #{ouid},
+	     #{tuid},
+	     #{gadate},
+	     #{status},
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>);
+    </insert>
+
+    <update id="updateVersionLog" parameterType="java.util.Map">
+        update tb_version_log set status = '1'
+        <choose><when test="vsnen != null">,vsnen = #{vsnen}</when></choose>
+        <choose><when test="vsncn != null">,vsncn = #{vsnen}</when></choose>
+        <choose><when test="vsnno != null">,vsnno = #{vsnen}</when></choose>
+        <choose><when test="vsncode != null">,vsncode = #{vsnen}</when></choose>
+        <choose><when test="vsnnote != null">,vsnnote = #{vsnen}</when></choose>
+        <choose><when test="vsndesc != null">,vsndesc = #{vsnen}</when></choose>
+        <choose><when test="pid != null">,pid = #{vsnen}</when></choose>
+        where id = #{id}
+    </update>
+
+    <update id="deleteVersionLog" parameterType="java.util.Map">
+        update tb_version_log  set status = '0' where id = #{id}
+    </update>
+
+</mapper>
+

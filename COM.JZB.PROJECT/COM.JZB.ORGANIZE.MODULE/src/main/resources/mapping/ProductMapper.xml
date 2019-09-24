@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.ProductMapper">
+    <!--  查询产品总数  -->
+    <select id="queryProductTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from (SELECT pid, cname as name FROM tb_product_list where status = '1'
+        union
+        SELECT packid as pid, cname as name FROM tb_product_package where status = '1'
+        ) productlist
+        <if test="cname != null">where name like '%${cname}%'</if>
+    </select>
+
+    <!--   查询产品列表   -->
+    <select id="queryProductList" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from (SELECT pid, '1' as type, cid, plid, cname as name, version, showvsn, addtime, logo,
+        photo, pdesc, saleid, saleser, salephone, mail FROM tb_product_list where status = '1'
+        union
+        SELECT packid as pid, '2' as type, cid, plid, cname as name, '1' as version, '1.0' as showvsn,
+        addtime, logo, photo, pdesc, saleid, saleser, salephone, mail FROM tb_product_package where status = '1'
+        ) productlist
+        <if test="cname != null">where name like '%${cname}%'</if>
+        order by addtime desc limit #{pagesize} offset #{start};
+    </select>
+
+    <!--模板导入新建菜单或子级菜单-->
+    <insert id="insertProductMenu" parameterType="java.util.List">
+        INSERT INTO
+        tb_product_menu (pid, mid, parentid, cname, menupath, icon, photo, idx, addtime, updtime, status, summary)
+        VALUES
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+        (
+        #{item.pid},
+        #{item.mid},
+        <choose>
+            <when test="item.parentid != null and item.parentid != ''">
+                #{item.parentid},
+            </when>
+            <otherwise>
+                '000000000000000',
+            </otherwise>
+        </choose>
+        #{item.cname},
+        #{item.menupath},
+        <choose>
+            <when test="item.icon != null and item.icon != ''">
+                #{item.icon},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.photo != null and item.photo != ''">
+                #{item.photo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        ${item.idx},
+        #{item.addtime},
+        #{item.updtime},
+        <choose>
+            <when test="item.status != null and item.status != ''">
+                #{item.status},
+            </when>
+            <otherwise>
+                '1',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.summary != null and item.summary != ''">
+                #{item.summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+        </foreach>
+    </insert>
+
+    <!--根据产品查询产品下的所有菜单-->
+    <select id="queryProductMenuList" parameterType="java.util.Map" resultType="java.util.Map">
+        WITH RECURSIVE menu AS (
+        SELECT
+        id,
+        pid,
+        mid,
+        parentid,
+        cname
+        FROM
+        tb_product_menu
+        WHERE
+        <choose>
+            <when test="mid != null and mid != ''">
+                mid = #{mid}
+            </when>
+            <otherwise>
+                parentid = '000000000000000'
+            </otherwise>
+        </choose>
+        AND status = '1'
+        AND pid = #{pid}
+        UNION ALL
+        SELECT
+        tpm.id,
+        tpm.pid,
+        tpm.mid,
+        tpm.parentid,
+        tpm.cname
+        FROM
+        tb_product_menu tpm
+        JOIN menu ON tpm.parentid = menu.mid
+        AND tpm.status = '1'
+        AND tpm.pid = #{pid}
+        )
+        SELECT
+        menu.*
+        FROM
+        menu
+        ORDER BY
+        menu.id ASC
+    </select>
+
+    <!--加入产品页面表-->
+    <insert id="insertProductPage" parameterType="java.util.List">
+        INSERT INTO
+        tb_product_page (pageid, pid, mid, pagecode, cname, icon, pagepath, idx, ouid, addtime, updtime, status,
+        summary)
+        VALUES
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+            (
+            #{item.pageid},
+            #{item.pid},
+            #{item.mid},
+            <choose>
+                <when test="item.pagecode != null and item.pagecode != ''">
+                    #{item.pagecode},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.cname != null and item.cname != ''">
+                    #{item.cname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.icon != null and item.icon != ''">
+                    #{item.icon},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.pagepath != null and item.pagepath != ''">
+                    #{item.pagepath},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.idx != null and item.idx != ''">
+                    ${item.idx},
+                </when>
+                <otherwise>
+                    (select count(1)+1 from tb_product_page),
+                </otherwise>
+            </choose>
+            #{item.uid},
+            #{item.addtime},
+            #{item.updtime},
+            #{item.status},
+            <choose>
+                <when test="item.summary != null and item.summary!= ''">
+                    #{item.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+    <!--根据产品查询产品下的所有页面-->
+    <select id="queryProductPageList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        pageid,
+        pid,
+        mid,
+        pagecode,
+        cname,
+        icon,
+        pagepath,
+        summary
+        FROM
+        tb_product_page
+        WHERE
+        status = #{status}
+        AND pid = #{pid}
+    </select>
+
+    <!--根据查询出来的控件所有信息加入页面控件表-->
+    <insert id="insertPageControl" parameterType="java.util.List">
+        INSERT INTO
+        tb_product_page_control
+        (controlid, pageid, controlcode, cname, controltype, ouid, addtime, updtime, status, summary)
+        VALUES
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+            (
+            #{item.controlid},
+            #{item.pageid},
+            <choose>
+                <when test="item.controlcode != null and item.controlcode != ''">
+                    #{item.controlcode},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.cname != null and item.cname != ''">
+                    #{item.cname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.controltype != null and item.controltype != ''">
+                    ${item.controltype},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            #{item.uid},
+            #{item.addtime},
+            #{item.updtime},
+            #{item.status},
+            <choose>
+                <when test="item.summary != null and item.summary!= ''">
+                    #{item.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+    <!--根据查询出来的控件所有信息加入控件API表-->
+    <insert id="insertControlPower" parameterType="java.util.List">
+        INSERT INTO
+        tb_product_control_power
+        (controlid, powerapi, ouid, addtime, updtime, status, summary)
+        VALUES
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+            (
+            #{item.controlid},
+            <choose>
+                <when test="item.powerapi != null and item.powerapi != ''">
+                    #{item.powerapi},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            #{item.uid},
+            #{item.addtime},
+            #{item.updtime},
+            #{item.status},
+            <choose>
+                <when test="item.summary != null and item.summary!= ''">
+                    #{item.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+</mapper>

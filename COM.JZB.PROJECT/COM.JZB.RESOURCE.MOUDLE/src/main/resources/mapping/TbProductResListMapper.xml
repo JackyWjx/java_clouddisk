@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbProductResListMapper">
+
+    <!-- 查询产品功能列表-->
+    <select id="queryProductResList" parameterType="java.util.Map" resultType="java.util.Map">
+        select pid,plid,cname,prodesc,service,price,pricedesc,accept,paradesc,idx,ouid,addtime,updtime,status,summary
+        from tb_product_res_list where status!='2'
+    </select>
+
+    <!-- 添加产品功能-->
+    <insert id="addProductResList" parameterType="java.util.Map">
+        insert into tb_product_res_list(pid,plid,cname,prodesc,service,price,pricedesc,accept,paradesc,idx,ouid,addtime,updtime,status,summary)
+        values (
+        <choose>
+            <when test="pid!='' and pid != null">
+                #{pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="plid!='' and plid != null">
+                #{plid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cname!='' and cname != null">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="prodesc!='' and prodesc != null">
+                #{prodesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="service!='' and service != null">
+                #{service},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price!='' and price != null">
+                #{price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricedesc!='' and pricedesc != null">
+                #{pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="accept!='' and accept != null">
+                #{accept},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="paradesc!='' and paradesc != null">
+                #{paradesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!='' and idx != null">
+                #{idx},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid!='' and ouid != null">
+                #{ouid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!='' and addtime != null">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!='' and updtime != null">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!='' and status != null">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!='' and summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 修改产品功能-->
+    <update id="updateProductResList" parameterType="java.util.Map">
+        update tb_product_res_list set
+        pid,plid,cname,prodesc,service,price,pricedesc,accept,paradesc,idx,ouid,addtime,updtime,status,summary
+        <if test="cname != '' and cname!= null">
+            cname=#{cname},
+        </if>
+        <if test="prodesc != '' and prodesc!= null">
+            prodesc=#{prodesc},
+        </if>
+        <if test="service != '' and service!= null">
+            service=#{service},
+        </if>
+        <if test="price != '' and price!= null">
+            price=#{price},
+        </if>
+        <if test="pricedesc != '' and pricedesc!= null">
+            pricedesc=#{pricedesc},
+        </if>
+        <if test="accept != '' and accept!= null">
+            accept=#{accept},
+        </if>
+        <if test="paradesc != '' and paradesc!= null">
+            paradesc=#{paradesc},
+        </if>
+        <if test="idx != '' and idx!= null">
+            idx=#{idx},
+        </if>
+        <if test="ouid != '' and ouid!= null">
+            ouid=#{ouid},
+        </if>
+        <if test="addtime != '' and addtime!= null">
+            addtime=#{addtime},
+        </if>
+        <if test="updtime != '' and updtime!= null">
+            updtime=#{updtime},
+        </if>
+        <if test="status != '' and status!= null">
+            status=#{status},
+        </if>
+        <if test="summary != '' and summary!= null">
+            summary=#{summary}
+        </if>
+        where pid=#{pid}
+    </update>
+
+</mapper>

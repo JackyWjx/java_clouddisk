@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbContractTemplateItemMapper">
+
+    <!-- 根据模板查询项-->
+    <select id="quertContractTemplateItemByTempid" parameterType="java.util.Map" resultType="java.util.Map">
+        select tempid,itemid,cname,itemtype,controlid,datasize,defaultvalue,idx,ouid,addtime,updtime,status,summary
+        from tb_contract_template_item where status!='4' and tempid=#{tempid} order by idx asc
+    </select>
+
+    <!-- 修改合同项-->
+    <update id="updateContractTemplateItem" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=";" open="" close="">
+            update tb_contract_template_item
+            set
+            <if test="item.cname!= null and item.cname!=null">
+                cname=#{item.cname},
+            </if>
+            <if test="item.itemtype!= null and item.itemtype!=null">
+                itemtype=#{item.itemtype},
+            </if>
+            <if test="item.controlid!= null and item.controlid!=null">
+                controlid=#{item.controlid},
+            </if>
+            <if test="item.datasize!= null and item.datasize!=null">
+                datasize=#{item.datasize},
+            </if>
+            <if test="item.defaultvalue!= null and item.defaultvalue!=null">
+                defaultvalue=#{item.defaultvalue},
+            </if>
+            <if test="item.idx!= null and item.idx!=null">
+                idx=#{item.idx},
+            </if>
+            <if test="item.ouid!= null and item.ouid!=null">
+                ouid=#{item.ouid},
+            </if>
+            <if test="item.addtime!= null and item.addtime!=null">
+                idx=#{item.addtime},
+            </if>
+            <if test="item.updtime!= null and item.updtime!=null">
+                updtime=#{item.updtime},
+            </if>
+            <if test="item.status!= null and item.status!=null">
+                status=#{item.status},
+            </if>
+            <if test="item.summary!= null and item.summary!=null">
+                summary=#{item.summary}
+            </if>
+            where itemid=#{item.itemid}
+        </foreach>
+    </update>
+
+    <!-- 添加合同项-->
+    <insert id="addContractTemplateItem" parameterType="java.util.List">
+        insert into tb_contract_template_item(tempid,itemid,cname,itemtype,controlid,datasize,defaultvalue,idx,ouid,addtime,updtime,status,summary)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.tempid},
+            #{item.itemid},
+            <choose>
+                <when test="item.cname != null  and item.cname != '' ">
+                    #{item.cname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.itemtype != null  and item.itemtype != '' ">
+                    #{item.itemtype},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.controlid != null  and item.controlid != '' ">
+                    #{item.controlid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.datasize != null  and item.datasize != '' ">
+                    #{item.datasize},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.defaultvalue != null  and item.defaultvalue != '' ">
+                    #{item.defaultvalue},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.idx != null  and item.idx != '' ">
+                    #{item.idx},
+                </when>
+                <otherwise>
+                   select count(1)+#{index} from  tb_contract_template_item,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.ouid != null  and item.ouid != '' ">
+                    #{item.ouid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.addtime != null  and item.addtime != '' ">
+                    #{item.addtime},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.updtime != null  and item.updtime != '' ">
+                    #{item.updtime},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.status != null  and item.status != '' ">
+                    #{item.status},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.summary != null  and item.summary != '' ">
+                    #{item.summary},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+    <!-- 根据模板查询项-->
+    <select id="quertContractTemplateItemByItemid" parameterType="java.util.Map" resultType="java.util.Map">
+        select tempid,itemid,cname,itemtype,controlid,datasize,defaultvalue,idx,ouid,addtime,updtime,status,summary
+        from tb_contract_template_item where status!='4' and itemid=#{itemid} order by idx asc
+    </select>
+
+
+
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbPolicyTypeMapper">
+
+    <!--  查询政策父子级-->
+    <select id="queryPolicyType" parameterType="java.util.Map" resultType="java.util.Map">
+        WITH RECURSIVE moth AS (
+            SELECT
+                typeid,
+                cname,
+                parentid,
+                typedesc,
+                idx,
+                ouid,
+                addtime,
+                updtime,
+                status
+            FROM
+                tb_policy_type
+            WHERE
+                parentid = '0000000'
+                AND status = '1' UNION ALL
+            SELECT
+                tst.typeid,
+                tst.cname,
+                tst.parentid,
+                tst.typedesc,
+                tst.idx,
+                tst.ouid,
+                tst.addtime,
+                tst.updtime,
+                tst.status
+            FROM
+                tb_policy_type tst
+                JOIN moth ON tst.parentid = moth.typeid
+                AND tst.status = '1'
+            ) SELECT
+            moth.*
+        FROM
+            moth
+    </select>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.message.dao.MsgTypeParaMapper">
+
+    <!-- 查询 -->
+    <select id="queryMsgTypePara" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_msg_type_para where status = '1'  
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="queryMsgTypeParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_msg_type_para where status = '1'
+    </select>
+
+    <!-- 模糊查询 -->
+    <select id="searchMsgTypePara" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_msg_type_para where status = '1' and paraname like CONCAT('%',#{keys},'%') or paracode like CONCAT('%',#{keys},'%')
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊查询总数 -->
+    <select id="searchMsgTypeParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from tb_msg_type_para where status = '1' and paraname like CONCAT('%',#{keys},'%') or paracode like CONCAT('%',#{keys},'%')
+    </select>
+
+    <!-- 添加 -->
+    <insert id="insertMsgTypePara" parameterType="java.util.Map">
+        INSERT INTO tb_msg_type_para ( msgtype, paracode, paraname, idx, paratype, parasize, paraneed, status, summary )
+        VALUES
+        ( #{msgtype},
+         #{paracode},
+         #{paraname},
+         (select count(1)+1 from tb_msg_type_para),
+         #{paratype},
+         #{parasize},
+         #{paraneed},
+         #{status},
+         <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose> );
+    </insert>
+
+    <!-- 修改 -->
+    <update id="updateMsgTypePara" parameterType="java.util.Map">
+        update  tb_msg_type_para set status = '1'
+        <choose><when test="paracode != null">,paracode = #{paracode}</when></choose>
+        <choose><when test="paraname != null">,paraname = #{paraname}</when></choose>
+        <choose><when test="msgtype != null">,msgtype = #{msgtype}</when></choose>
+        <choose><when test="paratype != null">,paratype = #{paratype}</when></choose>
+        <choose><when test="parasize != null">,parasize = #{parasize}</when></choose>
+        <choose><when test="paraneed != null">,paraneed = #{paraneed}</when></choose>
+        <choose><when test="summary != null">,summary = #{summary}</when></choose>
+        where id = #{id}
+    </update>
+
+    <!-- 禁用 -->
+    <update id="deleteMsgTypePara" parameterType="java.util.Map">
+        update  tb_msg_type_para set  status = '0' where id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbProductFunctionMapper">
+
+    <!-- 添加产品功能-->
+    <insert id="addProductFunction" parameterType="java.util.List">
+        insert into tb_product_function (pid,funtype,funsubtype,funid,cname,parented,price,weight,introduce,fundesc,idx,ouid,addtime,updtime,status,summary)
+    </insert>
+
+
+    <!-- 查询产品功能-->
+    <select id="queryProductFunction" parameterType="java.util.Map" resultType="java.util.Map">
+        select pid,funtype,funsubtype,funid,cname,parented,price,weight,introduce,fundesc,idx,ouid,addtime,updtime,status,summary
+        from tb_product_function where pid=#{pid}
+    </select>
+
+
+    <!-- 修改产品功能-->
+    <update id="updateProductFunction" parameterType="java.util.Map">
+        update tb_product_function
+        <trim prefix="set" suffixOverrides="," suffix=" where funid = #{funid} ">
+    　　　　<if test="cname != null and cname.length()>0"> cname=#{cname} ,</if>
+    　　　　<if test="price != null and price.length()>0"> price=#{price} ,</if>
+    　　　　<if test="weight != null and weight.length()>0"> weight=#{weight} ,</if>
+    　　　　<if test="introduce != null and introduce.length()>0"> introduce=#{introduce} ,</if>
+    　　　　<if test="fundesc != null and fundesc.length()>0"> fundesc=#{fundesc} ,</if>
+    　　　　<if test="idx != null and idx.length()>0"> idx=#{idx} ,</if>
+    　　　　<if test="ouid != null and ouid.length()>0"> ouid=#{ouid} ,</if>
+    　　　　<if test="addtime != null and addtime.length()>0"> addtime=#{addtime} ,</if>
+    　　　　<if test="updtime != null and updtime.length()>0"> updtime=#{updtime} ,</if>
+    　　　　<if test="summary != null and summary.length()>0"> summary=#{summary} ,</if>
+        </trim>
+    </update>
+
+
+    <!-- 设置状态-->
+    <update id="setProductFunctionStatus" parameterType="java.util.Map">
+        update tb_product_function set status=#{status} where funid=#{funid}
+    </update>
+
+
+</mapper>

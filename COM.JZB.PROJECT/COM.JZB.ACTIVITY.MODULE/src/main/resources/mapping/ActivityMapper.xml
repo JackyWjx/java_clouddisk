@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.activity.dao.ActivityMapper">
+
+
+    <!--查询活动的数据-->
+    <select id="queryActivityList" resultType="java.util.Map">
+       select
+         cname, actid,uid ,cid ,cdid ,context   ,addtime ,votes ,comments ,
+	    reads ,shares,acttheme,actlogo
+	    from
+	    tb_activity_list
+	    order by
+       addtime
+	    desc
+	    limit
+	    #{rows}
+	    offset
+	    #{page}
+    </select>
+
+    <!--查询图片推广信息-->
+    <select id="queryActpictureList" resultType="java.util.Map">
+        select
+        id,actid,cname,actpicture,votes,reads
+        from
+        tb_activity_list
+        order by
+        worths
+        desc
+        limit
+	    #{pagesize}
+	    offset
+	    #{pageno}
+    </select>
+    <!-- 更新点击量 -->
+    <select id="queryActivityVotesList" resultType="java.util.Map">
+        select
+        id,restype,resid,ouid,addtime
+        from
+        tb_resource_votes
+        where
+        restype = #{restype}
+        and
+        resid = #{actid}
+        and
+        ouid = #{ouid}
+    </select>
+    <!--根据id查询活动信息 -->
+    <select id="findresIdById" resultType="java.util.Map">
+        select
+        votes
+        from
+        tb_activity_list
+        where
+        actid = #{resid}
+    </select>
+    <!--查询更新的点击量信息 -->
+    <select id="queryActivityById" resultType="java.util.Map">
+       select
+       votes
+       from
+       tb_activity_list
+       where
+       actid =  #{resid}
+    </select>
+    <!--查询总数-->
+    <select id="queryActivityCount" resultType="java.lang.Integer">
+       select
+       count(1)
+       from
+       tb_activity_list where status='1'
+    </select>
+    <!--查询评论次数-->
+    <select id="findActivity" resultType="java.util.Map">
+           select
+           actid,
+           disid,
+           uid,
+           context,
+           reacted,
+           addtime
+           from
+           tb_activity_discuss
+           where
+           actid = #{actid}
+    </select>
+    <!--根据活动查询评论数-->
+    <select id="findActivityById" resultType="java.util.Map">
+          select
+          comments
+          from
+          tb_activity_list
+          where
+          actid = #{actid}
+    </select>
+    <!-- 根据查询详情信息 -->
+    <select id="getDiscussById" resultType="java.util.Map">
+        SELECT
+        tal.cname,
+        tal.actid,
+        tal.uid,
+        tal.cid,
+        tal.cdid,
+        tal.context,
+        tap.photo,
+        tal.addtime,
+        tal.votes,
+        tal.comments,
+        tal.READS,
+        tal.shares,
+        tal.acttheme,
+        tal.actlogo
+        FROM
+        tb_activity_list tal
+        LEFT JOIN tb_activity_photo tap ON tap.actid = tal.actid
+        WHERE
+        1 = 1
+				and tal.actid=#{actid}
+    </select>
+    <!-- 查询活动数据-->
+    <select id="findActivityId" resultType="java.util.Map">
+       select
+       comments
+       from
+       tb_activity_list
+       where
+        actid = #{actid}
+    </select>
+
+    <!--    返回总数-->
+    <select id="queryParticularsCount" resultType="java.lang.Integer">
+        select
+        count(3)
+        from
+        tb_activity_discuss
+        where
+        id
+        between 1 and 3
+
+    </select>
+
+    <!--查询评论详情3条信息 -->
+    <select id="findParticularsList" resultType="java.util.Map">
+       select
+       id,actid,uid,disid,context,addtime,reacted
+       from
+       tb_activity_discuss
+       where
+       actid = #{actid}
+       order by
+       addtime
+       desc
+       limit
+	      3
+    </select>
+
+    <!-- 查询总数-->
+    <select id="findParticularsListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_activity_discuss  where  actid = #{actid}
+    </select>
+
+
+    <!--查询评论详情 -->
+    <select id="findParticularsByList" resultType="java.util.Map">
+         select
+       id ,actid,uid,context,addtime
+       from
+       tb_activity_discuss
+       where
+       actid = #{actid}
+       order by
+       addtime
+       desc
+       limit
+	    #{rows}
+	    offset
+	    #{page}
+    </select>
+
+    <!--   根据活动名称模糊查询czd-->
+    <select id="getLikeName" resultType="java.util.Map">
+        SELECT
+        tal.cname,
+        tal.actid,
+        tal.uid,
+        tal.cid,
+        tal.cdid,
+        tal.context,
+        tap.photo,
+        tal.addtime,
+        tal.votes,
+        tal.comments,
+        tal.READS,
+        tal.shares,
+        tal.acttheme,
+        tal.actlogo
+        FROM
+        tb_activity_list tal
+        LEFT JOIN tb_activity_photo tap ON tap.actid = tal.actid
+        WHERE
+        1 = 1
+        <if test="keyword!= null and keyword != ''">
+            AND tal.cname ~ #{keyword}
+        </if>
+        ORDER BY
+        tal.addtime DESC
+        LIMIT #{rows} OFFSET #{page}
+    </select>
+
+    <!--  查询 资源类型 资源ID 相关的数据-->
+    <select id="queryRestypeList" resultType="java.util.Map">
+        select
+        id,restype,resid,ouid,addtime
+        from
+        tb_resource_view
+        <where>
+            <if test="restype != null">
+                restype = #{restype}
+            </if>
+            and
+            <if test="ouid != null">
+                ouid = #{ouid}
+            </if>
+        </where>
+    </select>
+
+    <!-- 模糊查询总数-->
+    <select id="likeActivityCount" resultType="java.lang.Integer">
+        SELECT COUNT ( 1 )
+        FROM
+            tb_activity_list tal,
+            tb_activity_photo tap
+        WHERE
+        1=1
+            AND tal.actid = tap.actid
+    </select>
+
+
+    <select id="queryParticularsByIdCount" resultType="java.lang.Integer">
+        select
+        count(*)
+        from
+        tb_activity_discuss
+    </select>
+
+    <!-- 推广图片-->
+    <select id="EnquiryCount" resultType="java.lang.Integer">
+        select  count(*)   tb_activity_list
+    </select>
+
+    <!-- 查询活动图片-->
+    <select id="queryActivityActid" resultType="java.util.Map">
+        select  photo from tb_activity_photo where actid = #{actid}
+    </select>
+
+
+    <!--更新点赞数-->
+    <update id="updateActpictureById" parameterType="java.util.Map">
+         update
+         tb_activity_list
+         set votes = #{votes}
+         where
+         actid = #{resid}
+    </update>
+
+    <!--更新时间-->
+    <update id="updatevotesId">
+         update
+         tb_resource_votes
+         set
+         addtime = #{addtime}
+         where
+         id = #{id}
+    </update>
+    <!-- 更新评论次数 -->
+    <update id="updateComments" parameterType="java.util.Map">
+        update
+        tb_activity_list
+        set
+        comments = #{comments}
+        where
+        actid = #{actid}
+    </update>
+    <!--添加评论信息    -->
+    <insert id="insertHashMapById">
+       insert
+       into
+       tb_activity_discuss(disid,uid,context,addtime,actid)
+       values
+       (#{disid},#{uid},#{context},#{addtime},#{actid})
+    </insert>
+
+    <!-- 发表一次评论信息,评论次数加一-->
+    <update id="insertcomments">
+       update
+       tb_activity_list
+       set
+       comments = #{comments}
+       where
+       actid = #{actid}
+    </update>
+    <!--    更新阅读数-->
+    <update id="updateReads">
+           update
+           tb_activity_list
+           set
+           reads = #{reads}
+           where
+           actid = #{actid}
+    </update>
+
+    <!--    更新时间-->
+    <update id="updateAddTime">
+           update
+           tb_resource_view
+           set
+           addTime = #{addTime}
+            where
+           resid = #{resid}
+    </update>
+
+
+    <!-- 添加评论-->
+    <insert id="addActivityDiscuss" parameterType="java.util.Map">
+        insert into tb_activity_discuss(actid,disid,uid,context,reacted,addtime,status,summany) values
+        (
+        #{actid},
+        #{disid},
+        <choose>
+            <when test="uid!=null and uid!=''">
+                #{uid},
+            </when>
+            <otherwise>
+                '0',
+            </otherwise>
+        </choose>
+        #{context},
+        <choose>
+            <when test="reacted!=null and reacted!=''">
+                #{reacted},
+            </when>
+            <otherwise>
+                '0',
+            </otherwise>
+        </choose>
+        #{addtime},
+        #{status},
+        <choose>
+            <when test="summany!=null and summany!=''">
+                #{summany}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+
+
+
+
+
+
+    <!-- 无登录添加点赞-->
+    <update id="updateActivityVotes" parameterType="java.util.Map">
+        update tb_activity_list set votes=votes+1 where actid=#{actid}
+    </update>
+    <!-- 无登录添加点赞-->
+    <update id="updateActivityReads" parameterType="java.util.Map">
+        update tb_activity_list set reads=reads+1 where actid=#{actid}
+    </update>
+
+    <!-- 查询点赞次数 浏览次数-->
+    <select id="queryActivityCountNew" parameterType="java.util.Map" resultType="java.util.Map">
+        select votes, reads
+        from tb_activity_list where actid=#{actid}
+    </select>
+
+</mapper>

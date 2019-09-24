@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbUserTravelMapper">
+
+
+    <!-- 添加出差目标记录-->
+    <insert id="addTravelAim" parameterType="java.util.Map">
+        insert into tb_travel_aim(travelid,methodid,aimid,cname,status,summary)
+        values
+        <foreach collection="list" item="travel" separator=",">
+        (
+            #{travel.travelid},
+            #{travel.methodid},
+            #{travel.aimid},
+            <choose>
+                <when test="travel.cname!= '' and travel.cname!= null">
+                    #{travel.cname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.status!= '' and travel.status!= null">
+                    #{travel.status},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.summary!= '' and travel.summary!= null">
+                    #{travel.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+
+</mapper>

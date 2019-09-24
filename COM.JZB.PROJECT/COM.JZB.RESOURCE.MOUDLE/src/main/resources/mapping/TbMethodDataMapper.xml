@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbMethodDataMapper">
+
+    <!--1.根据方法论类型查询资料-->
+    <select id="quertMethodData" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            dataid,
+            datacode,
+            typeid,
+            cname,
+            context,
+            addtime,
+            typedesc,
+            idx
+        FROM
+            tb_method_data
+        WHERE
+            status = '1'
+            AND typeid =#{ typeid }
+    </select>
+
+    <!--2.修改方法论资料-->
+    <update id="updateMethodData" parameterType="java.util.Map">
+        update tb_method_data set
+        <if test="datacode!=null">datacode=#{datacode}</if>
+        <if test="cname!=null">cname=#{cname}</if>
+        <if test="context!=null">context=#{context}</if>
+        <if test="typedesc!=null">typedesc=#{typedesc}</if>
+        <if test="idx!=null">idx=#{idx}</if>
+        <if test="ouid!=null">ouid=#{ouid}</if>
+        <if test="updtime!=null">updtime=#{updtime}</if>
+        where dataid=#{dataid}
+    </update>
+
+    <!--3.添加方法论资料-->
+    <insert id="saveMethodData" parameterType="java.util.Map">
+        insert into
+        tb_method_data(dataid,datacode,typeid,cname,context,typedesc,idx,ouid,addtime,updtime,status,summary) values(
+        #{dataid},
+        <choose>
+            <when test="datacode!=null">
+                #{datacode},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        #{typeid},
+        <choose>
+            <when test="cname!=null">
+                #{cname},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="context!=null">
+                #{context},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typedesc!=null">
+                #{typedesc},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null">
+                #{idx},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid!=null">
+                #{ouid},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null">
+                #{addtime},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null">
+                #{updtime},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                #{status},
+            </when>
+            <otherwise>
+                1 ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        );
+    </insert>
+
+    <!--4.获取排序-->
+    <select id="getMethodDataIdx" resultType="java.lang.Integer">
+        select count(1)+1 from tb_method_data
+    </select>
+
+</mapper>
