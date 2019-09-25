@@ -5,10 +5,12 @@ import com.jzb.base.message.JzbReturnCode;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.support.DefaultServerRequest;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -19,6 +21,7 @@ import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -66,45 +69,50 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
                 // 只处理POST的请求,GET请求待定
                 if ("POST".equals(method)) {
                     // 从请求里获取Post请求体 验证TOKEN
-                    String body = getRequestBody(httpRequest);
                     String token = httpRequest.getHeaders().get("token").get(0);
                     Map<String, Object> tokenParam = new HashMap<>();
                     tokenParam.put("token", token);
                     Response tokenRes = authApi.checkToken(tokenParam);
                     if (tokenRes.getServerResult().getResultCode() == JzbReturnCode.HTTP_200) {
-                        JzbTools.logInfo("===================================>>", body);
-                        JSONObject json = JzbTools.isEmpty(body) ? new JSONObject() : JSONObject.fromObject(body);
-                        Map<String, Object> userInfo = (Map<String, Object>) tokenRes.getResponseEntity();
-                        userInfo.put("token", tokenRes.getToken() == null ? "" : tokenRes.getToken());
-                        userInfo.put("session", tokenRes.getSession() == null ? "" : tokenRes.getSession());
-                        json.put("userinfo", userInfo);
+                        ServerRequest serverRequest = new DefaultServerRequest(exchange);
+                        Mono<String> bodyToMono = serverRequest.bodyToMono(String.class);
+                        return bodyToMono.flatMap(body -> {
+                            exchange.getAttributes().put("cachedRequestBody", body);
+                            JzbTools.logInfo("===================================cachedRequestBody>>", body);
 
-                        // 下面的将请求体再次封装写回到request里，传到下一级，否则，由于请求体已被消费，后续的服务将取不到值
-                        URI uri = httpRequest.getURI();
-                        ServerHttpRequest request = httpRequest.mutate().uri(uri).build();
-                        DataBuffer bodyData = stringBuffer(json.toString());
-                        Flux<DataBuffer> bodyFlux = Flux.just(bodyData);
-                        request = new ServerHttpRequestDecorator(request) {
-                            @Override
-                            public Flux<DataBuffer> getBody() {
-                                return bodyFlux;
-                            }
+                            JSONObject json = JzbTools.isEmpty(body) ? new JSONObject() : JSONObject.fromObject(body);
+                            Map<String, Object> userInfo = (Map<String, Object>) tokenRes.getResponseEntity();
+                            userInfo.put("token", tokenRes.getToken() == null ? "" : tokenRes.getToken());
+                            userInfo.put("session", tokenRes.getSession() == null ? "" : tokenRes.getSession());
+                            json.put("userinfo", userInfo);
+                            byte[] newBody = json.toString().getBytes(Charset.forName("UTF-8"));
 
-                            @Override
-                            public HttpHeaders getHeaders() {
-                                HttpHeaders headers = new HttpHeaders();
-                                List<String> cl = new ArrayList<>();
-                                cl.add(json.toString().getBytes(Charset.forName("UTF-8")).length + "");
-                                headers.put("Content-Length", cl);
+                            ServerHttpRequest newRequest = new ServerHttpRequestDecorator(httpRequest) {
+                                @Override
+                                public HttpHeaders getHeaders() {
+                                    HttpHeaders headers = new HttpHeaders();
+                                    List<String> cl = new ArrayList<>();
+                                    cl.add(newBody.length + "");
+                                    headers.put("Content-Length", cl);
 
-                                List<String> ct = new ArrayList<>();
-                                ct.add("application/json");
-                                headers.put("Content-Type", ct);
-                                return headers;
-                            }
-                        };
+                                    List<String> ct = new ArrayList<>();
+                                    ct.add("application/json");
+                                    headers.put("Content-Type", ct);
 
-                        return chain.filter(exchange.mutate().request(request).build());
+                                    headers.putAll(super.getHeaders());
+                                    headers.set(HttpHeaders.TRANSFER_ENCODING, "chunked");
+                                    return headers;
+                                }
+
+                                @Override
+                                public Flux<DataBuffer> getBody() {
+                                    NettyDataBufferFactory nettyDataBufferFactory = new NettyDataBufferFactory(new UnpooledByteBufAllocator(false));
+                                    DataBuffer bodyDataBuffer = nettyDataBufferFactory.wrap(newBody);
+                                    return Flux.just(bodyDataBuffer);
+                                }
+                            };
+                            return chain.filter(exchange.mutate().request(newRequest).build());
+                        });
                     } else {
                         JzbTools.logInfo("======================>>", "ERROR", token, "TOKEN IS NULL");
                         ServerHttpResponse serverHttpResponse = exchange.getResponse();
