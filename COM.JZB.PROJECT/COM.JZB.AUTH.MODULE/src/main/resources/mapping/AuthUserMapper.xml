@@ -119,9 +119,9 @@
 
     <!--增加用户信息,增加用户注册信息-->
     <insert id="insertUserList">
-        INSERT INTO tb_user_list ( uid,cname, passwd, relphone, authid, regtime, status )
+        INSERT INTO tb_user_list ( uid,cname, passwd, relphone, authid, regtime, status,relmail )
         VALUES
-	    (#{uid},#{name},#{passwd},#{phone},#{authid},#{regtime},#{status});
+	    (#{uid},#{name},#{passwd},#{phone},#{authid},#{regtime},#{status},#{relmail});
         INSERT INTO tb_user_key ( uid, keyid, ktid, addtime, status )
                 VALUES
                  (#{uid},#{phone},#{ktid},#{regtime},#{status})
