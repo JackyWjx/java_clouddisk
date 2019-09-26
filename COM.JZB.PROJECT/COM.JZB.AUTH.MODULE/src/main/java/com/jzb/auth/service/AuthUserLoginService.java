@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -342,23 +344,23 @@ public class AuthUserLoginService {
      * 发送短信并保存验证码
      *
      * @param map       包含groupid模板id
-     * @param telNumber 手机号
      * @return
      */
-    public Response sendRemind(Map<String, Object> map, String telNumber) {
+    public Response sendRemind(Map<String, Object> map) {
         Response rul;
-        Map<String, Object> codeMap = new HashMap<>(3);
+        // 将日期格式化为年月日,时分秒
+        SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = sim.format(new Date());
+        Map<String, Object> codeMap = new HashMap<>();
         codeMap.put("username", JzbDataType.getString(map.get("username")));
         codeMap.put("companyname", JzbDataType.getString(map.get("companyname")));
-        codeMap.put("date", JzbDataType.getString(map.get("date")));
-        map.put("sendpara", JSON.toJSONString(codeMap));
+        codeMap.put("date", date);
+        Map<String, Object> smsMap = new HashMap<>(1);
+        smsMap.put("sms", codeMap);
+        map.put("sendpara", JSON.toJSONString(smsMap));
         //短信发送参数填写
         map.put("usertype", "1");
         map.put("title", "计支云");
-        Map<String, Object> receiver = new HashMap<>(2);
-        receiver.put("name", JzbDataType.getString(map.get("name")));
-        receiver.put("phone", telNumber);
-        map.put("receiver", JSON.toJSONString(receiver));
         try {
             //加密内容
             String appId = "SADJHJ1FHAUS45FAJ455";
@@ -366,12 +368,13 @@ public class AuthUserLoginService {
             String groupId = JzbDataType.getString(map.get("groupid"));
             String title = JzbDataType.getString(map.get("title"));
             String userType = JzbDataType.getString(map.get("usertype"));
-            String receivers = JzbDataType.getString(map.get("receiver"));
+            String receiver = JzbDataType.getString(map.get("phone"));
             String checkCode = "FAHJKSFHJK400800FHAJK";
-            String md5 = JzbDataCheck.Md5(appId + secret + groupId + title + userType + receivers + checkCode);
+            String md5 = JzbDataCheck.Md5(appId + secret + groupId + title + userType + receiver + checkCode);
             map.put("checkcode", md5);
             map.put("appid", appId);
             map.put("secret", secret);
+            map.put("receiver", receiver);
             //发送短信
             rul = messageApi.sendShortMsg(map);
         } catch (Exception e) {
