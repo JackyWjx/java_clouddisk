@@ -33,7 +33,7 @@
         l.authid,
         l.cname as name,
         i.address,
-        p.cname as pname
+        p.systemname
         FROM
         tb_company_list l
         left join
@@ -41,7 +41,7 @@
         on
         l.cid = i.cid
         left join
-        tb_product_list p
+        tb_company_sysconfig p
         on
         l.cid = p.cid
         where

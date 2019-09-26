@@ -777,6 +777,19 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         <if test="curl != null ">,curl = #{curl}</if>
         <if test="address != null ">,address = #{address}</if>
     </insert>
+
+    <!--主页中单位设置基本资料进行企业系统配置表修改-->
+    <update id="updateCompanySysconfig" parameterType="java.util.Map">
+        UPDATE
+        tb_company_sysconfig
+        SET
+        ouid = #{uid},
+        updtime = #{modtime}
+        <if test="systemname != null ">,systemname = #{systemname}</if>
+        WHERE
+        cid = #{cid}
+    </update>
+
     <!--保存伙伴单位信息-->
     <insert id="insertCompanyFriend">
         INSERT INTO tb_company_friend (cid,requid,reqtime,resuid,restime,ouid,updtime,status,idx)
