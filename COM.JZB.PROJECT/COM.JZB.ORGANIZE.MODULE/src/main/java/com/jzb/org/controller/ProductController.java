@@ -6,6 +6,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.service.OrgToken;
 import com.jzb.org.service.ProductService;
 import org.apache.poi.xssf.usermodel.*;
@@ -40,6 +41,9 @@ public class ProductController {
 
     @Autowired
     private OrgToken orgToken;
+
+    @Autowired
+    RegionBaseApi regionBaseApi;
 
     /**
      * 查询产品的信息
@@ -401,11 +405,11 @@ public class ProductController {
                     break;
                 }
                 // 获取页面模板中的页面链接地址
-                String pagePath = JzbDataType.getString(map.get(5));
+                String pagePath = JzbDataType.getString(map.get(6));
                 pageParam.put("pagepath", pagePath);
 
                 // 获取页面模板中的页面备注
-                String summary = JzbDataType.getString(map.get(6));
+                String summary = JzbDataType.getString(map.get(7));
                 pageParam.put("summary", summary);
                 // 加入当前时间戳
                 pageParam.put("addtime", addTime);
@@ -485,8 +489,8 @@ public class ProductController {
         Response result = new Response();
         try {
             // 获取用户信息token
-            Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
             Map<String, Object> param = new HashMap<>();
+            Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
             param.put("userinfo", userInfo);
             // 获取上传文件名称
             String fileName = file.getOriginalFilename();
@@ -622,6 +626,124 @@ public class ProductController {
             os.close();
         } catch (Exception e) {
             JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * 读取菜单模板中的数据并存入数据库
+     *
+     * @param file
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/importCompanyTemplate", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response importCompanyTemplate(@RequestBody MultipartFile file,
+                                          @RequestHeader(value = "token") String token) {
+        Response result = new Response();
+        try {
+            // 获取用户信息token
+            Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
+            Map<String, Object> param = new HashMap<>();
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("userinfo", userInfo);
+            // 获取上传文件名称
+            long time = System.currentTimeMillis();
+            String fileName = file.getOriginalFilename();
+            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
+
+            // 保存文件到本地
+            File intoFile = new File(filepath);
+            file.transferTo(intoFile);
+            // 创建一个线程池
+            ExecutorService pool = Executors.newFixedThreadPool(1);
+
+            // 创建一个有返回值的任务
+            Callable importCompanyThread = new ImportCompanyThread(filepath, param, result);
+            Future future = pool.submit(importCompanyThread);
+            // 获取返回值结果
+            result = (Response) future.get();
+
+            // 关闭线程池
+            pool.shutdown();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /***
+     * 读取新建企业模板中的数据时启动线程
+     * @author kuangbin
+     */
+    public class ImportCompanyThread implements Callable {
+        // 保存文件的路径
+        private String filepath;
+
+        // 前台传来的参数
+        private Map<String, Object> param;
+
+        // 结果对象
+        Response result;
+
+        public ImportCompanyThread(String filepath, Map<String, Object> param, Response result) {
+            this.filepath = filepath;
+            this.param = param;
+            this.result = result;
+        }
+
+        @Override
+        public Response call() {
+            // 读取模板中的数据
+            List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
+            if (true) {
+                // 定义初始开关
+                boolean bl = true;
+
+                // 遍历结果行,菜单数据从第2行开始
+                for (int i = 1; i < list.size(); i++) {
+                    Map<Integer, String> map = list.get(i);
+                    // 获取模板中的用户姓名
+                    String name = JzbDataType.getString(map.get(0));
+
+                    // 获取模板中的用户手机号
+                    String phone = JzbDataType.getString(map.get(1));
+
+                    // 获取模板中的单位名称
+                    String cname = JzbDataType.getString(map.get(2));
+                    if (JzbDataType.isEmpty(name) || JzbDataType.isEmpty(phone) || JzbDataType.isEmpty(cname)) {
+                        result = Response.getResponseError();
+                        result.setResponseEntity("必填项不能为空,执行成功" + (i - 1) + "行");
+                        break;
+                    }
+                    // 获取模板中的单位地区
+                    String regionName = JzbDataType.getString(map.get(3));
+                    param.put("regionName", regionName);
+                    // 调用获取地区ID的接口
+                    Response regionID = regionBaseApi.getRegionID(param);
+                    Object obj = regionID.getResponseEntity();
+                    // 定义地区ID
+                    String region = "";
+                    if (JzbDataType.isMap(obj)) {
+                        Map<Object, Object> regionMap = (Map<Object, Object>) obj;
+                        region = JzbDataType.getString(regionMap.get("creaid"));
+                    }
+                    // 获取模板中的单位地址
+                    String address = JzbDataType.getString(map.get(4));
+
+                    // 获取模板中的系统名称
+                    String systemname = JzbDataType.getString(map.get(5));
+                    param.put("name", name);
+                    param.put("phone", phone);
+                    param.put("cname", cname);
+                    param.put("region", region);
+                    param.put("address", address);
+                    param.put("systemname", systemname);
+                    // 调用API模块的接口
+                    productService.addRegistrationCompany(param);
+                }
+            }
+            return result;
         }
     }
 } // End class ProductController

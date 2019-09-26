@@ -7,6 +7,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbIdEntification;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.service.CompanyService;
@@ -39,6 +40,9 @@ public class CompanyController {
      */
     @Autowired
     private OrgRedisServiceApi orgRedisServiceApi;
+
+    @Autowired
+    RegionBaseApi regionBaseApi;
 
     /**
      * 开放平台调用接口获取企业地址,地区信息
@@ -666,13 +670,17 @@ public class CompanyController {
             if (JzbDataType.isMap(objCompany)) {
                 // 是map对象进行转换
                 Map<Object, Object> mapCompany = (Map<Object, Object>) objCompany;
-
+                // 获取管理员信息
+                String manager = JzbDataType.getString(mapCompany.get("manager"));
+                param.put("uid",manager);
+                Response user = userRedisServiceApi.getCacheUserInfo(param);
+                mapCompany.put("relperson", user.getResponseEntity());
                 // 获取地区id
                 String region = JzbDataType.getString(mapCompany.get("region"));
                 param.put("region", region);
                 if (!JzbDataType.isEmpty(region)) {
-                    Response reg = orgRedisServiceApi.queryRegion(param);
-
+                    Response reg = regionBaseApi.getRegionInfo(param);
+                    mapCompany.put("region", reg.getResponseEntity());
                 }
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 result = Response.getResponseSuccess(userInfo);
