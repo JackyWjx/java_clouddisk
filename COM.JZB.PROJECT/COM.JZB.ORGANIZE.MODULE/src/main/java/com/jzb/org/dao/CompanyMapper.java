@@ -242,6 +242,14 @@ public interface CompanyMapper {
     int updateCompanyBasicInfo(Map<String, Object> param);
 
     /**
+     * 我的单位基本资料
+     * 主页中单位设置基本资料进行企业系统配置表修改
+     *
+     * @author kuangbin
+     */
+    int updateCompanySysconfig(Map<String, Object> param);
+
+    /**
      * 根据模糊姓名获取企业下所有同字员工姓名
      *
      * @author kuangbin
