@@ -202,11 +202,11 @@ public class UserController {
     }
 
     /**
-     * CRM-单位用户-所有用户- 单位列表
+     * CRM-单位用户-所有用户-单位列表
      * 点击添加单位时加入单位和用户并发送消息提醒
      *
      * @param param
-     * @Author: Kuang Bin
+     * @Author:KuangBin
      * @DateTime: 2019/9/16 16:31
      */
     @PostMapping("/addRegistrationCompany")
@@ -221,9 +221,6 @@ public class UserController {
                 // 获取随机密码
                 String passwd = "*jzb" + JzbRandom.getRandomNum(3);
                 param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
-                System.out.println(passwd);
-                System.out.println(JzbDataCheck.Md5(passwd));
-                System.out.println(JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
                 param.put("password", passwd);
                 // 创建用户返回用户UID
                 result = authService.addRegistration(param);
