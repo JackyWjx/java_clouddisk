@@ -163,4 +163,51 @@
     <select id="getCityList" parameterType="java.util.Map" resultType="java.util.Map">
         select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where status='1' ORDER BY creaid asc;
     </select>
+
+    <!--根据地区名称获取地区ID信息-->
+    <select id="queryRegionID" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        creaid
+        from
+        tb_city_list
+        where
+        status='1'
+        and
+        province = #{province}
+        <choose>
+            <when test="city !=null and city != ''">
+                and city = #{city}
+            </when>
+            <otherwise>
+                and city is null
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="county !=null and county != ''">
+                and county = #{county}
+            </when>
+            <otherwise>
+                and county is null
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--根据地区名称获取地区ID信息-->
+    <select id="queryRegionInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        creaid,
+        pcode,
+        province,
+        ccode,
+        city,
+        tcode,
+        spell,
+        county,
+        idx
+        from
+        tb_city_list
+        where status='1'
+        and
+        creaid = #{region}
+    </select>
 </mapper>
