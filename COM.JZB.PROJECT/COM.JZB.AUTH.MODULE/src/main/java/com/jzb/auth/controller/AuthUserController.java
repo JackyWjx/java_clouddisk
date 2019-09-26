@@ -75,7 +75,7 @@ public class AuthUserController {
                 comHasUserKey(resuMap);
             }
             response = Response.getResponseSuccess(userInfo);
-            response.setResponseEntity(resuMap);
+            response.setResponseEntity(userInfo);
         } catch (Exception e) {
             JzbTools.logError(e);
             response = Response.getResponseError();
@@ -358,7 +358,7 @@ public class AuthUserController {
     @PostMapping("/addRegistration")
     @CrossOrigin
     public Response addRegistration(@RequestBody Map<String, Object> param) {
-        Response result ;
+        Response result;
         try {
             Map reMap = userLoginService.registrationTwo(param);
             //成功创建会返回用户id到前端
@@ -667,11 +667,7 @@ public class AuthUserController {
             } else {
                 // 发送转让成功信息模板
                 param.put("groupid", "1013");
-                // 将日期格式化为年月日,时分秒
-                SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String date = sim.format(new Date());
-                param.put("date", date);
-                sendResult = userLoginService.sendRemind(param, telNumber);
+                sendResult = userLoginService.sendRemind(param);
             }
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
@@ -694,6 +690,7 @@ public class AuthUserController {
         try {
             // 获取用户资料
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             comHasUserKey(param);
             result = Response.getResponseSuccess(userInfo);
         } catch (Exception e) {
@@ -720,7 +717,7 @@ public class AuthUserController {
                     // 修改缓存中已经过时的数据
                     userRedisApi.updateUserInfo(param);
                 }
-            }else {
+            } else {
                 bl = false;
             }
         } catch (Exception e) {
