@@ -97,7 +97,7 @@ public class DeptService {
             List<Map<String, Object>> pageList = deptMapper.queryProductMenu(map);
             boolean dispose = pageList.size() > 0;
             // root id
-            String firstParent = "00000";
+            String firstParent = "000000000000000";
             if (dispose) {
                 //第一步先将pageId放入pageList中,合并相同mid的数据
                 //第一次合并控件id和名称
