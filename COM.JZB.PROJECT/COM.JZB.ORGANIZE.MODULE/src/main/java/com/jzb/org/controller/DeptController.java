@@ -155,6 +155,35 @@ public class DeptController {
         }
         return result;
     }
+	
+	 /**
+    * 获取CRM的菜单权限
+    * @Author: DingSC
+    * @DateTime: 2019/9/25 10:16
+    * @param param
+    * @return com.jzb.base.message.Response
+    */
+    @RequestMapping(value = "/getCRMMenu", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCRMMenu(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("ptype", 1);
+            String pid = config.getCrmId();
+            param.put("pid", pid);
+            JSONArray map = deptService.getProductMenu(param);
+            result = Response.getResponseSuccess(userInfo);
+            Map<String, Object> reMap = new HashMap<>(2);
+            reMap.put("pid",pid);
+            reMap.put("list",map);
+            result.setResponseEntity(reMap);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 
     /**
      * 根据用户姓名获取用户部门信息
