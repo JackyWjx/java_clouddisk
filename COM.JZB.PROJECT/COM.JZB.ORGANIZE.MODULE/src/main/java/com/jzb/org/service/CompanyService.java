@@ -290,6 +290,7 @@ public class CompanyService {
             param.put("status", "1");
             deptMapper.insertDeptUser(param);
             // 加入系统名称
+            param.put("systemname", JzbDataType.getString(map.get("systemname")));
             deptMapper.insertCompanySysConfig(param);
         }
         Map<String, Object> result = new HashMap<>(2);
@@ -662,6 +663,8 @@ public class CompanyService {
                     // 修改企业Info表数据
                     param.put("updtime", updtime);
                     count = companyMapper.updateCompanyBasicInfo(param);
+                    // 修改系统名称
+                    companyMapper.updateCompanySysconfig(param);
                 }
             }
         } catch (Exception ex) {
