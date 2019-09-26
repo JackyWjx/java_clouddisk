@@ -153,7 +153,7 @@ public class DeptService {
                 String me = "uid,uname";
                 Map<Integer, String> merge = JzbTree.toMap(me);
                 //主干的字段
-                String ma = "pcdid,cname,cdid";
+                String ma = "pcdid,cname,cdid,cidx,summary";
                 Map<Integer, String> main = JzbTree.toMap(ma);
                 String id = "cdid";
                 String listName = "list";
