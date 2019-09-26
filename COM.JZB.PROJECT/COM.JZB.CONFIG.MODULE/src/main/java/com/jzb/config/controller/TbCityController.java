@@ -85,7 +85,6 @@ public class TbCityController {
 //
 
 
-
     @RequestMapping(value = "/getCityList", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
@@ -98,7 +97,7 @@ public class TbCityController {
             // 返回map
             Map<String, List<Map<String, List<Map<String, Object>>>>> resultMap = new HashMap<>();
 
-            Map<String,Object> map11=new HashMap<>();
+            Map<String, Object> map11 = new HashMap<>();
             //  begin  给省提供
             List<Map<String, List<Map<String, Object>>>> provinceList = new ArrayList<>();
 
@@ -190,20 +189,20 @@ public class TbCityController {
                             if (!countyMapSon.containsKey(list.get(aa).get("creaid"))) {
                                 Map<String, Object> map1 = list.get(aa);
                                 countyList.add(map1);
-                                countyMap.put("list",countyList);
+                                countyMap.put("list", countyList);
                                 countyMapSon.put(list.get(aa).get("creaid").toString(), "1");
                             }
                         }
                     }
-                    List<Map<String, Object>> countryListChild=new ArrayList<>();
+                    List<Map<String, Object>> countryListChild = new ArrayList<>();
                     countryListChild.add(countyMap);
-                    resultMap.get(cid).get(0).put(pid,countryListChild);
+                    resultMap.get(cid).get(0).put(pid, countryListChild);
                 }
             }
             // 定义返回结果
             result = Response.getResponseSuccess();
-            map11.put(cid,resultMap.get(cid));
-            map11.put("list",resultMap.get("list").get(0).get("list"));
+            map11.put(cid, resultMap.get(cid));
+            map11.put("list", resultMap.get("list").get(0).get("list"));
             result.setResponseEntity(map11);
 
         } catch (Exception e) {
@@ -215,10 +214,45 @@ public class TbCityController {
         return result;
     }
 
+    /**
+     * 根据地区名称获取地区ID信息
+     *
+     * @param param(包含地区名称)
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getRegionID", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getRegionID(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> regionID = tbCityService.getRegionID(param);
+            result = Response.getResponseSuccess();
+            result.setResponseEntity(regionID);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 
-
-
-
-
-
+    /**
+     * 根据地区ID获取地区信息
+     *
+     * @param param(包含地区ID)
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getRegionInfo", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getRegionInfo(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> regionID = tbCityService.getRegionInfo(param);
+            result = Response.getResponseSuccess();
+            result.setResponseEntity(regionID);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
