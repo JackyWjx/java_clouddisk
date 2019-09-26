@@ -630,7 +630,7 @@ public class ProductController {
     }
 
     /**
-     * 读取菜单模板中的数据并存入数据库
+     * 读取新建单位模板中的数据并存入数据库
      *
      * @param file
      * @author kuangbin
@@ -740,7 +740,7 @@ public class ProductController {
                     param.put("address", address);
                     param.put("systemname", systemname);
                     // 调用API模块的接口
-                    productService.addRegistrationCompany(param);
+                    result = productService.addRegistrationCompany(param);
                 }
             }
             return result;
