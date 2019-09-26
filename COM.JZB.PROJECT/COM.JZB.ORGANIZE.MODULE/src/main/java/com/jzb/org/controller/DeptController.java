@@ -184,6 +184,7 @@ public class DeptController {
         }
         return result;
     }
+	
 
     /**
      * 根据用户姓名获取用户部门信息
