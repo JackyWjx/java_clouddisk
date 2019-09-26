@@ -25,6 +25,18 @@ public class OrgConfigProperties {
      */
     private String template;
 
+    /**
+     * CRMId
+     */
+    private String crmId;
+
+    public String getCrmId() {
+        return crmId;
+    }
+
+    public void setCrmId(String crmId) {
+        this.crmId = crmId;
+    }
 
     public String getTemplate() {
         return template;
