@@ -214,10 +214,14 @@ public class RoleService implements Service {
                 }
             } while (tempList.size() > 0);
             //第二步添加到数据库
-            //保存角色组菜单表
-            roleMapper.insertRoleMenuAuth(menuList);
-            //保存角色组功能权限表
-            roleMapper.insertRoleControlAuth(controlList);
+            if (menuList.size() > 0) {
+                //保存角色组菜单表
+                roleMapper.insertRoleMenuAuth(menuList);
+            }
+            if (controlList.size() > 0) {
+                //保存角色组功能权限表
+                roleMapper.insertRoleControlAuth(controlList);
+            }
             //将前台选中数据保存进数据库，修改状态
             updateRoleMenuAndCon(map);
         } else {
