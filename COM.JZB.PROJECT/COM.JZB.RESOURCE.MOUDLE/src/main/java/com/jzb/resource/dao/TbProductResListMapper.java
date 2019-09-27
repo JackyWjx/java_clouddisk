@@ -50,11 +50,6 @@ public interface TbProductResListMapper {
      */
     List<Map<String, Object>> queryProductListCname(Map<String, Object> param);
 
-    /*
-     * 3.获取排序
-     * */
-    int getTbProductParameteItemIdx();
-
     /**
      * 添加新建产品参数
      * @param paramList
