@@ -167,13 +167,12 @@ public class TbProductResListController {
         try {
             //获取Map参数中的list
             List<Map<String, Object>> paramList = (List) param.get("list");
-            for (Map<String, Object> stringObjectMap : paramList) {
+            for (int i = 0; i < paramList.size(); i++) {
                 long time = System.currentTimeMillis();
-                stringObjectMap.put("addtime", time);
-                stringObjectMap.put("updtime", time);
-                stringObjectMap.put("paraid", JzbRandom.getRandomCharCap(13));
-                stringObjectMap.put("idx", tbProductResListService.getTbProductParameteItemIdx());
-                }
+                paramList.get(i).put("addtime", time);
+                paramList.get(i).put("updtime", time);
+                paramList.get(i).put("paraid", JzbRandom.getRandomCharCap(13));
+            }
                     //添加一条产品参数
                     int count = tbProductResListService.saveTbProductParameteItem(paramList);
                     //判断返回的参数来确定是否添加成功
