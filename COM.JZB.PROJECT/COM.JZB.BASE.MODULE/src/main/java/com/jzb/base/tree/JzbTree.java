@@ -85,7 +85,7 @@ public class JzbTree {
                 List<Map<String, Object>> children = getChildren(tree,pmId);
                 children.add(tempNode);
                 tree.put(tempNode.get(id).toString(), tempNode);
-                tempMap.remove(tempNode.get(id).toString());
+               // tempMap.remove(tempNode.get(id).toString());
             }
         }
         return result;

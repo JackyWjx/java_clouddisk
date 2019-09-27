@@ -29,7 +29,7 @@ public class AdvertController {
     /**
      * 返回结果集
      * @param records  list集合
-     * @param response 用json存储
+     * @param response 用json存储h
      */
     public  static  void setPageInfoList(List<Map<String,Object>> records,Response response){
         PageInfo pageInfo = new PageInfo();
