@@ -51,7 +51,6 @@ public class CompanyUserController {
         try {
             int count = JzbDataType.getInteger(param.get("count"));
             // 获取单位总数
-            System.out.println(count+"!!!");
             count = count < 0 ? 0 : count;
             if (count == 0) {
                 // 查询单位总数

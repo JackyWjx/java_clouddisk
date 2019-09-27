@@ -696,52 +696,47 @@ public class ProductController {
         public Response call() {
             // 读取模板中的数据
             List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
-            if (true) {
-                // 定义初始开关
-                boolean bl = true;
+            // 遍历结果行,菜单数据从第2行开始
+            for (int i = 1; i < list.size(); i++) {
+                Map<Integer, String> map = list.get(i);
+                // 获取模板中的用户姓名
+                String name = JzbDataType.getString(map.get(0));
 
-                // 遍历结果行,菜单数据从第2行开始
-                for (int i = 1; i < list.size(); i++) {
-                    Map<Integer, String> map = list.get(i);
-                    // 获取模板中的用户姓名
-                    String name = JzbDataType.getString(map.get(0));
+                // 获取模板中的用户手机号
+                String phone = JzbDataType.getString(map.get(1));
 
-                    // 获取模板中的用户手机号
-                    String phone = JzbDataType.getString(map.get(1));
-
-                    // 获取模板中的单位名称
-                    String cname = JzbDataType.getString(map.get(2));
-                    if (JzbDataType.isEmpty(name) || JzbDataType.isEmpty(phone) || JzbDataType.isEmpty(cname)) {
-                        result = Response.getResponseError();
-                        result.setResponseEntity("必填项不能为空,执行成功" + (i - 1) + "行");
-                        break;
-                    }
-                    // 获取模板中的单位地区
-                    String regionName = JzbDataType.getString(map.get(3));
-                    param.put("regionName", regionName);
-                    // 调用获取地区ID的接口
-                    Response regionID = regionBaseApi.getRegionID(param);
-                    Object obj = regionID.getResponseEntity();
-                    // 定义地区ID
-                    String region = "";
-                    if (JzbDataType.isMap(obj)) {
-                        Map<Object, Object> regionMap = (Map<Object, Object>) obj;
-                        region = JzbDataType.getString(regionMap.get("creaid"));
-                    }
-                    // 获取模板中的单位地址
-                    String address = JzbDataType.getString(map.get(4));
-
-                    // 获取模板中的系统名称
-                    String systemname = JzbDataType.getString(map.get(5));
-                    param.put("name", name);
-                    param.put("phone", phone);
-                    param.put("cname", cname);
-                    param.put("region", region);
-                    param.put("address", address);
-                    param.put("systemname", systemname);
-                    // 调用API模块的接口
-                    result = productService.addRegistrationCompany(param);
+                // 获取模板中的单位名称
+                String cname = JzbDataType.getString(map.get(2));
+                if (JzbDataType.isEmpty(name) || JzbDataType.isEmpty(phone) || JzbDataType.isEmpty(cname)) {
+                    result = Response.getResponseError();
+                    result.setResponseEntity("必填项不能为空,执行成功" + (i - 1) + "行");
+                    break;
                 }
+                // 获取模板中的单位地区
+                String regionName = JzbDataType.getString(map.get(3));
+                param.put("regionName", regionName);
+                // 调用获取地区ID的接口
+                Response regionID = regionBaseApi.getRegionID(param);
+                Object obj = regionID.getResponseEntity();
+                // 定义地区ID
+                String region = "";
+                if (JzbDataType.isMap(obj)) {
+                    Map<Object, Object> regionMap = (Map<Object, Object>) obj;
+                    region = JzbDataType.getString(regionMap.get("creaid"));
+                }
+                // 获取模板中的单位地址
+                String address = JzbDataType.getString(map.get(4));
+
+                // 获取模板中的系统名称
+                String systemname = JzbDataType.getString(map.get(5));
+                param.put("name", name);
+                param.put("phone", phone);
+                param.put("cname", cname);
+                param.put("region", region);
+                param.put("address", address);
+                param.put("systemname", systemname);
+                // 调用API模块的接口
+                result = productService.addRegistrationCompany(param);
             }
             return result;
         }
