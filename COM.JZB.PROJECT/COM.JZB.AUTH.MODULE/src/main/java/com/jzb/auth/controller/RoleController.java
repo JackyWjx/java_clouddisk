@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -130,6 +131,58 @@ public class RoleController {
                 Map<String, Object> code = roleService.saveRoleMenuAuth(param);
                 result = JzbDataType.getInteger(code.get("code")) == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
                 result.setResponseEntity(code);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 保存CRM菜单权限
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/9/27 16:47
+     */
+    @RequestMapping(value = "/addCRMRoleMenu", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCRMRoleMenu(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"pid", "list", "ptype", "menu"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                if (JzbDataType.isCollection(param.get("list"))) {
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    param.put("uid", userInfo.get("uid"));
+                    List<Map<String, Object>> cidList = (List<Map<String, Object>>) param.get("list");
+                    int cidSize = cidList.size();
+                    Map<String, Object> cidRes = new HashMap<>(cidSize);
+                    for (int i = 0; i < cidSize; i++) {
+                        String cid = JzbDataType.getString(cidList.get(i).get("cid"));
+                        try {
+                            String crgId = cid + "0000";
+                            param.put("cid", cid);
+                            param.put("crgid", crgId);
+                            Map<String, Object> code = roleService.saveRoleMenuAuth(param);
+                            //判断企业是否保存成功
+                            boolean suc = JzbDataType.getInteger(code.get("code")) == 1;
+                            cidRes.put(cid, suc);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            cidRes.put(cid, false);
+                            JzbTools.logError(e);
+                        }
+                    }
+                    result = Response.getResponseSuccess(userInfo);
+                    result.setResponseEntity(cidRes);
+                } else {
+                    result = Response.getResponseError();
+                }
             } else {
                 result = Response.getResponseError();
             }
