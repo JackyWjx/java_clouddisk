@@ -377,6 +377,7 @@
         AND du.cdid = cd.cdid
         WHERE
         cd.cid = #{cid}
+        <if test=" cdid !=null and cdid !='' "> and cd.cdid=#{cdid}</if>
         <if test=" status !=null and status !='' ">and du.status=#{status}</if>
         AND ( du.cname LIKE'%${value}%' OR du.phone LIKE'%${value}%' )
         ORDER BY du.uid,du.cdid LIMIT #{pagesize} OFFSET #{start}
