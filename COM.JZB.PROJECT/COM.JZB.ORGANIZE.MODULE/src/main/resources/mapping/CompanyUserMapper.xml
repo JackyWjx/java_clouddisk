@@ -7,47 +7,45 @@
     <select id="queryCompanyListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT
         count(1)
-        FROM
-        tb_company_list l
-        left join
-        tb_company_info i
-        on
-        l.cid = i.cid
-        left join
-        tb_product_list p
-        on
-        l.cid = p.cid
+        FROM tb_company_list cl
+        LEFT JOIN tb_dept_user du ON du.cid = cl.cid
+        AND du.uid = cl.manager
+        LEFT join tb_company_sysconfig cs on cs.cid = cl.cid
+        left join tb_company_info ci on ci.cid = cl.cid
         where
-        l.status = #{status}
-        <if test="authid == 0 and authid != ''">and authid = ${authid}</if>
-        <if test="authid == 1 and authid != ''">and authid > ${authid}</if>
+        cl.status = #{status}
+        <if test="authid == 0 and authid != ''">and cl.authid = ${authid}</if>
+        <if test="authid == 1 and authid != ''">and cl.authid > ${authid}</if>
+        <if test="cname != null and cname != ''">
+            and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
+        </if>
     </select>
 
     <!--查询所有的企业列表-->
     <select id="queryCompanyList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-        l.cid,
-        l.region,
-        l.manager as uid,
-        l.regtime,
-        l.authid,
-        l.cname as name,
-        i.address,
-        p.systemname
-        FROM
-        tb_company_list l
-        left join
-        tb_company_info i
-        on
-        l.cid = i.cid
-        left join
-        tb_company_sysconfig p
-        on
-        l.cid = p.cid
+        cl.cid,
+        cl.cname,
+        cl.region,
+        du.cname                                               AS uname,
+        du.phone,
+        cs.systemname,
+        ci.address,
+        to_char(to_timestamp(cl.regtime / 1000), 'yyyy-MM-dd') as jointime,
+        cl.authid
+        FROM tb_company_list cl
+        LEFT JOIN tb_dept_user du ON du.cid = cl.cid
+        AND du.uid = cl.manager
+        LEFT join tb_company_sysconfig cs on cs.cid = cl.cid
+        left join tb_company_info ci on ci.cid = cl.cid
         where
-        l.status = #{status}
-        <if test="authid == 0 and authid != ''">and authid = ${authid}</if>
-        <if test="authid == 1 and authid != ''">and authid > ${authid}</if>
+        cl.status = #{status}
+        <if test="authid == 0 and authid != ''">and cl.authid = ${authid}</if>
+        <if test="authid == 1 and authid != ''">and cl.authid > ${authid}</if>
+        <if test="cname != null and cname != ''">
+        and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
+        </if>
+        order by  cl.id
         limit
         #{pagesize}
         offset
