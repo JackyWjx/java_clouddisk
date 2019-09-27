@@ -1,7 +1,10 @@
 package com.jzb.resource.service;
 
 
+import com.jzb.base.data.JzbDataType;
+import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
+import com.jzb.resource.api.redis.UserRedisApi;
 import com.jzb.resource.dao.AdvertMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,18 +25,82 @@ public class AdvertService {
     @Autowired
     private AdvertMapper advertMapper;
 
+    @Autowired
+    private UserRedisApi userRedisApi;
+
+    /**
+     * 设置分页数
+     */
+    public Map<String, Object> setPageSize(Map<String, Object> param) {
+        int pageno = JzbDataType.getInteger(param.get("pageno"));
+        int pagesize = JzbDataType.getInteger(param.get("pagesize"));
+        pagesize = pagesize <= 0 ? 15 : pagesize;
+        pageno = pageno <= 0 ? 1 : pageno;
+        param.put("pageno", (pageno - 1) * pagesize);
+        param.put("pagesize", pagesize);
+        return param;
+    }
+
     /**
      * 查询广告信息
-     * @return  List<Map<String, Object>> 返回数组
+     *
+     * @return List<Map < String, Object>> 返回数组
      */
     public List<Map<String, Object>> queryAdvertisingList() {
-        List<Map<String,Object>>  list = null;
+        List<Map<String, Object>> list = null;
         try {
-              list = advertMapper.queryAdvertisingList();
-        }catch (Exception e){
+            list = advertMapper.queryAdvertisingList();
+        } catch (Exception e) {
             JzbTools.logError(e);
-            System.out.println("查询失败");
         }
-        return  list;
+        return list;
+    }
+
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击活动获取所有的系统推广信息的总数
+     *
+     * @author kuangbin
+     */
+    public int getAdvertListCount(Map<String, Object> param) {
+        int count;
+        try {
+            count = advertMapper.queryAdvertListCount(param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击活动获取所有的系统推广信息
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getAdvertList(Map<String, Object> param) {
+        param = setPageSize(param);
+        List<Map<String, Object>> list = advertMapper.queryAdvertList(param);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> advertMap = list.get(i);
+            String uid = JzbDataType.getString(advertMap.get("ouid"));
+            param.put("uid", uid);
+            Response response = userRedisApi.getCacheUserInfo(param);
+            advertMap.put("ouid", response.getResponseEntity());
+        }
+        return list;
+    }
+
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击保存后修改对应的推广信息
+     *
+     * @author kuangbin
+     */
+    public int modifyAdvertData(Map<String, Object> param) {
+        // 加入修改时间
+        param.put("updtime", System.currentTimeMillis());
+        return advertMapper.updateAdvertData(param);
     }
 }

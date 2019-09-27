@@ -8,4 +8,50 @@
     <select id="queryAdvertisingList" resultType="java.util.Map">
         select photo from tb_advert_list
     </select>
+
+    <!--点击活动获取所有的系统推广信息的总数-->
+    <select id="queryAdvertListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        tb_advert_list
+        <if test="cid != null and cid != ''">where cid = #{cid}</if>
+    </select>
+
+    <!---->
+    <select id="queryAdvertList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        advid,
+        advname,
+        advtype,
+        cid,
+        photo,
+        advurl,
+        newpage,
+        visits,
+        ouid,
+        status,
+        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd') as addtime,
+        summary
+        from
+        tb_advert_list
+        <if test="cid != null and cid != ''">where cid = #{cid}</if>
+    </select>
+
+    <!-- CRM推广图片中点击保存后修改对应的推广信息 -->
+    <update id="updateAdvertData" parameterType="java.util.Map">
+        UPDATE
+        tb_advert_list
+        SET
+        photo = #{photo},
+        advurl = #{advurl},
+        newpage = #{newpage},
+        <if test="visits != null and visits != ''">visits = ${visits},</if>
+        status = #{status},
+        ouid = #{uid},
+        updtime = #{updtime}
+        <if test="summary != null">,summary = #{summary}</if>
+        WHERE
+        advid = #{advid}
+    </update>
 </mapper>
