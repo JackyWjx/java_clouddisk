@@ -23,7 +23,7 @@
     </select>
 
     <!--根据名称模糊查询产品参数-->
-     <select id="getProductResListCname" parameterType="java.util.Map" resultType="java.util.Map">
+    <select id="getProductResListCname" parameterType="java.util.Map" resultType="java.util.Map">
          select
          b.cname,
          b.status,
@@ -50,100 +50,88 @@
          concat('%',#{cname},'%')
      </select>
 
-    <!--获取排序-->
-    <select id="getTbProductParameteItemIdx" resultType="java.lang.Integer">
-        select count(1)+1 from tb_product_paramete_item
-    </select>
-
     <!--添加产品参数-->
     <insert id="saveTbProductParameteItem" parameterType="java.util.List">
-            insert into
-            tb_product_paramete_item(
-             prodid,
-             paraid,
-             paraname,
-             paramdesc,
-             datatype,
-             datasize,
-             idx,
-             ouid,
-             addtime,
-             updtime,
-             status,
-             summary
-            )values
-            <foreach collection="list" index="index" item="item" separator=",">
-           (
-           #{item.prodid},
-           #{item.paraid},
-           <choose>
-               <when test="item.paraname !='' and  item.paraname != null">
-                   #{item.paraname},
-               </when>
-               <otherwise>
-                   null,
-               </otherwise>
-           </choose>
-           <choose>
-               <when test="item.paramdesc !='' and  item.paramdesc != null">
-                   #{item.paramdesc},
-               </when>
-               <otherwise>
-                   null,
-               </otherwise>
-           </choose>
-        <choose>
-            <when test="item.datatype !='' and  item.datatype != null">
-                #{item.datatype},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="item.datasize !='' and  item.datasize != null">
-                #{item.datasize},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="item.idx !='' and  item.idx != null">
-                #{item.idx},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="item.ouid !='' and  item.ouid != null">
-                #{item.ouid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        #{item.addtime},
-        #{item.updtime},
-        <choose>
-            <when test="item.status !='' and  item.status != null">
-                #{item.status},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="item.summary !='' and  item.summary != null">
-                #{item.summary}
-            </when>
-            <otherwise>
-                null
-            </otherwise>
-        </choose>
-           )
-            </foreach>
+        insert into
+        tb_product_paramete_item(
+        prodid,
+        paraid,
+        paraname,
+        paramdesc,
+        datatype,
+        datasize,
+        idx,
+        ouid,
+        addtime,
+        updtime,
+        status,
+        summary
+        )values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.prodid},
+            #{item.paraid},
+            <choose>
+                <when test="item.paraname !='' and  item.paraname != null">
+                    #{item.paraname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.paramdesc !='' and  item.paramdesc != null">
+                    #{item.paramdesc},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.datatype !='' and  item.datatype != null">
+                    #{item.datatype},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.datasize !='' and  item.datasize != null">
+                    #{item.datasize},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            select count(1)+1 from tb_product_paramete_item,
+            <choose>
+                <when test="item.ouid !='' and  item.ouid != null">
+                    #{item.ouid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            #{item.addtime},
+            #{item.updtime},
+            <choose>
+                <when test="item.status !='' and  item.status != null">
+                    #{item.status},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.summary !='' and  item.summary != null">
+                    #{item.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
     </insert>
 
     <!--添加资源产品表中的数据-->
@@ -203,19 +191,19 @@
         where plid=cast(#{plid} as integer)
     </update>
 
-      <!--修改产品参数表中的数据-->
+    <!--修改产品参数表中的数据-->
     <update id="updateTbProductParameteItem" parameterType="java.util.List">
-       <foreach collection="list" item="item" index="index" open="" close="" separator=";">
-           update tb_product_paramete_item
-           set
-       <if test="item.paraname !='' and item.paraname !=null">paraname=#{item.paraname},</if>
-       <if test="item.paramdesc !='' and item.paramdesc !=null">paramdesc=#{item.paramdesc},</if>
-       <if test="item.datatype !='' and item.datatype !=null">datatype={item.datatype},</if>
-       <if test="item.datasize !='' and item.datasize !=null">datasize=#{item.datasize},</if>
-       <if test="item.ouid !='' and item.ouid !=null">ouid=#{item.ouid},</if>
-       <if test="item.updtime !='' and item.updtime !=null">updtime=#{item.updtime}</if>
-       where prodid=#{item.prodid}
-       </foreach>
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update tb_product_paramete_item
+            set
+            <if test="item.paraname !='' and item.paraname !=null">paraname=#{item.paraname},</if>
+            <if test="item.paramdesc !='' and item.paramdesc !=null">paramdesc=#{item.paramdesc},</if>
+            <if test="item.datatype !='' and item.datatype !=null">datatype={item.datatype},</if>
+            <if test="item.datasize !='' and item.datasize !=null">datasize=#{item.datasize},</if>
+            <if test="item.ouid !='' and item.ouid !=null">ouid=#{item.ouid},</if>
+            <if test="item.updtime !='' and item.updtime !=null">updtime=#{item.updtime}</if>
+            where prodid=#{item.prodid}
+        </foreach>
     </update>
 </mapper>
 
