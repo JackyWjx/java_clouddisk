@@ -685,6 +685,7 @@ public class AuthUserController {
      * @author kuangbin
      */
     @RequestMapping(value = "/SwitchingUnit", method = RequestMethod.POST)
+    @CrossOrigin
     public Response SwitchingUnit(@RequestBody Map<String, Object> param) {
         Response result;
         try {
