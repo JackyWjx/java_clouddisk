@@ -63,14 +63,6 @@ public class TbProductResListService {
         return tbProductResListMapper.queryProductListCname(param);
     }
 
-
-    /*
-     * 3.获取排序
-     * */
-    public int getTbProductParameteItemIdx() {
-        return tbProductResListMapper.getTbProductParameteItemIdx();
-    }
-
     /**
      * 添加新建产品参数
      * @param paramList
@@ -82,7 +74,7 @@ public class TbProductResListService {
 
     /**
      * 修改合同配置中的产品参数列表
-     * @param param
+     * @param paramList
      * @return
      */
     public int updateTbProductParameteItem(List<Map<String, Object>> paramList) {
