@@ -71,19 +71,6 @@ public class CompanyUserService {
         param.put("status", "1");
         param = setPageSize(param);
         List<Map<String, Object>> list = companyUserMapper.queryCompanyList(param);
-        for (int i = 0; i < list.size(); i++) {
-            Map<String, Object> map = list.get(i);
-            // 获取时间戳
-            long regTime = JzbDataType.getLong(map.get("regtime"));
-            Date date = new Date(regTime);
-            //转换提日期输出格式
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            map.put("regtime", dateFormat.format(date));
-            // 从缓存中获取用户信息
-            Response response = userRedisServiceApi.getCacheUserInfo(map);
-            Object object = response.getResponseEntity();
-            map.put("userInfo", object);
-        }
         return list;
     }
 
