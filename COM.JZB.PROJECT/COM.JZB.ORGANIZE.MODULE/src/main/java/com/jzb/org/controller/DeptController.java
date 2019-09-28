@@ -431,7 +431,7 @@ public class DeptController {
             String[] str = {"cdid", "cid", "uid"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("status", "4");
+                param.put("status", "2");
                 deptService.updateDeptUser(param);
                 result = Response.getResponseSuccess(userInfo);
             } else {

@@ -264,11 +264,11 @@ public class CompanyService {
             if (JzbTools.isEmpty(map.get("manager"))) {
                 map.put("manager", map.get("uid"));
             }
-            String status = JzbDataType.getString(map.get("status"));
-            if (JzbTools.isEmpty(status)) {
-                status = "0";
+            int authid = JzbDataType.getInteger(map.get("authid"));
+            if (JzbTools.isEmpty(authid)) {
+                authid = 0;
             }
-            map.put("status", status);
+            map.put("authid", authid);
             //创建企业
             companyMapper.insertCompany(map);
             //创建资源池

@@ -28,7 +28,7 @@ public class ExportConfirmService {
     private ExportConfirmMapper export;
 
     @Autowired
-    private MessageApi messageApi;
+    private CompanyService service;
 
     @Autowired
     private OrgConfigProperties config;
@@ -169,10 +169,10 @@ public class ExportConfirmService {
             String template = config.getTemplate();
             String phone = JzbDataType.getString(inviteUser.get("resphone"));
             Map<String, Object> param = new HashMap<>(2);
-            param.put("phone", phone);
-            param.put("template", template);
+            param.put("relphone", phone);
+            param.put("groupid", template);
             //发送短信
-            messageApi.sendShortMessage(param);
+            service.sendRemind(param);
         }
         //用户在指定企业但不在指定部门
         if (deptUser != null && deptUser.size() > 0) {

@@ -21,7 +21,7 @@ public class OrgConfigProperties {
     private String importPath;
 
     /**
-     * 短信模板
+     * 发送邀请短信模板
      */
     private String template;
 

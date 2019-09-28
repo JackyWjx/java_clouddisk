@@ -36,11 +36,9 @@ public class DeptService {
     private UserRedisServiceApi userRedisServiceApi;
     @Autowired
     private OrgRedisServiceApi orgRedisServiceApi;
-    /**
-     * 发送短信
-     */
+
     @Autowired
-    private MessageApi messageApi;
+    private CompanyService service;
     /**
      * 配置文件方法
      */
@@ -246,7 +244,7 @@ public class DeptService {
      * @param map
      */
     public void deleteCompanyDept(Map<String, Object> map) {
-        map.put("time",System.currentTimeMillis());
+        map.put("time", System.currentTimeMillis());
         deptMapper.deleteCompanyDept(map);
     }
 
@@ -491,9 +489,10 @@ public class DeptService {
             Map<String, Object> invite = inviteUserList.get(i);
             String phone = JzbDataType.getString(invite.get("resphone"));
             Map<String, Object> param = new HashMap<>(2);
-            param.put("phone", phone);
-            param.put("template", template);
-            messageApi.sendShortMessage(param);
+            param.put("relphone", phone);
+            param.put("groupid", template);
+            //发送短信
+            service.sendRemind(param);
         }
     }
 
