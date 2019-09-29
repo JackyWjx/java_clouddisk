@@ -449,6 +449,36 @@ public class ActivityController {
         return result;
     }
 
-
-    //微信分享
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击文章列表显示所有的文章列表
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getActivityList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getActivityList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取前端传来的总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询所有符合条件的总数
+                count = newActivityService.getActivityListCount(param);
+            }
+            // 返回所有的推广信息列表
+            List<Map<String, Object>> adverList = newActivityService.getActivityList(param);
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess(userInfo);
+            pageInfo.setList(adverList);
+            pageInfo.setTotal(count > 0 ? count : adverList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifyAdvertData
 }
