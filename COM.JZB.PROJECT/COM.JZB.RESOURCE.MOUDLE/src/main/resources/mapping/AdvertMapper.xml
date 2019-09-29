@@ -18,7 +18,7 @@
         <if test="cid != null and cid != ''">where cid = #{cid}</if>
     </select>
 
-    <!---->
+    <!--点击活动获取所有的系统推广信息-->
     <select id="queryAdvertList" parameterType="java.util.Map" resultType="java.util.Map">
         select
         advid,
@@ -47,6 +47,7 @@
         advurl = #{advurl},
         newpage = #{newpage},
         <if test="visits != null and visits != ''">visits = ${visits},</if>
+        <if test="idx != null and idx != ''">idx = ${idx},</if>
         status = #{status},
         ouid = #{uid},
         updtime = #{updtime}
@@ -54,4 +55,82 @@
         WHERE
         advid = #{advid}
     </update>
+
+    <!--点击新增增加系统广告表中的推广信息-->
+    <insert id="insertAdvertData" parameterType="java.util.Map">
+        INSERT INTO
+        tb_advert_list (advid, advname, advtype, cid, pid, pageid, pageseat, idx,
+                        photo, advurl, newpage, visits, ouid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{advid},
+        #{advname},
+        <choose>
+            <when test="advtype != null and advtype != ''">
+                ${advtype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cid != null and cid != ''">
+                #{cid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pid != null and pid != ''">
+                #{pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pageid != null and pageid != ''">
+                #{pageid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pageseat != null and pageseat != ''">
+                ${pageseat},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        (select count(1)+1 from tb_advert_list),
+        #{photo},
+        #{advurl},
+        #{newpage},
+        <choose>
+            <when test="visits != null and visits != ''">
+                ${visits},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        #{addtime},
+        #{status}
+        <choose>
+            <when test="summary != null and summary != ''">
+                ,#{summary}
+            </when>
+            <otherwise>
+                ,null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+
 </mapper>
