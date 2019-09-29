@@ -99,4 +99,13 @@ public class TbProductResListService {
     public int updateTbProductResList(Map<String, Object> param) {
       return tbProductResListMapper.updateTbProductResList(param);
     }
+
+    /**
+     * 点击修改的时候查询产品参数返回给前端
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getTbProductParameteItem(Map<String, Object> param) {
+          return tbProductResListMapper.getTbProductParameteItem(param);
+    }
 }
