@@ -22,15 +22,51 @@ import java.util.Map;
 @RequestMapping("/score")
 public class TbScoreController {
 
+    /**
+     * 业务
+     */
     @Autowired
     TbScoreService scoreService;
+
+    @RequestMapping("/consumeUserIntegration")
+    @ResponseBody
+    public Response consumeUserIntegration(@RequestBody  Map<String, Object> paramap){
+        Response response;
+        try{
+            Map<String, Object> map  = scoreService.consumeUserIntegration(paramap);
+            response =   Response.getResponseSuccess() ;
+            response.setResponseEntity(map);
+        }catch (Exception e){
+            JzbTools.logError(e);
+            response =  Response.getResponseError();
+        }
+        return response;
+    }
+
+
+    /**
+     *   用户完成任务操作添加
+     */
+    @RequestMapping("/saveUserIntegration")
+    @ResponseBody
+    public Response saveUserIntegration(@RequestBody  Map<String, Object> map){
+        Response response;
+        try{
+            response = scoreService.saveUserIntegration(map) ? Response.getResponseSuccess() : Response.getResponseError();
+        }catch (Exception e){
+            JzbTools.logError(e);
+            response =  Response.getResponseError();
+        }
+        return response;
+    }
+
 
     /**
      *   查询积分规则
      */
     @RequestMapping("/qureyScoreRule")
     @ResponseBody
-    public  Response qureyScoreRule(@RequestBody  Map<String, Object> map){
+    public Response qureyScoreRule(@RequestBody  Map<String, Object> map){
         Response response;
         try{
             PageInfo pageInfo = new PageInfo();
@@ -97,7 +133,7 @@ public class TbScoreController {
     /**
      *   模糊查询积分日志
      */
-    @RequestMapping("/seachScoreList")
+        @RequestMapping("/seachScoreList")
     @ResponseBody
     public Response seachScoreList(@RequestBody Map<String, Object> map){
         Response response;

@@ -135,6 +135,7 @@
         <choose><when test="optid != null">, optid  = #{optid}</when></choose>
         <choose><when test="score != null">, score  = #{score}</when></choose>
         <choose><when test="uid != null">, uid  = #{uid}</when></choose>
+        where id =  #{id}
     </update>
 
     <!--  禁用积分规则   -->

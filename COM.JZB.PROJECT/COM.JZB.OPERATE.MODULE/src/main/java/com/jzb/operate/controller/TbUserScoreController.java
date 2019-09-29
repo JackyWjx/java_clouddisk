@@ -3,7 +3,6 @@ package com.jzb.operate.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
-import com.jzb.operate.dao.TbUserScoreMapper;
 import com.jzb.operate.service.TbUserScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

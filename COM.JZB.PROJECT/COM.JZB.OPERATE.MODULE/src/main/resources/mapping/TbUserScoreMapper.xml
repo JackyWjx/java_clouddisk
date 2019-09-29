@@ -100,15 +100,15 @@
         INSERT INTO PUBLIC.tb_user_score ( uid, sumscore, consume, recharge, freezes, score, updtime, status, summary )
         VALUES
         (
-        #{uid},
-        #{sumscore},
-        #{consume},
-        #{recharge},
-        #{freezes},
-        #{score},
-        #{updtime},
-        #{status},
-        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>
+          #{uid},
+          #{sumscore},
+          #{consume},
+          #{recharge},
+          #{freezes},
+          #{score},
+          #{updtime},
+          #{status},
+          <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>
         );
     </insert>
 
@@ -124,7 +124,7 @@
 	      #{integrals},
 	      #{score},
 	      #{otime}
-	      );
+	    );
     </insert>
 
     <!--  修改用户积分   -->

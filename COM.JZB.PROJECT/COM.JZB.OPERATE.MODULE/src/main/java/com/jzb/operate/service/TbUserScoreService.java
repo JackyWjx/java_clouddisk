@@ -24,7 +24,7 @@ public class TbUserScoreService {
     public List<Map<String , Object>> qureyUserScore(Map<String, Object> map){
         int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
         map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        map.put("rows", JzbDataType.getInteger(map.get("rows")));
         return mapper.qureyUserScore(map);
     }
 
@@ -34,7 +34,7 @@ public class TbUserScoreService {
     public List<Map<String , Object>> qureyUserMonthScore(Map<String, Object> map){
         int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
         map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        map.put("rows", JzbDataType.getInteger(map.get("rows")));
         return mapper.qureyUserMonthScore(map);
     }
 
@@ -58,7 +58,7 @@ public class TbUserScoreService {
     public List<Map<String , Object>> seachUserScore(Map<String, Object> map){
         int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
         map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        map.put("rows", JzbDataType.getInteger(map.get("rows")));
         return mapper.seachUserScore(map);
     }
 
@@ -68,7 +68,7 @@ public class TbUserScoreService {
     public List<Map<String , Object>> seachUserMonthScore(Map<String, Object> map){
         int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
         map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        map.put("rows", JzbDataType.getInteger(map.get("rows")));
         return mapper.seachUserMonthScore(map);
     }
 
