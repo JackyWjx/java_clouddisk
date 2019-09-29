@@ -380,4 +380,37 @@
         from tb_activity_list where actid=#{actid}
     </select>
 
+    <!--点击文章列表显示所有的文章列表的总数-->
+    <select id="queryActivityListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        tb_activity_list
+        <if test="cid != null and cid != ''">where cid = #{cid}</if>
+    </select>
+
+    <!--点击文章列表显示所有的文章列表-->
+    <select id="queryActivityListData" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        actid,
+        cname,
+        actdesc,
+        typeid,
+        actlogo,
+        uid,
+        cid,
+        acttheme,
+        context,
+        conclusion,
+        votes,
+        comments,
+        reads,
+        shares,
+        status,
+        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd') as addtime,
+        summary
+        from
+        tb_advert_list
+        <if test="cid != null and cid != ''">where cid = #{cid}</if>
+    </select>
 </mapper>
