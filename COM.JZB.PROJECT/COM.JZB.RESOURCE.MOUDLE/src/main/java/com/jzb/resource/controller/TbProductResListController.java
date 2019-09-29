@@ -1,13 +1,15 @@
 package com.jzb.resource.controller;
 
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.resource.service.AdvertService;
+import com.jzb.resource.service.TbProductPriceService;
 import com.jzb.resource.service.TbProductResListService;
-import com.netflix.client.IResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +20,16 @@ import java.util.Map;
 @RequestMapping(value = "/ProductResList")
 public class TbProductResListController {
 
+    //分页参数的设置
+    @Autowired
+    private AdvertService advertService;
+
+
     @Autowired
     private TbProductResListService tbProductResListService;
+
+    @Autowired
+    private TbProductPriceService tbProductPriceService;
 
     /**
      * 根据产品线的id查询产品表
@@ -34,11 +44,23 @@ public class TbProductResListController {
     public Response getProductResList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            //
+            //前端传过来的总条数
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取单位总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询单位总数
+                count = tbProductPriceService.getTbProductPriceCount(param);
+            }
+            //把分页参数在设置好
+            param = advertService.setPageSize(param);
+            //返回所有合同配置中的产品资源
             List<Map<String, Object>> productResList = tbProductResListService.getProductResList(param);
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(productResList);
+            //设置分页总数
+            pageInfo.setTotal(count > 0 ? count : productResList.size());
             result = Response.getResponseSuccess(userInfo);
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
@@ -59,13 +81,24 @@ public class TbProductResListController {
     public Response getProductResListCname(@RequestBody Map<String, Object> param) {
         Response result;
         try {
+            //前端传过来的总条数
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取单位总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询单位总数
+                count = tbProductPriceService.getTbProductPriceCount(param);
+            }
+            //把分页参数在设置好
+            param = advertService.setPageSize(param);
             List<Map<String, Object>> ProductResListCname = tbProductResListService.getProductResListCname(param);
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(ProductResListCname);
+            //设置分页总数
+            pageInfo.setTotal(count > 0 ? count : ProductResListCname.size());
             result = Response.getResponseSuccess(userInfo);
             result.setPageInfo(pageInfo);
-
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
@@ -130,15 +163,16 @@ public class TbProductResListController {
 
     /**
      * 修改资源产品表中的数据
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/updateTbProductResList",method = RequestMethod.POST)
+    @RequestMapping(value = "/updateTbProductResList", method = RequestMethod.POST)
     @CrossOrigin
     public Response updateTbProductResList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-           int count = tbProductResListService.updateTbProductResList(param);
+            int count = tbProductResListService.updateTbProductResList(param);
             if (count > 0) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 result = Response.getResponseSuccess(userInfo);
@@ -173,16 +207,16 @@ public class TbProductResListController {
                 paramList.get(i).put("updtime", time);
                 paramList.get(i).put("paraid", JzbRandom.getRandomCharCap(13));
             }
-                    //添加一条产品参数
-                    int count = tbProductResListService.saveTbProductParameteItem(paramList);
-                    //判断返回的参数来确定是否添加成功
-                    if (count > 0) {
-                        Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                        result = Response.getResponseSuccess(userInfo);
-                    } else {
-                        //如果添加失败返回错误信息
-                        result = Response.getResponseError();
-                    }
+            //添加一条产品参数
+            int count = tbProductResListService.saveTbProductParameteItem(paramList);
+            //判断返回的参数来确定是否添加成功
+            if (count > 0) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+            } else {
+                //如果添加失败返回错误信息
+                result = Response.getResponseError();
+            }
 
         } catch (Exception e) {
             // 打印异常信息
@@ -191,7 +225,6 @@ public class TbProductResListController {
         }
         return result;
     }
-
 
     /**
      * 修改合同配置中的产品参数列表
@@ -210,14 +243,14 @@ public class TbProductResListController {
                 long time = System.currentTimeMillis();
                 stringObjectMap.put("updtime", time);
             }
-                    int count = tbProductResListService.updateTbProductParameteItem(paramList);
-                    //如果返回值大于0,代表修改成功 ， 否则就是修改失败
-                    if (count > 0) {
-                        //获取用户信息返回结果
-                        Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                        result = Response.getResponseSuccess(userInfo);
-                    } else {
-                        result = Response.getResponseError();
+            int count = tbProductResListService.updateTbProductParameteItem(paramList);
+            //如果返回值大于0,代表修改成功 ， 否则就是修改失败
+            if (count > 0) {
+                //获取用户信息返回结果
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+            } else {
+                result = Response.getResponseError();
             }
         } catch (Exception e) {
             // 打印异常信息
@@ -227,4 +260,29 @@ public class TbProductResListController {
         return result;
     }
 
+    /**
+     * 点击修改的时候进行查询返回给页面
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getTbProductParameteItem", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getTbProductParameteItem(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            List<Map<String, Object>> itemList = tbProductResListService.getTbProductParameteItem(param);
+            //获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(itemList);
+            result = Response.getResponseSuccess(userInfo);
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            // 打印异常信息
+            e.printStackTrace();
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
