@@ -69,13 +69,13 @@ public class AdvertController {
         Response result;
         try {
             int count = JzbDataType.getInteger(param.get("count"));
-            // 获取单位总数
+            // 获取推广信息总数
             count = count < 0 ? 0 : count;
             if (count == 0) {
-                // 查询单位总数
+                // 查询所有符合条件的总数
                 count = advertService.getAdvertListCount(param);
             }
-            // 返回所有的企业列表
+            // 返回所有的推广信息列表
             List<Map<String, Object>> adverList = advertService.getAdvertList(param);
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
@@ -113,4 +113,30 @@ public class AdvertController {
         }
         return result;
     } // End modifyAdvertData
+
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击新增增加系统广告表中的推广信息
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/addAdvertData", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addAdvertData(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 获取修改成功值
+            int count = advertService.addAdvertData(param);
+            result = count==1? Response.getResponseSuccess(userInfo):Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifyAdvertData
+
+
 }

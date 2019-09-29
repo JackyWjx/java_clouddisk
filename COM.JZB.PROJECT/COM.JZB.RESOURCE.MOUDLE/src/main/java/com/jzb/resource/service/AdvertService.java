@@ -3,6 +3,7 @@ package com.jzb.resource.service;
 
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.api.redis.UserRedisApi;
 import com.jzb.resource.dao.AdvertMapper;
@@ -80,12 +81,15 @@ public class AdvertService {
      * @author kuangbin
      */
     public List<Map<String, Object>> getAdvertList(Map<String, Object> param) {
+        // 设置分页参数
         param = setPageSize(param);
         List<Map<String, Object>> list = advertMapper.queryAdvertList(param);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> advertMap = list.get(i);
+            // 获取企业管理员用户信息
             String uid = JzbDataType.getString(advertMap.get("ouid"));
             param.put("uid", uid);
+            // 从缓存中获取用户信息
             Response response = userRedisApi.getCacheUserInfo(param);
             advertMap.put("ouid", response.getResponseEntity());
         }
@@ -103,4 +107,21 @@ public class AdvertService {
         param.put("updtime", System.currentTimeMillis());
         return advertMapper.updateAdvertData(param);
     }
+
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击新增增加系统广告表中的推广信息
+     *
+     * @author kuangbin
+     */
+    public int addAdvertData(Map<String, Object> param) {
+        // 加入广告ID
+        param.put("advid", JzbRandom.getRandomCharCap(13));
+        long addtime = System.currentTimeMillis();
+        // 加入创建时间
+        param.put("addtime", addtime);
+        return advertMapper.insertAdvertData(param);
+    }
+
+
 }
