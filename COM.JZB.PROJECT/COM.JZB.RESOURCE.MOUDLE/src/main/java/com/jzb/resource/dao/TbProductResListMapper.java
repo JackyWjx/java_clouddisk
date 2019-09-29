@@ -80,4 +80,11 @@ public interface TbProductResListMapper {
      * @return
      */
     int updateTbProductResList(Map<String, Object> param);
+
+    /**
+     * 点击修改的时候查询产品参数
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getTbProductParameteItem(Map<String, Object> param);
 }
