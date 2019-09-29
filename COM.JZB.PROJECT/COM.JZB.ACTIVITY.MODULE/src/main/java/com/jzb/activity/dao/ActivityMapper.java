@@ -251,4 +251,20 @@ public interface ActivityMapper {
      * @return
      */
      int updateComment(Map<String, Object> param);
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击文章列表显示所有的文章列表总数
+     *
+     * @author kuangbin
+     */
+    int queryActivityListCount(Map<String, Object> param);
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击文章列表显示所有的文章列表
+     *
+     * @author kuangbin
+     */
+    List<Map<String, Object>> queryActivityListData(Map<String, Object> param);
 }
