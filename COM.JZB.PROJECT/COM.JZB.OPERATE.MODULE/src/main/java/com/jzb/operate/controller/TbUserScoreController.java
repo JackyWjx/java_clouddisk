@@ -37,7 +37,7 @@ public class TbUserScoreController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = scoreService.qureyUserScore(map);
             int count  =  scoreService.qureyUserScoreCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -60,7 +60,7 @@ public class TbUserScoreController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = scoreService.qureyUserMonthScore(map);
             int count  =  scoreService.qureyUserMonthScoreCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -83,7 +83,7 @@ public class TbUserScoreController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = scoreService.seachUserScore(map);
             int count  =  scoreService.seachUserScoreCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -106,7 +106,7 @@ public class TbUserScoreController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = scoreService.seachUserMonthScore(map);
             int count  =  scoreService.seachUserMonthScoreCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -125,7 +125,7 @@ public class TbUserScoreController {
     public Response saveUserScore(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response = scoreService.saveUserScore(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response = scoreService.saveUserScore(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -141,7 +141,7 @@ public class TbUserScoreController {
     public Response saveUserMonthScoreRule(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response = scoreService.saveUserMonthScoreRule(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response = scoreService.saveUserMonthScoreRule(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -157,7 +157,7 @@ public class TbUserScoreController {
     public Response upUserScore(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response = scoreService.upUserScore(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response = scoreService.upUserScore(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -173,7 +173,7 @@ public class TbUserScoreController {
     public Response upUserMonthScoreRule(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response = scoreService.upUserMonthScoreRule(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response = scoreService.upUserMonthScoreRule(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -189,7 +189,7 @@ public class TbUserScoreController {
     public Response removeUserScore(@RequestBody  Map<String, Object> map){
         Response response;
         try{
-            response = scoreService.removeUserScore(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response = scoreService.removeUserScore(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();

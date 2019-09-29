@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.message.dao.MsgListMapper">
 
+    <!--  根据消息组id查询config  -->
     <select id="queryMsgGroupConfigure" resultType="java.util.Map"  parameterType="java.util.Map">
         select * from tb_msg_group_configure where groupid = #{groupid}
     </select>

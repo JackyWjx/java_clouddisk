@@ -34,7 +34,7 @@ public class TbScoreController {
         Response response;
         try{
             Map<String, Object> map  = scoreService.consumeUserIntegration(paramap);
-            response =   Response.getResponseSuccess() ;
+            response =   Response.getResponseSuccess((Map)paramap.get("userinfo")) ;
             response.setResponseEntity(map);
         }catch (Exception e){
             JzbTools.logError(e);
@@ -52,7 +52,7 @@ public class TbScoreController {
     public Response saveUserIntegration(@RequestBody  Map<String, Object> map){
         Response response;
         try{
-            response = scoreService.saveUserIntegration(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = scoreService.saveUserIntegration(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             JzbTools.logError(e);
             response =  Response.getResponseError();
@@ -73,7 +73,7 @@ public class TbScoreController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = scoreService.qureyScoreRule(map);
             int count  =  scoreService.qureyScoreRuleCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -96,7 +96,7 @@ public class TbScoreController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = scoreService.qureyScoreList(map);
             int count  =  scoreService.qureyScoreListCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -119,7 +119,7 @@ public class TbScoreController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = scoreService.seachScoreRule(map);
             int count  =  scoreService.seachScoreRuleCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -142,7 +142,7 @@ public class TbScoreController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = scoreService.seachScoreList(map);
             int count  =  scoreService.seachScoreListCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -161,7 +161,7 @@ public class TbScoreController {
     public Response saveScortList(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response =  scoreService.saveScortList(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response =  scoreService.saveScortList(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             JzbTools.logError(e);
             response =  Response.getResponseError();
@@ -177,7 +177,7 @@ public class TbScoreController {
     public Response saveScortRule(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response =  scoreService.saveScortRule(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response =  scoreService.saveScortRule(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             JzbTools.logError(e);
             response =  Response.getResponseError();
@@ -193,7 +193,7 @@ public class TbScoreController {
     public Response upScortRule(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response =  scoreService.upScortRule(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response =  scoreService.upScortRule(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             JzbTools.logError(e);
             response =  Response.getResponseError();
@@ -209,7 +209,7 @@ public class TbScoreController {
     public Response upScortList(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response =  scoreService.upScortList(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response =  scoreService.upScortList(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             JzbTools.logError(e);
             response =  Response.getResponseError();
@@ -225,7 +225,7 @@ public class TbScoreController {
     public Response removeScortRule(@RequestBody Map<String, Object> map){
         Response response;
         try{
-            response =  scoreService.removeScortRule(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response =  scoreService.removeScortRule(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             JzbTools.logError(e);
             response =  Response.getResponseError();

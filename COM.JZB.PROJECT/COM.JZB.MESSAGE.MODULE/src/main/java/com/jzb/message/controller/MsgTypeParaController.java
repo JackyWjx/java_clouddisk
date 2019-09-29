@@ -38,7 +38,7 @@ public class MsgTypeParaController {
             info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list =  service.queryMsgTypePara(map);
             int count = service.queryMsgTypeParaCount(map);
-            response = Response.getResponseSuccess();
+            response = Response.getResponseSuccess((Map)map.get("userinfo"));
             info.setList(list);
             info.setTotal(count);
             response.setPageInfo(info);
@@ -62,7 +62,7 @@ public class MsgTypeParaController {
             info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list =  service.searchMsgTypePara(map);
             int count = service.searchMsgTypeParaCount(map);
-            response = Response.getResponseSuccess();
+            response = Response.getResponseSuccess((Map)map.get("userinfo"));
             info.setList(list);
             info.setTotal(count);
             response.setPageInfo(info);
@@ -82,7 +82,7 @@ public class MsgTypeParaController {
     public Response saveMsgTypePara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.saveMsgTypePara(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response = service.saveMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -98,7 +98,7 @@ public class MsgTypeParaController {
     public Response upMsgTypePara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.upMsgTypePara(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response = service.upMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -114,7 +114,7 @@ public class MsgTypeParaController {
     public Response removeMsgTypePara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.removeMsgTypePara(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            response = service.removeMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();

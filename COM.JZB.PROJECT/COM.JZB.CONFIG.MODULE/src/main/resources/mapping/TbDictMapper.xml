@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.config.dao.TbDictMapper">
+
+    <!--  查询字典  -->
+    <select id="queryDictItem" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from tb_dict_item where status = '1'
+        <choose><when test="typeid != null">and  typeid = #{typeid}</when></choose>
+        <choose><when test="dictname != null">and dictname = #{dictname}</when></choose>
+        <choose><when test="editable != null">and editable  = #{editable}</when></choose>
+        <choose><when test="adduid != null">and adduid = #{adduid}</when></choose>
+        <choose><when test="dictid != null">and dictid = #{dictid}</when></choose>
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  查询字典类型  -->
+    <select id="queryDictType" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from tb_dict_type where status = '1'
+        <choose><when test="typeid != null">and  typeid = #{typeid}</when></choose>
+        <choose><when test="typename != null">and typename = #{typename}</when></choose>
+        <choose><when test="editable != null">and editable  = #{editable}</when></choose>
+        <choose><when test="parented != null">and parented = #{parented}</when></choose>
+        <choose><when test="typekey != null">and typekey = #{typekey}</when></choose>
+        <choose><when test="adduid != null">and adduid = #{adduid}</when></choose>
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  查询字典总数  -->
+    <select id="queryDictItemCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_dict_item where status = '1'
+        <choose><when test="typeid != null">and  typeid = #{typeid}</when></choose>
+        <choose><when test="dictname != null">and dictname = #{dictname}</when></choose>
+        <choose><when test="editable != null">and editable  = #{editable}</when></choose>
+        <choose><when test="adduid != null">and adduid = #{adduid}</when></choose>
+        <choose><when test="dictid != null">and dictid = #{dictid}</when></choose>
+    </select>
+
+    <!--  查询字典类型总数  -->
+    <select id="queryDictTypeCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_dict_type where status = '1'
+        <choose><when test="typeid != null">and  typeid = #{typeid}</when></choose>
+        <choose><when test="typename != null">and typename = #{typename}</when></choose>
+        <choose><when test="editable != null">and editable  = #{editable}</when></choose>
+        <choose><when test="parented != null">and parented = #{parented}</when></choose>
+        <choose><when test="typekey != null">and typekey = #{typekey}</when></choose>
+        <choose><when test="adduid != null">and adduid = #{adduid}</when></choose>
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  模糊查询字典  -->
+    <select id="seachDictItem" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from tb_dict_item where status = '1'
+        or typeid like CONCAT('%',#{keys},'%')
+        or dictid like CONCAT('%',#{keys},'%')
+        or dictvalue like CONCAT('%',#{keys},'%')
+        or dictname like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  模糊查询字典类型  -->
+    <select id="seachDictType" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from tb_dict_type where status = '1'
+        or typeid like CONCAT('%',#{keys},'%')
+        or typekey like CONCAT('%',#{keys},'%')
+        or typekey like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  模糊查询字典总数  -->
+    <select id="seachDictItemCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_dict_item where status = '1'
+        or typeid like CONCAT('%',#{keys},'%')
+        or dictid like CONCAT('%',#{keys},'%')
+        or dictvalue like CONCAT('%',#{keys},'%')
+        or dictname like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  模糊查询字典类型总数  -->
+    <select id="seachDictTypeCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_dict_type where status = '1'
+        or typeid like CONCAT('%',#{keys},'%')
+        or typekey like CONCAT('%',#{keys},'%')
+        or typekey like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  添加字典  -->
+    <insert id="saveDictItem" parameterType="java.util.Map">
+        INSERT INTO public.tb_dict_type(typeid, typekey, typename, editable, parented, idx, adduid, addtime, upduid, updtime, status, summary)
+	    VALUES
+	    (
+	    #{typeid},
+	    #{typekey},
+	    #{typename},
+	    #{editable},
+	    #{parented},
+	    (select count(1)+1 from tb_dict_type),
+	    #{adduid},
+	    #{addtime},
+	    #{upduid},
+	    #{updtime},
+	    #{status},
+        <choose><when test="summary != null"> #{summary}</when><otherwise>null</otherwise></choose>
+        );
+    </insert>
+
+    <!--  添加字典类型  -->
+    <insert id="saveDictType" parameterType="java.util.Map">
+        INSERT INTO public.tb_dict_item(typeid, dictid, dictvalue, dictname, editable, idx, adduid, addtime, upduid, updtime, status, summary)
+	    VALUES
+	    (
+	    #{typeid},
+	    #{dictid},
+	    #{dictvalue},
+	    #{dictname},
+	    #{editable},
+	    (select count(1)+1 from tb_dict_item),
+	    #{adduid},
+	    #{upduid},
+	    #{upduid},
+	    #{updtime},
+	    #{status},
+	    <choose><when test="summary != null"> #{summary}</when><otherwise>null</otherwise></choose>
+	    );
+    </insert>
+
+    <!--  修改字典  -->
+    <update id="updateDictItem" parameterType="java.util.Map">
+        update tb_dict_item set updtime = #{updtime} ,upduid = #{upduid}
+        <choose><when test="typeid != null">,typeid = #{typeid}</when></choose>
+        <choose><when test="dictid != null">,dictid = #{dictid}</when></choose>
+        <choose><when test="dictvalue != null">,dictvalue = #{dictvalue}</when></choose>
+        <choose><when test="dictname != null">,dictname = #{dictname}</when></choose>
+        <choose><when test="typeid != null">,typeid = #{typeid}</when></choose>
+        <choose><when test="editable != null">,editable = #{editable}</when></choose>
+        <choose><when test="typeid != null">,typeid = #{typeid}</when></choose>
+        where id = #{id}
+    </update>
+
+    <!--  修改字典类型  -->
+    <update id="updateDictType" parameterType="java.util.Map">
+        update tb_dict_type set updtime = #{updtime} ,upduid = #{upduid}
+        <choose><when test="typeid != null">,typeid = #{typeid}</when></choose>
+        <choose><when test="typekey != null">,typekey = #{typekey}</when></choose>
+        <choose><when test="typename != null">,typename = #{typename}</when></choose>
+        <choose><when test="dictname != null">,dictname = #{dictname}</when></choose>
+        <choose><when test="parented != null">,parented = #{parented}</when></choose>
+        <choose><when test="editable != null">,editable = #{editable}</when></choose>
+        where id = #{id}
+    </update>
+
+    <!--  禁用字典  -->
+    <update id="deleteDictItem" parameterType="java.util.Map">
+        update tb_dict_item set updtime = #{updtime} ,upduid = #{upduid} ,status = '2'
+        where id = #{id}
+    </update>
+
+    <!--  修改字典类型  -->
+    <update id="deleteDictType" parameterType="java.util.Map">
+        update tb_dict_type set updtime = #{updtime} ,upduid = #{upduid} , status = '2'
+        where id = #{id}
+    </update>
+
+</mapper>

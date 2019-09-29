@@ -39,7 +39,7 @@ public class MessageGroupController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = groupService.listMessageGroup(map);
             int count  =  groupService.queryMessageGroupCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -62,7 +62,7 @@ public class MessageGroupController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = groupService.listMessageUserGroup(map);
             int count  =  groupService.queryMessageUserGroupCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -85,7 +85,7 @@ public class MessageGroupController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = groupService.listMsgGroupConfigure(map);
             int count  =  groupService.queryMsgGroupConfigureCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -108,7 +108,7 @@ public class MessageGroupController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = groupService.searchMessageGroup(map);
             int count  =  groupService.searchMessageGroupCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -131,7 +131,7 @@ public class MessageGroupController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = groupService.searchMessageUserGroup(map);
             int count  =  groupService.searchMessageUserGroupCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -154,7 +154,7 @@ public class MessageGroupController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = groupService.searchMsgGroupConfigure(map);
             int count  =  groupService.searchMsgGroupConfigureCount(map);
-            response =  Response.getResponseSuccess();
+            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
@@ -173,7 +173,7 @@ public class MessageGroupController {
     public Response saveMessageGroup(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.saveMessageGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.saveMessageGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -189,7 +189,7 @@ public class MessageGroupController {
     public Response saveMessageUserGroup(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.saveMessageUserGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.saveMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -205,7 +205,7 @@ public class MessageGroupController {
     public  Response saveMsgGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.saveMsgGroupConfigure(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.saveMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -221,7 +221,7 @@ public class MessageGroupController {
     public Response upMessageGroup(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.upMessageGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.upMessageGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -237,7 +237,7 @@ public class MessageGroupController {
     public  Response upMessageUserGroup(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.upMessageUserGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.upMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -253,7 +253,7 @@ public class MessageGroupController {
     public  Response upMsgGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.upMsgGroupConfigure(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.upMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -269,7 +269,7 @@ public class MessageGroupController {
     public  Response removerMessageGroup(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.removeMessageGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.removeMessageGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -285,7 +285,7 @@ public class MessageGroupController {
     public  Response removerMessageUserGroup (@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.removeMessageUserGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.removeMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -301,7 +301,7 @@ public class MessageGroupController {
     public Response removerMsgGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.removeMsgGroupConfigure(map) ? Response.getResponseSuccess() : Response.getResponseError();
+            response = groupService.removeMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();

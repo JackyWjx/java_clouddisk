@@ -118,7 +118,7 @@
 
     <!--  修改积分规则   -->
     <update id="upScortRule"  parameterType="java.util.Map">
-         update tb_score_rule set updtime  = #{updtime}
+         update tb_score_rule set updtime  = #{updtime} , ouid = #{ouid}
         <choose><when test="ruleid != null">, ruleid  =  #{ruleid}</when></choose>
         <choose><when test="cname != null">, cname  = #{cname}</when></choose>
         <choose><when test="optid != null">, optid  = #{optid}</when></choose>
@@ -140,7 +140,7 @@
 
     <!--  禁用积分规则   -->
     <update id="removeScortRule"  parameterType="java.util.Map">
-        update tb_score_rule set status = '2'
+        update tb_score_rule set status = '2' , updtime = #{updtime} , ouid = #{ouid}
         where id = #{id}
     </update>
 

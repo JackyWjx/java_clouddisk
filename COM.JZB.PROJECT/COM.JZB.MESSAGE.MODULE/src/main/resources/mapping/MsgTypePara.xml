@@ -56,7 +56,7 @@
 
     <!-- 禁用 -->
     <update id="deleteMsgTypePara" parameterType="java.util.Map">
-        update  tb_msg_type_para set  status = '0' where id = #{id}
+        update  tb_msg_type_para set  status = '2' where id = #{id}
     </update>
 
 </mapper>
