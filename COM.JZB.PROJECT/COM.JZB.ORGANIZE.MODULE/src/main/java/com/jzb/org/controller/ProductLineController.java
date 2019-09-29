@@ -683,4 +683,34 @@ public class ProductLineController {
         }
         return bl;
     }
+
+    /**
+     * CRM菜单管理-记支宝电脑端
+     * 电脑端-全界面-记支宝电脑端下全界面新建控件
+     *
+     * @author kuang Bin
+     */
+    @RequestMapping(value = "/addPageControl", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addPageControl(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回成功数
+            int count = productLineService.addPageControl(param);
+            if (count == 1) {
+                // 判断缓存中是否存在产品数并删除
+                comHasMenuTree(param);
+                result = Response.getResponseSuccess();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
