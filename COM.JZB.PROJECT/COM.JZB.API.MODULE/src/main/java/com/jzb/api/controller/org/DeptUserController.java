@@ -153,7 +153,7 @@ public class DeptUserController {
                     param.put("userinfo", userInfo);
                     param.put("uid", userInfo.get("uid"));
                     param.put("type", "1");
-                    param.put("status", "8");
+                    param.put("authid", "8");
                     result = companyService.addCompany(param);
                     authService.addAdmin(param);
                 } else {
