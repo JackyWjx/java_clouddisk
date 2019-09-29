@@ -63,12 +63,12 @@ public interface ProductMapper {
      *
      * @author kuangbin
      */
-    int insertPageControl(List<Map<String, Object>> pageList);
+    int insertPageControlList(List<Map<String, Object>> pageList);
 
     /**
      * 根据查询出来的控件所有信息加入控件API表
      *
      * @author kuangbin
      */
-    int insertControlPower(List<Map<String, Object>> pageList);
+    int insertControlPowerList(List<Map<String, Object>> pageList);
 }
