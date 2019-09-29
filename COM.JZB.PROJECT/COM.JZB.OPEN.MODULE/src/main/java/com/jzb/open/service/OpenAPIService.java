@@ -302,7 +302,6 @@ public class OpenAPIService {
             }
             // 根据开发者iD查询数据库中是否存在当前开发者,状态为2或者1的的开发者
             int countId = mapper.queryIdCount(param);
-            System.out.println(countId);
             if (countId >= 1) {
                 // 把状态为2的开发者转换为状态1
                 count = mapper.updateStatus(param);
