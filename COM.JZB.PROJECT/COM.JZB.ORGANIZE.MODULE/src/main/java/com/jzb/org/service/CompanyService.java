@@ -534,7 +534,6 @@ public class CompanyService {
         try {
             // 获取当前时间的毫秒值
             long restime = System.currentTimeMillis();
-            System.out.println(list.size());
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> map = list.get(i);
                 map.put("restime", restime);
