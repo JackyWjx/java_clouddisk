@@ -198,10 +198,10 @@ public class ProductService {
         int count;
         try {
             // 根据查询出来的控件所有信息加入页面控件表
-            count = productMapper.insertPageControl(pageList);
+            count = productMapper.insertPageControlList(pageList);
             if (count > 0) {
                 // 根据查询出来的控件所有信息加入控件API表
-                count = productMapper.insertControlPower(pageList);
+                count = productMapper.insertControlPowerList(pageList);
             }
         } catch (Exception ex) {
             JzbTools.logError(ex);
