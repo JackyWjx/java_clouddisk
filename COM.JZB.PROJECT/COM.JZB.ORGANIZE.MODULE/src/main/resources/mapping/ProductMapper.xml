@@ -211,7 +211,7 @@
     </select>
 
     <!--根据查询出来的控件所有信息加入页面控件表-->
-    <insert id="insertPageControl" parameterType="java.util.List">
+    <insert id="insertPageControlList" parameterType="java.util.List">
         INSERT INTO
         tb_product_page_control
         (controlid, pageid, controlcode, cname, controltype, ouid, addtime, updtime, status, summary)
@@ -261,7 +261,7 @@
     </insert>
 
     <!--根据查询出来的控件所有信息加入控件API表-->
-    <insert id="insertControlPower" parameterType="java.util.List">
+    <insert id="insertControlPowerList" parameterType="java.util.List">
         INSERT INTO
         tb_product_control_power
         (controlid, powerapi, ouid, addtime, updtime, status, summary)
