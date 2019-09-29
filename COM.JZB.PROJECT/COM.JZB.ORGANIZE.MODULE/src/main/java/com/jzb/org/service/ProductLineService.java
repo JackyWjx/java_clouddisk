@@ -384,4 +384,26 @@ public class ProductLineService {
         }
         return count;
     }
+
+    /**
+     * CRM菜单管理-记支宝电脑端
+     * 电脑端-全界面-记支宝电脑端下全界面新建控件
+     *
+     * @author kuang Bin
+     */
+    public int addPageControl(Map<String, Object> param) {
+        int count;
+        try {
+            // 加入页面控件表
+            count = productLineMapper.insertPageControl(param);
+            if (count > 0) {
+                // 加入控件API表
+                count = productLineMapper.insertControlPower(param);
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            count = 0;
+        }
+        return count;
+    }
 }
