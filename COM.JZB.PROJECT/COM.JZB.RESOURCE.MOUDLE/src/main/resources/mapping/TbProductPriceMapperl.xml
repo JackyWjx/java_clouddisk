@@ -170,6 +170,8 @@
         <if test="updtime != null">updtime=#{updtime},</if>
         <if test="status != null">status=#{status},</if>
         <if test="summary != null">summary=#{summary}</if>
+        where
+        pid=#{pid}
     </update>
 
     <select id="getTbProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
