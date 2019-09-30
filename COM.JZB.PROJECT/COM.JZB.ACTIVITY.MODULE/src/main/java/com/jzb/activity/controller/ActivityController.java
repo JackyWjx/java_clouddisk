@@ -377,6 +377,7 @@ public class ActivityController {
 
     /**
      * 无登录点赞
+     *
      * @param params
      * @return
      */
@@ -402,6 +403,7 @@ public class ActivityController {
 
     /**
      * 无登录点赞
+     *
      * @param params
      * @return
      */
@@ -425,17 +427,17 @@ public class ActivityController {
     }
 
     // 获取点赞次数
-    @RequestMapping(value = "/getResourceVotes",method = RequestMethod.POST)
+    @RequestMapping(value = "/getResourceVotes", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public Response getResourceVotes(@RequestBody Map<String ,Object> params){
+    public Response getResourceVotes(@RequestBody Map<String, Object> params) {
         Response result;
         try {
             // 验证指定参数为空则返回error
-            if (params.get("actid") == null ) {
+            if (params.get("actid") == null) {
                 result = Response.getResponseError();
             } else {
-                params.put("restype","R0001");
+                params.put("restype", "R0001");
                 Map<String, Object> votesMap = newActivityService.getVotesViews(params);
                 // 定义返回结果
                 result = Response.getResponseSuccess();
@@ -475,6 +477,30 @@ public class ActivityController {
             pageInfo.setList(adverList);
             pageInfo.setTotal(count > 0 ? count : adverList.size());
             result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifyAdvertData
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击新建后加入新建的活动文章内容
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/addActivityList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addActivityList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 加入新建的活动文章内容
+            int count = newActivityService.addActivityList(param);
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
