@@ -166,6 +166,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         //---- begin resource
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/solutionType/getSolutionType", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/solutionDom/getSolutionDom", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/solutionDom/getSolutionDomByDomid", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/standardDocument/getFatherOne", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/policyType/getPolicyType", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/policyDom/getPolicyDomDesc", "");
