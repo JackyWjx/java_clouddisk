@@ -506,5 +506,80 @@ public class ActivityController {
             result = Response.getResponseError();
         }
         return result;
-    } // End modifyAdvertData
+    } // End addActivityList
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击修改时返回需要修改的信息
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getActivityData", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getActivityData(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 加入新建的活动文章内容
+            List<Map<String, Object>> activity = newActivityService.getActivityData(param);
+
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess(userInfo);
+            pageInfo.setList(activity);
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End getActivityData
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击修改后对活动文章进行修改
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/modifyActivityData", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyActivityData(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 加入新建的活动文章内容
+            int count = newActivityService.modifyActivityData(param);
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End getActivityData
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击删除后对活动文章进行删除操作
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/removeActivityData", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response removeActivityData(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 加入新建的活动文章内容
+            int count = newActivityService.removeActivityData(param);
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End getActivityData
 }
