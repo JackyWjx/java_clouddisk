@@ -78,12 +78,12 @@
 
 	<!--    查询文档详情-->
 	<select id="queryDocumentDesc" parameterType="java.util.Map" resultType="java.util.Map">
-		select domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domdesc,department,effective,stdrange,domurl,context,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary from tb_standard_document where domid=#{domid} and status='1'
+		select domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domdesc,department,effective,stdrange,domurl,context,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary from tb_standard_document where domid=#{domid} and status!='4'
 	</select>
 
 	<!--查询热门榜-->
 	<select id="queryHotDom" parameterType="java.util.Map" resultType="java.util.Map">
-        select domid,cname,idx,visits from tb_standard_document where status='1' order by visits desc limit #{count}
+        select domid,cname,idx,visits from tb_standard_document where status!='4' order by visits desc limit #{count}
     </select>
 
 </mapper>
