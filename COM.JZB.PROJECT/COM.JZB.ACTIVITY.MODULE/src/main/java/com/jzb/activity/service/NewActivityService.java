@@ -198,10 +198,64 @@ public class NewActivityService {
                 }
                 // 加入活动图片
                 count = activityMapper.insertActivityPhoto(photoList);
-            }else {
+            } else {
                 count = 0;
             }
         }
         return count;
+    }
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击修改时返回需要修改的信息
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getActivityData(Map<String, Object> param) {
+        return activityMapper.queryActivityData(param);
+    }
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击修改后对活动文章进行修改
+     *
+     * @author kuangbin
+     */
+    public int modifyActivityData(Map<String, Object> param) {
+        param.put("status", 1);
+        int count = activityMapper.updateActivityData(param);
+        if (count == 1) {
+            Object photo = param.get("photolist");
+            if (JzbDataType.isCollection(photo)) {
+                long updtime = System.currentTimeMillis();
+                List<Map<String, Object>> list = (List<Map<String, Object>>) photo;
+                for (int i = 0; i < list.size(); i++) {
+                    Map<String, Object> photoMap = list.get(i);
+                    // 加入默认状态
+                    photoMap.put("updtime", updtime);
+                    photoMap.put("actid", JzbDataType.getString(param.get("actid")));
+                    photoMap.put("uid", JzbDataType.getString(param.get("uid")));
+                    // 加入插入状态
+                    photoMap.put("status", "1");
+                }
+                count = activityMapper.updateActivityPhoto(list);
+            } else {
+                count = 0;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击删除后对活动文章进行删除操作
+     *
+     * @author kuangbin
+     */
+    public int removeActivityData(Map<String, Object> param) {
+        long starttime = System.currentTimeMillis();
+        param.put("starttime", starttime);
+        param.put("status", 2);
+        return activityMapper.deleteActivityData(param);
     }
 }
