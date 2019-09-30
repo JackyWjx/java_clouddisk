@@ -1,5 +1,8 @@
 package com.jzb.resource.controller;
 
+import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.date.JzbDateStr;
+import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -117,7 +120,10 @@ public class TbSolutionDomController {
             } else {
                 // 查询结果
                 List<Map<String, Object>> list = tbSolutionDomService.queryDomByDomid(param);
-
+                for (int i=0,l=list.size();i<l;i++){
+                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
+//                    list.get(i).put("context",JzbDataType.getString(list.get(i).get("context")).replace("\\\\"," "));
+                }
                 // 定义pageinfo
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
