@@ -50,8 +50,13 @@ public class TbMethodTypeService {
     public int saveMethodTypeBrother(Map<String, Object> param) {
         if (JzbCheckParam.haveEmpty(param, new String[]{"brotherid"})) {
             param.put("parentid", "0000000");
+
         } else {
             param.put("parantid", getParentByBrotherId(param));
+            param.put("score",100);
+        }
+        if(JzbCheckParam.haveEmpty(param, new String[]{"score"})){
+            param.put("score",100);
         }
         Long time = System.currentTimeMillis();
         param.put("addtime", time);

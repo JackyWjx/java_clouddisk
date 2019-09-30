@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.util.JzbTools;
 import com.jzb.resource.dao.TbPolicyTypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,12 @@ public class TbPolicyTypeService {
             JSONObject node = new JSONObject();
             node.put("typeid", record.get("typeid").toString());
             node.put("cname", record.get("cname").toString());
-            node.put("idx", record.get("idx").toString());
+            if(JzbTools.isEmpty(record.get("idx"))){
+                node.put("idx", 0);
+            }else {
+                node.put("idx", record.get("idx").toString());
+            }
+
             node.put("parentid", parentId);
             node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
             node.put("children", new JSONArray());

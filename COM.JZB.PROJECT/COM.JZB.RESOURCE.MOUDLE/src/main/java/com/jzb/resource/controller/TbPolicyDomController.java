@@ -6,6 +6,7 @@ import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.TbPolicyDomService;
 import com.jzb.resource.util.PageConvert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +48,12 @@ public class TbPolicyDomController {
                 // 遍历转换时间
                 for (int i=0,l=list.size();i<l;i++){
                     list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd));
+//                    list.get(i).put("context",JzbDataType.getString(list.get(i).get("context")).replace("\\\\"," "));
                 }
                 //定义pageinfo
                 PageInfo pi=new PageInfo();
                 pi.setList(list);
-
+                pi.setTotal(tbPolicyDomService.queryDocumentsCount(params));
                 // 定义返回response
                 // 定义返回结果
                 result = Response.getResponseSuccess();
@@ -86,7 +88,10 @@ public class TbPolicyDomController {
 
                 // 查询结果集
                 List<Map<String, Object>> list = tbPolicyDomService.queryPolicyDomDesc(params);
-
+                for (int i=0,l=list.size();i<l;i++){
+                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd));
+//                    list.get(i).put("context",JzbDataType.getString(list.get(i).get("context")).replace("\\\\"," "));
+                }
                 // 定义pageinfo
                 PageInfo pi=new PageInfo();
                 pi.setList(list);

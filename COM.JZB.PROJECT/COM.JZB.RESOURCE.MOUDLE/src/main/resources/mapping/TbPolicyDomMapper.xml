@@ -12,21 +12,25 @@
         domcode,
         cname,
         photo,
-        domdesc,
+        domtitle,
         department,
         effective,
         stdrange,
         domurl,
+        domdesc,
+        policystatus,
         idx,
         uid,
-        addtime,
+        uname,
         pagekey,
         pagedesc,
         visits,
         forwards,
         downloads,
         price,
-        ouid,
+        adduid,
+        addtime,
+        upduid,
         updtime,
         status,
         summary
@@ -44,33 +48,39 @@
 
     <!--	标准文档总数-->
     <select id="queryDocumentsCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-	     select count(1) from tb_policy_document where typeid=#{typeid}
+	     select count(1) from tb_policy_document where typeid=#{typeid} <if test="keyword!=null and keyword!=''">
+        and cname ~ #{keyword}
+    </if>
 	</select>
 
     <!--  查询政策文档详情-->
     <select id="queryPolicyDomDesc" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-        domid,
+         domid,
         typeid,
         domcode,
         cname,
         photo,
-        domdesc,
+        domtitle,
         department,
         effective,
         stdrange,
         domurl,
+        domdesc,
         context,
+        policystatus,
         idx,
         uid,
-        addtime,
+        uname,
         pagekey,
         pagedesc,
         visits,
         forwards,
         downloads,
         price,
-        ouid,
+        adduid,
+        addtime,
+        upduid,
         updtime,
         status,
         summary

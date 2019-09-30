@@ -8,8 +8,10 @@ import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.TbMethodTypeService;
 import com.jzb.resource.util.PageConvert;
+import org.jsoup.select.Evaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,6 +75,12 @@ public class TbMethodTypeController {
                 node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
                 node.put("typedesc", record.get("typedesc").toString());
                 node.put("children", new JSONArray());
+                if(JzbTools.isEmpty(record.get("score"))){
+                    node.put("score", null);
+                }else {
+                    node.put("score", record.get("score").toString());
+                }
+                node.put("days", record.get("days").toString());
 
                 // if root node
                 if (parentId.equals(firstParent)) {
@@ -129,7 +137,6 @@ public class TbMethodTypeController {
             response=Response.getResponseError();
         }
         return response;
-
     }
 
 

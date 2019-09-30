@@ -14,8 +14,9 @@
 		 parentid,
 		 typedesc,
 		 idx,
-		 ouid,
+		 adduid,
 		 addtime,
+		 upduid,
 		 updtime,
 		 status
 	   from
@@ -32,8 +33,9 @@
 		 tst.parentid,
 		 tst.typedesc,
 		 tst.idx,
-		 tst.ouid,
+		 tst.adduid,
 		 tst.addtime,
+		 tst.upduid,
 		 tst.updtime,
 		 tst.status
 
@@ -57,10 +59,7 @@
 	<!--	标准文档查询-->
 	<select id="queryDocumentsList" resultType="java.util.Map">
 		select
-		domid,typeid,domcode,cname,photo,department,effective,
-		stdrange,idx,uid,addtime,pagekey,pagedesc,
-		visits,forwards,downloads,price,ouid,updtime,status,
-		summary
+		domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domdesc,department,effective,stdrange,domurl,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary
 		from
 		 tb_standard_document
 		 where
@@ -79,7 +78,7 @@
 
 	<!--    查询文档详情-->
 	<select id="queryDocumentDesc" parameterType="java.util.Map" resultType="java.util.Map">
-		select domid,typeid,domcode,cname,photo,domdesc,department,effective,stdrange,domurl,context,idx,uid,addtime,pagekey,pagedesc,visits,forwards,downloads,price,ouid,updtime,status,summary from tb_standard_document where domid=#{domid} and status='1'
+		select domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domdesc,department,effective,stdrange,domurl,context,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary from tb_standard_document where domid=#{domid} and status='1'
 	</select>
 
 	<!--查询热门榜-->

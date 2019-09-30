@@ -22,4 +22,6 @@ public final class CommonCacheKeys {
     * @return
     */
     public final static String JZB_COM_PHONE = "jzb.com.phone.";
+
+    public final static String JZB_STSTEM_CITY_LIST = "jzb.system.city.list";
 }

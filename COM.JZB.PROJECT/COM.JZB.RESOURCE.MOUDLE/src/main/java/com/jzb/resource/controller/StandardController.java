@@ -190,7 +190,9 @@ public class StandardController {
 
                 // 结果集
                 List<Map<String, Object>> list = standardService.getStandardDocumentDesc(params);
-
+                for (int i=0,l=list.size();i<l;i++){
+                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd));
+                }
                 // 定义返回pageinfo
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
