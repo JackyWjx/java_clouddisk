@@ -9,14 +9,14 @@
     <select id="querySolutionType" resultType="java.util.Map" parameterType="java.util.Map">
                     WITH RECURSIVE solution AS (
 						SELECT
-               id,typeid,cname,parentid,typedesc
+               id,typeid,cname,parentid,typedesc,adduid,addtime,upduid,updtime,status
             FROM
                 tb_solution_type
             WHERE
                 parentid = '0000000'
                 AND status = '1'  UNION ALL
             SELECT
-                aa.id,aa.typeid,aa.cname,aa.parentid,aa.typedesc
+                aa.id,aa.typeid,aa.cname,aa.parentid,aa.typedesc,aa.adduid,aa.addtime,aa.upduid,aa.updtime,aa.status
             FROM
                 tb_solution_type aa
                 JOIN solution ON aa.parentid = solution.typeid
