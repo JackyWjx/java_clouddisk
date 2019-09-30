@@ -97,6 +97,8 @@ public class TbProductPriceController {
      * @param param
      * @return
      */
+    @RequestMapping(value = "/updateProductPrice", method = RequestMethod.POST)
+    @CrossOrigin
     public Response updateProductPrice(@RequestBody Map<String, Object> param) {
         Response result;
         try {
