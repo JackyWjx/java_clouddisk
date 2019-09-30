@@ -1,14 +1,12 @@
 package com.jzb.config.controller;
 
-import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
-import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbTools;
 import com.jzb.config.service.TbCityService;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +82,11 @@ public class TbCityController {
 //    }
 //
 
-
+    /**
+     * 获取省市县
+     * @param params
+     * @return
+     */
     @RequestMapping(value = "/getCityList", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
@@ -106,7 +108,6 @@ public class TbCityController {
             List<Map<String, Object>> provinceListSon = new ArrayList<>();
             //  end    给省提供
 
-
             // begin 给市提供
             Map<String, List<Map<String, Object>>> cityMap = new HashMap<>();
 
@@ -114,13 +115,11 @@ public class TbCityController {
 
             // end 给市提供
 
-
 //            定义湖南省id
             String cid = "10000000";
 
             // 遍历结果集
             for (int i = 0, l = list.size(); i < l; i++) {
-
 
                 // 如果ccode为空则是省
                 if (JzbTools.isEmpty(list.get(i).get("ccode"))) {
@@ -210,6 +209,32 @@ public class TbCityController {
             e.printStackTrace();
             result = Response.getResponseError();
 
+        }
+        return result;
+    }
+
+    /**
+     * 存redis用
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCityListToo", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Response getCityListToo(@RequestBody(required = false) Map<String, Object> param) {
+        Response result;
+        try {
+            List<Map<String, Object>> cityList = tbCityService.getCityList(param);
+            Map<String, Object> map = new HashMap<>();
+            for (int i = 0, l = cityList.size(); i < l; i++) {
+                String value = JSONObject.fromObject(cityList.get(i)).toString();
+                map.put(cityList.get(i).get("creaid").toString(),value);
+            }
+            result=Response.getResponseSuccess();
+            result.setResponseEntity(map);
+        }catch (Exception ex){
+            JzbTools.logError(ex);
+            result=Response.getResponseError();
         }
         return result;
     }
