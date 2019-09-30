@@ -267,4 +267,20 @@ public interface ActivityMapper {
      * @author kuangbin
      */
     List<Map<String, Object>> queryActivityListData(Map<String, Object> param);
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击新建后加入新建的活动文章内容
+     *
+     * @author kuangbin
+     */
+    int insertActivityList(Map<String, Object> param);
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击新建后加入新建的活动文章图片
+     *
+     * @author kuangbin
+     */
+    int insertActivityPhoto(List<Map<String, Object>> photoList);
 }

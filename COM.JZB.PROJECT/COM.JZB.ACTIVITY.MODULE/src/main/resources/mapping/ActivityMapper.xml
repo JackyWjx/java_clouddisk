@@ -410,7 +410,199 @@
         to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd') as addtime,
         summary
         from
-        tb_advert_list
+        tb_activity_list
         <if test="cid != null and cid != ''">where cid = #{cid}</if>
     </select>
+
+    <!--点击新建后加入新建的活动文章内容-->
+    <insert id="insertActivityList" parameterType="java.util.Map">
+        INSERT INTO
+        tb_activity_list (actid, cname, actkey, actdesc, typeid, actlogo, actpicture, uid, cid, cdid,
+        acttheme, context, conclusion, addtime, starttime, endtime, votes, comments, reads, shares, awarddesc, status, summary)
+        VALUES
+        (
+        #{actid},
+        #{cname},
+        <choose>
+            <when test="actkey != null and actkey != ''">
+                #{actkey},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="actdesc != null and actdesc != ''">
+                #{actdesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typeid != null and typeid != ''">
+                #{typeid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="actlogo != null and actlogo != ''">
+                #{actlogo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="actpicture != null and actpicture != ''">
+                #{actpicture},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{uid},
+        <choose>
+            <when test="cid != null and cid != ''">
+                #{cid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cdid != null and cdid != ''">
+                #{cdid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="acttheme != null and acttheme != ''">
+                #{acttheme},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="context != null and context != ''">
+                #{context},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="conclusion != null and conclusion != ''">
+                #{conclusion},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{addtime},
+        <choose>
+            <when test="starttime != null and starttime != ''">
+                #{starttime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="endtime != null and endtime != ''">
+                #{endtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="votes != null and votes != ''">
+                ${votes},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="comments != null and comments != ''">
+                ${comments},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="reads != null and reads != ''">
+                ${reads},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="shares != null and shares != ''">
+                ${shares},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="awarddesc != null and awarddesc != ''">
+                #{awarddesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status != null and status != ''">
+                #{status},
+            </when>
+            <otherwise>
+                '1',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 点击新建后加入新建的活动文章图片 -->
+    <insert id="insertActivityPhoto" parameterType="java.util.List">
+        insert into
+        tb_activity_photo(actid, fileid, photo, idx, adduid, addtime, status, summary)
+        values
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+        (
+        #{item.actid},
+        #{item.fileid},
+        #{item.photo},
+        (select count(1)+1 from tb_activity_photo),
+        #{item.uid},
+        #{item.addtime},
+        #{item.status},
+        <choose>
+            <when test="item.summary!=null and item.summary!=''">
+                #{item.summany}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+        </foreach>
+    </insert>
 </mapper>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbProductPriceMapper">
+
+    <!--查询产品报价的总数-->
+    <select id="getTbProductPriceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+         select
+         count(1)
+         from
+         tb_product_res_list
+         where status='1'
+     </select>
+
+    <!--查询合同配置中的资源产品-->
+    <select id="getProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        pid,
+        cname,
+        prodesc,
+        service,
+        price,
+        pricedesc,
+        accept,
+        paradesc,
+        ouid,
+        status,
+        summary
+        from tb_product_res_list
+        where
+        <if test="plid != null">plid=cast(#{plid} as integer)</if>
+        <if test="cname != null"> and cname like concat('%',#{cname},'%')</if>
+    </select>
+
+    <!--添加产品报价表-->
+    <insert id="saveProductPrice" parameterType="java.util.Map">
+        insert into
+        tb_product_price(
+        pid,
+        pricetype,
+        itemid,
+        itemname,
+        pricedesc,
+        size,
+        unit,
+        price,
+        weight,
+        idx,
+        addtime,
+        updtime,
+        status,
+        summary
+        )values(
+        <choose>
+            <when test="pid != null">
+                #{pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricetype != null">
+               cast(#{pricetype} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemid != null">
+                #{itemid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemname != null">
+                #{itemname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricedesc != null">
+                #{pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="size != null">
+                #{size},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="unit != null">
+                #{unit},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose><choose>
+        <when test="price != null">
+            #{price},
+        </when>
+        <otherwise>
+            null,
+        </otherwise>
+       </choose>
+        <choose>
+        <when test="weight != null">
+            #{weight},
+        </when>
+        <otherwise>
+            null,
+        </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null">
+                cast (#{idx} as integer),
+            </when>
+            <otherwise>
+              (select count(1)+1 from tb_product_price),
+            </otherwise>
+        </choose>
+        #{addtime},
+        #{updtime},
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--修改产品报价表中的数据-->
+    <update id="updateProductPrice" parameterType="java.util.Map">
+        update
+        tb_product_price
+        set
+        <if test="pricetype != null">pricetype=#{pricetype},</if>
+        <if test="itemid != null">itemid=#{itemid},</if>
+        <if test="itemname != null">itemname=#{itemname},</if>
+        <if test="pricedesc != null">pricedesc=#{pricedesc},</if>
+        <if test="size != null">size=#{size},</if>
+        <if test="unit != null">unit=#{unit},</if>
+        <if test="price != null">price=#{price},</if>
+        <if test="weight != null">weight=#{weight},</if>
+        <if test="adduid != null">adduid=#{adduid},</if>
+        <if test="upduid != null">upduid=#{upduid},</if>
+        <if test="updtime != null">updtime=#{updtime},</if>
+        <if test="status != null">status=#{status},</if>
+        <if test="summary != null">summary=#{summary}</if>
+        where
+        pid=#{pid}
+    </update>
+
+
+
+
+
+    
+    <select id="getTbProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        pricetype,
+        itemid,
+        itemname,
+        pricedesc,
+        size,
+        unit,
+        price,
+        weight,
+        status,
+        summary
+        from
+        tb_product_price
+        where
+        pid=#{pid}
+    </select>
+</mapper>
