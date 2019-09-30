@@ -89,8 +89,7 @@ public class TbSolutionDomController {
                 pi.setList(list);
 
                 // 定义返回结果
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                result = Response.getResponseSuccess(userInfo);
+                result = Response.getResponseSuccess();
                 result.setPageInfo(pi);
             }
         } catch (Exception e) {
@@ -124,8 +123,7 @@ public class TbSolutionDomController {
                 pi.setList(list);
 
                 // 定义返回结果
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                result = Response.getResponseSuccess(userInfo);
+                result = Response.getResponseSuccess();
                 result.setPageInfo(pi);
             }
         } catch (Exception e) {
