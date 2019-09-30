@@ -360,11 +360,6 @@
     </insert>
 
 
-
-
-
-
-
     <!-- 无登录添加点赞-->
     <update id="updateActivityVotes" parameterType="java.util.Map">
         update tb_activity_list set votes=votes+1 where actid=#{actid}
@@ -418,7 +413,8 @@
     <insert id="insertActivityList" parameterType="java.util.Map">
         INSERT INTO
         tb_activity_list (actid, cname, actkey, actdesc, typeid, actlogo, actpicture, uid, cid, cdid,
-        acttheme, context, conclusion, addtime, starttime, endtime, votes, comments, reads, shares, awarddesc, status, summary)
+        acttheme, context, conclusion, addtime, starttime, endtime, votes, comments, reads, shares, awarddesc, status,
+        summary)
         VALUES
         (
         #{actid},
@@ -586,23 +582,111 @@
         tb_activity_photo(actid, fileid, photo, idx, adduid, addtime, status, summary)
         values
         <foreach separator="," close="" open="" index="index" item="item" collection="list">
-        (
-        #{item.actid},
-        #{item.fileid},
-        #{item.photo},
-        (select count(1)+1 from tb_activity_photo),
-        #{item.uid},
-        #{item.addtime},
-        #{item.status},
-        <choose>
-            <when test="item.summary!=null and item.summary!=''">
-                #{item.summany}
-            </when>
-            <otherwise>
-                NULL
-            </otherwise>
-        </choose>
-        )
+            (
+            #{item.actid},
+            #{item.fileid},
+            #{item.photo},
+            (select count(1)+1 from tb_activity_photo),
+            #{item.uid},
+            #{item.addtime},
+            #{item.status},
+            <choose>
+                <when test="item.summary!=null and item.summary!=''">
+                    #{item.summany}
+                </when>
+                <otherwise>
+                    NULL
+                </otherwise>
+            </choose>
+            )
         </foreach>
     </insert>
+
+    <!-- 点击修改时返回需要修改的信息 -->
+    <select id="queryActivityData" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT
+        al.actid,
+        al.cname,
+        al.actkey,
+        al.actdesc,
+        al.typeid,
+        al.actlogo,
+        al.acttheme,
+        al.context,
+        al.conclusion,
+        al.summary,
+        ap.fileid,
+        ap.photo,
+        ap.summary as photosummary
+        from
+        tb_activity_list al
+        left join
+        tb_activity_photo ap
+        on
+        al.actid = ap.actid
+        where
+        al.status = '1'
+        AND
+        ap.status = '1'
+        and
+        al.actid = #{actid}
+    </select>
+
+    <!-- 点击修改后对活动文章进行修改 -->
+    <update id="updateActivityData" parameterType="java.util.Map">
+        update
+        tb_activity_list
+        set
+        cname=#{cname},
+        <if test="actlogo!= null">actlogo=#{actlogo},</if>
+        actkey=#{actkey},
+        actdesc=#{actdesc},
+        <if test="typeid!= null">typeid=#{typeid},</if>
+        context=#{context}
+        <if test="summary!= null">,summary=#{summary}</if>
+        where
+        actid=#{actid}
+    </update>
+
+    <!-- 点击修改后对活动文章进行修改 -->
+    <insert id="updateActivityPhoto" parameterType="java.util.List">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+            insert into
+            tb_activity_photo(actid, fileid, photo, idx, adduid, addtime, status, summary)
+            values
+            (
+            #{item.actid},
+            #{item.fileid},
+            #{item.photo},
+            (select count(1)+1 from tb_activity_photo),
+            #{item.uid},
+            #{item.updtime},
+            #{item.status},
+            <choose>
+                <when test="item.summary!=null and item.summary!=''">
+                    #{item.summany}
+                </when>
+                <otherwise>
+                    NULL
+                </otherwise>
+            </choose>
+            )
+            ON conflict(actid,fileid) DO UPDATE SET
+            upduid = #{item.uid},
+            status = '2',
+            updtime = #{item.updtime}
+        </foreach>
+    </insert>
+
+    <!-- 点击修改后对活动文章进行修改 -->
+    <update id="deleteActivityData" parameterType="java.util.Map">
+        update
+        tb_activity_list
+        set
+        status = #{status},
+        starttime = #{starttime}
+        where
+        actid=#{actid}
+    </update>
 </mapper>
