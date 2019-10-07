@@ -79,7 +79,14 @@ public class ShortMessageService {
                         // 短信信息
                         if((msgType & 1) == 1){
                             dataMap.put("receiver",map.get("receiver").toString());
-                            dataMap.put("sendpara",JSONObject.toJSONString((Map)paraMap.get("1")));
+                            Map<String , Object> aliyun = (Map)paraMap.get("1");
+                            dataMap.put("appid",aliyun.get("appid"));
+                            aliyun.remove("appid");
+                            dataMap.put("title",aliyun.get("title"));
+                            aliyun.remove("title");
+                            dataMap.put("sercet",aliyun.get("sercet"));
+                            aliyun.remove("sercet");
+                            dataMap.put("sendpara",JSONObject.toJSONString(aliyun));
                             // 设置发送参数
                             Map<String , Object> sendMap = new HashMap<>();
                             sendMap.put("sendpara",JSONObject.toJSONString(dataMap));
@@ -142,7 +149,14 @@ public class ShortMessageService {
                                 // 短信消息
                                 if((msgType & 1) == 1){
                                     dataMap.put("receiver",phoneList.get(i));
-                                    dataMap.put("sendpara",JSONObject.toJSONString((Map)paraMap.get("1")));
+                                    Map<String , Object> aliyun = (Map)paraMap.get("1");
+                                    dataMap.put("appid",aliyun.get("appid"));
+                                    aliyun.remove("appid");
+                                    dataMap.put("title",aliyun.get("title"));
+                                    aliyun.remove("title");
+                                    dataMap.put("sercet",aliyun.get("sercet"));
+                                    aliyun.remove("sercet");
+                                    dataMap.put("sendpara",JSONObject.toJSONString(aliyun));
                                     // 设置发送参数
                                     Map<String , Object> sendMap = new HashMap<>();
                                     sendMap.put("receiver",phoneList.get(i));

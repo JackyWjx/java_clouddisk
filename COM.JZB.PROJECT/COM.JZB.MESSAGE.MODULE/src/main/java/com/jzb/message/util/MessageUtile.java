@@ -1,7 +1,6 @@
 package com.jzb.message.util;
 
 import com.jzb.base.data.JzbDataType;
-import com.jzb.base.util.JzbTools;
 import net.sf.json.JSONObject;
 
 import java.util.*;
@@ -21,6 +20,7 @@ public class MessageUtile {
                 JSONObject json = JSONObject.fromObject(sendPara);
                 for(int i = 0; i<list.size();i++){
                     if(JzbDataType.getInteger(list.get(i).get("msgtype")) == 1){
+
                         // 短信消息 判断是否存在需要修改的参数
                         if(json.containsKey("sms")){
                             JSONObject smsJson =  JSONObject.fromObject(json.getString("sms"));

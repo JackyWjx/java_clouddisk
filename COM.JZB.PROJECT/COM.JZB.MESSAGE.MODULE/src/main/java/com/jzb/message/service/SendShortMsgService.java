@@ -1,7 +1,5 @@
 package com.jzb.message.service;
 
-import com.jzb.base.data.JzbDataType;
-import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.util.JzbRandom;
@@ -69,14 +67,20 @@ public class SendShortMsgService {
             // 每次最多一千个发送
             List<String> list = MessageUtile.sendPhoneLengthString(send_phone);
             if(!JzbTools.isEmpty(list)){
+                // 获取阿里云秘钥
+                List<Map<String , Object>> paraList = msgListMapper.queryMsgGroupConfigure("10086");
                 for(int i=0;i < list.size();i++) {
                     map.put("receiver",list.get(i));
                     // 设置参数
                     Map<String , Object> sendMap = new HashMap<>();
+                    net.sf.json.JSONObject aliyun = net.sf.json.JSONObject.fromObject(paraList.get(0).get("context").toString());
+                    map.put("appid",aliyun.getString("appid"));
+                    map.put("sercet",aliyun.getString("sercet"));
+                    map.put("title",aliyun.getString("title"));
                     sendMap.put("sendpara", JSONObject.toJSONString(map));
                     // 是否有定时任务
                     if(!JzbTools.isEmpty(push_time)){
-                        // 转换为long 值
+                        // 转换为long值
                         sendMap.put("sendtime", JzbDateUtil.getDate(push_time,JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
                     }
                     sendMap.put("msgid",map.get("msgid"));

@@ -29,7 +29,7 @@ public class JzbSendMsg {
     public static String sendShortMessage(JSONObject json){
         String result = "error";
         try{
-            DefaultProfile profile = DefaultProfile.getProfile("default", MessageProperties.getMsgAppid(), MessageProperties.getMsgSecret());
+            DefaultProfile profile = DefaultProfile.getProfile("default", json.getString("appid"), json.getString("sercet"));
             IAcsClient client = new DefaultAcsClient(profile);
             CommonRequest request = new CommonRequest();
             request.setMethod(MethodType.POST);
@@ -38,11 +38,7 @@ public class JzbSendMsg {
             request.setAction("SendSms");
             request.putQueryParameter("RegionId", "default");
             request.putQueryParameter("PhoneNumbers",json.getString("receiver"));
-            if(json.containsKey("title")){
-                request.putQueryParameter("SignName", json.getString("title"));
-            }else{
-                request.putQueryParameter("SignName", MessageProperties.getTitle());
-            }
+            request.putQueryParameter("SignName", json.getString("title"));
             request.putQueryParameter("TemplateCode",json.getString("sms_no"));
             if(json.containsKey("sendpara")){
                 if(!JzbTools.isEmpty(json.getString("sendpara"))){
