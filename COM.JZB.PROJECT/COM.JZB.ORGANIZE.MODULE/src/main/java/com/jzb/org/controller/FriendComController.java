@@ -34,9 +34,9 @@ public class FriendComController {
      * @Author: DingSC
      * @DateTime: 2019/9/24 16:07
      */
-    @RequestMapping(value = "/modifyCompanyFriend", method = RequestMethod.POST)
+    @RequestMapping(value = "/searchCompanyFriend", method = RequestMethod.POST)
     @CrossOrigin
-    public Response modifyCompanyFriend(@RequestBody Map<String, Object> param) {
+    public Response searchCompanyFriend(@RequestBody Map<String, Object> param) {
         Response result;
         PageInfo pageInfo;
         try {
