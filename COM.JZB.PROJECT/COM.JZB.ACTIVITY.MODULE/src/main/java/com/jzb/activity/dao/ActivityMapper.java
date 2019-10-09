@@ -346,4 +346,12 @@ public interface ActivityMapper {
      * @author kuangbin
      */
     int deleteActivityData(Map<String, Object> param);
+
+    /**
+     * CRM-运营管理-活动-SEO优化
+     * 点击保存后对活动中的SEO优化进行修改
+     *
+     * @author kuangbin
+     */
+    int updateActivityDataSEO(Map<String, Object> param);
 }
