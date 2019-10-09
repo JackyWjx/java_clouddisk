@@ -1,16 +1,18 @@
 package com.jzb.resource.controller;
 
 import com.jzb.base.data.JzbDataType;
-import com.jzb.base.data.date.JzbDateStr;
-import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbTools;
+import com.jzb.resource.service.AdvertService;
 import com.jzb.resource.service.TbSolutionDomService;
 import com.jzb.resource.util.PageConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +94,8 @@ public class TbSolutionDomController {
                 pi.setList(list);
 
                 // 定义返回结果
-                result = Response.getResponseSuccess();
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
                 result.setPageInfo(pi);
             }
         } catch (Exception e) {
@@ -120,16 +123,14 @@ public class TbSolutionDomController {
             } else {
                 // 查询结果
                 List<Map<String, Object>> list = tbSolutionDomService.queryDomByDomid(param);
-                for (int i=0,l=list.size();i<l;i++){
-                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
-//                    list.get(i).put("context",JzbDataType.getString(list.get(i).get("context")).replace("\\\\"," "));
-                }
+
                 // 定义pageinfo
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
 
                 // 定义返回结果
-                result = Response.getResponseSuccess();
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
                 result.setPageInfo(pi);
             }
         } catch (Exception e) {
@@ -140,5 +141,117 @@ public class TbSolutionDomController {
         return result;
     }
 
+    /**
+     * CRM-运营管理-解决方案-文章列表
+     * 点击解决方案中的新建后加入新建的方案文章
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/addSolutionDom", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addSolutionDom(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("adduid", JzbDataType.getString(userInfo.get("uid")));
+            // 加入新建的活动文章内容
+            int count = tbSolutionDomService.addSolutionDom(param);
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End addSolutionDom
 
+    /**
+     * CRM-运营管理-解决方案-文章列表
+     * 点击保存后对解决方案中的文章进行修改
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/modifySolutionDom", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifySolutionDom(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 加入新建的活动文章内容
+            int count = tbSolutionDomService.modifySolutionDom(param);
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifySolutionDom
+
+    /**
+     * CRM-运营管理-解决方案-文章列表
+     * 点击删除后对解决方案中的文章进行删除操作(即修改状态)
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/removeSolutionDom", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response removeSolutionDom(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 加入新建的活动文章内容
+            int count = tbSolutionDomService.removeSolutionDom(param);
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End removeSolutionDom
+
+    /**
+     * CRM-运营管理-活动-文章列表
+     * 点击搜索解决方案文章标题后进行模糊搜索,可加入时间
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/searchSolutionDom", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchSolutionDom(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String startTime = JzbDataType.getString(param.get("starttime"));
+            // 判断是否有开始时间的查询条件
+            if (!JzbDataType.isEmpty(startTime)) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = simpleDateFormat.parse(startTime);
+                long time = date.getTime();
+                // 将时间转化为时间戳存入参数中
+                param.put("starttime", time);
+            }
+            // 获取前端传来的总数
+            int count = JzbDataType.getInteger(param.get("count"));
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询所有符合条件的总数
+                count = tbSolutionDomService.searchSolutionDomCount(param);
+            }
+            // 返回所有的推广信息列表
+            List<Map<String, Object>> activityList = tbSolutionDomService.searchSolutionDom(param);
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess(userInfo);
+            pageInfo.setList(activityList);
+            pageInfo.setTotal(count > 0 ? count : activityList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifyAdvertData
 }
