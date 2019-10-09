@@ -222,6 +222,7 @@ public class UserController {
                 String passwd = "*jzb" + JzbRandom.getRandomNum(3);
                 param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
                 param.put("password", passwd);
+                param.put("status", "8");
                 // 创建用户返回用户UID
                 result = authService.addRegistration(param);
                 Object objUser = result.getResponseEntity();
