@@ -114,4 +114,52 @@ public class TbPolicyTypeService {
         }
         return result;
     }
+
+    /**
+     * LBQ
+     * 查询运营管理下政策中的菜单类别
+     *
+     * @param
+     * @return
+     */
+    public List<Map<String, Object>> getPolicyTypes(Map<String, Object> param) {
+        return tbPolicyTypeMapper.getPolicyTypes(param);
+    }
+
+    /** LBQ
+     * 运营管理下政策模块中的菜单类别新增
+     *
+     * @param param
+     * @return
+     */
+    public int savePolicyType(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("addtime", time);
+        param.put("updtime", time);
+        return tbPolicyTypeMapper.savePolicyType(param);
+    }
+
+    /**LBQ
+     * 运营管理下政策菜单列表的修改
+     *
+     * @param param
+     * @return
+     */
+    public int updatePolicyType(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("updtime", time);
+        return tbPolicyTypeMapper.updatePolicyType(param);
+    }
+
+    /**LBQ
+     * 设置删除状态
+     *
+     * @param param
+     * @return
+     */
+    public int updateStatus(Map<String, Object> param) {
+        //设置删除状态 1.可用  2.禁用
+        param.put("status", "2");
+        return tbPolicyTypeMapper.updateStatus(param);
+    }
 }
