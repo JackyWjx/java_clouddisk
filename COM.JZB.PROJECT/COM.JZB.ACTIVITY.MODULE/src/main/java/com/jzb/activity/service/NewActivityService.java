@@ -218,12 +218,12 @@ public class NewActivityService {
      * @author kuangbin
      */
     public int modifyActivityData(Map<String, Object> param) {
-        param.put("status", 1);
+        long updtime = System.currentTimeMillis();
+        param.put("updtime", updtime);
         int count = activityMapper.updateActivityData(param);
         if (count == 1) {
             Object photo = param.get("photolist");
             if (JzbDataType.isCollection(photo)) {
-                long updtime = System.currentTimeMillis();
                 List<Map<String, Object>> list = (List<Map<String, Object>>) photo;
                 for (int i = 0; i < list.size(); i++) {
                     Map<String, Object> photoMap = list.get(i);
@@ -250,6 +250,21 @@ public class NewActivityService {
      */
     public int removeActivityData(Map<String, Object> param) {
         param.put("status", 2);
+        long updtime = System.currentTimeMillis();
+        param.put("updtime", updtime);
         return activityMapper.deleteActivityData(param);
+    }
+
+    /**
+     * CRM-运营管理-活动-SEO优化
+     * 点击保存后对活动中的SEO优化进行修改
+     *
+     * @author kuangbin
+     */
+    public int modifyActivityDataSEO(Map<String, Object> param) {
+        long updtime = System.currentTimeMillis();
+        // 加入修改时间
+        param.put("updtime", updtime);
+        return activityMapper.updateActivityDataSEO(param);
     }
 }
