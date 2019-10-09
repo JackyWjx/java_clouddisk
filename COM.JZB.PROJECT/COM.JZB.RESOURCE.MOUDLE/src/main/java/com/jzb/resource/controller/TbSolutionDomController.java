@@ -203,7 +203,7 @@ public class TbSolutionDomController {
             // 获取用户信息
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            // 加入新建的活动文章内容
+            // 返回修改成功数
             int count = tbSolutionDomService.removeSolutionDom(param);
             result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
@@ -254,4 +254,28 @@ public class TbSolutionDomController {
         }
         return result;
     } // End modifyAdvertData
+
+    /**
+     * CRM-运营管理-解决方案-SEO优化
+     * 点击保存后对解决方案中的SEO优化进行修改
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/modifySolutionDomSEO", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifySolutionDomSEO(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 修改修改成功数
+            int count = tbSolutionDomService.modifySolutionDomSEO(param);
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifySolutionDomSEO
 }
