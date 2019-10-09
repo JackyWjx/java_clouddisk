@@ -429,8 +429,8 @@
     <insert id="insertActivityList" parameterType="java.util.Map">
         INSERT INTO
         tb_activity_list (actid, cname, actkey, actdesc, typeid, actlogo, actpicture, uid, cid, cdid,
-        acttheme, context, conclusion, addtime, starttime, endtime, votes, comments, reads, shares, awarddesc, status,
-        summary)
+        acttheme, context, conclusion, starttime, endtime, votes, comments, reads, shares, awarddesc,
+        adduid, addtime, status, summary)
         VALUES
         (
         #{actid},
@@ -516,7 +516,6 @@
                 null,
             </otherwise>
         </choose>
-        #{addtime},
         <choose>
             <when test="starttime != null and starttime != ''">
                 #{starttime},
@@ -573,6 +572,8 @@
                 null,
             </otherwise>
         </choose>
+        #{uid},
+        #{addtime},
         <choose>
             <when test="status != null and status != ''">
                 #{status},
@@ -659,7 +660,9 @@
         actkey=#{actkey},
         actdesc=#{actdesc},
         <if test="typeid!= null">typeid=#{typeid},</if>
-        context=#{context}
+        context=#{context},
+        upduid=#{uid},
+        updtime=#{updtime}
         <if test="summary!= null">,summary=#{summary}</if>
         where
         actid=#{actid}
@@ -695,13 +698,28 @@
         </foreach>
     </insert>
 
-    <!-- 点击修改后对活动文章进行修改 -->
+    <!-- 点击删除后对活动文章进行修改(即修改状态) -->
     <update id="deleteActivityData" parameterType="java.util.Map">
         update
         tb_activity_list
         set
+        upduid=#{uid},
+        updtime=#{updtime},
         status = #{status}
         where
+        actid=#{actid}
+    </update>
+
+    <!-- 点击保存后对活动中的SEO优化进行修改 -->
+    <update id="updateActivityDataSEO" parameterType="java.util.Map">
+        UPDATE
+        tb_activity_list
+        SET
+        pagekey = #{pagekey},
+        pagedesc = #{pagedesc},
+        upduid = #{uid},
+        updtime = #{updtime}
+        WHERE
         actid=#{actid}
     </update>
 </mapper>
