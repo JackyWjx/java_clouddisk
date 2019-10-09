@@ -577,23 +577,12 @@ public class CompanyController {
                 result = Response.getResponseSuccess(userInfo);
                 // 通过申请模板ID
                 param.put("groupid", "1014");
-                StringBuilder phone = new StringBuilder();
-                StringBuilder name = new StringBuilder();
-                String companyname = "";
+                Response sendResult = Response.getResponseError();
                 for (int i = 0; i < list.size(); i++) {
                     Map<String, Object> map = list.get(i);
-                    // 拼接所有的电话
-                    phone.append(JzbDataType.getString(map.get("relphone")));
-
-                    // 拼接所有的名字
-                    name.append(JzbDataType.getString(map.get("cname")));
-                    companyname = JzbDataType.getString(map.get("companyname"));
+                    // 配置短信信息发送短信
+                    sendResult = companyService.sendRemind(map);
                 }
-                param.put("phone", phone);
-                param.put("name", name);
-                param.put("companyname", companyname);
-                // 配置短信信息发送短信
-                Response sendResult = companyService.sendRemind(param);
                 result.setResponseEntity(sendResult);
             } else {
                 result = Response.getResponseError();
