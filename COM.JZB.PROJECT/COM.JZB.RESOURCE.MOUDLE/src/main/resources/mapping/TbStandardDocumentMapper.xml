@@ -22,12 +22,15 @@
         <if test="typeid != null">
             and typeid = #{typeid}
         </if>
+        <if test="domid != null">
+            and domid = #{domain}
+        </if>
     </select>
 
     <!--新增-->
     <insert id="saveTbStandardDom" parameterType="java.util.Map">
         insert into
-        tb_standard_document(domid,typeid,domcode,cname,price,department,effective,stdrange,status,pagekey,pagedesc,createtime,addtime,
+        tb_standard_document(domid,typeid,domcode,cname,price,department,effective,idx,stdrange,status,pagekey,pagedesc,createtime,addtime,
         updtime)
         values
         (
@@ -86,7 +89,15 @@
                 #{status},
             </when>
             <otherwise>
-                null,
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_standard_document),
             </otherwise>
         </choose>
         <choose>

@@ -87,6 +87,9 @@
 
     <!--查询运营管理中的菜单类别-->
     <select id="getStandardType" parameterType="java.util.Map" resultType="java.util.Map">
-        select ID,typeid,cname,typedesc,adduid,addtime,summary from tb_standard_type where status = #{status};
+        select ID,typeid,cname,typedesc,adduid,addtime,summary from tb_standard_type where status = #{status}
+        <if test="typeid != null">
+            and typeid = #{typeid}
+        </if>
     </select>
 </mapper>
