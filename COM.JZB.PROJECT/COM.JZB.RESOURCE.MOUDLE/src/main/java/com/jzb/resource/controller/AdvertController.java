@@ -3,6 +3,7 @@ package com.jzb.resource.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.AdvertService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class AdvertController {
 
     /**
      * CRM-运营管理-活动-推广图片
-     * 点击活动获取所有的系统推广信息
+     * 点击活动获取活动所有的系统推广信息
      *
      * @author kuangbin
      */
@@ -105,8 +106,14 @@ public class AdvertController {
             // 获取用户信息
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            // 获取修改成功值
-            int count = advertService.modifyAdvertData(param);
+            String advid = JzbDataType.getString(param.get("advid"));
+            int count;
+            if (JzbDataType.isEmpty(advid)) {
+                count = advertService.addAdvertData(param);
+            } else {
+                // 获取修改成功值
+                count = advertService.modifyAdvertData(param);
+            }
             result = count==1? Response.getResponseSuccess(userInfo):Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
@@ -114,30 +121,5 @@ public class AdvertController {
         }
         return result;
     } // End modifyAdvertData
-
-    /**
-     * CRM-运营管理-活动-推广图片
-     * 点击新增增加系统广告表中的推广信息
-     *
-     * @author kuangbin
-     */
-    @RequestMapping(value = "/addAdvertData", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response addAdvertData(@RequestBody Map<String, Object> param) {
-        Response result;
-        try {
-            // 获取用户信息
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            // 获取修改成功值
-            int count = advertService.addAdvertData(param);
-            result = count==1? Response.getResponseSuccess(userInfo):Response.getResponseError();
-        } catch (Exception e) {
-            JzbTools.logError(e);
-            result = Response.getResponseError();
-        }
-        return result;
-    } // End modifyAdvertData
-
 
 }
