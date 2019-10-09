@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,7 +92,6 @@ public class TbProductPriceController {
         return result;
     }
 
-    
     /**
      * 修改产品价格表中的数据
      *
@@ -138,6 +138,28 @@ public class TbProductPriceController {
             result.setPageInfo(pageInfo);
         } catch (Exception e) {
             //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/queryTbPrice",method = RequestMethod.GET)
+    @CrossOrigin
+    public Response queryTbPrice() {
+        Response result;
+        try {
+            List list = new ArrayList();
+            list.add("list");
+            list.add("object");
+            list.add("map");
+            PageInfo pageInfo = new PageInfo();
+            //把list设置进行去
+            pageInfo.setList(list);
+            //调用Response表示执行成功
+            result = Response.getResponseSuccess();
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
         }
