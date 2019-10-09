@@ -90,4 +90,12 @@ public interface TbSolutionDomMapper {
      * @author kuangbin
      */
     List<Map<String, Object>> searchSolutionDom(Map<String, Object> param);
+
+    /**
+     * CRM-运营管理-解决方案-SEO优化
+     * 点击保存后对解决方案中的SEO优化进行修改
+     *
+     * @author kuangbin
+     */
+    int updateSolutionDomSEO(Map<String, Object> param);
 }
