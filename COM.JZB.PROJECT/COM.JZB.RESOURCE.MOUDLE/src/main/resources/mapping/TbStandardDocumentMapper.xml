@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbStandardDocumentMapper">
+
+    <!--根据文档类别进行查询-->
+    <select id="getTbStandardDocument" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        Id,
+        domid,
+        typeid,
+        cname,
+        price,
+        department,
+        to_char(to_timestamp(effective / 1000), 'yyyy-MM-dd') as effective,
+        stdrange,
+        status from
+        tb_standard_document
+        where
+        status != '4'
+        <if test="typeid != null">
+            and typeid = #{typeid}
+        </if>
+    </select>
+
+    <!--新增-->
+    <insert id="saveTbStandardDom" parameterType="java.util.Map">
+        insert into
+        tb_standard_document(domid,typeid,domcode,cname,price,department,effective,stdrange,status,pagekey,pagedesc,createtime,addtime,
+        updtime)
+        values
+        (
+        #{domid},
+        #{typeid},
+        <choose>
+            <when test="domcode != null">
+                #{domcode},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cname != null">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price != null">
+                cast (#{price} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="department != null">
+                #{department},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="effective != null">
+                cast(#{effective} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="stdrange != null">
+                cast(#{stdrange} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pagekey != null">
+                #{pagekey},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pagedesc != null">
+                #{pagedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{createtime},
+        #{addtime},
+        #{updtime}
+        )
+    </insert>
+    <!--根据业务id进行修改-->
+    <update id="updateTbStandardDom" parameterType="java.util.Map">
+        update
+        tb_standard_document
+        set
+        <if test="cname != null">cname=#{cname},</if>
+        <if test="domcode != null">domcode=#{domcode},</if>
+        <if test="price != null">price=cast(#{price} as integer),</if>
+        <if test="department != null">department=#{department},</if>
+        <if test="updtime != null">updtime=#{updtime},</if>
+        <if test="effective != null">effective=cast(#{effective} as integer),</if>
+        <if test="stdrange != null">stdrange=cast(#{stdrange} as integer),</if>
+        <if test="status != null">status=#{status},</if>
+        <if test="pagekey != null">pagekey=#{pagekey},</if>
+        <if test="pagedesc != null">pagedesc=#{pagedesc}</if>
+        where
+        domid = #{domid}
+    </update>
+    <!--设置删除状态-->
+    <update id="updateDelete" parameterType="java.util.Map">
+        update
+        tb_standard_document
+        set
+        status=cast(#{status} as integer) where domid=#{domid}
+    </update>
+
+    <!--根据名称进行模糊查询-->
+    <select id="getCname" parameterType="java.util.Map" resultType="java.util.Map">
+       select
+        Id,
+        domid,
+        typeid,
+        cname,
+        price,
+        department,
+        effective,
+        stdrange,
+        status
+        from
+        tb_standard_document
+        where
+        status != '4'
+        <if test="cname != null">
+            and
+            cname
+            like
+            concat('%',#{cname},'%')
+        </if>
+    </select>
+</mapper>
