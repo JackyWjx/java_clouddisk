@@ -452,7 +452,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
     <!--单个通过申请后加入部门资源池,即默认部门-->
     <insert id="insertProposer" parameterType="java.util.Map">
         INSERT INTO
-        tb_dept_user (cname, phone, idx, cid, cdid, uid, ouid, addtime, status, summary)
+        tb_dept_user (cname, phone, idx, cid, cdid, uid, addtime, status, summary)
         VALUES
         (
         #{cname},
@@ -468,7 +468,6 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
             </otherwise>
         </choose>
         #{uid},
-        #{ouid},
         #{restime},
         <choose>
             <when test="status != null and status != ''">
@@ -550,7 +549,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
     <!--批量通过申请后加入部门资源池,即默认部门-->
     <insert id="insertBatchProposer" parameterType="java.util.List">
         INSERT INTO
-        tb_dept_user (cname, phone, idx, cid, cdid, uid, ouid, addtime, status, summary)
+        tb_dept_user (cname, phone, idx, cid, cdid, uid, addtime, status, summary)
         VALUES
         <foreach separator="," close="" open="" index="index" item="item" collection="list">
             (
@@ -567,7 +566,6 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
                 </otherwise>
             </choose>
             #{item.uid},
-            #{item.ouid},
             #{item.restime},
             <choose>
                 <when test="item.status != null and item.status != ''">
