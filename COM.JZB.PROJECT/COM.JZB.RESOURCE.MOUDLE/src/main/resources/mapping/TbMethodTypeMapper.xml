@@ -198,7 +198,7 @@
         <if test="score != null">score=#{score},</if>
         <if test="days != null">days=#{days},</if>
         <if test="typedesc != null">typedesc=#{typedesc},</if>
-        <if test="updtime != null">updtime=#{updtime},</if>
+        <if test="updtime != null">updtime=#{updtime}</if>
         where typeid=#{typeid}
     </update>
 
