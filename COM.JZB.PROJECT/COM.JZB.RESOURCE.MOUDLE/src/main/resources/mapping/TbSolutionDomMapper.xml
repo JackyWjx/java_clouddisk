@@ -28,8 +28,9 @@
         status,
         forwards,
         downloads,
+        keys,
         adduid,
-        addtime,
+        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
         upduid,
         updtime
         FROM
@@ -66,6 +67,7 @@
         status,
         forwards,
         downloads,
+        keys,
         adduid,
         addtime,
         upduid,
@@ -117,6 +119,7 @@
         status,
         forwards,
         downloads,
+        keys,
         adduid,
         addtime,
         upduid,
@@ -133,4 +136,189 @@
         select domid,cname,idx,visits from tb_standard_document where status='1' order by visits desc limit #{count}
     </select>
 
+    <!--点击解决方案中的新建后加入新建的方案文章-->
+    <insert id="insertSolutionDom" parameterType="java.util.Map">
+        INSERT INTO
+        tb_solution_document
+        (domid, typeid, domcode, cname, photo, bigphoto, context, idx, uid, uname, createtime, keys,
+        visits, forwards, downloads, price, adduid, addtime, status, summary)
+        VALUES
+        (
+        #{domid},
+        <choose>
+            <when test="typeid != null and typeid != ''">
+                #{typeid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="domcode != null and domcode != ''">
+                #{domcode},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{cname},
+        #{photo},
+        <choose>
+            <when test="bigphoto != null and bigphoto != ''">
+                #{bigphoto},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{context},
+        (select count(1)+1 from tb_solution_document),
+        <choose>
+            <when test="uid != null and uid != ''">
+                #{uid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="uname != null and uname != ''">
+                #{uname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="uid != null and uid != ''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{keys},
+        <choose>
+            <when test="visits != null and visits != ''">
+                ${visits},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="forwards != null and forwards != ''">
+                ${forwards},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="downloads != null and downloads != ''">
+                ${downloads},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price != null and price != ''">
+                ${price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{adduid},
+        #{addtime},
+        ${status},
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 点击保存后对解决方案中的文章进行修改 -->
+    <update id="updateSolutionDom" parameterType="java.util.Map">
+        UPDATE
+        tb_solution_document
+        SET
+        cname = #{cname},
+        photo = #{photo},
+        domdesc = #{domdesc},
+        <if test="typeid != null and typeid != ''">typeid = ${typeid},</if>
+        context = #{context},
+        keys = #{keys},
+        upduid = #{uid},
+        updtime = #{updtime}
+        <if test="summary != null">,summary = #{summary}</if>
+        WHERE
+        domid = #{domid}
+    </update>
+
+    <!-- 点击删除后对解决方案中的文章进行删除操作(即修改状态) -->
+    <update id="deleteSolutionDom" parameterType="java.util.Map">
+        UPDATE
+        tb_solution_document
+        SET
+        upduid = #{uid},
+        updtime = #{updtime},
+        status = ${status}
+        WHERE
+        domid = #{domid}
+    </update>
+
+    <!--点击搜索解决方案文章标题后进行模糊搜索的总数查询,可加入时间-->
+    <select id="searchSolutionDomCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        tb_solution_document
+        where
+        status = ${status}
+        <if test="starttime != null and starttime != ''">and addtime &gt;= #{starttime}</if>
+        <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
+    </select>
+
+    <!--点击搜索解决方案文章标题后进行模糊搜索,可加入时间-->
+    <select id="searchSolutionDom" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        domid,
+        typeid,
+        cname,
+        photo,
+        domfname,
+        domfpath,
+        domdesc,
+        department,
+        effective,
+        domurl,
+        idx,
+        uid,
+        uname,
+        createtime,
+        pagekey,
+        pagedesc,
+        visits,
+        status,
+        forwards,
+        downloads,
+        keys,
+        adduid,
+        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        upduid,
+        updtime
+        FROM
+        tb_solution_document
+        WHERE
+        status = ${status}
+        <if test="starttime != null and starttime != ''">and addtime &gt;= #{starttime}</if>
+        <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
+    </select>
 </mapper>
