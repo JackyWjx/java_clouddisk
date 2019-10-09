@@ -381,7 +381,12 @@
         count(1)
         from
         tb_activity_list
-        <if test="cid != null and cid != ''">where cid = #{cid}</if>
+        where
+        status = #{status}
+        <if test="cid != null and cid != ''">and cid = #{cid}</if>
+        <if test="starttime != null and starttime != ''">and starttime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime}</if>
+        <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
     </select>
 
     <!--点击文章列表显示所有的文章列表-->
@@ -406,7 +411,18 @@
         summary
         from
         tb_activity_list
-        <if test="cid != null and cid != ''">where cid = #{cid}</if>
+        where
+        status = #{status}
+        <if test="cid != null and cid != ''">and cid = #{cid}</if>
+        <if test="starttime != null and starttime != ''">and starttime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime}</if>
+        <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
+        order by
+        addtime desc
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
     </select>
 
     <!--点击新建后加入新建的活动文章内容-->
@@ -506,7 +522,7 @@
                 #{starttime},
             </when>
             <otherwise>
-                null,
+                #{addtime},
             </otherwise>
         </choose>
         <choose>
@@ -684,8 +700,7 @@
         update
         tb_activity_list
         set
-        status = #{status},
-        starttime = #{starttime}
+        status = #{status}
         where
         actid=#{actid}
     </update>

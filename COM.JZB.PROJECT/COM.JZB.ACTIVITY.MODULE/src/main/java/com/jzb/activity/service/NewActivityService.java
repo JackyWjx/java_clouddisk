@@ -11,6 +11,9 @@ import org.apache.poi.ss.formula.ptg.Pxg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -124,14 +127,7 @@ public class NewActivityService {
      * @author kuangbin
      */
     public int getActivityListCount(Map<String, Object> param) {
-        int count;
-        try {
-            count = activityMapper.queryActivityListCount(param);
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
-            count = 0;
-        }
-        return count;
+        return activityMapper.queryActivityListCount(param);
     }
 
     /**
@@ -140,7 +136,7 @@ public class NewActivityService {
      *
      * @author kuangbin
      */
-    public List<Map<String, Object>> getActivityList(Map<String, Object> param) {
+    public List<Map<String, Object>> getActivityList(Map<String, Object> param) throws ParseException {
         // 设置分页参数
         param = setPageSize(param);
         List<Map<String, Object>> list = activityMapper.queryActivityListData(param);
@@ -253,8 +249,6 @@ public class NewActivityService {
      * @author kuangbin
      */
     public int removeActivityData(Map<String, Object> param) {
-        long starttime = System.currentTimeMillis();
-        param.put("starttime", starttime);
         param.put("status", 2);
         return activityMapper.deleteActivityData(param);
     }
