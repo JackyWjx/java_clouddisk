@@ -412,8 +412,11 @@ public class RoleService implements Service {
      */
     public Map<String, Object> addCompanyRole(Map<String, Object> map) {
         String cid = JzbDataType.getString(map.get("cid"));
-        String crId = cid + "000000";
-        map.put("crid", crId);
+        String crId = JzbDataType.getString(map.get("crid"));
+        if (JzbTools.isEmpty(crId)) {
+            crId = JzbRandom.getRandomCharCap(13);
+            map.put("crid", crId);
+        }
         map.put("addtime", System.currentTimeMillis());
         map.put("status", "1");
         int add = roleMapper.insertCompanyRole(map);
