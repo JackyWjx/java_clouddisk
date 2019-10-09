@@ -174,11 +174,6 @@
         pid=#{pid}
     </update>
 
-
-
-
-
-    
     <select id="getTbProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
         select
         pricetype,
