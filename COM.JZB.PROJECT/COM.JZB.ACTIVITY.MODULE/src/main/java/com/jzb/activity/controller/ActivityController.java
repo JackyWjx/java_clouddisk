@@ -604,4 +604,28 @@ public class ActivityController {
         }
         return result;
     } // End getActivityData
+
+    /**
+     * CRM-运营管理-活动-SEO优化
+     * 点击保存后对活动中的SEO优化进行修改
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/modifyActivityDataSEO", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyActivityDataSEO(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 修改修改成功数
+            int count = newActivityService.modifyActivityDataSEO(param);
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifySolutionDomSEO
 }
