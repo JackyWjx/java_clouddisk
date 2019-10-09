@@ -18,6 +18,8 @@ import org.bouncycastle.cert.ocsp.Req;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -453,7 +455,7 @@ public class ActivityController {
 
     /**
      * CRM-运营管理-活动-文章列表
-     * 点击文章列表显示所有的文章列表
+     * 点击文章列表显示所有的文章列表(可加入开始时间,结束时间条件)
      *
      * @author kuangbin
      */
@@ -462,20 +464,40 @@ public class ActivityController {
     public Response getActivityList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            int count = JzbDataType.getInteger(param.get("count"));
+            // 加入查询状态
+            param.put("status", "1");
+            String startTime = JzbDataType.getString(param.get("starttime"));
+            // 判断是否有开始时间的查询条件
+            if (!JzbDataType.isEmpty(startTime)) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = simpleDateFormat.parse(startTime);
+                long time = date.getTime();
+                // 将时间转化为时间戳存入参数中
+                param.put("starttime", time);
+            }
+            String endTime = JzbDataType.getString(param.get("endtime"));
+            // 判断是否有结束时间的查询条件
+            if (!JzbDataType.isEmpty(endTime)) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = simpleDateFormat.parse(endTime);
+                long time = date.getTime();
+                // 将时间转化为时间戳存入参数中
+                param.put("endtime", time);
+            }
             // 获取前端传来的总数
+            int count = JzbDataType.getInteger(param.get("count"));
             count = count < 0 ? 0 : count;
             if (count == 0) {
                 // 查询所有符合条件的总数
                 count = newActivityService.getActivityListCount(param);
             }
             // 返回所有的推广信息列表
-            List<Map<String, Object>> adverList = newActivityService.getActivityList(param);
+            List<Map<String, Object>> activityList = newActivityService.getActivityList(param);
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             PageInfo pageInfo = new PageInfo();
             result = Response.getResponseSuccess(userInfo);
-            pageInfo.setList(adverList);
-            pageInfo.setTotal(count > 0 ? count : adverList.size());
+            pageInfo.setList(activityList);
+            pageInfo.setTotal(count > 0 ? count : activityList.size());
             result.setPageInfo(pageInfo);
         } catch (Exception e) {
             JzbTools.logError(e);
