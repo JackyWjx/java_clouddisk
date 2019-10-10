@@ -217,35 +217,35 @@
 
     <!--根据名称查询产品信息-->
     <select id="searchProListByName" resultType="java.util.Map">
-    SELECT * FROM (SELECT
+        SELECT * FROM (SELECT
         pl.pid,
         pl.cname,
         cp.cid,
         '1' AS ptype
-    FROM
+        FROM
         tb_company_product cp
         RIGHT JOIN tb_product_list pl ON pl.cid = cp.cid
         AND pl.pid = cp.pid
-    WHERE
+        WHERE
         cp.status = '1'
         AND pl.status ='1'
-		AND pl.plid =#{plid}
+        <if test=" plid != null and plid != ''">AND pl.plid =#{plid}</if>
         AND cp.cid = #{ cid }
         AND pl.cname LIKE'%${cname}%'
         UNION
-    SELECT
+        SELECT
         pp.packid AS pid,
         pp.cname,
         cp.cid,
         '2' AS ptype
-    FROM
+        FROM
         tb_company_product cp
         RIGHT JOIN tb_product_package pp ON pp.cid = cp.cid
         AND pp.packid = cp.pid
-    WHERE
+        WHERE
         cp.status = '1'
         AND pp.status ='1'
-		AND pp.plid = #{ plid }
+        AND pp.plid = #{ plid }
         AND cp.cid = #{ cid }
         AND pp.cname LIKE'%${cname}%'
         ) productlist
@@ -314,6 +314,12 @@
         du.cid = #{cid}
         <if test="cname != null and cname !='' ">AND du.cname LIKE '%${cname}%'
         </if>
+        <if test="list != null and list.size > 0">
+            and du.uid in
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.uid}
+            </foreach>
+        </if>
     </select>
     <!--根据用户姓名查询用户部门信息-->
     <select id="queryDeptByCname" resultType="java.util.Map">
@@ -330,6 +336,13 @@
         du.cid = #{cid}
         <if test="cname != null and cname !='' ">AND du.cname LIKE '%${cname}%'
         </if>
+        <if test="list != null and list.size > 0">
+            and du.uid in
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.uid}
+            </foreach>
+        </if>
+
         ) SELECT
         uid,cname,
         string_agg ( DISTINCT dept, ',' ) as dept
@@ -369,7 +382,7 @@
         WHEN du.uid THEN
         1 ELSE 2
         END AS isduid,
-        to_char(to_timestamp(du.addtime/1000),'yyyy-MM-dd HH24:MI:SS')  as addtime
+        to_char(to_timestamp(du.addtime/1000),'yyyy-MM-dd HH24:MI:SS') as addtime
         FROM
         tb_company_dept cd
         INNER JOIN tb_dept_user du ON cd.status = '1'
@@ -377,7 +390,7 @@
         AND du.cdid = cd.cdid
         WHERE
         cd.cid = #{cid}
-        <if test=" cdid !=null and cdid !='' "> and cd.cdid=#{cdid}</if>
+        <if test=" cdid !=null and cdid !='' ">and cd.cdid=#{cdid}</if>
         <if test=" status !=null and status !='' ">and du.status=#{status}</if>
         AND ( du.cname LIKE'%${value}%' OR du.phone LIKE'%${value}%' )
         ORDER BY du.uid,du.cdid LIMIT #{pagesize} OFFSET #{start}
@@ -485,6 +498,10 @@
             cp.cid = #{cid}
             AND cp.status = '1'
             AND pl.status='1'
+    </select>
+    <!--获取企业名称-->
+    <select id="getCompanyName" resultType="java.lang.String">
+        select cname  from tb_company_list where cid=#{cid};
     </select>
 
 
