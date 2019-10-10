@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.jzb.auth.api.message.MessageApi;
 import com.jzb.auth.api.organize.CompanyApi;
 import com.jzb.auth.api.redis.CommonRedisApi;
+import com.jzb.auth.api.redis.UserRedisApi;
 import com.jzb.auth.config.AuthConfigProperties;
 import com.jzb.auth.dao.AuthUserMapper;
 import com.jzb.base.data.JzbDataType;
@@ -67,6 +68,9 @@ public class AuthUserLoginService {
      */
     @Autowired
     private AuthConfigProperties config;
+
+    @Autowired
+    private UserRedisApi userRedisApi;
 
     /**
      * @return java.util.Map
@@ -146,7 +150,7 @@ public class AuthUserLoginService {
         Map<String, Object> codeMap = new HashMap<>(2);
         codeMap.put("code", authCode);
         Map<String, Object> smsMap = new HashMap<>(2);
-        smsMap.put("sms",codeMap);
+        smsMap.put("sms", codeMap);
         //短信发送参数填写
         map.put("sendpara", JSON.toJSONString(smsMap));
         map.put("usertype", "1");
@@ -243,11 +247,14 @@ public class AuthUserLoginService {
                 map.put("uid", uid);
                 map.put("authid", 0);
                 map.put("regtime", time);
-                map.put("status", 1);
+                if (JzbTools.isEmpty(map.get("status"))) {
+                    map.put("status", "1");
+                }
                 //添加用户注册信息
                 map.put("ktid", 1);
                 map.put("passwd", password().encode(JzbDataType.getString(map.get("passwd"))));
                 userMapper.insertUserList(map);
+                userRedisApi.cachePhoneUid(map);
                 response.put("uid", uid);
             }
         } else {
@@ -343,7 +350,7 @@ public class AuthUserLoginService {
     /**
      * 发送短信并保存验证码
      *
-     * @param map       包含groupid模板id
+     * @param map 包含groupid模板id
      * @return
      */
     public Response sendRemind(Map<String, Object> map) {
