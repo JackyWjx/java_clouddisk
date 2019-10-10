@@ -221,4 +221,6 @@ public interface DeptMapper {
      * @DateTime: 2019/9/4 11:33
      */
     List<Map<String, Object>> queryDeptUserChildList(Map<String, Object> map);
+
+    String getCompanyName(Map<String, Object> map);
 }

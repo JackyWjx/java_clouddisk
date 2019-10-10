@@ -26,6 +26,19 @@ public class OrgConfigProperties {
     private String template;
 
     /**
+     * 发送注册用户的邀请短信模板
+     */
+    private String invite;
+
+    public String getInvite() {
+        return invite;
+    }
+
+    public void setInvite(String invite) {
+        this.invite = invite;
+    }
+
+    /**
      * CRMId
      */
     private String crmId;
