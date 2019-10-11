@@ -35,25 +35,20 @@ public class TbProductPriceService {
 
     /**
      * 添加产品报价的数据
-     * @param param
+     * @param paramList
      * @return
      */
-    public int saveProductPrice(Map<String, Object> param) {
-        long time = System.currentTimeMillis();
-        param.put("addtime", time);
-        param.put("updtime", time);
-        return tbProductPriceMapper.saveProductPrice(param);
+    public int saveProductPrice(List<Map<String, Object>> paramList) {
+        return tbProductPriceMapper.saveProductPrice(paramList);
     }
 
     /**
      * 修改产品报价的数据
-     * @param param
+     * @param paramList
      * @return
      */
-    public int updateProductPrice(Map<String, Object> param) {
-        long time = System.currentTimeMillis();
-        param.put("updtime", time);
-        return tbProductPriceMapper.updateProductPrice(param);
+    public int updateProductPrice(List<Map<String, Object>> paramList) {
+        return tbProductPriceMapper.updateProductPrice(paramList);
     }
 
     /**

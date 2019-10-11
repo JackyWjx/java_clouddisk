@@ -14,23 +14,6 @@ public class TbProductResListService {
     @Autowired
     private TbProductResListMapper tbProductResListMapper;
 
-    /**
-     * 查询模板功能信息
-     * @param param
-     * @return
-     */
-    public List<Map<String, Object>> queryProductResList(Map<String, Object> param){
-        return tbProductResListMapper.queryProductResList(param);
-    }
-
-    /**
-     * 添加模板功能信息
-     * @param param
-     * @return
-     */
-    public int addProductRes(Map<String, Object> param){
-        return tbProductResListMapper.addProductResList(param);
-    }
 
     /**
      * 查询合同配置中的产品参数
@@ -42,25 +25,6 @@ public class TbProductResListService {
     public List<Map<String, Object>> getProductResList(Map<String, Object> param) {
         return tbProductResListMapper.getProductResList(param);
 
-    }
-
-
-    /**
-     * 根据产品的名称获取产品参数列表
-     * @param param
-     * @return
-     */
-    public List<Map<String, Object>> getProductResListCname(Map<String, Object> param) {
-        return tbProductResListMapper.getProductResListCname(param);
-    }
-
-    /**
-     * 合同配置中产品参数中新建中查询出产品名称
-     * @param param
-     * @return
-     */
-    public List<Map<String, Object>> queryProductListCname(Map<String, Object> param) {
-        return tbProductResListMapper.queryProductListCname(param);
     }
 
     /**
@@ -88,17 +52,12 @@ public class TbProductResListService {
      * @return
      */
     public int saveTbProductResList(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("addtime", time);
+        param.put("updtime", time);
         return tbProductResListMapper.saveTbProductResList(param);
     }
 
-    /**
-     * 修改资源产品表中的数据
-     * @param param
-     * @return
-     */
-    public int updateTbProductResList(Map<String, Object> param) {
-      return tbProductResListMapper.updateTbProductResList(param);
-    }
 
     /**
      * 点击修改的时候查询产品参数返回给前端
@@ -108,4 +67,5 @@ public class TbProductResListService {
     public List<Map<String, Object>> getTbProductParameteItem(Map<String, Object> param) {
           return tbProductResListMapper.getTbProductParameteItem(param);
     }
+
 }
