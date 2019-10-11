@@ -11,24 +11,23 @@ import java.util.Map;
 public interface TbProductFunctionMapper {
 
     /**
+     * 查询产品功能表对应的资源产品
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getTbProductFunction(Map<String, Object> param);
+
+    /**
      * 添加产品功能
-     * @param list
+     * @param paramList
      * @return
      */
-    int addProductFunction(List<Map<String, Object>> list);
-
-
-    /**
-     * 查询产品功能
-     * @param map
-     * @return
-     */
-    List<Map<String, Object>> queryProductFunction(Map<String, Object> map);
+    int saveTbProductFunction(List<Map<String, Object>> paramList);
 
     /**
-     * 修改产品功能
-     * @param map
+     * 添加产品功能
+     * @param paramList
      * @return
      */
-    int updateProductFunction(Map<String, Object> map);
+    int updateTbProductFunction(List<Map<String, Object>> paramList);
 }

@@ -30,18 +30,18 @@ public interface TbProductPriceMapper {
     /**
      * 新增产品价格报价
      *
-     * @param param
+     * @param paramList
      * @return
      */
-    int saveProductPrice(Map<String, Object> param);
+    int saveProductPrice(List<Map<String, Object>> paramList);
 
     /**
      * 修改产品价格报价
      *
-     * @param param
+     * @param paramList
      * @return
      */
-    int updateProductPrice(Map<String, Object> param);
+    int updateProductPrice(List<Map<String, Object>> paramList);
 
 
     /**
