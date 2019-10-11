@@ -4,6 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.AdvertService;
 import com.jzb.resource.service.TbProductPriceService;
@@ -24,7 +25,7 @@ public class TbProductPriceController {
 
     @Autowired
     private TbProductPriceService tbProductPriceService;
-    //用于调用分页参数的
+    //用于调用分页参数
     @Autowired
     private AdvertService advertService;
 
@@ -78,12 +79,17 @@ public class TbProductPriceController {
     public Response saveProductPrice(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pid"})) {
-                result = Response.getResponseError();
-            } else {
-                //如果返回值大于0则表示添加成功否则添加失败
-                result = tbProductPriceService.saveProductPrice(param) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+                //获取map中的list
+            List<Map<String, Object>> paramList = (List) param.get("list");
+            for (int i = 0; i < paramList.size(); i++) {
+                long time = System.currentTimeMillis();
+                paramList.get(i).put("addtime", time);
+                paramList.get(i).put("updtime", time);
+                paramList.get(i).put("paraid", JzbRandom.getRandomCharCap(13));
             }
+                //如果返回值大于0则表示添加成功否则添加失败
+                result = tbProductPriceService.saveProductPrice(paramList) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+
         } catch (Exception e) {
             //打印错误信息
             JzbTools.logError(e);
@@ -103,13 +109,14 @@ public class TbProductPriceController {
     public Response updateProductPrice(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            //如果产品id为空  则返回错误信息
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pid"})) {
-                result = Response.getResponseError();
-            } else {
-                //如果返回值大于0则表示修改成功否则添加失败
-                result = tbProductPriceService.updateProductPrice(param) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            List<Map<String, Object>> paramList = (List) param.get("list");
+            for (int i = 0; i < paramList.size(); i++) {
+                long time = System.currentTimeMillis();
+                paramList.get(i).put("updtime", time);
             }
+                //如果返回值大于0则表示修改成功否则添加失败
+                result = tbProductPriceService.updateProductPrice(paramList) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+
         } catch (Exception e) {
             //打印错误信息
             JzbTools.logError(e);
@@ -138,28 +145,6 @@ public class TbProductPriceController {
             result.setPageInfo(pageInfo);
         } catch (Exception e) {
             //打印错误信息
-            JzbTools.logError(e);
-            result = Response.getResponseError();
-        }
-        return result;
-    }
-
-    @RequestMapping(value = "/queryTbPrice",method = RequestMethod.GET)
-    @CrossOrigin
-    public Response queryTbPrice() {
-        Response result;
-        try {
-            List list = new ArrayList();
-            list.add("list");
-            list.add("object");
-            list.add("map");
-            PageInfo pageInfo = new PageInfo();
-            //把list设置进行去
-            pageInfo.setList(list);
-            //调用Response表示执行成功
-            result = Response.getResponseSuccess();
-            result.setPageInfo(pageInfo);
-        } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
         }

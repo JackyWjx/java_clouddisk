@@ -24,7 +24,6 @@ public class TbProductResListController {
     @Autowired
     private AdvertService advertService;
 
-
     @Autowired
     private TbProductResListService tbProductResListService;
 
@@ -41,7 +40,7 @@ public class TbProductResListController {
 
     @RequestMapping(value = "/getProductResList", method = RequestMethod.POST)
     @CrossOrigin
-    public Response getProductResList(@RequestBody Map<String, Object> param) {
+    public Response getProductResList(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
         try {
             //前端传过来的总条数
@@ -69,68 +68,6 @@ public class TbProductResListController {
         }
         return result;
     }
-
-    /**
-     * 根据产品的名称获取产品的参数
-     *
-     * @param param
-     * @return
-     */
-    @RequestMapping(value = "/getProductResListCname", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response getProductResListCname(@RequestBody Map<String, Object> param) {
-        Response result;
-        try {
-            //前端传过来的总条数
-            int count = JzbDataType.getInteger(param.get("count"));
-            // 获取单位总数
-            count = count < 0 ? 0 : count;
-            if (count == 0) {
-                // 查询单位总数
-                count = tbProductPriceService.getTbProductPriceCount(param);
-            }
-            //把分页参数在设置好
-            param = advertService.setPageSize(param);
-            List<Map<String, Object>> ProductResListCname = tbProductResListService.getProductResListCname(param);
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setList(ProductResListCname);
-            //设置分页总数
-            pageInfo.setTotal(count > 0 ? count : ProductResListCname.size());
-            result = Response.getResponseSuccess(userInfo);
-            result.setPageInfo(pageInfo);
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
-            result = Response.getResponseError();
-        }
-        return result;
-    }
-
-
-    /**
-     * 合同配置中产品参数中新建中查询出产品名称
-     *
-     * @param param
-     * @return
-     */
-    @RequestMapping(value = "/queryProductListCname", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response queryProductListCname(@RequestBody Map<String, Object> param) {
-        Response result;
-        try {
-            List<Map<String, Object>> ProductResListCname = tbProductResListService.queryProductListCname(param);
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setList(ProductResListCname);
-            result = Response.getResponseSuccess(userInfo);
-            result.setPageInfo(pageInfo);
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
-            result = Response.getResponseError();
-        }
-        return result;
-    }
-
     /**
      * 添加资源产品表的数据
      *
@@ -142,7 +79,7 @@ public class TbProductResListController {
     public Response saveTbProductResList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pid","plid","cname"})) {
                 //添加资源产品表中的数据
                 result = Response.getResponseError();
             } else {
@@ -155,32 +92,6 @@ public class TbProductResListController {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            result = Response.getResponseError();
-        }
-        return result;
-    }
-
-    /**
-     * 修改资源产品表中的数据
-     *
-     * @param param
-     * @return
-     */
-    @RequestMapping(value = "/updateTbProductResList", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response updateTbProductResList(@RequestBody Map<String, Object> param) {
-        Response result;
-        try {
-            int count = tbProductResListService.updateTbProductResList(param);
-            if (count > 0) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                result = Response.getResponseSuccess(userInfo);
-            } else {
-                result = Response.getResponseError();
-            }
-        } catch (Exception e) {
-            //打印异常信息
             e.printStackTrace();
             result = Response.getResponseError();
         }
