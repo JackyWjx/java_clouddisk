@@ -159,6 +159,7 @@ public class JzbUserAuthService {
         Response result;
         Map<String, Object> param = new HashMap<>(2);
         param.put("cid", map.get("cid"));
+        param.put("userinfo",map.get("userinfo"));
         //获取管理员id
         Response uidRes = companyOrgApi.getAdministrator(param);
         if (JzbDataType.isMap(uidRes.getResponseEntity())) {
@@ -179,5 +180,8 @@ public class JzbUserAuthService {
         }
         return result;
     }
+
+
+
 } // End class JzbUserAuthService
 

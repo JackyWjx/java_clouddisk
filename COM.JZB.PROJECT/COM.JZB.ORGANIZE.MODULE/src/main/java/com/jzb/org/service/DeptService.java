@@ -570,7 +570,7 @@ public class DeptService {
                 param.put("password", invite.get("password"));
             }
             //发送短信
-            // service.sendRemind(param);
+             service.sendRemind(param);
         }
     }
 

@@ -30,6 +30,20 @@ public class OrgConfigProperties {
      */
     private String invite;
 
+    /**
+     * 新建单位短信模块
+     */
+    private String addCompany;
+
+    public String getAddCompany() {
+        return addCompany;
+    }
+
+    public void setAddCompany(String addcompany) {
+        this.addCompany = addcompany;
+    }
+
+
     public String getInvite() {
         return invite;
     }

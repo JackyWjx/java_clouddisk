@@ -59,6 +59,7 @@ public interface RoleAuthApi {
     @RequestMapping(value = "/saveRoleGroup", method = RequestMethod.POST)
     @CrossOrigin
     public Response saveRoleGroup(@RequestBody Map<String, Object> param);
+
     /**
      * 保存角色组关联信息
      *
@@ -68,4 +69,24 @@ public interface RoleAuthApi {
     @RequestMapping(value = "/addRoleRelation", method = RequestMethod.POST)
     @CrossOrigin
     public Response addRoleRelation(@RequestBody Map<String, Object> param);
+
+    /**
+     * 根据企业id，角色获取用户角色表信息
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getUserRole", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserRole(@RequestBody Map<String, Object> param);
+
+    /**
+     * 根据角色组id获取关联数据信息
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getRoleRelation", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getRoleRelation(@RequestBody Map<String, Object> param);
 }

@@ -39,4 +39,14 @@ public interface DeptOrgApi {
     @CrossOrigin
     public Response importUserInfo(@RequestBody MultipartFile file,@RequestBody Map<String, Object> params);
 */
+
+    /**
+     * 根据用户姓名或用户id获取用户部门信息
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getUserDept", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserDept(@RequestBody Map<String, Object> param);
 }

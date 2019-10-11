@@ -86,7 +86,8 @@
         UPDATE tb_role_group
         SET status = '2'
         WHERE
-            crgid =#{crgid}
+            crgid =#{crgid};
+      update tb_role_relation set status = '2' where crgid = #{crgid};
     </update>
     <!--修改角色组信息-->
     <update id="updateRoleGroup1">
@@ -285,7 +286,7 @@
         WHEN '2' THEN
         cr.cname
         ELSE re.rrid
-        END as rrmc
+        END as rrmc,u.summary,u.relphone
         FROM
         tb_role_relation re
         LEFT JOIN tb_user_list u ON u.uid = re.rrid
@@ -461,7 +462,7 @@
         SELECT
             ur.crid,
             ur.uid,
-            ul.cname,ul.summary
+            ul.cname,ul.summary,ul.relphone
         FROM
             tb_user_role ur
             LEFT JOIN tb_user_list ul ON ur.uid = ul.uid
