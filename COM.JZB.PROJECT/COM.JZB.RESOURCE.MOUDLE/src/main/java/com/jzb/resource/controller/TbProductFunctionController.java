@@ -46,6 +46,7 @@ public class TbProductFunctionController {
                 pageInfo.setList(list);
 
                 //总数
+
                 int count = list.size();
                 pageInfo.setTotal(count);
                 // 定义返回结果
