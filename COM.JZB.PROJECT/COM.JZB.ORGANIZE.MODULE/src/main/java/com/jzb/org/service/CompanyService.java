@@ -12,6 +12,7 @@ import com.jzb.base.util.JzbTools;
 
 import com.jzb.org.api.message.MessageApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
+import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.dao.CompanyMapper;
 import com.jzb.org.dao.DeptMapper;
 import net.sf.json.JSONArray;
@@ -53,6 +54,9 @@ public class CompanyService {
      */
     @Autowired
     private MessageApi messageApi;
+
+    @Autowired
+    private OrgConfigProperties config;
 
     /**
      * 开放平台调用接口修改企业地址,地区信息
@@ -256,6 +260,7 @@ public class CompanyService {
         List<Map<String, Object>> nameList = getNames(map);
         if (nameList.size() > 0) {
             message = "4";
+            cid = JzbDataType.getString(nameList.get(0).get("cid"));
         } else {
             long time = System.currentTimeMillis();
             cid = JzbRandom.getRandomCharCap(7);
@@ -284,11 +289,23 @@ public class CompanyService {
             param.put("cname", "资源池");
             deptMapper.insertCompanyDept(param);
             //用户加入到资源池
-            param.put("time", time);
-            param.put("cname", userInfo.get("cname"));
-            param.put("phone", map.get("phone"));
             param.put("status", "1");
-            deptMapper.insertDeptUser(param);
+            param.put("time", time);
+            String uid = JzbDataType.getString(param.get("uid"));
+            String manager = JzbDataType.getString(map.get("manager"));
+            if (!uid.equals(manager)) {
+                //添加负责人
+                //负责人手机号和uid
+                param.put("phone", map.get("phone"));
+                param.put("uid", manager);
+                param.put("cname", map.get("managername"));
+                deptMapper.insertDeptUser(param);
+                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            } else {
+                param.put("cname", userInfo.get("cname"));
+                param.put("phone", userInfo.get("relphone"));
+                deptMapper.insertDeptUser(param);
+            }
             // 加入系统名称
             param.put("systemname", JzbDataType.getString(map.get("systemname")));
             deptMapper.insertCompanySysConfig(param);
@@ -712,7 +729,7 @@ public class CompanyService {
         String date = sim.format(new Date());
         Map<String, Object> codeMap = new HashMap<>();
         // 创建单位成功判断是否有密码需要发送给用户
-        if(!JzbDataType.isEmpty(JzbDataType.getString(map.get("password")))){
+        if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("password")))) {
             codeMap.put("password", JzbDataType.getString(map.get("password")));
         }
         codeMap.put("username", JzbDataType.getString(map.get("username")));
@@ -769,6 +786,14 @@ public class CompanyService {
      * @DateTime: 2019/9/20 17:52
      */
     public int addCompanyFriend(Map<String, Object> param) {
+        if (JzbDataType.isMap(param.get("send"))) {
+            Map<String, Object> send = (Map<String, Object>) param.get("send");
+            if (!JzbTools.isEmpty(send.get("relphone"))) {
+                //给负责人发送短信
+                send.put("groupid", config.getAddCompany());
+                sendRemind(send);
+            }
+        }
         return companyMapper.insertCompanyFriend(param);
     }
 
