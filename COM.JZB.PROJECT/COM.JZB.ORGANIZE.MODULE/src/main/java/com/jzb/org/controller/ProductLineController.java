@@ -6,6 +6,7 @@ import com.jzb.base.constant.JzbStatusConstant;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.service.ProductLineService;
@@ -119,8 +120,9 @@ public class ProductLineController {
         Response response;
         try {
             List<Map<String, Object>> productMenuList = productLineService.getCompanyMenuList(param);
+            List<Map<String, Object>> productPageList = productLineService.getCompanyPageList(param);
             // 设置树结构
-            response = setTreeStructure(productMenuList, param);
+            response = setTreeStructure(productPageList, productMenuList, param);
         } catch (Exception ex) {
             JzbTools.logError(ex);
             response = Response.getResponseError();
@@ -158,7 +160,7 @@ public class ProductLineController {
 
     /**
      * CRM菜单管理-记支宝电脑端
-     * 电脑端-全界面-记支宝电脑端下全界面新建同级页面
+     * 电脑端-全界面-记支宝电脑端下全界面新建同级页面或菜单
      *
      * @author kuang Bin
      */
@@ -170,8 +172,16 @@ public class ProductLineController {
             // 获取用户信息
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            // 返回成功数
-            int count = productLineService.addProductPage(param);
+            int maybe = JzbDataType.getInteger(param.get("maybe"));
+            int count;
+            // maybe为1代表新增菜单
+            if (maybe == 1) {
+                // 返回成功数
+                count = productLineService.addProductMenu(param);
+            } else {
+                // 返回成功数
+                count = productLineService.addProductPage(param);
+            }
             if (count == 1) {
                 // 判断缓存中是否存在产品数并删除
                 comHasMenuTree(param);
@@ -235,11 +245,27 @@ public class ProductLineController {
                 Map<String, Object> menuMap = menuList.get(i);
                 menuMap.put("type", "2");
                 String mid = JzbDataType.getString(menuMap.get("mid"));
+                if ("000000000000000".equals(mid)) {
+                    JSONObject page = new JSONObject();
+                    page.put("type", "2");
+                    page.put("pid", JzbDataType.getString(menuMap.get("pid")));
+                    page.put("pageid", JzbDataType.getString(menuMap.get("pageid")));
+                    page.put("mid", JzbDataType.getString(menuMap.get("mid")));
+                    page.put("pagecode", JzbDataType.getString(menuMap.get("pagecode")));
+                    page.put("cname", JzbDataType.getString(menuMap.get("cname")));
+                    page.put("icon", JzbDataType.getString(menuMap.get("icon")));
+                    page.put("pagepath", JzbDataType.getString(menuMap.get("pagepath")));
+                    page.put("summary", JzbDataType.getString(menuMap.get("summary")));
+                    resultList.add(page);
+                    menuList.remove(menuMap);
+                    // 跳出此内循环至外循环重新开始循环
+                    continue here;
+                }
                 // 遍历结果集中的数据
                 for (int b = 0; b < resultList.size(); b++) {
                     JSONObject result = resultList.get(b);
                     // 如果有页面存在与同一级
-                    if (mid.equals(result.getString("mid"))) {
+                    if (mid.equals(result.getString("mid")) && !"000000000000000".equals(result.getString("mid"))) {
                         // 直接添加至此级的pageList中
                         result.getJSONArray("children").add(menuMap);
                         menuList.remove(menuMap);
@@ -251,7 +277,7 @@ public class ProductLineController {
                 param.put("mid", mid);
 
                 // 获取当前页面所属菜单级菜单下所有子集
-                List<Map<String, Object>> pageList = productLineService.getProductMenuList(param);
+                List<Map<String, Object>> pageList = productLineService.getProductMenuList(menuMap);
 
                 // 记录临时json
                 JSONObject recordJson = new JSONObject();
@@ -293,11 +319,25 @@ public class ProductLineController {
                     if (parentId.equals(firstParent)) {
                         // 加入一级菜单到结果集
                         resultList.add(node);
-
                         // 加入当前层级
                         node.put("level", level);
-                        node.getJSONArray("children").add(menuMap);
-                        menuList.remove(menuMap);
+                        if ("000000000000000".equals(mid)) {
+                            JSONObject page = new JSONObject();
+                            page.put("type", "2");
+                            page.put("pid", JzbDataType.getString(menuMap.get("pid")));
+                            page.put("pageid", JzbDataType.getString(menuMap.get("pageid")));
+                            page.put("mid", JzbDataType.getString(menuMap.get("mid")));
+                            page.put("pagecode", JzbDataType.getString(menuMap.get("pagecode")));
+                            page.put("cname", JzbDataType.getString(menuMap.get("cname")));
+                            page.put("icon", JzbDataType.getString(menuMap.get("icon")));
+                            page.put("pagepath", JzbDataType.getString(menuMap.get("pagepath")));
+                            page.put("summary", JzbDataType.getString(menuMap.get("summary")));
+                            resultList.add(page);
+                            menuList.remove(menuMap);
+                        } else {
+                            node.getJSONArray("children").add(menuMap);
+                            menuList.remove(menuMap);
+                        }
                         recordJson.put(JzbDataType.getString(record.get("mid")), node);
                     } else if (recordJson.containsKey(parentId)) {
                         // 如果此对象的父级不是根级,则添加在对象父id存在的node对象中的children中
@@ -370,8 +410,9 @@ public class ProductLineController {
         Response response;
         try {
             List<Map<String, Object>> productMenuList = productLineService.getProductMenuList(param);
+            List<Map<String, Object>> productPageList = productLineService.getCompanyPageList(param);
             // 设置树结构
-            response = setTreeStructure(productMenuList, param);
+            response = setTreeStructure(productPageList, productMenuList, param);
         } catch (Exception ex) {
             JzbTools.logError(ex);
             response = Response.getResponseError();
@@ -445,7 +486,7 @@ public class ProductLineController {
      * @return Response
      * @author kuang Bin
      */
-    public Response setTreeStructure(List<Map<String, Object>> list, Map<String, Object> param) {
+    public Response setTreeStructure(List<Map<String, Object>> pageList, List<Map<String, Object>> list, Map<String, Object> param) {
         Response response;
         // 结果集 JSON
         JSONArray result = new JSONArray();
@@ -485,6 +526,17 @@ public class ProductLineController {
             node.put("icon", JzbDataType.getString(record.get("icon")));
             node.put("photo", JzbDataType.getString(record.get("photo")));
             node.put("summary", JzbDataType.getString(record.get("summary")));
+            if ("000000000000000".equals(parentId) && pageList.size() != 0) {
+                for (int b = pageList.size() - 1; b >= 0; b--) {
+                    Map<String, Object> productPage = pageList.get(b);
+                    if (productPage.get("pid").equals(JzbDataType.getString(record.get("pid")))) {
+                        // type为2代表是页面
+                        productPage.put("type", "2");
+                        result.add(productPage);
+                        pageList.remove(b);
+                    }
+                }
+            }
             // 查询每级菜单下的页面
             List<Map<String, Object>> productPageList = productLineService.getProductPageList(record);
             for (int p = 0; p < productPageList.size(); p++) {
