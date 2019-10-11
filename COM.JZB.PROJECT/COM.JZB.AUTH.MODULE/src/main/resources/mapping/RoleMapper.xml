@@ -269,29 +269,32 @@
     <!--获取角色组角色关联表总数-->
     <select id="queryRelationCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         SELECT COUNT(1) FROM tb_role_relation WHERE status='1' AND crgid = #{crgid}
+        <if test=" rrtype !=null and rrtype !=''">AND rrtype=#{rrtype}</if>
     </select>
     <!--获取角色组角色关联表信息-->
     <select id="queryRelationList" resultType="java.util.LinkedHashMap">
-    SELECT
+        SELECT
         re.cid,
         re.crgid,
         re.rrtype,
         re.rrid,
-    CASE
+        CASE
         rrtype
-            WHEN  '4' THEN
-            u.cname
-            WHEN  '2' THEN
-            cr.cname
-            ELSE re.rrid
-        END  as rrmc
-     FROM
+        WHEN '4' THEN
+        u.cname
+        WHEN '2' THEN
+        cr.cname
+        ELSE re.rrid
+        END as rrmc
+        FROM
         tb_role_relation re
         LEFT JOIN tb_user_list u ON u.uid = re.rrid
         LEFT JOIN tb_company_role cr ON cr.crid = re.rrid
-    WHERE re.status='1' AND	re.crgid = #{crgid}
-    ORDER BY rrtype,re.id
-    LIMIT #{pagesize}  OFFSET #{start}
+        WHERE re.status='1' AND re.crgid = #{crgid}
+        <if test=" rrtype !=null and rrtype !=''">AND re.rrtype=#{rrtype}</if>
+
+        ORDER BY rrtype,re.id
+        LIMIT #{pagesize} OFFSET #{start}
     </select>
 
     <!--查询角色组菜单表是否有数据-->
@@ -458,7 +461,7 @@
         SELECT
             ur.crid,
             ur.uid,
-            ul.cname
+            ul.cname,ul.summary
         FROM
             tb_user_role ur
             LEFT JOIN tb_user_list ul ON ur.uid = ul.uid

@@ -136,7 +136,7 @@ public class ExportConfirmService {
         boolean result = true;
         Map reMap = new HashMap(4);
         try {
-            reMap.put(4, "^[1][3,4,5,7,8][0-9]{9}$");
+            reMap.put(4, "^[1][3,4,5,6,7,8,9][0-9]{9}$");
             result = Pattern.matches(reMap.get(4).toString(), obj);
         } catch (Exception e) {
             JzbTools.logError(e);

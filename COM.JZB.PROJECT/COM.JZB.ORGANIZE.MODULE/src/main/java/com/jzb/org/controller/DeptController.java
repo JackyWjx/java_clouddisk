@@ -82,7 +82,7 @@ public class DeptController {
     public Response getProductList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"cid", "plid"};
+            String[] str = {"cid"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("plid", JzbDataType.getInteger(param.get("plid")));
@@ -155,14 +155,15 @@ public class DeptController {
         }
         return result;
     }
-	
-	 /**
-    * 获取CRM的菜单权限
-    * @Author: DingSC
-    * @DateTime: 2019/9/25 10:16
-    * @param param
-    * @return com.jzb.base.message.Response
-    */
+
+    /**
+     * 获取CRM的菜单权限
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/9/25 10:16
+     */
     @RequestMapping(value = "/getCRMMenu", method = RequestMethod.POST)
     @CrossOrigin
     public Response getCRMMenu(@RequestBody Map<String, Object> param) {
@@ -175,8 +176,8 @@ public class DeptController {
             JSONArray map = deptService.getProductMenu(param);
             result = Response.getResponseSuccess(userInfo);
             Map<String, Object> reMap = new HashMap<>(2);
-            reMap.put("pid",pid);
-            reMap.put("list",map);
+            reMap.put("pid", pid);
+            reMap.put("list", map);
             result.setResponseEntity(reMap);
         } catch (Exception e) {
             JzbTools.logError(e);
@@ -184,10 +185,10 @@ public class DeptController {
         }
         return result;
     }
-	
+
 
     /**
-     * 根据用户姓名获取用户部门信息
+     * 根据用户姓名或用户id获取用户部门信息
      *
      * @param param
      * @return
@@ -494,9 +495,11 @@ public class DeptController {
             if (userInfo.size() > 0) {
                 //生成批次ID
                 String batchId = JzbRandom.getRandomChar(11);
-                String filepath = config.getImportPath() + "/" + batchId + ".xlsx";
                 //获取上传文件名称
                 String fileName = file.getOriginalFilename();
+                //获取后缀名
+                String suffix = fileName.substring(fileName.lastIndexOf("."));
+                String filepath = config.getImportPath() + "/" + batchId + suffix;
                 Map<String, Object> param = new HashMap<>(6);
                 param.put("batchid", batchId);
                 param.put("address", filepath);
@@ -508,8 +511,11 @@ public class DeptController {
                 try {
                     //保存文件到本地
                     File intoFile = new File(filepath);
-                    file.transferTo(intoFile);
+                    intoFile.getParentFile().mkdirs();
+                    String address = intoFile.getCanonicalPath();
+                    file.transferTo(new File(address));
                 } catch (Exception e) {
+                    e.printStackTrace();
                     JzbTools.logError(e);
                     //保存失败信息到批次表
                     param.put("status", "4");

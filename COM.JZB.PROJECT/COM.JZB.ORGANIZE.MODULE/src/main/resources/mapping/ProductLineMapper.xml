@@ -69,7 +69,8 @@
         m.icon,
         m.photo,
         m.summary,
-        m.idx
+        m.idx,
+        m.status
         FROM
         tb_company_product c
         LEFT JOIN
@@ -91,7 +92,8 @@
         tpm.icon,
         tpm.photo,
         tpm.summary,
-        tpm.idx
+        tpm.idx,
+        tpm.status
         FROM
         tb_product_menu tpm
         JOIN menu ON tpm.parentid = menu.mid
@@ -101,8 +103,29 @@
         menu.*
         FROM
         menu
+        where
+        menu.status = #{status}
         ORDER BY
         menu.idx ASC
+    </select>
+
+    <!--电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的顶级菜单下的页面-->
+    <select id="queryCompanyPageList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        pid,
+        mid,
+        icon,
+        pageid,
+        pagecode,
+        cname,
+        pagepath,
+        summary
+        from
+        tb_product_page
+        where
+        status = #{status}
+        and
+        mid = '000000000000000'
     </select>
 
     <!--记支宝电脑端下新建产品线-->
@@ -154,6 +177,7 @@
     <!--电脑端-全界面-记支宝电脑端下全界面显示菜单下的所有页面-->
     <select id="queryProductPageList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
+        pid,
         mid,
         icon,
         pageid,
@@ -193,6 +217,7 @@
     <!--电脑端-全界面-记支宝电脑端下全界面根据页面名称模糊搜索页面-->
     <select id="searchProductPageList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
+        p.pid,
         p.pageid,
         p.mid,
         p.pagecode,
@@ -226,12 +251,13 @@
         icon,
         photo,
         summary,
-        idx
+        idx,
+        status
         FROM
         tb_product_menu
         WHERE
         <choose>
-            <when test="mid != null and mid != ''">
+            <when test="mid != null and mid != '' and mid != '000000000000000'">
                 mid = #{mid}
             </when>
             <otherwise>
@@ -250,7 +276,8 @@
         tpm.icon,
         tpm.photo,
         tpm.summary,
-        tpm.idx
+        tpm.idx,
+        tpm.status
         FROM
         tb_product_menu tpm
         JOIN menu ON tpm.parentid = menu.mid
@@ -261,6 +288,8 @@
         menu.*
         FROM
         menu
+        where
+        menu.status='1'
         ORDER BY
         menu.idx ASC
     </select>
@@ -299,7 +328,14 @@
                 null,
             </otherwise>
         </choose>
-        ${idx},
+        <choose>
+            <when test="idx != null and idx != ''">
+                ${idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_product_menu),
+            </otherwise>
+        </choose>
         #{addtime},
         #{updtime},
         <choose>

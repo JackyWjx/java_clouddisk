@@ -136,6 +136,21 @@ public class ProductLineService {
     }
 
     /**
+     * CRM菜单管理-记支宝电脑端
+     * 电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的顶级菜单下的页面
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getCompanyPageList(Map<String, Object> param) {
+        // 加入查询状态
+        param.put("status", "1");
+
+        // 1代表单产品,2代表产品包
+        param.put("ptype", "1");
+        return productLineMapper.queryCompanyPageList(param);
+    }
+
+    /**
      * 电脑端-全界面-记支宝电脑端下全界面显示菜单下的所有页面
      *
      * @author kuangbin
@@ -155,6 +170,7 @@ public class ProductLineService {
     public int addProductPage(Map<String, Object> param) {
         int count;
         try {
+
             // 获取当前时间
             long addtime = System.currentTimeMillis();
             param.put("addtime", addtime);
@@ -234,9 +250,9 @@ public class ProductLineService {
             // 获取当前时间
             long addtime = System.currentTimeMillis();
             String mid = JzbRandom.getRandomCharCap(15);
+            param.put("mid", mid);
             param.put("addtime", addtime);
             param.put("updtime", addtime);
-            param.put("mid", mid);
             // 加入菜单表
             count = productLineMapper.insertProductMenu(param);
         } catch (Exception ex) {

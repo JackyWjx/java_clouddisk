@@ -50,6 +50,14 @@ public interface ProductLineMapper {
     List<Map<String, Object>> queryCompanyMenuList(Map<String, Object> param);
 
     /**
+     * CRM菜单管理-记支宝电脑端
+     * 电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的顶级菜单下的页面
+     *
+     * @author kuangbin
+     */
+    List<Map<String, Object>> queryCompanyPageList(Map<String, Object> param);
+
+    /**
      * 电脑端-全界面-记支宝电脑端下全界面显示菜单下的所有页面
      *
      * @author kuangbin

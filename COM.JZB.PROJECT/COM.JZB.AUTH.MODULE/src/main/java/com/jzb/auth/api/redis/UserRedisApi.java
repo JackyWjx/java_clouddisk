@@ -18,6 +18,7 @@ import java.util.Map;
 public interface UserRedisApi {
     /**
      * 更新缓存中的过时用户信息
+     *
      * @param param
      */
     @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST)
@@ -25,6 +26,7 @@ public interface UserRedisApi {
 
     /**
      * 缓存用户信息
+     *
      * @param param
      */
     @RequestMapping(value = "/cacheUserInfo", method = RequestMethod.POST)
@@ -32,6 +34,7 @@ public interface UserRedisApi {
 
     /**
      * 更新缓存中用户Token
+     *
      * @param param
      */
     @RequestMapping(value = "/updateUserToken", method = RequestMethod.POST)
@@ -39,6 +42,7 @@ public interface UserRedisApi {
 
     /**
      * 获取缓存中用户信息
+     *
      * @param param
      */
     @RequestMapping(value = "/getCacheUserInfo", method = RequestMethod.POST)
@@ -46,6 +50,7 @@ public interface UserRedisApi {
 
     /**
      * 获取缓存中用户信息
+     *
      * @param param
      */
     @RequestMapping(value = "/getTokenUser", method = RequestMethod.POST)
@@ -56,4 +61,14 @@ public interface UserRedisApi {
      */
     @RequestMapping(value = "/comHasUserKey", method = RequestMethod.POST)
     Response comHasUserKey(@RequestBody Map<String, Object> param);
+
+    /**
+     * 根据电话缓存一个用户ID
+     * 请求参数 uid,name
+     *
+     * @param param 请求参数
+     *
+     */
+    @RequestMapping(value = "/cachePhoneUid", method = RequestMethod.POST)
+    public Response cachePhoneUid(@RequestBody Map<String, Object> param);
 }
