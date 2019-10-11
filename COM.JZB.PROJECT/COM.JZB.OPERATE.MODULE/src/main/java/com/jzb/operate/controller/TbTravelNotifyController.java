@@ -35,6 +35,7 @@ public class TbTravelNotifyController {
             result = tbTravelNotifyService.addTravelNotify(list) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
         } catch (Exception ex) {
             // 捕获异常
+            
             JzbTools.logError(ex);
             result = Response.getResponseError();
         }
