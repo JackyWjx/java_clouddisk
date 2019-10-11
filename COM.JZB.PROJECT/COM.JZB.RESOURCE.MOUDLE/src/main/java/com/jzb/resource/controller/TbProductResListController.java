@@ -69,7 +69,7 @@ public class TbProductResListController {
         return result;
     }
     /**
-     * 添加资源产品表的数据
+     * 添加资源产品表的数据1
      *
      * @param param
      * @return
