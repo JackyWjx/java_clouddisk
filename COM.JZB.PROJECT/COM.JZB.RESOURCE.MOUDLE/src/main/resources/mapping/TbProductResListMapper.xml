@@ -4,51 +4,29 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.resource.dao.TbProductResListMapper">
 
-    <!--查询合同配置中的产品参数
-     * 根据产品线的id查询产品表
-     *      * 根据产品id查询出产品参数-->
+    <!--产品参数的查询 以及根据状态查询和名称的模糊查询-->
     <select id="getProductResList" parameterType="java.util.Map" resultType="java.util.Map">
-             select
-             d.*,o.cname,o.status
-             from
-             tb_product_paramete_item d
-             LEFT JOIN
-             tb_product_res_list o
-             on
-              cast (d.prodid as character )= cast ( o.pid as character )
-             where
-             o.plid = cast (#{plid} as integer )
-             and
-             o.status = #{status}
+        select
+        a.id,
+        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        a.cname,
+        a.status,
+        a.paradesc,
+        a.summary
+        from
+        tb_product_paramete_item b
+        LEFT JOIN
+        tb_product_res_list a
+        on a.pid = b.prodid
+        where 1=1
+        <if test="status != null">
+            and a.status = #{status}
+        </if>
+        <if test="cname != null">
+            and a.cname ~ #{cname}
+        </if>
     </select>
 
-    <!--根据名称模糊查询产品参数-->
-    <select id="getProductResListCname" parameterType="java.util.Map" resultType="java.util.Map">
-         select
-         b.cname,
-         b.status,
-         a.prodid,
-         a.paraid,
-         a.paraname,
-         a.paramdesc,
-         a.datatype,
-         a.datasize,
-         a.ouid,
-         a.addtime,
-         a.updtime,
-         a.status,
-         a.summary
-         from
-         tb_product_paramete_item a
-         LEFT JOIN
-         tb_product_res_list b
-         on
-         a.prodid = b.pid
-         where
-         b.cname
-         like
-         concat('%',#{cname},'%')
-     </select>
 
     <!--添加产品参数-->
     <insert id="saveTbProductParameteItem" parameterType="java.util.List">
@@ -139,14 +117,96 @@
         insert
         into
         tb_product_res_list(
+        pid,
+        plid,
+        cname,
+        prodesc,
+        service,
+        price,
+        pricedesc,
         accept,
+        addtime,
+        updtime,
         paradesc,
+        idx,
         status,
         summary
         )values(
         <choose>
+            <when test="pid != null">
+                cast(#{pid} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="plid != null">
+                cast(#{plid} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cname != null">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="prodesc != null">
+                #{prodesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="service != null">
+                #{service},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price != null">
+                #{price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricedesc != null">
+                #{pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
             <when test="accept != null">
                 #{accept},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null">
+                #{updtime},
             </when>
             <otherwise>
                 null,
@@ -158,6 +218,14 @@
             </when>
             <otherwise>
                 null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_product_res_list),
             </otherwise>
         </choose>
         <choose>
@@ -176,20 +244,20 @@
                 null
             </otherwise>
         </choose>
-        )
+        )on conflict(pid) do update
+        set
+        <if test="prodesc">prodesc=#{prodesc},</if>
+        <if test="service">service=#{service},</if>
+        <if test="price">price=#{price},</if>
+        <if test="pricedesc">pricedesc=#{pricedesc},</if>
+        <if test="accept">accept=#{accept},</if>
+        <if test="paradesc">paradesc=#{paradesc},</if>
+        <if test="upduid">upduid=#{upduid},</if>
+        <if test="updtime">updtime=#{updtime},</if>
+        <if test="summary">summary=#{summary},</if>
+        <if test="status">status=#{status}</if>
     </insert>
 
-
-    <!--修改产品表中的数据-->
-    <update id="updateTbProductResList" parameterType="java.util.Map">
-        update
-        tb_product_res_list set
-        <if test="accept != null">accept=#{accept},</if>
-        <if test="paradesc != null">paradesc=#{paradesc},</if>
-        <if test="status != null">status=#{status},</if>
-        <if test="summary != null">summary=#{summary}</if>
-        where plid=cast(#{plid} as integer)
-    </update>
 
     <!--修改产品参数表中的数据-->
     <update id="updateTbProductParameteItem" parameterType="java.util.List">
