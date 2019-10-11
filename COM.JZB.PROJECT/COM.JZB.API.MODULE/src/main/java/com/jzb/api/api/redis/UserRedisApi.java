@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -52,4 +53,13 @@ public interface UserRedisApi {
     @RequestMapping(value = "/getTokenUser", method = RequestMethod.POST)
     public Response getTokenUser(@RequestBody Map<String, Object> param);
 
+
+    /**
+     * 根据联系方式获取用户ID
+     *
+     * @param phone
+     * @return
+     */
+    @RequestMapping(value = "/getPhoneUid", method = RequestMethod.POST)
+    Response getPhoneUid(@RequestParam("phone") String phone);
 }

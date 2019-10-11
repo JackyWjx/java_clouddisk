@@ -4,6 +4,7 @@ import com.jzb.api.api.auth.UserAuthApi;
 import com.jzb.api.api.org.CompanyUserApi;
 import com.jzb.api.config.ApiConfigProperties;
 import com.jzb.api.service.CompanyService;
+import com.jzb.api.service.DeptUserService;
 import com.jzb.api.service.JzbUserAuthService;
 import com.jzb.api.util.ApiToken;
 import com.jzb.base.data.JzbDataType;
@@ -51,6 +52,8 @@ public class UserController {
     @Autowired
     private CompanyUserApi companyUserApi;
 
+    @Autowired
+    private DeptUserService deptUserService;
     /**
      * 企业服务
      */
@@ -280,6 +283,39 @@ public class UserController {
                 if (userInfo.size() > 0) {
                     param.put("userinfo", userInfo);
                     result = authService.addAdmin(param);
+                } else {
+                    result = Response.getResponseError();
+                }
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 获取角色组或角色下面的用户
+     *
+     * @param param
+     * @param token
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/10/10 16:06
+     */
+    @RequestMapping(value = "/getGroupUser", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getGroupUser(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
+        Response result;
+        try {
+            String[] str = {"type"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
+                if (userInfo.size() > 0) {
+                    param.put("userinfo", userInfo);
+                    result = deptUserService.getGroupUser(param);
                 } else {
                     result = Response.getResponseError();
                 }

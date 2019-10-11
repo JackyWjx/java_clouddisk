@@ -1,5 +1,6 @@
 package com.jzb.api.controller.org;
 
+import com.jzb.api.api.org.CompanyOrgApi;
 import com.jzb.api.service.CompanyService;
 import com.jzb.api.service.DeptUserService;
 import com.jzb.api.service.JzbUserAuthService;
@@ -49,13 +50,16 @@ public class DeptUserController {
     private CompanyService companyService;
 
     @Autowired
-    ApiToken apiToken;
+    private ApiToken apiToken;
 
     /**
      * 用户认证服务
      */
     @Autowired
     private JzbUserAuthService authService;
+
+    @Autowired
+    private CompanyOrgApi companyOrgApi;
 
     /**
      * 根据企业id和部门中的手机号或用户姓名获取组织与用户的数据
@@ -119,6 +123,63 @@ public class DeptUserController {
                     param.put("uid", userInfo.get("uid"));
                     param.put("type", "1");
                     result = companyService.addCompany(param);
+                } else {
+                    result = Response.getResponseError();
+                }
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /**
+     * 创建伙伴单位没有负责人id时创建负责人账号
+     *
+     * @param param
+     * @param token
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/10/11 10:01
+     */
+    @RequestMapping(value = "/addFriendCompanyAll", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addFriendCompanyAll(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
+        Response result;
+        try {
+            String[] str = {"cname", "region", "phone", "managername"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
+                if (userInfo.size() > 0) {
+                    //先确认负责人id
+                    Map<String, Object> send = companyService.getUid(param);
+                    String uid = JzbDataType.getString(send.get("uid"));
+                    if (JzbTools.isEmpty(uid)) {
+                        result = Response.getResponseError();
+                    } else {
+                        //创建伙伴单位
+                        param.put("userinfo", userInfo);
+                        param.put("manager", uid);
+                        param.put("managername", param.get("managername"));
+                        //伙伴单位默认初级认证
+                        param.put("authid", "8");
+                        param.put("type", "1");
+                        Response comRes = companyService.addCompany(param);
+                        String cid = "";
+                        if (JzbDataType.isMap(comRes.getResponseEntity())) {
+                            Map<String, Object> comMap = (Map<String, Object>) comRes.getResponseEntity();
+                            cid = JzbDataType.getString(comMap.get("cid"));
+                        }
+                        //创建伙伴单位表数据
+                        param.put("send", send);
+                        param.put("cid", cid);
+                        result = companyOrgApi.addCompanyFriend(param);
+                        authService.addAdmin(param);
+                    }
                 } else {
                     result = Response.getResponseError();
                 }

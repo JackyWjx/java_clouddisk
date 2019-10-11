@@ -66,7 +66,7 @@ public class DeptUserService {
             //获取需要拼接的字段名称
             String roleMap = "rgnames,authid";
             //处理数据
-            pageInfo.setList(merge(deptList, roleRes, tempK, roleMap));
+            pageInfo.setList(merge(deptList, roleRes, tempK, roleMap, true, false));
         }
         return pageInfo;
     }
@@ -93,9 +93,78 @@ public class DeptUserService {
             String tempK = "uid";
             String comMap = "joname,regname";
             //处理数据
-            userPage.setList(merge(userList, deptRe, tempK, comMap));
+            userPage.setList(merge(userList, deptRe, tempK, comMap, true, false));
         }
         return response;
+    }
+
+    /**
+     * 获取角色组或角色下用户拼接
+     *
+     * @param map
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/10/10 16:26
+     */
+    public Response getGroupUser(Map<String, Object> map) {
+        Response result;
+        int type = JzbDataType.getInteger(map.get("type"));
+        //获取角色下的用户
+        int a = 1;
+        //获取角色组下的用户
+        int b = 2;
+        if (type == a) {
+            result = roleAuthApi.getUserRole(map);
+            PageInfo userPage = result.getPageInfo();
+            List<Map<String, Object>> userList = userPage.getList();
+            if (userList != null && userList.size() > 0) {
+                Map<String, Object> userParam = new HashMap<>(2);
+                //为调用的接口赋值
+                map.put("list", userList);
+                Response deptRe = deptOrgApi.getUserDept(map);
+                String tempK = "uid";
+                String comMap = "dept";
+                //处理数据
+                userPage.setList(merge(userList, deptRe, tempK, comMap, false, true));
+            }
+        } else if (type == b) {
+            map.put("rrtype", "4");
+            result = roleAuthApi.getRoleRelation(map);
+            PageInfo userPage = result.getPageInfo();
+            List<Map<String, Object>> userList = userPage.getList();
+            if (userList != null && userList.size() > 0) {
+                //为调用的接口赋值
+                //添加cid
+                map.put("cid", userList.get(0).get("cid"));
+                userList = getUserList(userList);
+                map.put("list", userList);
+                Response deptRe = deptOrgApi.getUserDept(map);
+                String tempK = "uid";
+                String comMap = "dept";
+                //处理数据
+                userPage.setList(merge(userList, deptRe, tempK, comMap, false, true));
+            }
+
+        } else {
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    private List<Map<String, Object>> getUserList(List<Map<String, Object>> userList) {
+        int size = userList.size();
+        List<Map<String, Object>> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            Map<String, Object> temp = userList.get(i);
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("uid", temp.get("rrid"));
+            userMap.put("cname", temp.get("rrmc"));
+            userMap.put("summary", temp.get("summary"));
+            userMap.put("relphone", temp.get("relphone"));
+            result.add(userMap);
+        }
+        return result;
     }
 
     /**
@@ -105,11 +174,13 @@ public class DeptUserService {
      * @param roleRes  需要拼接的数据
      * @param keys     临时表key组成
      * @param roleMap  需要拼接的字段
+     * @param isCode   是否需要获取code
+     * @param isPage   是否从PageInfo获取数据
      * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
      * @Author: DingSC
      * @DateTime: 2019/9/20 11:46
      */
-    private List<Map<String, Object>> merge(List<Map<String, Object>> deptList, Response roleRes, String keys, String roleMap) {
+    private List<Map<String, Object>> merge(List<Map<String, Object>> deptList, Response roleRes, String keys, String roleMap, boolean isCode, boolean isPage) {
         int deptSize = deptList.size();
         List<Map<String, Object>> result = new ArrayList<>(deptSize);
         Map<String, Map<String, Object>> tempMap = new HashMap<>(deptSize);
@@ -123,33 +194,48 @@ public class DeptUserService {
             for (int j = 0; j < length; j++) {
                 deptMap.put(roleS[j], "");
             }
-            deptMap.put("score", 0);
+            if (isCode) {
+                deptMap.put("score", 0);
+            }
             tempMap.put(key, deptMap);
         }
         //添加需要拼接的字段和个人积分到主List，
-        if (JzbDataType.isCollection(roleRes.getResponseEntity())) {
-            List<Map<String, Object>> rolList = (List<Map<String, Object>>) roleRes.getResponseEntity();
-            int rolSize = rolList.size();
-            for (int i = 0; i < rolSize; i++) {
-                Map<String, Object> rolMap = rolList.get(i);
-                //需要拼接的数据key获取
-                String key = getKey(rolMap, keys);
-                if (tempMap.containsKey(key)) {
-                    //获取拼接数据中符合条件的数据
-                    Map<String, Object> deptMap = tempMap.get(key);
-                    for (int j = 0; j < length; j++) {
-                        deptMap.put(roleS[j], rolMap.get(roleS[j]));
-                    }
-                    deptMap.put("score", getScore(rolMap));
-                }
+
+        List<Map<String, Object>> rolList;
+        if (isPage) {
+            rolList = roleRes.getPageInfo().getList();
+        } else {
+            if (JzbDataType.isCollection(roleRes.getResponseEntity())) {
+                rolList = (List<Map<String, Object>>) roleRes.getResponseEntity();
+            } else {
+                rolList = new ArrayList<>();
             }
         }
+        int rolSize = rolList.size();
+        for (int i = 0; i < rolSize; i++) {
+            Map<String, Object> rolMap = rolList.get(i);
+            //需要拼接的数据key获取
+            String key = getKey(rolMap, keys);
+            if (tempMap.containsKey(key)) {
+                //获取拼接数据中符合条件的数据
+                Map<String, Object> deptMap = tempMap.get(key);
+                for (int j = 0; j < length; j++) {
+                    deptMap.put(roleS[j], rolMap.get(roleS[j]));
+                }
+                if (isCode) {
+                    deptMap.put("score", getScore(rolMap));
+                }
+
+            }
+        }
+
         //将临时map中的数据加入返回list中
         for (Map<String, Object> map : tempMap.values()) {
             result.add(map);
         }
         return result;
     }
+
 
     /**
      * 获取临时表的key
