@@ -239,7 +239,7 @@ public class AuthUserLoginService {
         if (b1 && b2) {
             List<Map> loList = userMapper.searchSendCode(map);
             if (loList.size() > 0) {
-
+                response.put("code", "3");
             } else {
                 String uid = JzbRandom.getRandomCharCap(12);
                 long time = System.currentTimeMillis();
