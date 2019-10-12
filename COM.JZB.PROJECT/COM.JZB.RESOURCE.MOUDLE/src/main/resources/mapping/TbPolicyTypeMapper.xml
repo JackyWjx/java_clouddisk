@@ -46,7 +46,7 @@
     <select id="getPolicyTypes" parameterType="java.util.Map" resultType="java.util.Map">
         select ID,typeid,cname,typedesc,addtime,summary from tb_policy_type where status = #{status}
         <if test="typeid != null">
-            and typeid = #{domain}
+            and typeid = #{typeid}
         </if>
     </select>
 
