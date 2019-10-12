@@ -73,7 +73,7 @@ public class JzbFileUtil {
             typeFile = fileStep > 9 ? fileStep + "" : "0" + fileStep;
         }
 //        String path = "JZB/"+yyyy+"/"+mm+"/"+dd+"/"+hh+"/"+typeFile;
-        String path =  "\\images\\" +yyyy + "\\" + mm + "\\" + dd + "\\" + hh + "\\" + typeFile;
+        String path =  "/images/" +yyyy + "/" + mm + "/" + dd + "/" + hh + "/" + typeFile;
 
         //文件下有多少文件
         File file = new File(path); // 图片存放路径
@@ -83,8 +83,7 @@ public class JzbFileUtil {
             if (list.length >= 1000) {
                 fileStep++;
                 typeFile = fileStep > 9 ? fileStep + "" : "0" + fileStep;
-                path = "\\images\\" + yyyy + "\\" + mm + "\\" + dd + "\\" + hh + "\\" + typeFile;
-                ;
+                path = "/images/" + yyyy + "/" + mm + "/" + dd + "/" + hh + "/" + typeFile;
             }
         }
         if (new File(path).mkdirs()) {
@@ -93,7 +92,7 @@ public class JzbFileUtil {
             // file create failed.\
             fileName = now.get(Calendar.MINUTE) + "" + now.get(Calendar.SECOND) + "" + now.get(Calendar.MILLISECOND) + JzbRandom.getRandomCharLow(9);
         }
-        return path + "\\" + fileName;
+        return path + "/" + fileName;
     }
 
     /**
