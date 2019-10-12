@@ -7,10 +7,13 @@ import com.aliyuncs.IAcsClient;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.jzb.base.util.JzbTools;
-import com.jzb.message.config.MessageProperties;
+import com.jzb.message.message.MssageInfo;
+import com.sun.nio.sctp.MessageInfo;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * @Description: 待发送短信
@@ -26,10 +29,12 @@ public class JzbSendMsg {
     /**
      *  发送短息
      */
-    public static String sendShortMessage(JSONObject json){
+    public static String sendShortMessage(MssageInfo info){
         String result = "error";
         try{
-            DefaultProfile profile = DefaultProfile.getProfile("default", json.getString("appid"), json.getString("sercet"));
+            Map<String , Object> config = (Map<String , Object>)info.getItem("config").getObject();
+            JSONObject parajson = JSONObject.fromObject(config.get("context"));
+            DefaultProfile profile = DefaultProfile.getProfile("default", parajson.getString("appid"), parajson.getString("sercet"));
             IAcsClient client = new DefaultAcsClient(profile);
             CommonRequest request = new CommonRequest();
             request.setMethod(MethodType.POST);
@@ -37,13 +42,11 @@ public class JzbSendMsg {
             request.setVersion("2017-05-25");
             request.setAction("SendSms");
             request.putQueryParameter("RegionId", "default");
-            request.putQueryParameter("PhoneNumbers",json.getString("receiver"));
-            request.putQueryParameter("SignName", json.getString("title"));
-            request.putQueryParameter("TemplateCode",json.getString("sms_no"));
-            if(json.containsKey("sendpara")){
-                if(!JzbTools.isEmpty(json.getString("sendpara"))){
-                    request.putQueryParameter("TemplateParam",json.getString("sendpara"));
-                }
+            request.putQueryParameter("PhoneNumbers",info.getItem("receive").getString());
+            request.putQueryParameter("SignName", parajson.getString("title"));
+            request.putQueryParameter("TemplateCode",parajson.getString("sms_no"));
+            if(!JzbTools.isEmpty(info.getItem("temp").getString())){
+                request.putQueryParameter("TemplateParam",info.getItem("temp").getString());
             }
             try {
                 CommonResponse response = client.getCommonResponse(request);

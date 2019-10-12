@@ -1,5 +1,9 @@
 package com.jzb.message.message;
 
+import com.jzb.base.util.JzbTools;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,6 +23,11 @@ public final class MessageQueue {
     private final static Queue<MssageInfo> SYSTEM_QUEUE = new ConcurrentLinkedQueue<>();
 
     /**
+     * 待发送队列
+     */
+    private volatile  static Map<String , Map<String , Map<String , MssageInfo>>> waitSendQueue = new HashMap<>();
+
+    /**
      * 获取对象的公平锁
      */
     private final static ReentrantLock SMS_LOCK = new ReentrantLock(true);
@@ -32,6 +41,44 @@ public final class MessageQueue {
      */
     private MessageQueue() {
     } // End MessageQueue
+
+    /**
+     * 获取待发送队列
+     * @return
+     */
+    public static Map<String , Map<String , Map<String , MssageInfo>>> getWaitSendQueue(){
+        return waitSendQueue;
+    }
+
+    /**
+     * 添加至待发送
+     * @param info
+     * @return
+     */
+    public static boolean setWaitSendQueue(MssageInfo info){
+        boolean result ;
+        try{
+            Map<String , Object> parajson = (Map)info.getItem("para").getObject();
+            Map<String , MssageInfo> msgMap = new HashMap<>();
+            Map<String , Map<String , MssageInfo>> uidMap = new HashMap<>();
+            msgMap.put(parajson.get("msgtype").toString(),info);
+            uidMap.put(parajson.get("senduid").toString(),msgMap);
+            if(waitSendQueue.containsKey(parajson.get("msgtag").toString())){
+                if(waitSendQueue.get(parajson.get("msgtag").toString()).containsKey(parajson.get("senduid").toString())){
+                    waitSendQueue.get(parajson.get("msgtag").toString()).get(parajson.get("senduid").toString()).put(parajson.get("msgtype").toString(),info);
+                }else{
+                    waitSendQueue.get(parajson.get("msgtag").toString()).put(parajson.get("senduid").toString(),msgMap);
+                }
+            }else{
+                waitSendQueue.put(parajson.get("msgtag").toString(),uidMap);
+            }
+            result = true;
+        }catch (Exception e){
+            result = false;
+            JzbTools.logError(e);
+        }
+        return result;
+    }
 
     /**
      * 获取短消息

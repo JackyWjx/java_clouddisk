@@ -1,5 +1,6 @@
 package com.jzb.message.service;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.util.JzbRandom;
@@ -9,8 +10,8 @@ import com.jzb.message.message.MessageQueue;
 import com.jzb.message.message.MssageInfo;
 import com.jzb.message.message.ShortMessage;
 import com.jzb.message.util.MessageUtile;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
+import com.jzb.message.util.SendShortMsgResult;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +39,12 @@ public class SendShortMsgService {
     /**
      *  SendMsg添加至发送队列
      */
-    public String  sendSendMsg(String send_phone,String sms_content,String sms_no,String push_time,String sms_title){
-        String senbo;
+    public SendShortMsgResult sendSendMsg(String send_phone, String sms_content, String sms_no, String push_time, String sms_title, String uid){
+        SendShortMsgResult result ;
         try{
             // 设置参数实例
             Map<String , Object> map = new HashMap<>();
+            Map<String , Object> resultMap =  new HashMap<>();
             map.put("sms_no",sms_no);
             map.put("sendname","SendMsg");
             map.put("sendid","SendMsg");
@@ -51,59 +53,78 @@ public class SendShortMsgService {
             map.put("status",1);
             map.put("sendstatus",1);
             map.put("addtime", System.currentTimeMillis());
+            map.put("msgtag","0000000" + JzbRandom.getRandomCharLow(12));
+
             // 设置发送主题
             if(!JzbTools.isEmpty(sms_title)){
                 map.put("title",sms_title);
             }
             // 用来标识是一个用户还是多个用户
             if(!JzbTools.isEmpty(send_phone)){
-                map.put("usertype",send_phone.length()> 11  ? "2" : "1");
+                map.put("usertype", "1");
+            }
+            if(!JzbTools.isEmpty(push_time)){
+                map.put("sendtime", JzbDateUtil.getDate(push_time,JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
             }
             // 是否有参数
             if(!JzbTools.isEmpty(sms_content)){
                 // 去除转移字符
                 map.put("sendpara",StringEscapeUtils.unescapeJava(sms_content));
             }
+            map.put("phone",send_phone);
+            resultMap.putAll(map);
             // 每次最多一千个发送
             List<String> list = MessageUtile.sendPhoneLengthString(send_phone);
-            if(!JzbTools.isEmpty(list)){
-                // 获取阿里云秘钥
-                List<Map<String , Object>> paraList = msgListMapper.queryMsgGroupConfigure("10086");
-                for(int i=0;i < list.size();i++) {
+            // 获取阿里云秘钥
+            List<Map<String , Object>> paraList = msgListMapper.queryMsgGroupConfigure("10086");
+            for(int i=0;i < list.size();i++) {
+                try{
+                    Map<String , Object> paraMap =  new HashMap<>();
                     map.put("receiver",list.get(i));
                     // 设置参数
-                    Map<String , Object> sendMap = new HashMap<>();
-                    net.sf.json.JSONObject aliyun = net.sf.json.JSONObject.fromObject(paraList.get(0).get("context").toString());
-                    map.put("appid",aliyun.getString("appid"));
-                    map.put("sercet",aliyun.getString("sercet"));
-                    map.put("title",aliyun.getString("title"));
-                    sendMap.put("sendpara", JSONObject.toJSONString(map));
-                    // 是否有定时任务
-                    if(!JzbTools.isEmpty(push_time)){
-                        // 转换为long值
-                        sendMap.put("sendtime", JzbDateUtil.getDate(push_time,JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
-                    }
-                    sendMap.put("msgid",map.get("msgid"));
-                    if(map.containsKey("senduid")){
-                        sendMap.put("senduid",map.get("senduid"));
-                        sendMap.put("sendname",map.get("senduname"));
-                    }
-                    map.put("receiver",list.get(i));
-                    msgListMapper.insertMsgList(map);
+                    JSONObject aliyun = JSONObject.fromObject(paraList.get(0).get("context").toString());
                     logger.info("短信日志 =========>"+map.toString());
-                    logger.info("添加短信消息队列 =========>"+sendMap.toString());
-                    MssageInfo info = new ShortMessage(sendMap);
-                    MessageQueue.addShortMessage(info);
+                    paraMap.put("para",map);
+                    paraMap.put("temp",sms_content);
+                    Map<String , Object>  config =  new HashMap<>();
+                    Map<String , Object>  context =  new HashMap<>();
+                    context.put("title",aliyun.getString("title"));
+                    context.put("sms_no",sms_no);
+                    context.put("appid",aliyun.getString("appid"));
+                    context.put("sercet",aliyun.getString("sercet"));
+                    config.put("context",context);
+                    paraMap.put("config",config);
+                    paraMap.put("receive",list.get(i));
+                    logger.info("添加短信消息队列 =========>"+paraMap.toString());
+                    MssageInfo info = new ShortMessage(paraMap);
+                    if(!JzbTools.isEmpty(uid)){
+                       map.put("senduid",uid);
+                       MessageQueue.setWaitSendQueue(info);
+                    }else{
+                        MessageQueue.addShortMessage(info);
+                    }
+                }catch (Exception e){
+                    map.put("sendstatus",2);
+                    JzbTools.logError(e);
+                }finally {
+                    msgListMapper.insertMsgList(map);
                 }
-                senbo = "success";
-            }else{
-                senbo = "send is error";
             }
+            result = SendShortMsgResult.getSuccess();
+            if(resultMap.containsKey("sendname")){
+                resultMap.remove("sendname");
+                resultMap.remove("cid");
+                resultMap.remove("status");
+                resultMap.remove("usertype");
+                resultMap.remove("addtime");
+                resultMap.remove("sendid");
+            }
+            result.setData(resultMap);
         }catch (Exception e){
-            e.printStackTrace();
-            senbo = "param is error";
+            JzbTools.logError(e);
+            result = SendShortMsgResult.getRerror();
         }
-        return senbo;
+        return result;
     }
 
 }
