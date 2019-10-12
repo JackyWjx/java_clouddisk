@@ -454,10 +454,17 @@ public class DeptController {
     @RequestMapping(value = "/exportDeptExcel", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public Response exportDeptExcel(HttpServletResponse response) {
+    public Response exportDeptExcel(@RequestBody Map<String, Object> param, HttpServletResponse response) {
         Response result;
         try {
-            String url = "D:/v3/static/excel/importuserdept.xlsx";
+            String url;
+            int type = JzbDataType.getInteger(param.get("type"));
+            if (type == 1) {
+                url = "D:/v3/static/excel/importuser.xlsx";
+            } else {
+                url = "D:/v3/static/excel/importuserdept.xlsx";
+            }
+
             //      String srcFilePath = Thread.currentThread().getContextClassLoader().getResource(url).getPath();
             FileInputStream in = new FileInputStream(url);
             //读取excel模板
@@ -543,6 +550,72 @@ public class DeptController {
         return result;
     }
 
+    /**
+     * 所有用户导入
+     *
+     * @param file
+     * @param token
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/10/11 20:59
+     */
+    @RequestMapping(value = "/importUserAll", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response importUserAll(@RequestBody MultipartFile file,
+                                  @RequestHeader(value = "token") String token) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
+            if (userInfo.size() > 0) {
+                //生成批次ID
+                String batchId = JzbRandom.getRandomChar(11);
+                Map<String, Object> param = new HashMap<>(6);
+                //获取上传文件名称
+                String fileName = file.getOriginalFilename();
+                //获取后缀名
+                String suffix = fileName.substring(fileName.lastIndexOf("."));
+                String filepath = config.getImportPath() + "/" + batchId + suffix;
+                param.put("cname", fileName);
+                param.put("uid", userInfo.get("uid"));
+                param.put("status", "2");
+                param.put("batchid", batchId);
+                param.put("address", filepath);
+
+                try {
+                    //保存文件到本地
+                    File intoFile = new File(filepath);
+                    intoFile.getParentFile().mkdirs();
+                    String address = intoFile.getCanonicalPath();
+                    file.transferTo(new File(address));
+                } catch (Exception e) {
+                    //保存失败信息到批次表
+                    param.put("status", "4");
+                    param.put("summary", "保存文件到本地失败");
+                    e.printStackTrace();
+                    JzbTools.logError(e);
+                }
+                //添加批次信息到用户导入批次表
+                deptService.addExportBatch(param);
+                if (JzbDataType.getInteger(param.get("status")) == 2) {
+                    param.put("type", "1");
+                    ExportUser exportUser = new ExportUser(param);
+                    exportUser.start();
+                }
+                result = Response.getResponseSuccess(userInfo);
+                Map<String, Object> map = new HashMap(4);
+                map.put("batchid", batchId);
+                map.put("status", param.get("status"));
+                result.setResponseEntity(map);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
     class ExportUser extends Thread {
         private Map<String, Object> param;
 
@@ -553,7 +626,13 @@ public class DeptController {
         @Override
         public void run() {
             //导入数据
-            int export = deptService.addExportUserInfo(param);
+            int type = JzbDataType.getInteger(param.get("type"));
+            int export;
+            if (type == 1) {
+                export = deptService.addExportUserAll(param);
+            } else {
+                export = deptService.addExportUserInfo(param);
+            }
             //导入完成后修改状态
             if (export == 1) {
                 param.put("status", "8");

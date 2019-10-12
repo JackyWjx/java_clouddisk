@@ -38,7 +38,7 @@ public class ExportConfirmController {
         Response result;
         PageInfo info;
         try {
-            String[] str = {"cid", "batchid"};
+            String[] str = {"batchid"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 int rows = JzbDataType.getInteger(param.get("pagesize"));
@@ -132,4 +132,32 @@ public class ExportConfirmController {
         return result;
     }
 
+
+    /**
+     * 注册用户并发送短信
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/10/12 15:34
+     */
+    @RequestMapping(value = "/addAllUserAndSend", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addAllUserAndSend(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"phone", "name"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                result = exportConfirmService.addUserAndSend(param);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }

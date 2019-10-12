@@ -406,7 +406,7 @@ public class DeptService {
                 String ustatus;
                 String inviteStatus = "2";
                 //行数据转入Map
-                Map<String, Object> addMap = rowToMap(rowData);
+                Map<String, Object> addMap = rowToMap(rowData, true);
                 addMap.put("cid", map.get("cid"));
                 addMap.put("batchid", map.get("batchid"));
                 summary = JzbDataType.getString(addMap.get("summary"));
@@ -498,7 +498,142 @@ public class DeptService {
                 addMap.put("summary", summary);
                 userInfoList.add(addMap);
             }
-            toAddList(userInfoList, inviteUserList, deptUserList, map);
+            toAddList(userInfoList, inviteUserList, deptUserList, map, true);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = 2;
+        }
+        return result;
+    }
+
+    /**
+     * 所有用户导入操作
+     *
+     * @param map
+     * @return int
+     * @Author: DingSC
+     * @DateTime: 2019/10/11 17:48
+     */
+    public int addExportUserAll(Map<String, Object> map) {
+        int result = 1;
+        String filePath = JzbDataType.getString(map.get("address"));
+        try {
+            boolean isExcel = JzbExcelOperater.isExcel(filePath);
+            if (!isExcel) {
+                throw new Exception("File is not found.");
+            }
+            //sheet的页面
+            int index = 0;
+            // 打开文件
+            List<Map<Integer, String>> data = JzbExcelOperater.readSheet(filePath, index);
+            int size = data.size();
+            //保存成员邀请/申请表
+            List<Map<String, Object>> inviteUserList = new ArrayList<>(size);
+            //保存到用户导入信息表
+            List<Map<String, Object>> userInfoList = new ArrayList<>(size);
+
+            //直接保存到部门
+            List<Map<String, Object>> deptUserList = new ArrayList<>(0);
+            //读取数据，从第二行开始读取
+            for (int i = 1; i < size; i++) {
+                Map<Integer, String> rowData = data.get(i);
+                String name = rowData.get(1);
+                String sex = rowData.get(2);
+                String phone = rowData.get(3);
+                //用户导入信息表状态
+                String summary;
+                String status = "1";
+                //invite表状态
+                String ustatus;
+                String inviteStatus = "2";
+                //受邀用户id
+                String uid;
+                //行数据转入Map
+                Map<String, Object> addMap = rowToMap(rowData, false);
+                addMap.put("batchid", map.get("batchid"));
+                summary = JzbDataType.getString(addMap.get("summary"));
+                //字段校验不通过
+                if (JzbDataType.getInteger(addMap.get(status)) == 2) {
+                    userInfoList.add(addMap);
+                    continue;
+                }
+                //校验必填项
+                if (name.length() != 0 && sex.length() != 0 && phone.length() != 0) {
+                    //根据手机号查询用户id
+                    uid = JzbDataType.getString(userRedisServiceApi.getPhoneUid(phone).getResponseEntity());
+                    addMap.put("uid", uid);
+                    //导入excel中的部门名称
+                    map.put("cname", addMap.get("dept"));
+
+                    if (JzbTools.isEmpty(uid)) {
+                        //非用户
+                        ustatus = "2";
+                        summary += "系统中不存在该用户";
+                        //创建用户
+                        Map<String, Object> userMap = new HashMap<>(4);
+                        userMap.put("name", name);
+                        userMap.put("phone", addMap.get("phone"));
+                        String pass = "*jzb" + JzbRandom.getRandomNum(3);
+                        userMap.put("status", "8");
+                        userMap.put("passwd", JzbDataCheck.Md5(pass).toLowerCase(Locale.ENGLISH));
+                        try {
+                            Response userRes = authApi.addRegistration(userMap);
+                            Map<String, Object> uidMap = (Map<String, Object>) userRes.getResponseEntity();
+                            //加入邀请
+                            String newUser = JzbDataType.getString(uidMap.get("uid"));
+                            if (!JzbTools.isEmpty(newUser)) {
+                                addMap.put("uid", uidMap.get("newUid"));
+                                addMap.put("password", pass);
+                            } else {
+                                status = "2";
+                                summary += ",创建用户失败";
+                            }
+                        } catch (Exception e) {
+                            status = "2";
+                            summary += ",创建用户失败";
+                            JzbTools.logError(e);
+
+                        }
+                    } else {
+                        //用户
+                        ustatus = "1";
+                        inviteStatus = "10";
+                        Response user = userRedisServiceApi.getCacheUserInfo(addMap);
+                        if (JzbDataType.isMap(user.getResponseEntity())) {
+                            Map<String, Object> userMap = (Map) user.getResponseEntity();
+                            String cname = JzbDataType.getString(userMap.get("cname"));
+                            //校验手机号所对应的用户姓名和输入的姓名
+                            if (!cname.equals(JzbDataType.getString(addMap.get("cname")))) {
+                                status = "2";
+                                summary += "手机号所对应的用户姓名和输入的姓名不一致;";
+
+                            }
+                        } else {
+                            status = "2";
+                            summary += "缓存中没有该用户信息;";
+
+                        }
+                    }
+                    if (JzbDataType.getInteger(status) == 1) {
+                        //邀请Map获取
+                        String cdId = "";
+                        Map<String, Object> invite = toInvite(map, addMap, cdId, ustatus, inviteStatus);
+                        inviteUserList.add(invite);
+                    }
+                } else {
+                    status = "2";
+                    summary += "必填项未填";
+                    //整行数据为空，跳过
+                    if (isNull(rowData)) {
+                        continue;
+                    }
+                }
+                //最后添加到用户导入信息表
+                addMap.put("status", status);
+                addMap.put("summary", summary);
+                userInfoList.add(addMap);
+            }
+            toAddList(userInfoList, inviteUserList, deptUserList, map, false);
         } catch (Exception e) {
             JzbTools.logError(e);
             result = 2;
@@ -530,9 +665,10 @@ public class DeptService {
      * @param userInfoList
      * @param inviteUserList
      * @param deptUserList
+     * @param isDept         是否部门导入用户
      */
     private void toAddList(List<Map<String, Object>> userInfoList, List<Map<String, Object>> inviteUserList,
-                           List<Map<String, Object>> deptUserList, Map<String, Object> map) {
+                           List<Map<String, Object>> deptUserList, Map<String, Object> map, boolean isDept) {
         //保存用户导入信息表
         if (userInfoList.size() > 0) {
             deptMapper.insertExportUserInfoList(userInfoList);
@@ -550,28 +686,52 @@ public class DeptService {
         //模板
         String template = config.getTemplate();
         String inviteTem = config.getInvite();
-        String company;
-        company = deptMapper.getCompanyName(map);
-        for (int i = 0; i < size; i++) {
-            Map<String, Object> invite = inviteUserList.get(i);
-            String phone = JzbDataType.getString(invite.get("resphone"));
-            int uStatus = JzbDataType.getInteger(invite.get("ustatus"));
-            Map<String, Object> param = new HashMap<>(5);
-            if (uStatus == 1) {
-                //用户
-                param.put("relphone", phone);
-                param.put("groupid", template);
-            } else {
-                //非用户
-                param.put("relphone", phone);
-                param.put("groupid", inviteTem);
-                param.put("companyname", company);
-                param.put("username", invite.get("cname"));
-                param.put("password", invite.get("password"));
+        if (isDept) {
+            String company;
+            company = deptMapper.getCompanyName(map);
+            for (int i = 0; i < size; i++) {
+                Map<String, Object> invite = inviteUserList.get(i);
+                String phone = JzbDataType.getString(invite.get("resphone"));
+                int uStatus = JzbDataType.getInteger(invite.get("ustatus"));
+                Map<String, Object> param = new HashMap<>(5);
+                if (uStatus == 1) {
+                    //用户
+                    param.put("relphone", phone);
+                    param.put("groupid", template);
+                } else {
+                    //非用户
+                    param.put("relphone", phone);
+                    param.put("groupid", inviteTem);
+                    param.put("companyname", company);
+                    param.put("username", invite.get("cname"));
+                    param.put("password", invite.get("password"));
+                }
+                //发送短信
+                service.sendRemind(param);
             }
-            //发送短信
-             service.sendRemind(param);
+        } else {
+            String company = "计支宝";
+            for (int i = 0; i < size; i++) {
+                Map<String, Object> invite = inviteUserList.get(i);
+                int uStatus = JzbDataType.getInteger(invite.get("ustatus"));
+                String phone = JzbDataType.getString(invite.get("resphone"));
+                Map<String, Object> param = new HashMap<>(5);
+                param.put("relphone", phone);
+                param.put("companyname", company);
+                if (uStatus == 1) {
+                    //用户
+                    param.put("groupid", template);
+                } else {
+                    //非用户
+                    param.put("groupid", inviteTem);
+                    param.put("username", invite.get("cname"));
+                    param.put("password", invite.get("password"));
+                }
+                //发送短信
+                 service.sendRemind(param);
+            }
         }
+
     }
 
     /**
@@ -742,9 +902,13 @@ public class DeptService {
     }
 
     /**
-     * 将行数据储存到map中，并校验数据是否符合规范
+     * @param rowData
+     * @param isDept  是否部门导入用户
+     * @return java.util.Map<java.lang.String, java.lang.Object>
+     * @Author: DingSC
+     * @DateTime: 2019/10/11 18:08
      */
-    private Map<String, Object> rowToMap(Map<Integer, String> rowData) {
+    private Map<String, Object> rowToMap(Map<Integer, String> rowData, boolean isDept) {
         Map<String, Object> result = new HashMap<>();
         String status = "1";
         String summary = "";
@@ -778,34 +942,60 @@ public class DeptService {
             //身份证号
             result.put("cardid", rowData.get(4));
         }
-        if (rowData.get(5).length() > 32) {
-            status = "2";
-            summary += "部门字符长度过长,";
+
+        if (isDept) {
+            if (rowData.get(5).length() > 32) {
+                status = "2";
+                summary += "部门字符长度过长,";
+            } else {
+                //部门
+                result.put("dept", rowData.get(5));
+            }
+            if (rowData.get(6).length() > 64) {
+                status = "2";
+                summary += "邮箱字符长度过长,";
+            } else {
+                //邮箱
+                result.put("mail", rowData.get(6));
+            }
+            if (rowData.get(7).length() > 32) {
+                status = "2";
+                summary += "紧急联系人字符长度过长,";
+            } else {
+                //紧急联系人
+                result.put("relperson", rowData.get(7));
+            }
+            if (rowData.get(8).length() > 20) {
+                status = "2";
+                summary += "联系人字符长度过长,";
+            } else {
+                //联系人
+                result.put("relphone", rowData.get(8));
+            }
         } else {
-            //部门
-            result.put("dept", rowData.get(5));
+            if (rowData.get(5).length() > 64) {
+                status = "2";
+                summary += "邮箱字符长度过长,";
+            } else {
+                //邮箱
+                result.put("mail", rowData.get(6));
+            }
+            if (rowData.get(6).length() > 32) {
+                status = "2";
+                summary += "紧急联系人字符长度过长,";
+            } else {
+                //紧急联系人
+                result.put("relperson", rowData.get(7));
+            }
+            if (rowData.get(7).length() > 20) {
+                status = "2";
+                summary += "联系人字符长度过长,";
+            } else {
+                //联系人
+                result.put("relphone", rowData.get(8));
+            }
         }
-        if (rowData.get(6).length() > 64) {
-            status = "2";
-            summary += "邮箱字符长度过长,";
-        } else {
-            //邮箱
-            result.put("mail", rowData.get(6));
-        }
-        if (rowData.get(7).length() > 32) {
-            status = "2";
-            summary += "紧急联系人字符长度过长,";
-        } else {
-            //紧急联系人
-            result.put("relperson", rowData.get(7));
-        }
-        if (rowData.get(8).length() > 20) {
-            status = "2";
-            summary += "联系人字符长度过长,";
-        } else {
-            //联系人
-            result.put("relphone", rowData.get(8));
-        }
+
         result.put("status", status);
         result.put("summary", summary);
         return result;

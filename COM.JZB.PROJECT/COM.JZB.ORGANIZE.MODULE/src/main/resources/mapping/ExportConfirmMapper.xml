@@ -38,34 +38,34 @@
     <select id="queryExportCount" resultType="java.lang.Integer">
         SELECT COUNT(1)
         FROM
-            tb_export_user_info
+        tb_export_user_info
         WHERE
-            cid = #{cid}
-            AND batchid = #{batchid}
+        <if test=" cid != null and AND != ''">cid = #{cid} AND</if>
+        batchid = #{batchid}
     </select>
     <!--根据企业id和批次id获取导入信息-->
     <select id="queryExportList" resultType="java.util.Map">
         SELECT id,
-            batchid,
-            cid,
-            idx,
-            cname,
-            sex,
-            phone,
-            cardid,
-            dept,
-            mail,
-            relperson,
-            relphone,
-            status,
-            summary
+        batchid,
+        cid,
+        idx,
+        cname,
+        sex,
+        phone,
+        cardid,
+        dept,
+        mail,
+        relperson,
+        relphone,
+        status,
+        summary
         FROM
-            tb_export_user_info
+        tb_export_user_info
         WHERE
-            cid = #{cid}
-            AND batchid = #{batchid}
+        <if test=" cid != null and AND != ''">cid = #{cid} AND</if>
+        batchid = #{batchid}
         ORDER BY
-            idx LIMIT #{pagesize}  OFFSET #{start}
+        idx LIMIT #{pagesize} OFFSET #{start}
     </select>
     <!--获取导入批次信息-->
     <select id="queryExportBatch" resultType="java.util.Map">
