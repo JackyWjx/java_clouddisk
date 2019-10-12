@@ -650,7 +650,7 @@ public class ProductLineController {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             int count = productLineService.addCompanyProduct(param);
-            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();

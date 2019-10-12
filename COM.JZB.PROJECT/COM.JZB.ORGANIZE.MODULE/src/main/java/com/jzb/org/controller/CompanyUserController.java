@@ -58,6 +58,11 @@ public class CompanyUserController {
             }
             // 返回所有的企业列表
             List<Map<String, Object>> companyList = companyUserService.getCompanyList(param);
+            for (int i = 0; i < companyList.size(); i++) {
+                Map<String, Object> companyMap = companyList.get(i);
+                List<Map<String, Object>> appType = companyUserService.getAppType(companyMap);
+                companyMap.put("apptype", appType);
+            }
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
@@ -104,11 +109,44 @@ public class CompanyUserController {
     public Response sendRemind(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            param.put("username",JzbDataType.getString(param.get("name")));
-            param.put("companyname",JzbDataType.getString(param.get("cname")));
-            param.put("relphone",JzbDataType.getString(param.get("phone")));
+            param.put("username", JzbDataType.getString(param.get("name")));
+            param.put("companyname", JzbDataType.getString(param.get("cname")));
+            param.put("relphone", JzbDataType.getString(param.get("phone")));
             param.put("groupid", "1014");
             result = companyService.sendRemind(param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主1
+     * 点击公海显示所有的单位信息
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getCompanyCommonList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyCommonList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取单位总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询单位总数
+                count = companyUserService.getCommonListCount(param);
+            }
+            // 返回所有的企业列表
+            List<Map<String, Object>> companyList = companyUserService.getCompanyCommonList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();

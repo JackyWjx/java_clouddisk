@@ -900,4 +900,37 @@ public class CompanyController {
         }
         return result;
     }
+
+    /**
+     * 管理员创建公海单位
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/9/20 18:00
+     */
+    @RequestMapping(value = "/addCompanyCommon", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyCommon(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"cid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                String uid = JzbDataType.getString(userInfo.get("uid"));
+                long time = System.currentTimeMillis();
+                param.put("addtime", time);
+                param.put("status", "1");
+                param.put("uid", uid);
+                int add = companyService.addCompanyCommon(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
