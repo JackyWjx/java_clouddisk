@@ -27,7 +27,7 @@
         cl.cid,
         cl.cname,
         cl.region,
-        du.cname                                               AS uname,
+        du.cname AS uname,
         du.phone,
         cs.systemname,
         ci.address,
@@ -40,16 +40,29 @@
         left join tb_company_info ci on ci.cid = cl.cid
         where
         cl.status = #{status}
-        <if test="authid == 0 and authid != ''">and cl.authid = ${authid}</if>
-        <if test="authid == 1 and authid != ''">and cl.authid > ${authid}</if>
-        <if test="cname != null and cname != ''">
-        and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
+        <if test="authid == 0 and authid != ''and authid != null">and cl.authid = ${authid}</if>
+        <if test="authid == 1 and authid != ''and authid != null">and cl.authid > ${authid}</if>
+        <if test="cname != null and cname != ''and cname != null">
+            and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
         </if>
-        order by  cl.id
+        order by cl.id
         limit
         #{pagesize}
         offset
         #{pageno}
+    </select>
+
+    <!--查询所有的企业列表-->
+    <select id="queryAppType" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        distinct
+        apptype
+        FROM
+        tb_product_list
+        where
+        cid = #{cid}
+        and
+        status = #{status}
     </select>
 
     <!--点击调入公海是加入公海单位表-->
@@ -74,4 +87,59 @@
         </choose>
         )
     </insert>
+
+    <!--获取单位总数-->
+    <select id="queryCommonListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_company_common cc
+        LEFT JOIN
+        tb_company_list cl on cc.cid = cl.cid
+        LEFT JOIN
+        tb_dept_user du
+        ON du.cid = cl.cid
+        AND du.uid = cl.manager
+        left join
+        tb_company_info ci on ci.cid = cl.cid
+        where
+        cc.status = #{status}
+        <if test="region != null and region != ''">and cl.region = #{region}</if>
+        <if test="cname != null and cname != ''">
+            and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
+        </if>
+    </select>
+
+    <!--查询所有的企业列表-->
+    <select id="queryCompanyCommonList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        cl.cid,
+        cl.cname,
+        cl.region,
+        du.cname AS uname,
+        du.phone,
+        ci.address,
+        cl.authid
+        FROM
+        tb_company_common cc
+        LEFT JOIN
+        tb_company_list cl on cc.cid = cl.cid
+        LEFT JOIN
+        tb_dept_user du
+        ON du.cid = cl.cid
+        AND du.uid = cl.manager
+        left join
+        tb_company_info ci on ci.cid = cl.cid
+        where
+        cc.status = #{status}
+        <if test="region != null and region != ''">and cl.region = #{region}</if>
+        <if test="cname != null and cname != ''">
+            and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
+        </if>
+        order by cc.id
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
 </mapper>

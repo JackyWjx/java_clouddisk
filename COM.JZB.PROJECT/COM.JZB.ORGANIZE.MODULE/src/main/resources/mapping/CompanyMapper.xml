@@ -803,4 +803,20 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         </choose>
         )
     </insert>
+
+    <!--管理员创建公海单位-->
+    <insert id="insertCompanyCommon" parameterType="java.util.Map">
+        INSERT INTO tb_company_friend (cid,requid,reqtime,resuid,restime,ouid,updtime,status,idx)
+        VALUES
+        (#{cid},#{requid},#{time},#{resuid},#{restime},#{uid},#{time},#{status},
+        <choose>
+            <when test=" index != null and index !=''">
+                #{index}
+            </when>
+            <otherwise>
+                (SELECT count(1)+1 FROM tb_company_friend WHERE cid=#{cid})
+            </otherwise>
+        </choose>
+        )
+    </insert>
 </mapper>

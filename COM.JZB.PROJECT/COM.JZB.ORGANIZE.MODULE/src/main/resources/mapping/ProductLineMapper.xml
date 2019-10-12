@@ -307,7 +307,7 @@
                 #{parentid},
             </when>
             <otherwise>
-                #{mid},
+                '000000000000000',
             </otherwise>
         </choose>
         #{cname},
@@ -688,7 +688,67 @@
                 ,null
             </otherwise>
         </choose>
-        )
+        );
+        INSERT INTO
+        tb_product_package
+        ( packid, plid, cname, apptype, madepkg, cid, idx, logo, photo, addtime, status, summary)
+        VALUES
+        (
+        #{packid},
+        ${plid},
+        #{cname},
+        <choose>
+            <when test="apptype != null and apptype != ''">
+                #{apptype},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="madepkg != null and madepkg != ''">
+                #{madepkg},
+            </when>
+            <otherwise>
+                '2',
+            </otherwise>
+        </choose>
+        #{cid},
+        <choose>
+            <when test="idx != null and idx != ''">
+                ${idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_product_package),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="logo != null and logo != ''">
+                #{logo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="photo != null and photo != ''">
+                #{photo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{addtime},
+        #{status}
+        <choose>
+            <when test="summary != null and summary != ''">
+                ,#{summary}
+            </when>
+            <otherwise>
+                ,null
+            </otherwise>
+        </choose>
+        );
     </insert>
 
     <!--电脑端-子产品-产品线下修改企业产品更新产品表信息-->
