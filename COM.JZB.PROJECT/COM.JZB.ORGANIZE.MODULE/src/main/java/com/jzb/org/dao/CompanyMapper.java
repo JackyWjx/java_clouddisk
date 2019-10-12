@@ -304,4 +304,14 @@ public interface CompanyMapper {
      * @DateTime: 2019/9/23 16:49
      */
     int updateCompanyFriend(Map<String, Object> param);
+
+    /**
+     * 管理员创建公海单位
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/9/20 18:00
+     */
+    int insertCompanyCommon(Map<String, Object> param);
 } // End interface CompanyMapper
