@@ -820,4 +820,24 @@ public class CompanyService {
     public int updateCompanyFriend(Map<String, Object> param) {
         return companyMapper.updateCompanyFriend(param);
     }
+
+    /**
+     * 管理员创建公海单位
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/9/20 18:00
+     */
+    public int addCompanyCommon(Map<String, Object> param) {
+        if (JzbDataType.isMap(param.get("send"))) {
+            Map<String, Object> send = (Map<String, Object>) param.get("send");
+            if (!JzbTools.isEmpty(send.get("relphone"))) {
+                //给负责人发送短信
+                send.put("groupid", config.getAddCompany());
+                sendRemind(send);
+            }
+        }
+        return companyMapper.insertCompanyCommon(param);
+    }
 }

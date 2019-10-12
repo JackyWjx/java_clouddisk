@@ -70,8 +70,18 @@ public class CompanyUserService {
     public List<Map<String, Object>> getCompanyList(Map<String, Object> param) {
         param.put("status", "1");
         param = setPageSize(param);
-        List<Map<String, Object>> list = companyUserMapper.queryCompanyList(param);
-        return list;
+        return companyUserMapper.queryCompanyList(param);
+    }
+
+    /**
+     * 我的单位基本资料CRM-单位用户-所有单位-单位列表
+     * 查询所有的企业列表中的是否app已授权或电脑端已授权
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getAppType(Map<String, Object> param) {
+        param.put("status", "1");
+        return companyUserMapper.queryAppType(param);
     }
 
     /**
@@ -93,5 +103,35 @@ public class CompanyUserService {
             count = 0;
         }
         return count;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主1
+     * 点击公海显示所有的单位信息的总数
+     *
+     * @author kuangbin
+     */
+    public int getCommonListCount(Map<String, Object> param) {
+        int count;
+        try {
+            param.put("status", "1");
+            count = companyUserMapper.queryCommonListCount(param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主1
+     * 点击公海显示所有的单位信息
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getCompanyCommonList(Map<String, Object> param) {
+        param.put("status", "1");
+        param = setPageSize(param);
+        return companyUserMapper.queryCompanyCommonList(param);
     }
 }

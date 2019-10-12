@@ -323,6 +323,7 @@ public class ProductLineService {
             param.put("addtime", addtime);
             param.put("updtime", addtime);
             param.put("pid", pid);
+            param.put("packid", JzbRandom.getRandomCharCap(7));
             // 加入默认状态
             param.put("status", "1");
             count = productLineMapper.insertProduct(param);
