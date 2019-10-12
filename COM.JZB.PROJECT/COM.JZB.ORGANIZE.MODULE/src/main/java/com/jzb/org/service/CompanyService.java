@@ -7,6 +7,7 @@ import com.jzb.base.entity.auth.CompanyInfo;
 import com.jzb.base.entity.organize.DeptUser;
 import com.jzb.base.entity.organize.RoleGroup;
 import com.jzb.base.message.Response;
+import com.jzb.base.tree.JzbTree;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 
@@ -774,7 +775,16 @@ public class CompanyService {
      * @DateTime: 2019/9/16 9:46
      */
     public List<Map<String, Object>> queryCompanyByUid(Map<String, Object> param) {
-        return companyMapper.queryCompanyByUid(param);
+        List<Map<String, Object>> list = companyMapper.queryCompanyByUid(param);
+        int size =list.size();
+        List<Map<String, Object>> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            Map<String, Object> map = list.get(i);
+            map.put("joname", JzbTree.toStringArray(JzbDataType.getString(map.get("joname"))));
+            map.put("regname", JzbTree.toStringArray(JzbDataType.getString(map.get("regname"))));
+            result.add(map);
+        }
+        return result;
     }
 
     /**

@@ -1,9 +1,12 @@
 package com.jzb.org.service;
 
+import com.jzb.base.message.Response;
+import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.dao.FriendComMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +22,8 @@ public class FriendComService {
 
     @Autowired
     private FriendComMapper friendComMapper;
+    @Autowired
+    private RegionBaseApi regionBaseApi;
 
     /**
      * 通过负责人或者单位名称查伙伴单位数据
@@ -29,7 +34,16 @@ public class FriendComService {
      * @DateTime: 2019/9/24 15:56
      */
     public List<Map<String, Object>> searchFriendComByValue(Map<String, Object> map) {
-        return friendComMapper.searchFriendComByValue(map);
+        List<Map<String, Object>> friendList = friendComMapper.searchFriendComByValue(map);
+        int size = friendList.size();
+        List<Map<String, Object>> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            Map<String, Object> companyMap = friendList.get(i);
+            Response region = regionBaseApi.getRegionInfo(companyMap);
+            companyMap.put("region", region.getResponseEntity());
+            result.add(companyMap);
+        }
+        return result;
     }
 
     /**
