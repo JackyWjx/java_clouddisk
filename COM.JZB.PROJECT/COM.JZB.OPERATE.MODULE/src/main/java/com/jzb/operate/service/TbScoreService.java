@@ -31,7 +31,6 @@ public class TbScoreService {
         Map<String ,Object> paraMap  =  new HashMap<>();
         try{
 
-
             paraMap.clear();
             paraMap.put("message","success");
         }catch (Exception e){

@@ -2,6 +2,7 @@ package com.jzb.media.controller;
 
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
+import com.jzb.media.config.MediaProperties;
 import com.jzb.media.service.MediaService;
 import io.undertow.servlet.spec.HttpServletResponseImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class MediaController {
             JzbTools.logInfo("fileName ==============>>",list.get(0).get("filename"));
             res.setCharacterEncoding("UTF-8");
             res.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + URLEncoder.encode(list.get(0).get("filename").toString(),"UTF-8"));
-            file = new File("/home/V3/jzb/application/nginx/html/static"+list.get(0).get("filepath"));
+            file = new File(MediaProperties.getImageadderss() +list.get(0).get("filepath"));
 //            file = new File("D:\\nginx\\nginx-1.17.3\\nginx-1.17.3\\html\\images\\短信平台相关.xls");
             fis =  new FileInputStream(file);
             out = res.getOutputStream();

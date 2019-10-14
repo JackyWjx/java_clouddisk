@@ -4,14 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.message.dao.MsgListMapper">
 
+    <!--  根据uid获取用户信息 -->
+    <select id="queryUserParameter" resultType="java.util.Map"  parameterType="java.lang.String">
+        select * from tb_user_parameter where uid = #{uid}
+    </select>
+
     <!--  根据消息组id查询config  -->
     <select id="queryMsgGroupConfigure" resultType="java.util.Map"  parameterType="java.util.Map">
         select * from tb_msg_group_configure where groupid = #{groupid}
     </select>
 
     <!--  根据appid查询checkcode  -->
-    <select id="queryMsgOrganizeCheckcode" parameterType="java.lang.String" resultType="java.lang.String">
-            select  checkcode from tb_message_organize
+    <select id="queryMsgOrganizeCheckcode" parameterType="java.lang.String" resultType="java.util.Map">
+            select  * from tb_message_organize
             where appid = #{appid} and status = '1'
     </select>
 
@@ -38,6 +43,7 @@
         addtime,
         sendtime,
         sendpara,
+        msgtag,
         title,
         context,
         usertype,
@@ -73,6 +79,7 @@
                 null,
             </otherwise>
         </choose>
+        #{msgtag},
         <choose>
             <when test="title != null">
                 #{title},
@@ -130,8 +137,8 @@
     </insert>
 
     <!--  修改消息信息变为已发送  -->
-    <update id="updateMessageListSendStatusByMegid" parameterType="java.lang.String" >
-        update tb_message_list set sendstatus = 2 where msgid = #{msgid}
+    <update id="updateMessageListSendStatusByMegid" parameterType="java.util.Map" >
+        update tb_message_list set sendstatus = 2 , sendtime = #{sendtime} ,context = #{context} , sendpara = #{sendpara} where msgid = #{msgid}
     </update>
 
 </mapper>

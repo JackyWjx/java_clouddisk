@@ -188,15 +188,15 @@
         FROM
         tb_user_list
         WHERE
-        status = '1'
-        AND (
+        <if test=" status !=null and status !=''">status = #{status} AND</if>
+        (
         cname LIKE'%${value}%'
         OR relphone LIKE'%${value}%')
         <choose>
-            <when test="  status != null and status !=''and status ==0">
+            <when test="  authid != null and authid !=''and authid ==0">
                 and authid = 0
             </when>
-            <when test="  status !=0 and status !='' and  status != null ">
+            <when test="  authid !=0 and authid !='' and  authid != null ">
                 and authid != 0 and authid is not null
             </when>
             <otherwise>
@@ -213,15 +213,15 @@
         FROM
         tb_user_list ul
         WHERE
-        status = '1'
-        AND (
+        <if test=" status !=null and status !=''">status = #{status} AND</if>
+        (
         cname LIKE'%${value}%'
         OR relphone LIKE'%${value}%')
         <choose>
-            <when test=" status != null and status !=''and status == 0">
+            <when test=" authid != null and authid !=''and authid == 0">
                 and authid = 0
             </when>
-            <when test=" status != null and status !='' and status !=0 ">
+            <when test=" authid != null and authid !='' and authid !=0 ">
                 and authid != 0 and authid is not null
             </when>
             <otherwise>
