@@ -40,6 +40,15 @@ public class ShortMessageService {
     public  Map<String , Object> sendShortMsg(Map<String , Object> map,Map<String , Object> cmap){
         Map<String , Object> dataMap = new HashMap<>();
         try{
+            dataMap.put("cid",cmap.get("cid"));
+            dataMap.put("groupid",map.get("groupid"));
+            dataMap.put("title",map.get("title"));
+            dataMap.put("usertype",map.get("usertype"));
+            dataMap.put("msgtag",map.get("msgtag"));
+            dataMap.put("msgid", JzbRandom.getRandomNum(16));
+            dataMap.put("addtime", System.currentTimeMillis());
+            dataMap.put("status","1");
+            dataMap.put("sendstatus",1);
             if(map.containsKey("senduid")){
                 dataMap.put("senduid",map.get("senduid"));
             }
@@ -47,32 +56,18 @@ public class ShortMessageService {
                 dataMap.put("sendname",map.get("sendname"));
             }
             if(map.containsKey("sendtime")){
-                dataMap.put("data",map.get("sendtime"));
+                dataMap.put("sendtime",map.get("sendtime"));
             }
             if(map.containsKey("remark")){
                 dataMap.put("summary",map.get("remark"));
             }
-            dataMap.put("cid",cmap.get("cid"));
-            dataMap.put("groupid",map.get("groupid"));
-            dataMap.put("title",map.get("title"));
-            dataMap.put("usertype",map.get("usertype"));
-            dataMap.put("msgtag",map.get("msgtag"));
-            // 基础参数
-            dataMap.put("msgid", JzbRandom.getRandomNum(16));
-            dataMap.put("addtime", System.currentTimeMillis());
-            dataMap.put("status","1");
-            dataMap.put("sendstatus",1);
             // 获取模板配置信息
             List<Map<String , Object>> listGroupTemplate = msgListMapper.queryMsgUserGroupTemplate(map.get("groupid").toString());
             // 获取用户发送配置
             List<Map<String , Object>>   listGroupConfig = msgListMapper.queryMsgGroupConfigure(map.get("groupid").toString());
-            // 指定用户 替换接受者
-//            Map<String, Object> mapGroupUser = MessageUtile.saveMessgaeTypeQueue(map.get("receiver").toString());
-
-            //  TEMP CINFIG
             if("1".equals(dataMap.get("usertype"))){
                 try {
-                    JSONObject  sendJson = JSONObject.fromObject(map.get("receiver"));
+                    JSONObject sendJson = JSONObject.fromObject(map.get("receiver"));
                     JSONObject  json = JSONObject.fromObject(map.get("sendpara"));
                     if (sendJson.containsKey("sms")) {
                         // 短信消息
@@ -81,7 +76,12 @@ public class ShortMessageService {
                             Map<String , Object> smsUserMap =  list.get(i);
                             dataMap.put("receiver", smsUserMap.get("photo"));
                             dataMap.put("msgtype",'1');
-                            dataMap.put("senduid",smsUserMap.get("photo"));
+                            if(dataMap.containsKey("uid")){
+                                dataMap.put("senduid",smsUserMap.get("uid"));
+                                smsUserMap.remove("uid");
+                            }else{
+                                dataMap.put("senduid",smsUserMap.get("photo"));
+                            }
                             smsUserMap.remove("photo");
                             // 参数替换
                             Map<String, Object> paraGroupMap = MessageUtile.setUpParaByUser(smsUserMap.toString(),json.get("sms").toString(),dataMap);
@@ -98,8 +98,13 @@ public class ShortMessageService {
                             Map<String , Object> meilUserMap =  list.get(i);
                             dataMap.put("receiver", meilUserMap.get("photo"));
                             dataMap.put("msgtype",'1');
+                            if(dataMap.containsKey("uid")){
+                                dataMap.put("senduid",meilUserMap.get("uid"));
+                                meilUserMap.remove("uid");
+                            }else{
+                                dataMap.put("senduid",meilUserMap.get("photo"));
+                            }
                             meilUserMap.remove("photo");
-                            dataMap.put("senduid",meilUserMap.get("photo"));
                             // 参数替换
                             Map<String, Object> paraGroupMap = MessageUtile.setUpParaByUser(meilUserMap.toString(),json.get("sms").toString(),dataMap);
                             Map<String, Object> paraMap = MessageUtile.msgTypeGroup(listGroupConfig, paraGroupMap);

@@ -95,11 +95,11 @@ public class ApplicationStartup implements ApplicationRunner {
                                                     if(typetry.getKey().equals("1")){
                                                         MessageQueue.addShortMessage(info);
                                                         map.remove(mgtentry.getKey());
-                                                        JzbTools.logInfo("=================>>添加至短信" );
+                                                        logger.info("=================>>添加至短信" );
                                                     }else if(typetry.getKey().equals("2")){
                                                         MessageQueue.addShortMail(info);
                                                         map.remove(mgtentry.getKey());
-                                                        JzbTools.logInfo("=================>>添加至邮件" );
+                                                        logger.info("=================>>添加至邮件" );
                                                     }
                                                 }
                                             }else{
@@ -107,11 +107,11 @@ public class ApplicationStartup implements ApplicationRunner {
                                                 if(typetry.getKey().equals("1")){
                                                     MessageQueue.addShortMessage(info);
                                                     map.remove(mgtentry.getKey());
-                                                    JzbTools.logInfo("=================>>添加至短信" );
+                                                    logger.info("=================>>添加至短信" );
                                                 }else if(typetry.getKey().equals("2")){
                                                     MessageQueue.addShortMail(info);
                                                     map.remove(mgtentry.getKey());
-                                                    JzbTools.logInfo("=================>>添加至邮件" );
+                                                    logger.info("=================>>添加至邮件" );
                                                 }
                                             }
                                             Thread.sleep(1000);
@@ -153,7 +153,7 @@ public class ApplicationStartup implements ApplicationRunner {
         waitSmsThread.start();
         List<SendMessageThread> waitSmsList = new ArrayList<>();
         waitSmsList.add(waitSmsThread);
-        SEND_MESSAGE_POOL.put("MAIL", waitSmsList);
+        SEND_MESSAGE_POOL.put("WAITSMS", waitSmsList);
 
         // 加入邮件发送线程
         SendMessageThread mailThread = new SendMessageThread(2);
@@ -161,7 +161,6 @@ public class ApplicationStartup implements ApplicationRunner {
         List<SendMessageThread> mailList = new ArrayList<>();
         mailList.add(mailThread);
         SEND_MESSAGE_POOL.put("MAIL", mailList);
-
 
     }
 }
