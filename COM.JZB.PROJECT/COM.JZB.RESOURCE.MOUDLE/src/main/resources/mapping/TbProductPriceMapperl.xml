@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.resource.dao.TbProductPriceMapper">
 
+
     <!--查询产品报价的总数-->
     <select id="getTbProductPriceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
          select
@@ -28,8 +29,8 @@
         tb_product_res_list a
         on a.pid = b.pid
         where 1=1
-        <if test="status != null">
-            and a.status = #{status}
+        <if test="plid != null">
+            and a.plid = #{plid}
         </if>
         <if test="cname != null">
             and a.cname like concat('%',#{cname},'%')
