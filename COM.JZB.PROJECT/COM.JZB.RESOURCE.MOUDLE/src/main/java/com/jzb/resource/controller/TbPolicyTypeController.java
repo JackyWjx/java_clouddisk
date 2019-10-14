@@ -150,6 +150,7 @@ public class TbPolicyTypeController {
                 result = Response.getResponseError();
             } else {
                 //修改一条记录
+
                 int count = tbPolicyTypeService.updatePolicyType(param);
                 //如果返回值大于0，修改成功
                 if (count > 0) {
