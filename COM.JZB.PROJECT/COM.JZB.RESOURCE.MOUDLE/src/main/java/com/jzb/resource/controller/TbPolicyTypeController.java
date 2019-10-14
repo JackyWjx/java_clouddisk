@@ -63,6 +63,7 @@ public class TbPolicyTypeController {
      * @param
      * @return
      */
+
     @RequestMapping(value = "/getPolicyTypes",method = RequestMethod.POST)
     @CrossOrigin
     public Response getPolicyTypes(@RequestBody Map<String,Object> param) {
