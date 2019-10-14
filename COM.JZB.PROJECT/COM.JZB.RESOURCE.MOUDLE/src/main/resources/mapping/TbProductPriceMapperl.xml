@@ -28,8 +28,8 @@
         tb_product_res_list a
         on a.pid = b.pid
         where 1=1
-        <if test="status != null">
-            and a.status = #{status}
+        <if test="plid != null">
+            and a.plid = #{plid}
         </if>
         <if test="cname != null">
             and a.cname like concat('%',#{cname},'%')
