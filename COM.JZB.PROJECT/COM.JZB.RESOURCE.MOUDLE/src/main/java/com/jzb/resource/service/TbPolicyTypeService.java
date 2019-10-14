@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.dao.TbPolicyTypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,6 +137,8 @@ public class TbPolicyTypeService {
         long time = System.currentTimeMillis();
         param.put("addtime", time);
         param.put("updtime", time);
+        param.put("typeid", JzbRandom.getRandomCharLow(7));
+        param.put("parentid", param.get("parentid") == null ? "0000000" : param.get("parentid"));
         return tbPolicyTypeMapper.savePolicyType(param);
     }
 
