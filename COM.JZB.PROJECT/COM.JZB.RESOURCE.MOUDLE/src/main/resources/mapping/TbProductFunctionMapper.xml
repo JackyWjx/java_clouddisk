@@ -163,7 +163,7 @@
     </insert>
 
 
-    
+
     <!--修改产品功能-->
     <update id="updateTbProductFunction" parameterType="java.util.List">
         <foreach collection="list" index="index" item="item" separator=" ;">
