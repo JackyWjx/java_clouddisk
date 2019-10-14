@@ -44,7 +44,7 @@
 
     <!--查询运营管理下政策中的菜单列表LBQ-->
     <select id="getPolicyTypes" parameterType="java.util.Map" resultType="java.util.Map">
-        select ID,typeid,cname,typedesc,addtime,summary from tb_policy_type where status = #{status}
+        select ID,tpeycode,adduid,typeid,cname,typedesc,addtime,summary from tb_policy_type where status = #{status}
         <if test="typeid != null">
             and typeid = #{typeid}
         </if>
@@ -53,9 +53,25 @@
     <!--新增运营管理下的菜单类别LBQ-->
     <insert id="savePolicyType" parameterType="java.util.Map">
         insert into
-        tb_policy_type(typeid,cname,parentid,typedesc,idx,addtime,updtime,status,summary)
+        tb_policy_type(adduid,tpeycode,typeid,cname,parentid,typedesc,idx,addtime,updtime,status,summary)
         values
         (
+        <choose>
+            <when test="adduid != null">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tpeycode != null">
+                #{tpeycode},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{typeid},
         #{cname},
         <choose>
@@ -108,12 +124,14 @@
         update
         tb_policy_type
         set
+        <if test="tpeycode != null">tpeycode=#{tpeycode},</if>
+        <if test="adduid != null">adduid=#{adduid},</if>
         <if test="cname != null">cname=#{cname},</if>
         <if test="parentid != null">parentid=#{parentid},</if>
         <if test="typedesc != null">typedesc=#{typedesc},</if>
-        <if test="updtime != null">updtime=#{updtime},</if>
         <if test="status != null">status=#{status},</if>
-        <if test="summary != null">summary=#{summary}</if>
+        <if test="summary != null">summary=#{summary},</if>
+        <if test="updtime != null">updtime=#{updtime}</if>
         where
         typeid=#{typeid}
     </update>

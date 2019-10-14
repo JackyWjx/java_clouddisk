@@ -24,14 +24,17 @@
             and typeid = #{typeid}
         </if>
         <if test="domid != null">
-            and domid = #{domain}
+            and domid = #{domid}
         </if>
     </select>
 
 
 
 
-    
+
+
+
+
     <!--新增-->
     <insert id="saveTbStandardDom" parameterType="java.util.Map">
         insert into
