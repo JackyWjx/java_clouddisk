@@ -14,7 +14,7 @@ public class TbProductResListService {
     @Autowired
     private TbProductResListMapper tbProductResListMapper;
 
-    
+
 
     /**
      * 查询合同配置中的产品参数
