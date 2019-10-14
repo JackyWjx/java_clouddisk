@@ -606,7 +606,8 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         SELECT
         du.uid,
         string_agg ( DISTINCT cl.joname, ',' ) AS joname,
-        string_agg ( DISTINCT reg.regname, ',' ) AS regname
+        string_agg ( DISTINCT reg.regname, ',' ) AS regname ,
+        string_agg ( DISTINCT du.cdid, ',' ) AS cdid
         FROM
         ( SELECT cid, cname || '-' || CASE COALESCE ( authid, 0 ) WHEN 0 THEN '未认证' ELSE'已认证' END AS joname FROM
         tb_company_list ) cl

@@ -39,7 +39,7 @@ public class TbStandardTypeController {
         Response result;
         try {
             //如果有空值，返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"typeid", "cname", "adduid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{ "cname", "adduid"})) {
                 result = Response.getResponseError();
             } else {
                 //添加一条记录

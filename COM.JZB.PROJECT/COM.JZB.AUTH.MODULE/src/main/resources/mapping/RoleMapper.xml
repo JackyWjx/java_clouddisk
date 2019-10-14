@@ -73,11 +73,12 @@
     </insert>
     <!--批量添加用户到用户角色表-->
     <insert id="insertUserRole">
-        INSERT INTO tb_user_role (cid,crid,uid,addtime,updtime,status)
-        VALUES
-        <foreach separator="," close="" open="" index="index" item="item" collection="list">
-            (#{item.cid},#{item.crid},#{item.uid},#{item.addtime},#{item.updtime},#{item.status}
-            )
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+            INSERT INTO tb_user_role (cid,crid,uid,addtime,updtime,status)
+            VALUES
+            (#{item.cid},#{item.crid},#{item.uid},#{item.addtime},#{item.updtime},#{item.status})
+            ON conflict (cid, crid, uid) DO UPDATE
+            SET status = '1'
         </foreach>
     </insert>
 

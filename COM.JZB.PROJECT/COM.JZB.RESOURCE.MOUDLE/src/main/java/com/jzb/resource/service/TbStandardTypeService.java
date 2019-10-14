@@ -1,5 +1,6 @@
 package com.jzb.resource.service;
 
+import com.jzb.base.util.JzbRandom;
 import com.jzb.resource.dao.TbStandardTypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class TbStandardTypeService {
         long time = System.currentTimeMillis();
         param.put("addtime", time);
         param.put("updtime", time);
+        param.put("typeid", JzbRandom.getRandomCharLow(7));
         return tbStandardTypeMapper.saveStandardType(param);
     }
 

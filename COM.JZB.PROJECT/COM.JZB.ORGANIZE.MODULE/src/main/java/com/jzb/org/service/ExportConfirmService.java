@@ -1,8 +1,11 @@
 package com.jzb.org.service;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.message.MessageApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -35,6 +39,8 @@ public class ExportConfirmService {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+    @Autowired
+    private AuthApi authApi;
 
     /**
      * 获取导入信息总数
@@ -255,5 +261,39 @@ public class ExportConfirmService {
         result.put("id", map.get("id"));
         result.put("uid", map.get("uid"));
         return result;
+    }
+
+    public Response addUserAndSend(Map<String, Object> map) {
+        //创建用户
+        Response userRes;
+        try {
+            Map<String, Object> userMap = new HashMap<>(4);
+            userMap.put("name", map.get("name"));
+            userMap.put("phone", map.get("phone"));
+            String pass = "*jzb" + JzbRandom.getRandomNum(3);
+            userMap.put("passwd", JzbDataCheck.Md5(pass).toLowerCase(Locale.ENGLISH));
+            userMap.put("status", "8");
+
+            userRes = authApi.addRegistration(userMap);
+            Map<String, Object> uidMap = (Map<String, Object>) userRes.getResponseEntity();
+            //加入邀请
+            String newUser = JzbDataType.getString(uidMap.get("uid"));
+            if (!JzbTools.isEmpty(newUser)) {
+                Map<String, Object> param = new HashMap<>(5);
+                String company = "计支宝";
+                param.put("relphone", map.get("phone"));
+                param.put("groupid", config.getInvite());
+                param.put("companyname", company);
+                param.put("username", map.get("name"));
+                param.put("password", pass);
+                //发送短信
+                service.sendRemind(param);
+            }
+        } catch (Exception e) {
+            userRes = Response.getResponseError();
+            JzbTools.logError(e);
+
+        }
+        return userRes;
     }
 }
