@@ -606,8 +606,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         SELECT
         du.uid,
         string_agg ( DISTINCT cl.joname, ',' ) AS joname,
-        string_agg ( DISTINCT reg.regname, ',' ) AS regname ,
-        string_agg ( DISTINCT du.cdid, ',' ) AS cdid
+        string_agg ( DISTINCT reg.regname, ',' ) AS regname
         FROM
         ( SELECT cid, cname || '-' || CASE COALESCE ( authid, 0 ) WHEN 0 THEN '未认证' ELSE'已认证' END AS joname FROM
         tb_company_list ) cl
@@ -807,15 +806,28 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
 
     <!--管理员创建公海单位-->
     <insert id="insertCompanyCommon" parameterType="java.util.Map">
-        INSERT INTO tb_company_friend (cid,requid,reqtime,resuid,restime,ouid,updtime,status,idx)
+        INSERT INTO tb_company_common (cid, idx, ouid, addtime, updtime, status, summary)
         VALUES
-        (#{cid},#{requid},#{time},#{resuid},#{restime},#{uid},#{time},#{status},
+        (
+        #{cid},
         <choose>
             <when test=" index != null and index !=''">
-                #{index}
+                ${index},
             </when>
             <otherwise>
-                (SELECT count(1)+1 FROM tb_company_friend WHERE cid=#{cid})
+                (SELECT count(1)+1 FROM tb_company_common WHERE cid=#{cid}),
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        #{addtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
             </otherwise>
         </choose>
         )

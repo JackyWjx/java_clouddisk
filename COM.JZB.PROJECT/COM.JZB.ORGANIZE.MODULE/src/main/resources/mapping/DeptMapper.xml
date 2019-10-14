@@ -194,7 +194,7 @@
         status = #{status}
         WHERE
             batchid = #{batchid}
-            AND cid=#{cid}
+        <if test="cid !=null and cid!=''">AND cid=#{cid}</if>
     </update>
 
 
@@ -327,8 +327,7 @@
         SELECT
         du.uid,
         du.cname,
-        cd.cname as dept,
-        cd.cdid
+        cd.cname as dept
         FROM
         tb_dept_user du
         LEFT JOIN tb_company_dept cd ON du.cid = cd.cid
@@ -346,8 +345,7 @@
 
         ) SELECT
         uid,cname,
-        string_agg ( DISTINCT dept, ',' ) as dept,
-        string_agg ( DISTINCT cdid, ',' ) AS cdid
+        string_agg ( DISTINCT dept, ',' ) as dept
         FROM
         S
         GROUP BY
@@ -365,23 +363,6 @@
         AND du.cdid = cd.cdid
         WHERE
         cd.cid =#{cid}
-        <if test=" cdid !=null and cdid !='' ">
-            and EXISTS (WITH RECURSIVE modt AS (
-            SELECT ID, cdid, pcdid
-            FROM tb_company_dept
-            WHERE cdid = #{cdid}
-            AND status = '1'
-            UNION ALL
-            SELECT tmt.ID,
-            tmt.cdid,
-            tmt.pcdid
-            FROM tb_company_dept tmt
-            JOIN modt ON tmt.pcdid = modt.cdid
-            AND tmt.status = '1'
-            )
-            SELECT modt.cdid
-            FROM modt WHERE modt.cdid =cd.cdid)
-        </if>
         <if test=" status !=null and status !='' ">and du.status=#{status}</if>
         AND ( du.cname LIKE'%${value}%' OR du.phone LIKE'%${value}%' )
     </select>
@@ -409,25 +390,8 @@
         AND du.cdid = cd.cdid
         WHERE
         cd.cid = #{cid}
-        <if test=" cdid !=null and cdid !='' ">
-            and EXISTS (WITH RECURSIVE modt AS (
-            SELECT ID, cdid, pcdid
-            FROM tb_company_dept
-            WHERE cdid = #{cdid}
-            AND status = '1'
-            UNION ALL
-            SELECT tmt.ID,
-            tmt.cdid,
-            tmt.pcdid
-            FROM tb_company_dept tmt
-            JOIN modt ON tmt.pcdid = modt.cdid
-            AND tmt.status = '1'
-            )
-            SELECT modt.cdid
-            FROM modt WHERE modt.cdid =cd.cdid)
-        </if>
+        <if test=" cdid !=null and cdid !='' ">and cd.cdid=#{cdid}</if>
         <if test=" status !=null and status !='' ">and du.status=#{status}</if>
-        <if test=" uids !=null and uids !='' ">and du.uid=#{uids}</if>
         AND ( du.cname LIKE'%${value}%' OR du.phone LIKE'%${value}%' )
         ORDER BY du.uid,du.cdid LIMIT #{pagesize} OFFSET #{start}
 
