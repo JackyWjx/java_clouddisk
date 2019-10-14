@@ -310,5 +310,59 @@ public class DeptUserController {
         return result;
     }
 
-
+    /**
+     * 创建公海单位没有负责人id时创建负责人账号并创建公海单位
+     *
+     * @param param
+     * @param token
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/11
+     */
+    @RequestMapping(value = "/addCompanyCommon", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyCommon(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
+        Response result;
+        try {
+            String[] str = {"cname", "region", "phone", "managername"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
+                if (userInfo.size() > 0) {
+                    //先确认负责人id
+                    Map<String, Object> send = companyService.getUid(param);
+                    String uid = JzbDataType.getString(send.get("uid"));
+                    if (JzbTools.isEmpty(uid)) {
+                        result = Response.getResponseError();
+                    } else {
+                        //创建伙伴单位
+                        param.put("userinfo", userInfo);
+                        param.put("manager", uid);
+                        param.put("managername", param.get("managername"));
+                        //伙伴单位默认初级认证
+                        param.put("authid", "8");
+                        param.put("type", "1");
+                        Response comRes = companyService.addCompany(param);
+                        String cid = "";
+                        if (JzbDataType.isMap(comRes.getResponseEntity())) {
+                            Map<String, Object> comMap = (Map<String, Object>) comRes.getResponseEntity();
+                            cid = JzbDataType.getString(comMap.get("cid"));
+                        }
+                        //创建伙伴单位表数据
+                        param.put("send", send);
+                        param.put("cid", cid);
+                        result = companyOrgApi.addCompanyCommon(param);
+                        authService.addAdmin(param);
+                    }
+                } else {
+                    result = Response.getResponseError();
+                }
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
