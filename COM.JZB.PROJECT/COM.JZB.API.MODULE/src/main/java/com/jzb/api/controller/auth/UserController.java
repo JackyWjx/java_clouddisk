@@ -2,6 +2,7 @@ package com.jzb.api.controller.auth;
 
 import com.jzb.api.api.auth.UserAuthApi;
 import com.jzb.api.api.org.CompanyUserApi;
+import com.jzb.api.api.redis.UserRedisApi;
 import com.jzb.api.config.ApiConfigProperties;
 import com.jzb.api.service.CompanyService;
 import com.jzb.api.service.DeptUserService;
@@ -39,6 +40,9 @@ public class UserController {
      */
     @Autowired
     private JzbUserAuthService authService;
+
+    @Autowired
+    private UserRedisApi userRedisApi;
 
     /**
      * 用户认证
@@ -219,36 +223,51 @@ public class UserController {
         try {
             Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
             if (userInfo.size() > 0) {
+                Object redisRes = userRedisApi.getPhoneUid(JzbDataType.getString(param.get("phone"))).getResponseEntity();
+                param.put("uid", JzbDataType.getString(redisRes));
                 param.put("userinfo", userInfo);
-                param.put("uid", userInfo.get("uid"));
-                // 获取随机密码
-                String passwd = "*jzb" + JzbRandom.getRandomNum(3);
-                param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
-                param.put("password", passwd);
-                param.put("status", "8");
-                // 创建用户返回用户UID
-                result = authService.addRegistration(param);
-                Object objUser = result.getResponseEntity();
-                // 判断返回的是否是MAP
-                if (JzbDataType.isMap(objUser)) {
-                    Map<String, Object> map = (Map<String, Object>) objUser;
-                    // 判断map中是否包含uid
-                    if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("uid")))) {
-                        // 加入状态,1为创建单位
-                        param.put("type", "1");
-                        result = companyService.addCompany(param);
-                        Object objCompany = result.getResponseEntity();
-                        // 判断返回的是否是MAP
-                        if (JzbDataType.isMap(objCompany)) {
-                            Map<String, Object> mapCompany = (Map<String, Object>) objCompany;
-                            // 判断map中是否包含uid
-                            if (!JzbDataType.isEmpty(JzbDataType.getString(mapCompany.get("cid")))) {
-                                Response send = companyUserApi.sendRemind(param);
-                                result = Response.getResponseSuccess(userInfo);
-                                // 获取短信接口返回值并加入到此接口返回值中
-                                result.setResponseEntity(send.getResponseEntity());
-                            }
+                if (JzbTools.isEmpty(redisRes)) {
+                    // 获取随机密码
+                    String passwd = "*jzb" + JzbRandom.getRandomNum(3);
+                    param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
+                    param.put("password", passwd);
+                    param.put("status", "8");
+                    // 创建用户返回用户UID
+                    result = authService.addRegistration(param);
+                    Object objUser = result.getResponseEntity();
+                    // 判断返回的是否是MAP
+                    if (JzbDataType.isMap(objUser)) {
+                        Map<String, Object> map = (Map<String, Object>) objUser;
+                        // 判断map中是否包含uid
+                        if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("uid")))) {
+                            param.put("uid", JzbDataType.getString(map.get("uid")));
                         }
+                    }
+                }
+                if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("uid")))) {
+                    // 加入状态,1为创建单位
+                    param.put("type", "1");
+                    // 单位默认初级认证
+                    param.put("authid", "8");
+                    param.put("manager", JzbDataType.getString(param.get("uid")));
+                    result = companyService.addCompany(param);
+                    Object objCompany = result.getResponseEntity();
+                    // 判断返回的是否是MAP
+                    if (JzbDataType.isMap(objCompany)) {
+                        Map<String, Object> mapCompany = (Map<String, Object>) objCompany;
+                        // 判断map中是否包含uid
+                        if (!"4".equals(JzbDataType.getString(mapCompany.get("message")))) {
+                            System.out.println(JzbDataType.getString(mapCompany.get("cid")));
+                            Response send = companyUserApi.sendRemind(param);
+                            result = Response.getResponseSuccess(userInfo);
+                            // 获取短信接口返回值并加入到此接口返回值中
+                            result.setResponseEntity(send.getResponseEntity());
+                        } else {
+                            result = Response.getResponseError();
+                            result.setResponseEntity("该单位已认证存在!");
+                        }
+                    } else {
+                        result = Response.getResponseError();
                     }
                 } else {
                     result = Response.getResponseError();
@@ -274,7 +293,8 @@ public class UserController {
      */
     @RequestMapping(value = "/addAdmin", method = RequestMethod.POST)
     @CrossOrigin
-    public Response addAdmin(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
+    public Response addAdmin(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String
+            token) {
         Response result;
         try {
             String[] str = {"cid"};
@@ -307,7 +327,9 @@ public class UserController {
      */
     @RequestMapping(value = "/getGroupUser", method = RequestMethod.POST)
     @CrossOrigin
-    public Response getGroupUser(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
+    public Response getGroupUser
+    (@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String
+            token) {
         Response result;
         try {
             String[] str = {"type"};
