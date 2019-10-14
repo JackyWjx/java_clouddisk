@@ -727,4 +727,37 @@ public class AuthUserController {
         }
         return bl;
     } // End SwitchingUnit
+
+    /**
+     * 查询用户所有权限（除用户所属部门）加上传入部门的权限
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/10/14 16:42
+     */
+    @RequestMapping(value = "/getUserAllMenuList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserAllMenuList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"uid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                int rows = 2147483647;
+                int page = 1;
+                param.put("pagesize", rows);
+                param.put("start", rows * (page - 1));
+                List<Map<String, Object>> list = userService.queryUserMenuList(param);
+                result = Response.getResponseSuccess(userInfo);
+                result.setResponseEntity(list);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 } // End class AuthUserController

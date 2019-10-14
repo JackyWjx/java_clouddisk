@@ -137,4 +137,13 @@ public interface AuthUserMapper {
      * @return
      */
     List<Map<String, Object>> queryUserByValue(Map<String, Object> param);
+
+    /**
+     * 查询用户所有权限
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    List<Map<String, Object>> queryUserMenuList(Map<String, Object> param);
 } // End interface AuthUserMapper

@@ -419,10 +419,18 @@ public class RoleService implements Service {
         }
         map.put("addtime", System.currentTimeMillis());
         map.put("status", "1");
-        int add = roleMapper.insertCompanyRole(map);
-        Map<String, Object> result = new HashMap(2);
-        result.put("add", add);
-        result.put("crid", crId);
+        List<Map<String, Object>> crList = roleMapper.queryCompanyRole(map);
+        Map<String, Object> result = new HashMap();
+        if (crList.size() > 0) {
+            result.put("code", "2");
+            result.put("add", "0");
+        }else{
+            int add = roleMapper.insertCompanyRole(map);
+            result.put("add", add);
+            result.put("crid", crId);
+            result.put("code", "1");
+        }
+
         return result;
     }
 
