@@ -4,6 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.service.CompanyService;
@@ -30,10 +31,10 @@ public class CompanyUserController {
     private UserRedisServiceApi userRedisServiceApi;
 
     /**
-     * 查询redis缓存企业对象
+     * 查询地区信息
      */
     @Autowired
-    private OrgRedisServiceApi orgRedisServiceApi;
+    private RegionBaseApi regionBaseApi;
 
     @Autowired
     private CompanyService companyService;
@@ -60,8 +61,8 @@ public class CompanyUserController {
             List<Map<String, Object>> companyList = companyUserService.getCompanyList(param);
             for (int i = 0; i < companyList.size(); i++) {
                 Map<String, Object> companyMap = companyList.get(i);
-                List<Map<String, Object>> appType = companyUserService.getAppType(companyMap);
-                companyMap.put("apptype", appType);
+                Response region = regionBaseApi.getRegionInfo(companyMap);
+                companyMap.put("region", region.getResponseEntity());
             }
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);

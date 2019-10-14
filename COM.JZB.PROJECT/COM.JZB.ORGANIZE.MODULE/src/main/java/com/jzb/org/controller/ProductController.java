@@ -7,6 +7,8 @@ import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
+import com.jzb.org.dao.DeptMapper;
+import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
 import com.jzb.org.service.ProductService;
 import org.apache.poi.xssf.usermodel.*;
@@ -24,6 +26,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 
 /**
  * @Description: 产品控制层, 与前端对接
@@ -45,6 +48,11 @@ public class ProductController {
     @Autowired
     RegionBaseApi regionBaseApi;
 
+    @Autowired
+    private DeptService deptService;
+
+    @Autowired
+    private DeptMapper deptMapper;
     /**
      * 查询产品的信息
      *
@@ -650,10 +658,27 @@ public class ProductController {
             long time = System.currentTimeMillis();
             String fileName = file.getOriginalFilename();
             String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
-
-            // 保存文件到本地
-            File intoFile = new File(filepath);
-            file.transferTo(intoFile);
+            //生成批次ID
+            String batchId = JzbRandom.getRandomCharCap(11);
+            param.put("batchid", batchId);
+            param.put("address", filepath);
+            param.put("cname", fileName);
+            param.put("status", "2");
+            try {
+                //保存文件到本地
+                File intoFile = new File(filepath);
+                intoFile.getParentFile().mkdirs();
+                String address = intoFile.getCanonicalPath();
+                file.transferTo(new File(address));
+            } catch (Exception e) {
+                e.printStackTrace();
+                JzbTools.logError(e);
+                // 保存失败信息到批次表
+                param.put("status", "4");
+                param.put("summary", "保存文件到本地失败");
+            }
+            // 添加批次信息到用户导入批次表
+            deptService.addExportBatch(param);
             // 创建一个线程池
             ExecutorService pool = Executors.newFixedThreadPool(1);
 
@@ -662,7 +687,7 @@ public class ProductController {
             Future future = pool.submit(importCompanyThread);
             // 获取返回值结果
             result = (Response) future.get();
-
+            result.setResponseEntity(param);
             // 关闭线程池
             pool.shutdown();
         } catch (Exception e) {
@@ -696,8 +721,14 @@ public class ProductController {
         public Response call() {
             // 读取模板中的数据
             List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
+
+            // 保存到用户导入信息表
+            List<Map<String, Object>> userInfoList = new ArrayList<>();
+            Map<String, Object> exportMap = new HashMap<>(param);
             // 遍历结果行,菜单数据从第2行开始
             for (int i = 1; i < list.size(); i++) {
+                // 设置行信息
+                exportMap.put("idx", i);
                 Map<Integer, String> map = list.get(i);
                 // 获取模板中的用户姓名
                 String name = JzbDataType.getString(map.get(0));
@@ -707,10 +738,36 @@ public class ProductController {
 
                 // 获取模板中的单位名称
                 String cname = JzbDataType.getString(map.get(2));
-                if (JzbDataType.isEmpty(name) || JzbDataType.isEmpty(phone) || JzbDataType.isEmpty(cname)) {
-                    result = Response.getResponseError();
-                    result.setResponseEntity("必填项不能为空,执行成功" + (i - 1) + "行");
-                    break;
+                String summary = "";
+                exportMap.put("cname", name);
+                if (JzbDataType.isEmpty(name)) {
+                    exportMap.put("status", "2");
+                    summary = "用户姓名不能为空!";
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                if (JzbDataType.isEmpty(phone)) {
+                    exportMap.put("status", "2");
+                    summary += "用户手机号不能为空!";
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }else {
+                    if (!toPhone(phone)) {
+                        exportMap.put("status", "2");
+                        summary += "手机号不合规范";
+                        exportMap.put("summary", summary);
+                        userInfoList.add(exportMap);
+                        continue;
+                    }
+                }
+                if (JzbDataType.isEmpty(cname)) {
+                    exportMap.put("status", "2");
+                    summary += "单位名称不能为空!";
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
                 }
                 // 获取模板中的单位地区
                 String regionName = JzbDataType.getString(map.get(3));
@@ -730,6 +787,7 @@ public class ProductController {
                 // 获取模板中的系统名称
                 String systemname = JzbDataType.getString(map.get(5));
                 param.put("name", name);
+                param.put("authid", "8");
                 param.put("phone", phone);
                 param.put("cname", cname);
                 param.put("region", region);
@@ -737,8 +795,39 @@ public class ProductController {
                 param.put("systemname", systemname);
                 // 调用API模块的接口
                 result = productService.addRegistrationCompany(param);
+                exportMap.put("status","1");
+                userInfoList.add(exportMap);
             }
+            int export = 0;
+            //保存用户导入信息表
+            if (userInfoList.size() > 0) {
+                export = deptMapper.insertExportUserInfoList(userInfoList);
+            }
+            //导入完成后修改状态
+            if (export == 1) {
+                exportMap.put("status", "8");
+            } else if (export != 1) {
+                exportMap.put("status", "4");
+            }
+            deptService.updateExportBatch(exportMap);
             return result;
         }
+    }
+    /**
+     * 校验手机号
+     *
+     * @param obj
+     * @return
+     */
+    private boolean toPhone(String obj) {
+        boolean result = true;
+        try {
+            String eg = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
+            result = Pattern.matches(eg, obj);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            e.printStackTrace();
+        }
+        return result;
     }
 } // End class ProductController
