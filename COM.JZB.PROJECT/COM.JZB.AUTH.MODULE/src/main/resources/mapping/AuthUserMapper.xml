@@ -258,5 +258,36 @@
             (SELECT uid FROM tb_user_key WHERE ktid = #{ktid} AND keyid = #{keyid} AND status = '1') k
                 INNER JOIN tb_user_list u ON k.uid = u.uid;
     </select>
+    <!--查询用户所有权限-->
+    <select id="queryUserMenuList" resultType="java.util.Map">
+        SELECT DISTINCT ma.mid,
+        COALESCE(ma.pageid,'') AS pageid,
+        ma.status
+        FROM tb_role_menu_auth ma
+        WHERE ma.status = '1'
+        AND exists(select 1
+        from tb_role_relation rr
+        where (
+        <if test=" cdid != null and cdid.length!=0">
+            (rr.rrtype = '1' and rr.rrid in
+            <foreach collection="cdid.split(',')" item="item"
+                     index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            ) or
+        </if>
+        (rr.rrtype = '2' and exists(select 1
+        from tb_user_role u
+        where u.uid = #{uid}
+        and u.status = '1'
+        and u.crid = rr.rrid
+        )) or
+        (rr.rrtype = '4' and rr.rrid = #{uid}))
+        and rr.status = '1'
+        and rr.crgid = ma.crgid)
+        GROUP BY ma.mid,ma.status,ma.pageid
+        order by ma.mid,
+        pageid LIMIT #{pagesize}  OFFSET #{start}
+    </select>
 
 </mapper>

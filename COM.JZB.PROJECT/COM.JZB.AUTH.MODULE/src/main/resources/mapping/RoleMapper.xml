@@ -383,7 +383,7 @@
         tb_company_role
     WHERE
         cid =#{cid}
-        AND cname =#{cname} AND status in ('1','2')
+        AND cname =#{cname} AND status in ('1')
         AND crid !=#{crid}
     </select>
     <!--查询角色总数-->
