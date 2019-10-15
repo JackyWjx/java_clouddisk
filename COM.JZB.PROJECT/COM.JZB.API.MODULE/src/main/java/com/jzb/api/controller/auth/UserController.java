@@ -257,7 +257,6 @@ public class UserController {
                         Map<String, Object> mapCompany = (Map<String, Object>) objCompany;
                         // 判断map中是否包含uid
                         if (!"4".equals(JzbDataType.getString(mapCompany.get("message")))) {
-                            System.out.println(JzbDataType.getString(mapCompany.get("cid")));
                             Response send = companyUserApi.sendRemind(param);
                             result = Response.getResponseSuccess(userInfo);
                             // 获取短信接口返回值并加入到此接口返回值中
