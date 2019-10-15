@@ -729,13 +729,15 @@ public class CompanyService {
         SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = sim.format(new Date());
         Map<String, Object> codeMap = new HashMap<>();
-        // 创建单位成功判断是否有密码需要发送给用户
-        if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("password")))) {
-            codeMap.put("password", JzbDataType.getString(map.get("password")));
-        }
-        codeMap.put("username", JzbDataType.getString(map.get("username")));
-        codeMap.put("companyname", JzbDataType.getString(map.get("companyname")));
         codeMap.put("date", date);
+        // 创建单位成功判断是否有密码需要发送给用户
+        codeMap.put("username", JzbDataType.getString(map.get("username")));
+        if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("password")))) {
+            codeMap.put("pwassword", JzbDataType.getString(map.get("password")));
+           /* codeMap.remove("date");
+            codeMap.remove("username");*/
+        }
+        codeMap.put("companyname", JzbDataType.getString(map.get("companyname")));
         Map<String, Object> smsMap = new HashMap<>(1);
         smsMap.put("sms", codeMap);
         map.put("sendpara", JSON.toJSONString(smsMap));
@@ -745,7 +747,10 @@ public class CompanyService {
         List<Map<String, Object>> receiverList = new ArrayList<>();
         Map<String, Object> receiverMap = new HashMap<>();
         Map<String, Object> mapReceiver = new HashMap<>();
-        receiverMap.put("photo", JzbDataType.getString(map.get("relphone")));
+        if (!JzbDataType.isEmpty(JzbDataType.getString("relphone"))){
+            map.put("photo", JzbDataType.getString(map.get("relphone")));
+        }
+        receiverMap.put("photo", JzbDataType.getString(map.get("phone")));
         receiverList.add(receiverMap);
         mapReceiver.put("sms", receiverList);
         try {
@@ -846,14 +851,11 @@ public class CompanyService {
      * @DateTime: 2019/9/20 18:00
      */
     public int addCompanyCommon(Map<String, Object> param) {
-        if (JzbDataType.isMap(param.get("send"))) {
-            Map<String, Object> send = (Map<String, Object>) param.get("send");
-            if (!JzbTools.isEmpty(send.get("relphone"))) {
-                //给负责人发送短信
-                send.put("groupid", config.getAddCompany());
-                sendRemind(send);
-            }
-        }
+        //给负责人发送短信
+        param.put("groupid", config.getAddCompany());
+        param.put("msgtag", "addCommon1013");
+        param.put("senduid", "addCommon1013");
+        sendRemind(param);
         return companyMapper.insertCompanyCommon(param);
     }
 }

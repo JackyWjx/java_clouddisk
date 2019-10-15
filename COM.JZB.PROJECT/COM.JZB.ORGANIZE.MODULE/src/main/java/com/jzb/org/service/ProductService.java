@@ -254,9 +254,12 @@ public class ProductService {
                 // 判断返回的是否是MAP
                 if (JzbDataType.isMap(objCompany)) {
                     Map<String, Object> mapCompany = (Map<String, Object>) objCompany;
-                    // 判断map中是否包含uid
+                    // 判断map中是否包含cid
                     if (!(JzbDataType.getInteger(mapCompany.get("message")) == 4)) {
-                        Response send = companyUserController.sendRemind(param);
+                        String cid = JzbDataType.getString(mapCompany.get("cid"));
+                        param.put("cid",cid);
+                        // 加入公海单位
+                        Response send = companyController.addCompanyCommon(param);
                         result = Response.getResponseSuccess();
                         // 获取短信接口返回值并加入到此接口返回值中
                         result.setResponseEntity(send.getResponseEntity());
