@@ -334,22 +334,23 @@ public class DeptUserController {
                     if (JzbTools.isEmpty(uid)) {
                         result = Response.getResponseError();
                     } else {
-                        //创建伙伴单位
+                        // 创建公海单位
                         param.put("userinfo", userInfo);
+                        param.put("companyname",JzbDataType.getString(param.get("cname")));
                         param.put("manager", uid);
-                        param.put("managername", param.get("managername"));
-                        //伙伴单位默认初级认证
-                        param.put("authid", "8");
+                        param.put("managername", JzbDataType.getString(param.get("managername")));
+                        // 公海单位默认初级认证
                         param.put("type", "1");
+                        param.put("authid", "8");
                         Response comRes = companyService.addCompany(param);
                         String cid = "";
                         if (JzbDataType.isMap(comRes.getResponseEntity())) {
                             Map<String, Object> comMap = (Map<String, Object>) comRes.getResponseEntity();
                             cid = JzbDataType.getString(comMap.get("cid"));
                         }
-                        //创建伙伴单位表数据
-                        param.put("send", send);
+                        // 创建公海单位表数据
                         param.put("cid", cid);
+                        param.put("send", send);
                         result = companyOrgApi.addCompanyCommon(param);
                         authService.addAdmin(param);
                     }
