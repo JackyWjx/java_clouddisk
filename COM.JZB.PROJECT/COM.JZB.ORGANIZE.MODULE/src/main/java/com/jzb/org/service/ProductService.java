@@ -8,6 +8,7 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.auth.AuthRoleApi;
+import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.controller.CompanyController;
 import com.jzb.org.controller.CompanyUserController;
 import com.jzb.org.dao.ProductMapper;
@@ -41,7 +42,11 @@ public class ProductService {
     private AuthRoleApi authRoleApi;
 
     @Autowired
+    private UserRedisServiceApi userRedisServiceApi;
+
+    @Autowired
     private CompanyUserController companyUserController;
+
     /**
      * 根据产品查询产品下的所有菜单
      *
@@ -218,38 +223,54 @@ public class ProductService {
     public Response addRegistrationCompany(Map<String, Object> param) {
         Response result;
         try {
-            // 获取随机密码
-            String passwd = "*jzb" + JzbRandom.getRandomNum(3);
-            param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
-            param.put("password", passwd);
-            // 创建用户返回用户UID
-            result = authApi.addRegistration(param);
-            Object objUser = result.getResponseEntity();
-            // 判断返回的是否是MAP
-            if (JzbDataType.isMap(objUser)) {
-                Map<String, Object> map = (Map<String, Object>) objUser;
-                // 判断map中是否包含uid
-                if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("uid")))) {
-                    // 加入状态,1为创建单位
-                    param.put("type", "1");
-                    result = addCompany(param);
-                    Object objCompany = result.getResponseEntity();
-                    // 判断返回的是否是MAP
-                    if (JzbDataType.isMap(objCompany)) {
-                        Map<String, Object> mapCompany = (Map<String, Object>) objCompany;
-                        // 判断map中是否包含uid
-                        if (!JzbDataType.isEmpty(JzbDataType.getString(mapCompany.get("cid")))) {
-                            Response send = companyUserController.sendRemind(param);
-                            result = Response.getResponseSuccess();
-                            // 获取短信接口返回值并加入到此接口返回值中
-                            result.setResponseEntity(send.getResponseEntity());
-                        }
+            Object redisRes = userRedisServiceApi.getPhoneUid(JzbDataType.getString(param.get("phone"))).getResponseEntity();
+            param.put("uid", JzbDataType.getString(redisRes));
+            if (JzbTools.isEmpty(redisRes)) {
+                // 获取随机密码
+                String passwd = "*jzb" + JzbRandom.getRandomNum(3);
+                param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
+                param.put("password", passwd);
+                param.put("status", "8");
+                // 创建用户返回用户UID
+                result = authApi.addRegistration(param);
+                Object objUser = result.getResponseEntity();
+                // 判断返回的是否是MAP
+                if (JzbDataType.isMap(objUser)) {
+                    Map<String, Object> map = (Map<String, Object>) objUser;
+                    // 判断map中是否包含uid
+                    if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("uid")))) {
+                        param.put("uid", JzbDataType.getString(map.get("uid")));
                     }
+                }
+            }
+            if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("uid")))) {
+                // 加入状态,1为创建单位
+                param.put("type", "1");
+                // 单位默认初级认证
+                param.put("authid", "8");
+                param.put("manager", JzbDataType.getString(param.get("uid")));
+                result = addCompany(param);
+                Object objCompany = result.getResponseEntity();
+                // 判断返回的是否是MAP
+                if (JzbDataType.isMap(objCompany)) {
+                    Map<String, Object> mapCompany = (Map<String, Object>) objCompany;
+                    // 判断map中是否包含uid
+                    if (!(JzbDataType.getInteger(mapCompany.get("message")) == 4)) {
+                        Response send = companyUserController.sendRemind(param);
+                        result = Response.getResponseSuccess();
+                        // 获取短信接口返回值并加入到此接口返回值中
+                        result.setResponseEntity(send.getResponseEntity());
+                    } else {
+                        result.setResponseEntity("此单位已存在!");
+                    }
+                }else {
+                    result = Response.getResponseError();
                 }
             } else {
                 result = Response.getResponseError();
             }
-        } catch (Exception ex) {
+        } catch (
+                Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
         }
@@ -297,16 +318,17 @@ public class ProductService {
 
     /**
      * 创建默认角色组，资源池角色组合管理员角色组
+     *
      * @param param
      */
-    private void saveInitRoleGroup(Map<String, Object> param){
+    private void saveInitRoleGroup(Map<String, Object> param) {
         //创建默认角色组，资源池角色组合管理员角色组
         String cid = JzbDataType.getString(param.get("cid"));
         param.put("cname", "资源池角色组");
-        param.put("crgid",cid+"0000");
+        param.put("crgid", cid + "0000");
         authRoleApi.saveRoleGroup(param);
         param.put("cname", "管理员角色组");
-        param.put("crgid",cid+"1111");
+        param.put("crgid", cid + "1111");
         authRoleApi.saveRoleGroup(param);
     }
 }

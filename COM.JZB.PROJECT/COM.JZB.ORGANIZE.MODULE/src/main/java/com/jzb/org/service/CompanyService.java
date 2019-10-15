@@ -742,6 +742,12 @@ public class CompanyService {
         //短信发送参数填写
         map.put("usertype", "1");
         map.put("title", "计支云");
+        List<Map<String, Object>> receiverList = new ArrayList<>();
+        Map<String, Object> receiverMap = new HashMap<>();
+        Map<String, Object> mapReceiver = new HashMap<>();
+        receiverMap.put("photo", JzbDataType.getString(map.get("relphone")));
+        receiverList.add(receiverMap);
+        mapReceiver.put("sms", receiverList);
         try {
             //加密内容
             String appId = "SADJHJ1FHAUS45FAJ455";
@@ -749,7 +755,7 @@ public class CompanyService {
             String groupId = JzbDataType.getString(map.get("groupid"));
             String title = JzbDataType.getString(map.get("title"));
             String userType = JzbDataType.getString(map.get("usertype"));
-            String receiver = JzbDataType.getString(map.get("relphone"));
+            String receiver = JzbDataType.getString(mapReceiver);
             String checkCode = "FAHJKSFHJK400800FHAJK";
             String md5 = JzbDataCheck.Md5(appId + secret + groupId + title + userType + receiver + checkCode);
             map.put("checkcode", md5);
@@ -776,7 +782,7 @@ public class CompanyService {
      */
     public List<Map<String, Object>> queryCompanyByUid(Map<String, Object> param) {
         List<Map<String, Object>> list = companyMapper.queryCompanyByUid(param);
-        int size =list.size();
+        int size = list.size();
         List<Map<String, Object>> result = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             Map<String, Object> map = list.get(i);
