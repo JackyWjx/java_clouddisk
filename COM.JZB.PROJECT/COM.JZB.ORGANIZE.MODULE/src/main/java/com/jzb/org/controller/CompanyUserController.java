@@ -113,7 +113,9 @@ public class CompanyUserController {
             param.put("username", JzbDataType.getString(param.get("name")));
             param.put("companyname", JzbDataType.getString(param.get("cname")));
             param.put("relphone", JzbDataType.getString(param.get("phone")));
-            param.put("groupid", "1014");
+            param.put("groupid", "1013");
+            param.put("msgtag", "sendRemind1013");
+            param.put("senduid", "sendRemind1013");
             result = companyService.sendRemind(param);
         } catch (Exception ex) {
             JzbTools.logError(ex);

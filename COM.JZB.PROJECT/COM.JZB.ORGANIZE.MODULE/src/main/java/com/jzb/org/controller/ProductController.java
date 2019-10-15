@@ -53,6 +53,7 @@ public class ProductController {
 
     @Autowired
     private DeptMapper deptMapper;
+
     /**
      * 查询产品的信息
      *
@@ -753,7 +754,7 @@ public class ProductController {
                     exportMap.put("summary", summary);
                     userInfoList.add(exportMap);
                     continue;
-                }else {
+                } else {
                     if (!toPhone(phone)) {
                         exportMap.put("status", "2");
                         summary += "手机号不合规范";
@@ -795,7 +796,13 @@ public class ProductController {
                 param.put("systemname", systemname);
                 // 调用API模块的接口
                 result = productService.addRegistrationCompany(param);
-                exportMap.put("status","1");
+                if (JzbDataType.isString(result.getResponseEntity())){
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", result.getResponseEntity());
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                exportMap.put("status", "1");
                 userInfoList.add(exportMap);
             }
             int export = 0;
@@ -804,15 +811,16 @@ public class ProductController {
                 export = deptMapper.insertExportUserInfoList(userInfoList);
             }
             //导入完成后修改状态
-            if (export == 1) {
+            if (export >= 1) {
                 exportMap.put("status", "8");
-            } else if (export != 1) {
+            } else if (export == 0) {
                 exportMap.put("status", "4");
             }
             deptService.updateExportBatch(exportMap);
             return result;
         }
     }
+
     /**
      * 校验手机号
      *

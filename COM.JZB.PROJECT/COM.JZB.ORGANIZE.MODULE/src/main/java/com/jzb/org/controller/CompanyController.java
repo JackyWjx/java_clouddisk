@@ -536,11 +536,15 @@ public class CompanyController {
                 // 1发送通过加入单位模板,2拒绝加入单位模板
                 if (maybe == 1) {
                     // 发送审核通过信息模板
-                    param.put("groupid", "1014");
+                    param.put("groupid", "1007");
+                    param.put("msgtag", "Proposer1007");
+                    param.put("senduid", "Proposer1007");
                     sendResult = companyService.sendRemind(param);
                 } else {
                     // 发送拒绝通过信息模板
-                    param.put("groupid", "1015");
+                    param.put("groupid", "1008");
+                    param.put("msgtag", "Proposer1008");
+                    param.put("senduid", "Proposer1008");
                     sendResult = companyService.sendRemind(param);
                 }
                 result.setResponseEntity(sendResult);
@@ -575,11 +579,13 @@ public class CompanyController {
             int count = companyService.modifyBatchProposer(list);
             if (count > 0) {
                 result = Response.getResponseSuccess(userInfo);
-                // 通过申请模板ID
-                param.put("groupid", "1014");
                 Response sendResult = Response.getResponseError();
                 for (int i = 0; i < list.size(); i++) {
                     Map<String, Object> map = list.get(i);
+                    // 通过申请模板ID
+                    map.put("groupid", "1007");
+                    map.put("msgtag", "Proposer1007");
+                    map.put("senduid", "Proposer1007");
                     // 配置短信信息发送短信
                     sendResult = companyService.sendRemind(map);
                 }
@@ -617,11 +623,15 @@ public class CompanyController {
                 // 1发送邀请加入单位模板,2取消加入单位模板
                 if (maybe == 1) {
                     // 发送邀请信息模板
-                    param.put("groupid", "1016");
+                    param.put("groupid", "1014");
+                    param.put("msgtag", "addInvitee1014");
+                    param.put("senduid", "addInvitee1014");
                     sendResult = companyService.sendRemind(param);
                 } else {
                     // 发送取消信息模板
-                    param.put("groupid", "1019");
+                    param.put("groupid", "1012");
+                    param.put("msgtag", "addInvitee1012");
+                    param.put("senduid", "addInvitee1012");
                     sendResult = companyService.sendRemind(param);
                 }
                 result.setResponseEntity(sendResult);
