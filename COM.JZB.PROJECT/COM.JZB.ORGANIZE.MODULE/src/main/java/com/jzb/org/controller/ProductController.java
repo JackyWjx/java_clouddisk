@@ -46,13 +46,17 @@ public class ProductController {
     private OrgToken orgToken;
 
     @Autowired
-    RegionBaseApi regionBaseApi;
+    private RegionBaseApi regionBaseApi;
 
     @Autowired
     private DeptService deptService;
 
     @Autowired
     private DeptMapper deptMapper;
+
+    @Autowired
+    private CompanyController companyController;
+
     /**
      * 查询产品的信息
      *
@@ -638,9 +642,10 @@ public class ProductController {
     }
 
     /**
-     * 读取新建单位模板中的数据并存入数据库
+     * CRM-单位用户-所有用户-单位列表
+     * 导入新增单位模板,读取模板中的数据
      *
-     * @param file
+     * @param
      * @author kuangbin
      */
     @RequestMapping(value = "/importCompanyTemplate", method = RequestMethod.POST)
@@ -753,7 +758,7 @@ public class ProductController {
                     exportMap.put("summary", summary);
                     userInfoList.add(exportMap);
                     continue;
-                }else {
+                } else {
                     if (!toPhone(phone)) {
                         exportMap.put("status", "2");
                         summary += "手机号不合规范";
@@ -769,6 +774,7 @@ public class ProductController {
                     userInfoList.add(exportMap);
                     continue;
                 }
+                param.put("companyname", cname);
                 // 获取模板中的单位地区
                 String regionName = JzbDataType.getString(map.get(3));
                 param.put("regionName", regionName);
@@ -793,9 +799,15 @@ public class ProductController {
                 param.put("region", region);
                 param.put("address", address);
                 param.put("systemname", systemname);
-                // 调用API模块的接口
+                // 调用接口
                 result = productService.addRegistrationCompany(param);
-                exportMap.put("status","1");
+                if (JzbDataType.isString(result.getResponseEntity())){
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", result.getResponseEntity());
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                exportMap.put("status", "1");
                 userInfoList.add(exportMap);
             }
             int export = 0;
@@ -804,15 +816,16 @@ public class ProductController {
                 export = deptMapper.insertExportUserInfoList(userInfoList);
             }
             //导入完成后修改状态
-            if (export == 1) {
+            if (export >= 1) {
                 exportMap.put("status", "8");
-            } else if (export != 1) {
+            } else if (export == 0) {
                 exportMap.put("status", "4");
             }
             deptService.updateExportBatch(exportMap);
             return result;
         }
     }
+
     /**
      * 校验手机号
      *
@@ -829,5 +842,218 @@ public class ProductController {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主
+     * 导出新增业主模板
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/createCompanyCommon", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createCompanyCommon(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            String srcFilePath = "D:/v3/static/excel/ImportCompanyCommon.xlsx";
+            FileInputStream in = new FileInputStream(srcFilePath);
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=ImportCompanyCommon.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * CRM-销售业主-公海-业主
+     * 导出新增业主模板
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/importCompanyCommon", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response importCompanyCommon(@RequestBody MultipartFile file,
+                                          @RequestHeader(value = "token") String token) {
+        Response result = new Response();
+        try {
+            // 获取用户信息token
+            Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
+            Map<String, Object> param = new HashMap<>();
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("userinfo", userInfo);
+            String batchId = JzbRandom.getRandomCharCap(11);
+            // 获取上传文件名称
+            long time = System.currentTimeMillis();
+            String fileName = file.getOriginalFilename();
+            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
+            //生成批次ID
+            param.put("batchid", batchId);
+            param.put("address", filepath);
+            param.put("status", "2");
+            param.put("cname", fileName);
+            try {
+                // 保存文件到本地
+                File intoFile = new File(filepath);
+                intoFile.getParentFile().mkdirs();
+                String address = intoFile.getCanonicalPath();
+                file.transferTo(new File(address));
+            } catch (Exception e) {
+                e.printStackTrace();
+                JzbTools.logError(e);
+                // 保存失败信息到批次表
+                param.put("status", "4");
+                param.put("summary", "保存文件到本地失败");
+            }
+            // 添加批次信息到用户导入批次表
+            deptService.addExportBatch(param);
+            // 创建一个线程池
+            ExecutorService pool = Executors.newFixedThreadPool(1);
+
+            // 创建一个有返回值的任务
+            Callable importCompanyCommon = new ImportCompanyCommon(filepath, param, result);
+            Future future = pool.submit(importCompanyCommon);
+            // 获取返回值结果
+            result = (Response) future.get();
+            result.setResponseEntity(param);
+            // 关闭线程池
+            pool.shutdown();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /***
+     * 读取新建企业模板中的数据时启动线程
+     * @author kuangbin
+     */
+    public class ImportCompanyCommon implements Callable {
+        // 保存文件的路径
+        private String filepath;
+
+        // 前台传来的参数
+        private Map<String, Object> param;
+
+        // 结果对象
+        Response result;
+
+        public ImportCompanyCommon(String filepath, Map<String, Object> param, Response result) {
+            this.filepath = filepath;
+            this.param = param;
+            this.result = result;
+        }
+
+        @Override
+        public Response call() {
+            // 读取模板中的数据
+            List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
+
+            Map<String, Object> exportMap = new HashMap<>(param);
+            // 保存到用户导入信息表
+            List<Map<String, Object>> userInfoList = new ArrayList<>();
+            // 遍历结果行,菜单数据从第2行开始
+            for (int i = 1; i < list.size(); i++) {
+                // 设置行信息
+                exportMap.put("idx", i);
+                Map<Integer, String> map = list.get(i);
+                // 获取模板中的用户姓名
+                String name = JzbDataType.getString(map.get(0));
+                String summary = "";
+                exportMap.put("cname", name);
+                if (JzbDataType.isEmpty(name)) {
+                    summary = "用户姓名不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                // 获取模板中的用户手机号
+                String phone = JzbDataType.getString(map.get(1));
+                if (JzbDataType.isEmpty(phone)) {
+                    summary += "用户手机号不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                } else {
+                    if (!toPhone(phone)) {
+                        exportMap.put("status", "2");
+                        summary += "手机号不合规范";
+                        exportMap.put("summary", summary);
+                        userInfoList.add(exportMap);
+                        continue;
+                    }
+                }
+                // 获取模板中的单位名称
+                String cname = JzbDataType.getString(map.get(2));
+                param.put("companyname", cname);
+                if (JzbDataType.isEmpty(cname)) {
+                    summary += "单位名称不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                // 获取模板中的单位地区
+                String regionName = JzbDataType.getString(map.get(3));
+                param.put("regionName", regionName);
+                // 调用获取地区ID的接口
+                Response regionID = regionBaseApi.getRegionID(param);
+                Object obj = regionID.getResponseEntity();
+                // 定义地区ID
+                String region = "";
+                if (JzbDataType.isMap(obj)) {
+                    Map<Object, Object> regionMap = (Map<Object, Object>) obj;
+                    region = JzbDataType.getString(regionMap.get("creaid"));
+                }
+                // 获取模板中的单位地址
+                String address = JzbDataType.getString(map.get(4));
+
+                // 获取模板中的备注
+                String summary1 = JzbDataType.getString(map.get(5));
+                param.put("authid", "8");
+                param.put("name", name);
+                param.put("cname", cname);
+                param.put("phone", phone);
+                param.put("region", region);
+                param.put("address", address);
+                param.put("summary", summary1);
+                // 调用接口
+                result = productService.addRegistrationCompany(param);
+                if (JzbDataType.isString(result.getResponseEntity())){
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", result.getResponseEntity());
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                exportMap.put("status", "1");
+                userInfoList.add(exportMap);
+            }
+            int export = 0;
+            //保存用户导入信息表
+            if (userInfoList.size() > 0) {
+                export = deptMapper.insertExportUserInfoList(userInfoList);
+            }
+            //导入完成后修改状态
+            if (export >= 1) {
+                exportMap.put("status", "8");
+            } else if (export == 0) {
+                exportMap.put("status", "4");
+            }
+            deptService.updateExportBatch(exportMap);
+            return result;
+        }
     }
 } // End class ProductController
