@@ -59,4 +59,20 @@ public interface CompanyUserMapper {
      * @author kuangbin
      */
     List<Map<String, Object>> queryCompanyCommonList(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主4
+     * 根据单位ID显示对应的供应商或全部供应商的总数
+     *
+     * @author kuangbin
+     */
+    int queryCompanySupplierCount(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主4
+     * 根据单位ID显示对应的供应商或全部供应商
+     *
+     * @author kuangbin
+     */
+    List<Map<String, Object>> queryCompanySupplierList(Map<String, Object> param);
 } // End interface CompanyMapper
