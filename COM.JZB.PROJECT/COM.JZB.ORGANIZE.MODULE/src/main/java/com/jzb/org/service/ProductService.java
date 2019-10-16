@@ -1,16 +1,21 @@
 package com.jzb.org.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.Response;
 import com.jzb.base.query.QueryPageConfig;
+import com.jzb.base.tree.JzbTree;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.auth.AuthRoleApi;
+import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.controller.CompanyController;
 import com.jzb.org.controller.CompanyUserController;
+import com.jzb.org.dao.DeptMapper;
 import com.jzb.org.dao.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +52,10 @@ public class ProductService {
     @Autowired
     private CompanyUserController companyUserController;
 
+    @Autowired
+    private OrgRedisServiceApi orgRedisServiceApi;
+    @Autowired
+    private DeptMapper deptMapper;
     /**
      * 根据产品查询产品下的所有菜单
      *
@@ -333,6 +342,111 @@ public class ProductService {
         param.put("cname", "管理员角色组");
         param.put("crgid", cid + "1111");
         authRoleApi.saveRoleGroup(param);
+    }
+
+    /**
+     * 获取产品的菜单权限
+     *
+     * @return
+     */
+    public JSONArray getProductMenu(Map<String, Object> map) {
+        JSONArray jsonArray;
+        List<Map<String, Object>> result = new LinkedList<>();
+        String pid = JzbDataType.getString(map.get("pid"));
+        //从redis获取树
+        Response response = orgRedisServiceApi.getProductTree(map);
+        if (JzbDataType.isMap(response.getResponseEntity())) {
+            Map<String, Object> redis = (Map<String, Object>) response.getResponseEntity();
+            jsonArray = JSONArray.parseArray(JzbDataType.getString(redis.get(pid)));
+        } else {
+            List<Map<String, Object>> pageList = deptMapper.queryProductMenu(map);
+            boolean dispose = pageList.size() > 0;
+            // root id
+            String firstParent = "000000000000000";
+            if (dispose) {
+                //第一步先将pageId放入pageList中,合并相同mid的数据
+                //第一次合并控件id和名称
+                //合并的字段
+                String me1 = "controlid,conname";
+                Map<Integer, String> merge1 = JzbTree.toMap(me1);
+                //主干的字段
+                String ma1 = "pid,mid,parentid,cname,pageid,pagename";
+                Map<Integer, String> main1 = JzbTree.toMap(ma1);
+                String id1 = "pageid";
+                String listName1 = "conList";
+                List<Map<String, Object>> conList = JzbTree.toSame(pageList, main1, id1, merge1, listName1);
+                //第二次合并页面id和名称
+                //合并的字段
+                String me = "pageid,pagename,conList";
+                Map<Integer, String> merge = JzbTree.toMap(me);
+                //主干的字段
+                String ma = "pid,mid,parentid,cname";
+                Map<Integer, String> main = JzbTree.toMap(ma);
+                String id = "mid";
+                String listName = "children";
+                List<Map<String, Object>> midList = JzbTree.toSame(conList, main, id, merge, listName);
+                String parentId = "parentid";
+                //处理页面和控件
+                midList = getPageAndCon(midList);
+                //生成树
+                id = "id";
+                result = JzbTree.getTreeMap(midList, id, parentId, firstParent);
+                Map<String, Object> redis = new HashMap<>(2);
+                redis.put("pid", pid);
+                redis.put("list", result);
+                //将树保存进redis
+                orgRedisServiceApi.cacheProductTree(redis);
+            }
+            jsonArray = JSONArray.parseArray(JSON.toJSONString(result));
+        }
+        return jsonArray;
+    }
+
+    private List<Map<String, Object>> getPageAndCon(List<Map<String, Object>> midList) {
+        int size = JzbDataType.getInteger(midList.size());
+        List<Map<String, Object>> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            Map<String, Object> midMap = midList.get(i);
+            Map<String, Object> map = new HashMap<>(6);
+            //处理页面的list
+            if (JzbDataType.isCollection(midMap.get("children"))) {
+                List<Map<String, Object>> list = (List<Map<String, Object>>) midMap.get("children");
+                int listSize = JzbDataType.getInteger(list.size());
+                List<Map<String, Object>> tempList = new ArrayList<>(listSize);
+                //处理list中数据
+                for (int j = 0; j < listSize; j++) {
+                    Map<String, Object> pageTemp = list.get(j);
+                    Map<String, Object> pageMap = new HashMap<>(3);
+                    pageMap.put("status", "1");
+                    pageMap.put("id", pageTemp.get("pageid"));
+                    pageMap.put("cname", pageTemp.get("pagename"));
+                    //处理控件的list
+                    if (JzbDataType.isCollection(pageTemp.get("conList"))) {
+                        List<Map<String, Object>> conListTemp = (List<Map<String, Object>>) pageTemp.get("conList");
+                        int conSize = JzbDataType.getInteger(conListTemp.size());
+                        List<Map<String, Object>> conList = new ArrayList<>(conSize);
+                        for (int k = 0; k < conSize; k++) {
+                            Map<String, Object> conTemp = conListTemp.get(k);
+                            Map<String, Object> conMap = new HashMap<>(3);
+                            conMap.put("status","2");
+                            conMap.put("id",conTemp.get("controlid"));
+                            conMap.put("cname",conTemp.get("conname"));
+                            conList.add(conMap);
+                        }
+                        pageMap.put("children",conList);
+                    }
+                    tempList.add(pageMap);
+                }
+                map.put("children",tempList);
+            }
+            map.put("status","0");
+            map.put("id",midMap.get("mid"));
+            map.put("pid",midMap.get("pid"));
+            map.put("cname",midMap.get("cname"));
+            map.put("parentid",midMap.get("parentid"));
+            result.add(map);
+        }
+        return result;
     }
 }
 

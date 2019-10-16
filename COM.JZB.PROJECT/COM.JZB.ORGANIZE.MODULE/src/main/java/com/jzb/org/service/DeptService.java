@@ -36,8 +36,7 @@ public class DeptService {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
-    @Autowired
-    private OrgRedisServiceApi orgRedisServiceApi;
+
 
     @Autowired
     private AuthApi authApi;
@@ -81,60 +80,7 @@ public class DeptService {
         return deptMapper.queryProLine(map);
     }
 
-    /**
-     * 获取产品的菜单权限
-     *
-     * @return
-     */
-    public JSONArray getProductMenu(Map<String, Object> map) {
-        JSONArray jsonArray;
-        List<Map<String, Object>> result = new LinkedList<>();
-        String pid = JzbDataType.getString(map.get("pid"));
-        //从redis获取树
-        Response response = orgRedisServiceApi.getProductTree(map);
-        if (JzbDataType.isMap(response.getResponseEntity())) {
-            Map<String, Object> redis = (Map<String, Object>) response.getResponseEntity();
-            jsonArray = JSONArray.parseArray(JzbDataType.getString(redis.get(pid)));
-        } else {
-            List<Map<String, Object>> pageList = deptMapper.queryProductMenu(map);
-            boolean dispose = pageList.size() > 0;
-            // root id
-            String firstParent = "000000000000000";
-            if (dispose) {
-                //第一步先将pageId放入pageList中,合并相同mid的数据
-                //第一次合并控件id和名称
-                //合并的字段
-                String me1 = "controlid,conname";
-                Map<Integer, String> merge1 = JzbTree.toMap(me1);
-                //主干的字段
-                String ma1 = "pid,mid,parentid,cname,pageid,pagename";
-                Map<Integer, String> main1 = JzbTree.toMap(ma1);
-                String id1 = "pageid";
-                String listName1 = "conList";
-                List<Map<String, Object>> conList = JzbTree.toSame(pageList, main1, id1, merge1, listName1);
 
-                //第二次合并页面id和名称
-                //合并的字段
-                String me = "pageid,pagename,conList";
-                Map<Integer, String> merge = JzbTree.toMap(me);
-                //主干的字段
-                String ma = "pid,mid,parentid,cname";
-                Map<Integer, String> main = JzbTree.toMap(ma);
-                String id = "mid";
-                String listName = "pageList";
-                List<Map<String, Object>> midList = JzbTree.toSame(conList, main, id, merge, listName);
-                String parentId = "parentid";
-                result = JzbTree.getTreeMap(midList, id, parentId, firstParent);
-                Map<String, Object> redis = new HashMap<>(2);
-                redis.put("pid", pid);
-                redis.put("list", result);
-                //将树保存进redis
-                orgRedisServiceApi.cacheProductTree(redis);
-            }
-            jsonArray = JSONArray.parseArray(JSON.toJSONString(result));
-        }
-        return jsonArray;
-    }
 
     /**
      * 获取部门下所有子级的用户包括自身
@@ -452,7 +398,7 @@ public class DeptService {
                                 status = "2";
                                 summary += ",创建用户失败";
                             } else {
-                                addMap.put("uid", uidMap.get("newUid"));
+                                addMap.put("uid", newUid);
                                 addMap.put("password", pass);
                             }
                         } catch (Exception e) {
@@ -582,7 +528,7 @@ public class DeptService {
                             //加入邀请
                             String newUser = JzbDataType.getString(uidMap.get("uid"));
                             if (!JzbTools.isEmpty(newUser)) {
-                                addMap.put("uid", uidMap.get("newUid"));
+                                addMap.put("uid", newUser);
                                 addMap.put("password", pass);
                             } else {
                                 status = "2";
@@ -707,7 +653,7 @@ public class DeptService {
                     param.put("password", invite.get("password"));
                 }
                 //发送短信
-                service.sendRemind(param);
+            //    service.sendRemind(param);
             }
         } else {
             String company = "计支宝";

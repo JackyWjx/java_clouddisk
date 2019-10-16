@@ -70,4 +70,27 @@ public class FriendComController {
         }
         return result;
     }
+
+
+    @RequestMapping(value = "/modifyUserDept", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyUserDept(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"uid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+
+
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 }

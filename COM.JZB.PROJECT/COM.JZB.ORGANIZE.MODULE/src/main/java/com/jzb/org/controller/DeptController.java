@@ -10,6 +10,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
+import com.jzb.org.service.ProductService;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,8 @@ public class DeptController {
     @Autowired
     private OrgToken orgToken;
 
+    @Autowired
+    private ProductService productService;
     /**
      * 根据企业id获取部门信息
      *
@@ -143,7 +146,7 @@ public class DeptController {
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("ptype", JzbDataType.getInteger(param.get("ptype")));
-                JSONArray map = deptService.getProductMenu(param);
+                JSONArray map = productService.getProductMenu(param);
                 result = Response.getResponseSuccess(userInfo);
                 result.setResponseEntity(map);
             } else {
@@ -173,7 +176,7 @@ public class DeptController {
             param.put("ptype", 1);
             String pid = config.getCrmId();
             param.put("pid", pid);
-            JSONArray map = deptService.getProductMenu(param);
+            JSONArray map = productService.getProductMenu(param);
             result = Response.getResponseSuccess(userInfo);
             Map<String, Object> reMap = new HashMap<>(2);
             reMap.put("pid", pid);
