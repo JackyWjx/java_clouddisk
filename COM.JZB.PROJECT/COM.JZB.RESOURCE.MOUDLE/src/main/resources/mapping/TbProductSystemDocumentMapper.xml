@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbProductSystemDocumentMapper">
+
+    <!-- 查询页面 -->
+    <select id="queryMenuList" parameterType="java.util.Map" resultType="java.util.Map">
+        select menuid,menuname,menuno,menudesc,menuopen,parentid,addtime from  tb_product_system_menu
+        where status='1'
+    </select>
+
+    <!-- 添加页面 -->
+    <insert id="addMenuList" parameterType="java.util.Map">
+        insert into  tb_product_system_menu (menuid,menuname,menuno,menudesc,menuopen,parentid,adduid,addtime,upduid,updtime,status,summary)
+        values
+        (
+        #{menuid},
+        <choose>
+            <when test="menuname!=null and menuname.length()>0">
+                #{menuname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="menuno!=null and menuno.length()>0">
+                #{menuno},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="menudesc!=null and menudesc.length()>0">
+                #{menudesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="menuopen!=null and menuopen.length()>0">
+                #{menuopen},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="parentid!=null and parentid.length()>0">
+                #{parentid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid.length()>0">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime.length()>0">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid.length()>0">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime.length()>0">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status.length()>0">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary.length()>0">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+
+    </insert>
+
+
+    <!-- 修改页面 -->
+    <update id="updateMenuList" parameterType="java.util.Map">
+        update tb_product_system_menu
+        <trim prefix="set" suffixOverrides="," suffix=" where menuid = #{menuid} ">
+            　　　　<if test="menuname != null and menuname.length()>0"> menuname=#{menuname} ,</if>
+            　　　　<if test="menuno != null and menuno.length()>0"> menuno=#{menuno} ,</if>
+            　　　　<if test="menudesc != null and menudesc.length()>0"> menudesc=#{menudesc} ,</if>
+            　　　　<if test="menuopen != null and menuopen.length()>0"> menuopen=#{menuopen} ,</if>
+            　　　　<if test="parentid != null and parentid.length()>0"> parentid=#{parentid} ,</if>
+            　　　　<if test="updtime != null and updtime.length()>0"> updtime=#{updtime} ,</if>
+            　　　　<if test="summary != null and summary.length()>0"> summary=#{summary} ,</if>
+        </trim>
+    </update>
+</mapper>

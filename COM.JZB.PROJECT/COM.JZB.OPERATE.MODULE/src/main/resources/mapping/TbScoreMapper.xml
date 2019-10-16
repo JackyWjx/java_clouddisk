@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbScoreMapper">
+
+    <!--  查询积分规则   -->
+    <select id="qureyScoreRule" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_score_rule  where status = '1'
+        <choose><when test="ruleid != null">and ruleid = #{ruleid}</when></choose>
+        <choose><when test="cname != null">and cname = #{cname}</when></choose>
+        <choose><when test="optid != null">and optid =  #{optid}</when></choose>
+        <choose><when test="score != null">and score = #{score}</when></choose>
+        <choose><when test="utype != null">and utype = #{utype}</when></choose>
+        <choose><when test="addtime != null">and addtime = #{addtime}</when></choose>
+        <choose><when test="updtime != null">and updtime = #{updtime}</when></choose>
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  查询积分日志   -->
+    <select id="qureyScoreList" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_score_list where  1 = 1
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="pid != null">and pid = #{pid}</when></choose>
+        <choose><when test="uid != null">and uid =  #{uid}</when></choose>
+        <choose><when test="optid != null">and optid = #{optid}</when></choose>
+        <choose><when test="opttime != null">and opttime = #{opttime}</when></choose>
+        <choose><when test="score != null">and score = #{score}</when></choose>
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  查询积分规则总数   -->
+    <select id="qureyScoreRuleCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_score_rule  where status = '1'
+        <choose><when test="ruleid != null">and ruleid = #{ruleid}</when></choose>
+        <choose><when test="cname != null">and cname = #{cname}</when></choose>
+        <choose><when test="optid != null">and optid =  #{optid}</when></choose>
+        <choose><when test="score != null">and score = #{score}</when></choose>
+        <choose><when test="utype != null">and utype = #{utype}</when></choose>
+        <choose><when test="addtime != null">and addtime = #{addtime}</when></choose>
+        <choose><when test="updtime != null">and updtime = #{updtime}</when></choose>
+    </select>
+
+    <!--  查询积分日志总数   -->
+    <select id="qureyScoreListCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_score_list where 1 = 1
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="pid != null">and pid = #{pid}</when></choose>
+        <choose><when test="uid != null">and uid =  #{uid}</when></choose>
+        <choose><when test="optid != null">and optid = #{optid}</when></choose>
+        <choose><when test="opttime != null">and opttime = #{opttime}</when></choose>
+        <choose><when test="score != null">and score = #{score}</when></choose>
+    </select>
+
+    <!--  模糊查询积分规则   -->
+    <select id="seachScoreRule" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select * from tb_score_rule  where status = '1'
+        or ruleid like CONCAT('%',#{keys},'%')
+        or cname like CONCAT('%',#{keys},'%')
+        or optid like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  模糊查询积分日志   -->
+    <select id="seachScoreList" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select * from tb_score_rule  where status = '1'
+        or cid like CONCAT('%',#{keys},'%')
+        or pid like CONCAT('%',#{keys},'%')
+        or uid like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!--  模糊查询积分规则总数   -->
+    <select id="seachScoreRuleCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_score_rule  where status = '1'
+        or ruleid like CONCAT('%',#{keys},'%')
+        or cname like CONCAT('%',#{keys},'%')
+        or optid like CONCAT('%',#{keys},'%')
+    </select>
+
+    <!--  模糊查询积分日志总数   -->
+    <select id="seachScoreListCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_score_rule  where status = '1'
+        or cid like CONCAT('%',#{keys},'%')
+        or pid like CONCAT('%',#{keys},'%')
+        or uid like CONCAT('%',#{keys},'%')
+    </select>
+
+    <!--  添加积分日志   -->
+    <insert id="insertScortRule"  parameterType="java.util.Map">
+        INSERT INTO PUBLIC.tb_score_rule ( ruleid, cname, optid, score, utype, addtime, updtime, ouid, status, summary )
+        VALUES
+	    (
+	      #{ruleid},
+	      #{cname},
+	      #{optid},
+	      #{score},
+	      #{utype},
+	      #{addtime},
+	      #{updtime},
+	      #{ouid},
+	      #{status},
+	      <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>
+	      );
+    </insert>
+
+    <!--  添加积分规则   -->
+    <insert id="insertScortList"  parameterType="java.util.Map">
+        INSERT INTO PUBLIC.tb_score_list ( cid, pid, uid, optid, opttime, score )
+        VALUES
+        ( <choose><when test="cid != null">#{cid},</when><otherwise>null,</otherwise></choose>
+        <choose><when test="pid != null">#{pid},</when><otherwise>null,</otherwise></choose>
+        <choose><when test="uid != null">#{uid},</when><otherwise>null,</otherwise></choose>
+        #{optid},
+        #{opttime},
+        #{score} );
+    </insert>
+
+    <!--  修改积分规则   -->
+    <update id="upScortRule"  parameterType="java.util.Map">
+         update tb_score_rule set updtime  = #{updtime} , ouid = #{ouid}
+        <choose><when test="ruleid != null">, ruleid  =  #{ruleid}</when></choose>
+        <choose><when test="cname != null">, cname  = #{cname}</when></choose>
+        <choose><when test="optid != null">, optid  = #{optid}</when></choose>
+        <choose><when test="score != null">, score  = #{score}</when></choose>
+        <choose><when test="utype != null">, utype  = #{utype}</when></choose>
+        where id = #{id}
+    </update>
+
+    <!--  修改积分日志   -->
+    <update id="upScortList"  parameterType="java.util.Map">
+        update tb_score_list set opttime = #{opttime}
+        <choose><when test="cid != null">, cid  =  #{ruleid}</when></choose>
+        <choose><when test="pid != null">, pid  = #{pid}</when></choose>
+        <choose><when test="optid != null">, optid  = #{optid}</when></choose>
+        <choose><when test="score != null">, score  = #{score}</when></choose>
+        <choose><when test="uid != null">, uid  = #{uid}</when></choose>
+        where id =  #{id}
+    </update>
+
+    <!--  禁用积分规则   -->
+    <update id="removeScortRule"  parameterType="java.util.Map">
+        update tb_score_rule set status = '2' , updtime = #{updtime} , ouid = #{ouid}
+        where id = #{id}
+    </update>
+
+</mapper>

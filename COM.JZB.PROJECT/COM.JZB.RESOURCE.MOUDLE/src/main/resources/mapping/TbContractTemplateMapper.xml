@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbContractTemplateMapper">
+
+    <!-- 获取合同模板-->
+    <select id="queryContractTemplate" parameterType="java.util.Map" resultType="java.util.Map">
+        select typeid,tempid,tempcode,cname,tempdesc,path,cid,idx,ouid,addtime,updtime,status,summary
+        from tb_contract_template
+        where status='1'
+        <if test="keyword!='' and keyword!=null">
+            and (cname ~ #{keyword} or tempcode ~ #{keyword})
+        </if>
+        order by idx asx
+        limit #{rows} offset #{page}
+    </select>
+
+
+    <!-- 添加合同模板-->
+    <insert id="addContractTemplate" parameterType="java.util.Map">
+        insert into tb_contract_template (typeid,tempid,tempcode,cname,tempdesc,path,cid,idx,ouid,addtime,updtime,status,summary)
+        values
+        (
+        #{typeid},
+        #{tempid},
+        #{tempcode},
+        <choose>
+            <when test="cname != null and cname != ''">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tempdesc != null and tempdesc != ''">
+                #{tempdesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="path != null and path != ''">
+                #{path},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cid != null and cid != ''">
+                #{cid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null and idx != ''">
+                #{idx},
+            </when>
+            <otherwise>
+                select count(1)+1 from tb_contract_template
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid != null and ouid != ''">
+                #{ouid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null and addtime != ''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null and updtime != ''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status != null and status != ''">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 修改合同模板-->
+    <update id="updateContractTemplate" parameterType="java.util.Map">
+        update tb_contract_template set
+        <if test="cname != '' and cname!= null">
+            cname=#{cname}
+        </if>
+        <if test="path != '' and path!= null">
+            path=#{path}
+        </if>
+        <if test="updtime != '' and updtime!= null">
+            updtime=#{updtime}
+        </if>
+        where tempid=#{tempid}
+    </update>
+
+    <!-- 查询合同模板总数-->
+    <select id="queryContractTemplateCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_contract_template where status='1'
+    </select>
+</mapper>

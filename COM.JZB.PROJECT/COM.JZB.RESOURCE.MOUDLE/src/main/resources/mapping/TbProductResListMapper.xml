@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbProductResListMapper">
+
+    <!--产品参数的查询 以及根据状态查询和名称的模糊查询-->
+    <select id="getProductResList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        a.id,
+        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        a.cname,
+        a.status,
+        a.paradesc,
+        a.summary
+        from
+        tb_product_paramete_item b
+        LEFT JOIN
+        tb_product_res_list a
+        on a.pid = b.prodid
+        where 1=1
+        <if test="status != null">
+            and a.status = #{status}
+        </if>
+        <if test="cname != null">
+            and a.cname ~ #{cname}
+        </if>
+    </select>
+
+
+    <!--添加产品参数-->
+    <insert id="saveTbProductParameteItem" parameterType="java.util.List">
+        insert into
+        tb_product_paramete_item(
+        prodid,
+        paraid,
+        paraname,
+        paramdesc,
+        datatype,
+        datasize,
+        idx,
+        ouid,
+        addtime,
+        updtime,
+        status,
+        summary
+        )values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.prodid},
+            #{item.paraid},
+            <choose>
+                <when test="item.paraname !='' and  item.paraname != null">
+                    #{item.paraname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.paramdesc !='' and  item.paramdesc != null">
+                    #{item.paramdesc},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.datatype !='' and  item.datatype != null">
+                    #{item.datatype},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.datasize !='' and  item.datasize != null">
+                    #{item.datasize},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            select count(1)+1 from tb_product_paramete_item,
+            <choose>
+                <when test="item.ouid !='' and  item.ouid != null">
+                    #{item.ouid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            #{item.addtime},
+            #{item.updtime},
+            <choose>
+                <when test="item.status !='' and  item.status != null">
+                    #{item.status},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.summary !='' and  item.summary != null">
+                    #{item.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+    <!--添加资源产品表中的数据-->
+    <insert id="saveTbProductResList" parameterType="java.util.Map">
+        insert
+        into
+        tb_product_res_list(
+        pid,
+        plid,
+        cname,
+        prodesc,
+        service,
+        price,
+        pricedesc,
+        accept,
+        addtime,
+        updtime,
+        paradesc,
+        idx,
+        status,
+        summary
+        )values(
+        <choose>
+            <when test="pid != null">
+                cast(#{pid} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="plid != null">
+                cast(#{plid} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cname != null">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="prodesc != null">
+                #{prodesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="service != null">
+                #{service},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price != null">
+                #{price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricedesc != null">
+                #{pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="accept != null">
+                #{accept},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="paradesc != null">
+                #{paradesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_product_res_list),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )on conflict(pid) do update
+        set
+        <if test="prodesc">prodesc=#{prodesc},</if>
+        <if test="service">service=#{service},</if>
+        <if test="price">price=#{price},</if>
+        <if test="pricedesc">pricedesc=#{pricedesc},</if>
+        <if test="accept">accept=#{accept},</if>
+        <if test="paradesc">paradesc=#{paradesc},</if>
+        <if test="upduid">upduid=#{upduid},</if>
+        <if test="updtime">updtime=#{updtime},</if>
+        <if test="summary">summary=#{summary},</if>
+        <if test="status">status=#{status}</if>
+    </insert>
+
+
+    <!--修改产品参数表中的数据-->
+    <update id="updateTbProductParameteItem" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update tb_product_paramete_item
+            set
+            <if test="item.paraname !='' and item.paraname !=null">paraname=#{item.paraname},</if>
+            <if test="item.paramdesc !='' and item.paramdesc !=null">paramdesc=#{item.paramdesc},</if>
+            <if test="item.datatype !='' and item.datatype !=null">datatype={item.datatype},</if>
+            <if test="item.datasize !='' and item.datasize !=null">datasize=#{item.datasize},</if>
+            <if test="item.ouid !='' and item.ouid !=null">ouid=#{item.ouid},</if>
+            <if test="item.updtime !='' and item.updtime !=null">updtime=#{item.updtime}</if>
+            where prodid=#{item.prodid}
+        </foreach>
+    </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

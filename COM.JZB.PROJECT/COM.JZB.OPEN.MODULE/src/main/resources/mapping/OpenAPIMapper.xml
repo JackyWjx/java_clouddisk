@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.open.dao.OpenAPIMapper">
+    <!-- 创建文档类型 -->
+    <insert id="insertApiType" parameterType="java.util.Map">
+        INSERT INTO
+        tb_open_api_type (otid, cname, potid, idx, ouid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{otid},
+        #{name},
+        <choose>
+            <when test="potid != null">
+                #{potid},
+            </when>
+            <otherwise>
+                '00000',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="index != null">
+                ${index},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_open_api_type),
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        #{updtime},
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                '1',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--获取文档类型-->
+    <select id="queryApiType" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT
+        otid as apitype,
+        cname as name
+        from
+        tb_open_api_type
+        <where>
+            <if test="apitype!= null">
+                otid = #{apitype}
+            </if>
+            <choose>
+                <when test="status != null">
+                    and status = #{status}
+                </when>
+                <otherwise>
+                    and status = '1'
+                </otherwise>
+            </choose>
+        </where>
+        order by
+        otid
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--创建API-->
+    <insert id="insertApi" parameterType="java.util.Map">
+        INSERT INTO
+        tb_open_api_list (otid, apiid, cname, idx, apidesc, reqtype, protocol,
+        curl, descfile, apibody, ouid,addtime, updtime, status, summary)
+        VALUES
+        (
+        #{apitype},
+        #{apiid},
+        #{name},
+        <choose>
+            <when test="index != null">
+                ${index},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_open_api_list),
+            </otherwise>
+        </choose>
+        #{apidesc},
+        #{reqtype},
+        #{protocol},
+        #{url},
+        #{linkurl},
+        #{apibody},
+        #{uid},
+        #{addtime},
+        #{updtime},
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                '1',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--获取文档类型的API列表-->
+    <select id="queryApiList" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT
+        apiid,
+        cname,
+        protocol,
+        reqtype,
+        curl
+        from
+        tb_open_api_list
+        <where>
+            <if test="apitype!= null">
+                otid = #{apitype}
+            </if>
+            <choose>
+                <when test="status != null">
+                    and status = #{status}
+                </when>
+                <otherwise>
+                    and status = '1'
+                </otherwise>
+            </choose>
+        </where>
+        order by
+        idx
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--获取API内容-->
+    <select id="queryApiContent" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT
+        apibody
+        from
+        tb_open_api_list
+        where
+        apiid = #{apiid}
+    </select>
+
+    <!--获取使用帮助文档标题-->
+    <select id="queryHelperTitle" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT
+        helpid,
+        htitle as title
+        from
+        tb_platform_helper
+        <where>
+            <choose>
+                <when test="status != null">
+                    and status = #{status}
+                </when>
+                <otherwise>
+                    and status = '1'
+                </otherwise>
+            </choose>
+        </where>
+        order by
+        id
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--获取使用帮助文档内容-->
+    <select id="queryHelperContent" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT
+        hcontent as content
+        from
+        tb_platform_helper
+        <where>
+            helpid = #{helpid}
+            <choose>
+                <when test="status != null">
+                    and status = #{status}
+                </when>
+                <otherwise>
+                    and status = '1'
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <!--入驻开放平台-->
+    <insert id="insertOpenPlatform" parameterType="java.util.Map">
+        INSERT INTO
+        tb_platform_org (cid, manager, ouid, addtime, status, summary)
+        VALUES
+        (
+        #{cid},
+        #{uid},
+        #{uid},
+        #{addtime},
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                '1',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--查询api类型总数-->
+    <select id="queryApiTypeCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_open_api_type
+        where
+        status = '1'
+    </select>
+
+    <!--获取文档类型的API列表的总数-->
+    <select id="queryApiListCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_open_api_list
+        where
+        status = '1'
+    </select>
+
+    <!--获取使用帮助文档总数-->
+    <select id="queryHelperCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_platform_helper
+        where
+        status = '1'
+    </select>
+
+    <!-- 创建应用 -->
+    <insert id="insertApp" parameterType="java.util.Map">
+        INSERT INTO
+        tb_org_application
+        (appid, appkey, appsecret, devtype, apptype, cid, keys, appname, applogo,
+        appdesc, appurl, appips, manurl, ouid, addtime, updtime, status, summary,appline)
+        VALUES
+        (
+        #{appid},
+        #{appkey},
+        #{appsecret},
+        #{devtype},
+        #{apptype},
+        #{cid},
+        #{keys},
+        #{appname},
+        #{applogo},
+        #{appdesc},
+        <choose>
+            <when test="appurl != null">
+                #{appurl},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{appips},
+        <choose>
+            <when test="manurl != null">
+                #{manurl},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        #{updtime},
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                '1',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        ${appline}
+        )
+    </insert>
+
+
+    <!--模糊查询APi-->
+    <select id="searchApiByName" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        otid,
+        apiid,
+        cname,
+        apidesc,
+        reqtype,
+        protocol,
+        curl,
+        descfile,
+        apibody,
+        summary
+        from
+        tb_open_api_list
+        <where>
+            <if test="cname != null and cname != ''">
+                cname like CONCAT('%',#{cname},'%')
+            </if>
+            <if test="keys != null and keys != ''">
+                or keys like CONCAT('%',#{keys},'%')
+            </if>
+        </where>
+        order by
+        idx
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--模糊查询APi-->
+    <select id="queryApiCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        tb_open_api_list
+        <where>
+            <if test="cname != null and cname != ''">
+                cname like CONCAT('%',#{cname},'%')
+            </if>
+            <if test="keys != null and keys != ''">
+                or keys like CONCAT('%',#{keys},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--获取应用列表-->
+    <select id="queryRogApplication" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        appid,
+        appline,
+        appkey,
+        appsecret,
+        devtype,
+        apptype,
+        cid,
+        keys,
+        appname,
+        applogo,
+        appdesc,
+        appurl,
+        appips,
+        manurl,
+        summary
+        from
+        tb_org_application
+        where
+        cid = #{cid}
+        <if test="apptype!= null">
+            and apptype = #{apptype}
+        </if>
+        <if test="devtype!= null">
+            and devtype = #{devtype}
+        </if>
+        order by
+        id
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--获取入驻企业列表-->
+    <select id="queryPlatformOrg" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        cid,
+        manager,
+        ouid,
+        addtime,
+        summary
+        from
+        tb_platform_org
+        order by
+        id
+        limit
+        ${pagesize}
+        offset
+        ${pageno}
+    </select>
+
+    <!--获取开发者列表-->
+    <select id="queryAppDeveloper" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        uid,
+        devauth
+        from
+        tb_app_developer
+        where
+        appid = #{appid}
+        and status = '1'
+        order by
+        id
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--添加开发者-->
+    <insert id="insertDeveloper" parameterType="java.util.Map">
+        INSERT INTO
+        tb_app_developer (appid, uid, ouid, devauth, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{appid},
+        #{uid},
+        #{userId},
+        #{devauth},
+        #{addtime},
+        #{updtime},
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                '1',
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--移除开发者-->
+    <update id="updateDeveloper" parameterType="java.util.Map">
+        UPDATE
+        tb_app_developer
+        SET
+        status = '2',
+        updtime = #{updtime},
+        ouid = #{uid}
+        WHERE
+        appid = #{appid}
+        and uid = #{userId}
+    </update>
+
+    <!--验证是否已加入开发者列表-->
+    <select id="queryPhoneCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_app_developer
+        where
+        uid = #{uid}
+        and status = '1'
+        and appid = #{appid}
+    </select>
+
+    <!--验证是否注册开发者列表-->
+    <select id="queryWhetherEnter" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_platform_org
+        where
+        cid = #{cid}
+    </select>
+
+    <!--修改应用信息-->
+    <update id="updateApp" parameterType="java.util.Map">
+        UPDATE
+        tb_org_application
+        SET
+        appline = ${appline},
+        keys = #{keys},
+        appname = #{appname},
+        applogo = #{applogo},
+        appdesc = #{appdesc},
+        appurl = #{appurl},
+        appips = #{appips},
+        manurl = #{manurl},
+        ouid = #{uid},
+        updtime = #{updtime}
+        WHERE
+        appid = #{appid}
+    </update>
+
+    <!--添加以有的开发者,修改状态为1-->
+    <update id="updateStatus" parameterType="java.util.Map">
+        UPDATE
+        tb_app_developer
+        SET
+        status = '1',
+        devauth = #{devauth},
+        updtime = #{updtime},
+        ouid = #{userId}
+        WHERE
+        appid = #{appid}
+        and uid = #{uid}
+    </update>
+
+    <!--验证ID是否已存在开发者列表-->
+    <select id="queryIdCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_app_developer
+        where
+        uid = #{uid}
+        and appid = #{appid}
+        and
+        (status = '1' or status = '2')
+    </select>
+
+    <!--修改当前应用的管理员为普通开发者-->
+    <update id="updateDevauth" parameterType="java.util.Map">
+        UPDATE
+        tb_app_developer
+        SET
+        devauth = '2',
+        updtime = #{updtime},
+        ouid = #{userId}
+        WHERE
+        appid = #{appid}
+    </update>
+
+    <!--获取应用列表总数-->
+    <select id="queryApplicationCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_org_application
+        where
+        cid = #{cid}
+        <if test="apptype!= null and apptype!= ''">
+            and apptype = #{apptype}
+        </if>
+        <if test="devtype!= null and apptype!= ''">
+            and devtype = #{devtype}
+        </if>
+    </select>
+
+    <!--获取入驻企业总数-->
+    <select id="queryPlatformCount" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        tb_platform_org
+    </select>
+
+</mapper>

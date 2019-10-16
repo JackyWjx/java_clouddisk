@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.message.dao.MessageGroupMapper">
+
+    <!-- 查询 -->
+    <select id="queryMessageGroup" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_message_group where status = '1'
+        <choose><when test="groupname != null">and groupname = #{groupname}</when></choose>
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        limit #{rows}  offset #{page}
+    </select>
+
+    <select id="queryMessageUserGroup" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_msg_user_group where status = '1'
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        limit #{rows}  offset #{page}
+    </select>
+
+    <select id="queryMsgGroupConfigure" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_msg_group_configure where status = '1'
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="queryMessageGroupCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_message_group where status = '1'
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+    </select>
+
+    <select id="queryMessageUserGroupCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_msg_user_group where status = '1'
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+    </select>
+
+    <select id="queryMsgGroupConfigureCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_msg_group_configure where status = '1'
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+    </select>
+
+    <!-- 模糊查询 -->
+    <select id="searchMessageGroup" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_message_group where status = '1'
+        and cid like CONCAT('%',#{keys},'%')
+        or groupname like CONCAT('%',#{keys},'%')
+        or groupid like CONCAT('%',#{keys},'%')
+        or ouid like CONCAT('%',#{keys},'%')
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <select id="searchMessageUserGroup" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_msg_user_group where status = '1'
+        and cid like CONCAT('%',#{keys},'%')
+        or nickname like CONCAT('%',#{keys},'%')
+        or groupid like CONCAT('%',#{keys},'%')
+        or uid like CONCAT('%',#{keys},'%')
+        or ouid like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <select id="searchMsgGroupConfigure" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_msg_group_configure where status = '1'
+        and cid like CONCAT('%',#{keys},'%')
+        or groupid like CONCAT('%',#{keys},'%')
+        or ouid like CONCAT('%',#{keys},'%')
+        limit #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊查询总数 -->
+    <select id="searchMessageGroupCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_message_group where status = '1'
+        and cid like CONCAT('%',#{keys},'%')
+        or groupname like CONCAT('%',#{keys},'%')
+        or groupid like CONCAT('%',#{keys},'%')
+        or ouid like CONCAT('%',#{keys},'%')
+    </select>
+
+    <select id="searchMessageUserGroupCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_msg_user_group where status = '1'
+        or nickname like CONCAT('%',#{keys},'%')
+        or groupid like CONCAT('%',#{keys},'%')
+        or uid like CONCAT('%',#{keys},'%')
+        or ouid like CONCAT('%',#{keys},'%')
+    </select>
+
+    <select id="searchMsgGroupConfigureCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_msg_group_configure where status = '1'
+        and cid like CONCAT('%',#{keys},'%')
+        or groupid like CONCAT('%',#{keys},'%')
+        or ouid like CONCAT('%',#{keys},'%')
+    </select>
+
+    <!-- 添加 -->
+    <insert id="insertMessageGroup" parameterType="java.util.Map">
+        INSERT INTO tb_message_group ( cid, groupid, groupname, msgtype, addtime, ouid, updtime, status, summary )
+        VALUES
+        ( #{cid},
+          #{groupid},
+          #{groupname},
+          #{msgtype},
+          #{addtime},
+          #{ouid},
+          #{updtime},
+          #{status},
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose> );
+    </insert>
+
+    <insert id="insertMessageUserGroup" parameterType="java.util.Map">
+        INSERT INTO tb_msg_user_group ( cid, groupid, uid, nickname, msgtype, tarobj, ouid, updtime, status, summary )
+        VALUES
+        ( #{cid},
+          #{groupid},
+          #{uid},
+          <choose><when test="nickname != null">#{nickname}</when><otherwise>null</otherwise></choose>,
+          #{msgtype},
+          #{tarobj},
+          #{ouid},
+          #{updtime},
+          #{status},
+          <choose><when test="nickname != null">#{summary}</when><otherwise>null</otherwise></choose>);
+    </insert>
+
+    <insert id="insertMsgGroupConfigure" parameterType="java.util.Map">
+        INSERT INTO tb_msg_group_configure ( cid, groupid, msgtype, context, passwd, addtime, ouid, updtime, status, summary )
+        VALUES
+        ( #{cid},
+          #{groupid},
+          #{msgtype},
+          #{context},
+          #{passwd},
+          #{addtime},
+          #{ouid},
+          #{updtime},
+          #{status},
+          <choose><when test="nickname != null">#{summary}</when><otherwise>null</otherwise></choose>);
+    </insert>
+
+    <!-- 修改 -->
+    <update id="updateMessageGroup" parameterType="java.util.Map">
+        update tb_message_group set ouid = #{ouid} , updtime = #{updtime}
+        <choose><when test="cid != null">, cid = #{cid}</when></choose>
+        <choose><when test="groupname != null">, groupname = #{groupname}</when></choose>
+        <choose><when test="groupid != null">, groupid = #{groupid}</when></choose>
+        <choose><when test="msgtype != null">, msgtype = #{msgtype}</when></choose>
+        where id = #{id}
+    </update>
+
+    <update id="updateMessageUserGroup" parameterType="java.util.Map">
+        update tb_msg_user_group set ouid = #{ouid} , updtime = #{updtime}
+        <choose><when test="cid != null">, cid = #{cid}</when></choose>
+        <choose><when test="groupid != null">, groupid = #{groupid}</when></choose>
+        <choose><when test="msgtype != null">, msgtype = #{msgtype}</when></choose>
+        <choose><when test="uid != null">, uid = #{uid}</when></choose>
+        <choose><when test="nickname != null">, nickname = #{nickname}</when></choose>
+        <choose><when test="tarobj != null">, tarobj = #{tarobj}</when></choose>
+        where id = #{id}
+    </update>
+
+    <update id="updateMsgGroupConfigure" parameterType="java.util.Map">
+        update tb_msg_group_configure set ouid = #{ouid} , updtime = #{updtime}
+        <choose><when test="cid != null">, cid = #{cid}</when></choose>
+        <choose><when test="groupid != null">, groupid = #{groupid}</when></choose>
+        <choose><when test="msgtype != null">, msgtype = #{msgtype}</when></choose>
+        <choose><when test="context != null">, context = #{context}</when></choose>
+        <choose><when test="passwd != null">, passwd = #{passwd}</when></choose>
+        <choose><when test="summary != null">, summary = #{summary}</when></choose>
+        where id = #{id}
+    </update>
+
+    <!-- 禁用 -->
+    <update id="deleteMessageGroup" parameterType="java.util.Map">
+        update tb_message_group set status = '2',ouid = #{ouid} , updtime = #{updtime}
+        where id = #{id}
+    </update>
+
+    <update id="deleteMessageUserGroup" parameterType="java.util.Map">
+        update tb_msg_user_group set status = '2',ouid = #{ouid} , updtime = #{updtime}
+        where id = #{id}
+    </update>
+
+    <update id="deleteMsgGroupConfigure" parameterType="java.util.Map">
+        update tb_msg_group_configure set status = '2',ouid = #{ouid} , updtime = #{updtime}
+        where id = #{id}
+    </update>
+
+</mapper>

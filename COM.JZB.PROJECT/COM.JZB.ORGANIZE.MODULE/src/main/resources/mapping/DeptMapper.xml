@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.DeptMapper">
+    <!--新建部门-->
+    <insert id="insertCompanyDept">
+        INSERT INTO tb_company_dept (cid,cdid,pcdid,cname,duid,addtime,status,summary,ouid,updtime,idx)
+        VALUES
+        (#{cid},#{cdid},#{pcdid},#{cname},#{uid},#{addtime},#{status},#{summary},#{uid},#{addtime},
+        <choose>
+            <when test=" index != null and index !=''">
+                #{index}
+            </when>
+            <otherwise>
+                (SELECT count(1)+1 FROM tb_company_dept)
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--新建单位加入系统名称-->
+    <insert id="insertCompanySysConfig" parameterType="java.util.Map">
+        INSERT INTO
+        tb_company_sysconfig (cid, curl, systemname, ouid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{cid},
+        <choose>
+            <when test=" curl != null and curl !=''">
+                #{curl},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test=" systemname != null and systemname !=''">
+                #{systemname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        #{addtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--新增部门用户表信息-->
+    <insert id="insertDeptUser">
+        INSERT INTO tb_dept_user ( cid, cdid, uid,cname,mail,phone,addtime,updtime, status, summary, idx )
+        VALUES
+        (#{cid},#{cdid},#{uid},#{cname},#{mail},#{phone},#{time},#{time},#{status},#{summary},
+        <choose>
+            <when test=" index != null and index !=''">
+                #{index}
+            </when>
+            <otherwise>
+                (SELECT count(1)+1 FROM tb_dept_user WHERE
+                cid=#{cid} AND cdid=#{cdid} )
+            </otherwise>
+        </choose>
+        )
+    </insert>
+    <!--保存用户导入批次表-->
+    <insert id="insertExportBatch">
+        INSERT INTO tb_export_batch ( batchid, cid, uid, addtime, cname, address, status, summary )
+        VALUES
+            (#{batchid},#{cid},#{uid},#{addtime},#{cname},#{address},#{status},#{summary})
+    </insert>
+    <!--批量保存用户导入信息表-->
+    <insert id="insertExportUserInfoList">
+        INSERT INTO tb_export_user_info (
+        batchid,
+        cid,
+        idx,
+        cname,
+        sex,
+        age,
+        phone,
+        cardid,
+        dept,
+        mail,
+        relperson,
+        relphone,
+        status,
+        summary
+        )
+        VALUES
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+            (#{item.batchid},#{item.cid},
+            <if test="item.idx==0">#{index},</if>
+            <if test="item.idx!=0">#{item.idx},</if>
+            #{item.cname},#{item.sex},#{item.age},#{item.phone},#{item.cardid},#{item.dept},
+            #{item.mail},#{item.relperson},#{item.relphone},#{item.status},#{item.summary}
+            )
+        </foreach>
+    </insert>
+    <!--批量保存成员邀请/申请表-->
+    <insert id="insertInviteUserList">
+        INSERT INTO tb_invite_user ( reqtype, batchid, cid, uid, reqtime, cdid, ustatus, resuid, resphone, status )
+        VALUES
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+            (#{item.reqtype},#{item.batchid},#{item.cid},#{item.uid},#{item.reqtime},#{item.cdid},#{item.ustatus},#{item.resuid},#{item.resphone},#{item.status}
+            )
+        </foreach>
+    </insert>
+    <!--批量保存部门员工表-->
+    <insert id="insertDeptUserList">
+        INSERT INTO tb_dept_user ( cid, cdid, uid, cname,mail, addtime, updtime, status, summary, idx )
+        VALUES
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+            (#{item.cid},#{item.cdid},#{item.uid},#{item.cname},#{item.mail},#{item.addtime},#{item.addtime},#{item.status},#{item.summary},
+            (SELECT count(1)+1 FROM tb_dept_user WHERE
+            cid=#{item.cid} AND cdid=#{item.cdid} )
+            )
+        </foreach>
+
+    </insert>
+    <!--新增部门信息到另一个部门-->
+    <insert id="insertAllDeptUser">
+        INSERT INTO tb_dept_user ( cid, cdid, uid, cname, mail, phone, addtime, updtime, status, summary, idx ) SELECT
+            cid,
+            #{newcdid},
+            uid,
+            cname,
+            mail,
+            phone,
+            #{time},
+            #{time},
+            '1',
+            summary,
+            idx
+            FROM
+                tb_dept_user
+            WHERE
+                uid =#{uid} AND cid=#{cid} AND cdid=#{cdid}
+    </insert>
+    <!--修改部门信息-->
+    <update id="updateCompanyDept" parameterType="java.util.Map">
+        UPDATE tb_company_dept
+        SET
+        <if test=" cname !=null and cname !=''">cname =#{cname},</if>
+        <if test=" duid !=null and duid !=''">duid =#{duid},</if>
+        ouid =#{uid},
+        updtime =#{updtime}
+        <if test=" index !=null and index !=''">,idx =#{index}</if>
+        <if test=" summary !=null and summary !=''">,summary =#{summary}</if>
+        WHERE
+        cid = #{cid}
+        AND cdid =#{cdid}
+        AND status = '1'
+    </update>
+
+    <!--删除部门信息-->
+    <update id="deleteCompanyDept">
+        UPDATE tb_company_dept
+        SET status = '4',ouid=#{uid},updtime=#{time}
+        WHERE
+             cid = #{cid}
+            AND cdid =#{cdid}
+
+    </update>
+
+    <update id="updateDeptUser">
+        UPDATE tb_dept_user
+        SET
+        <if test=" status !=null and status!=''">status =#{status},</if>
+        <if test=" cname !=null and cname!=''">cname =#{cname},</if>
+        <if test=" index !=null and index!=''">idx =#{index},</if>
+        <if test=" summary !=null and summary!=''">summary =#{summary},</if>
+        <if test=" phone !=null and phone!=''">phone =#{phone},</if>
+        <if test=" mail !=null and mail!=''">mail =#{mail},</if>
+        updtime = #{time}
+        WHERE
+        uid =#{uid} AND cid=#{cid} AND cdid=#{cdid}
+    </update>
+
+    <!--修改用户导入批次表-->
+    <update id="updateExportBatch">
+        UPDATE tb_export_batch
+        SET endtime =#{endtime},
+        status = #{status}
+        WHERE
+            batchid = #{batchid}
+        <if test="cid !=null and cid!=''">AND cid=#{cid}</if>
+    </update>
+
+
+    <!--根据企业id获取部门信息-->
+    <select id="queryDeptListByCid" resultType="java.util.Map">
+        SELECT
+        cdid,
+        cname,
+        pcdid
+        FROM
+        tb_company_dept
+        WHERE
+        cid =#{cid}
+        <if test="pcdid !=null and pcdid !=''">
+            AND pcdid= #{pcdid}
+        </if>
+        AND status='1'
+        ORDER BY idx LIMIT #{pagesize} OFFSET #{start}
+    </select>
+
+    <!--根据名称查询产品信息-->
+    <select id="searchProListByName" resultType="java.util.Map">
+        SELECT * FROM (SELECT
+        pl.pid,
+        pl.cname,
+        cp.cid,
+        '1' AS ptype
+        FROM
+        tb_company_product cp
+        RIGHT JOIN tb_product_list pl ON pl.cid = cp.cid
+        AND pl.pid = cp.pid
+        WHERE
+        cp.status = '1'
+        AND pl.status ='1'
+        <if test=" plid != null and plid != ''">AND pl.plid =#{plid}</if>
+        AND cp.cid = #{ cid }
+        AND pl.cname LIKE'%${cname}%'
+        UNION
+        SELECT
+        pp.packid AS pid,
+        pp.cname,
+        cp.cid,
+        '2' AS ptype
+        FROM
+        tb_company_product cp
+        RIGHT JOIN tb_product_package pp ON pp.cid = cp.cid
+        AND pp.packid = cp.pid
+        WHERE
+        cp.status = '1'
+        AND pp.status ='1'
+        AND pp.plid = #{ plid }
+        AND cp.cid = #{ cid }
+        AND pp.cname LIKE'%${cname}%'
+        ) productlist
+    </select>
+
+    <!--获取产品的菜单权限页面表-->
+    <select id="queryProductMenu" resultType="java.util.Map">
+        <if test=" ptype !='' and ptype == 1">
+            SELECT
+            pm.pid,
+            pm.mid,
+            pm.parentid,
+            pm.cname,
+            pp.pageid,
+            pp.cname AS pagename,
+            ppc.controlid,
+            ppc.cname AS conname
+            FROM
+            tb_product_menu pm
+            LEFT JOIN tb_product_page pp ON pm.pid = pp.pid
+            AND pp.mid = pm.mid
+            AND pp.status = '1'
+            LEFT JOIN tb_product_page_control ppc ON ppc.pageid = pp.pageid
+            AND ppc.status = '1'
+            <where>
+                pm.status='1' AND
+                pm.pid = #{pid}
+                <if test="mid !=null and mid !=''">
+                    and pm.parentid = #{mid}
+                </if>
+            </where>
+
+        </if>
+        <if test=" ptype !='' and ptype == 2">
+            SELECT
+            pp.packid AS pid,
+            pp.mid,
+            pp.parentid AS parentid,
+            pp.menuname AS cname,
+            pp.pageid,
+            pp.pagename,
+            ppc.controlid,
+            ppc.cname AS conname
+            FROM
+            tb_product_package_fun pp
+            LEFT JOIN tb_product_page_control ppc ON ppc.pageid = pp.pageid
+            AND ppc.status = '1'
+            <where>
+                pp.status='1' AND
+                pp.packid = #{pid}
+                <if test="mid !=null and mid !=''">
+                    and pp.parentid = #{mid}
+                </if>
+            </where>
+        </if>
+    </select>
+    <!--根据用户姓名查询用户部门信息总数-->
+    <select id="queryDeptByCnameCount" resultType="java.lang.Integer">
+        SELECT COUNT
+        ( DISTINCT du.uid )
+        FROM
+        tb_dept_user du
+        LEFT JOIN tb_company_dept cd ON du.cid = cd.cid
+        AND du.cdid = cd.cdid
+        WHERE
+        du.cid = #{cid}
+        <if test="cname != null and cname !='' ">AND du.cname LIKE '%${cname}%'
+        </if>
+        <if test="list != null and list.size > 0">
+            and du.uid in
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.uid}
+            </foreach>
+        </if>
+    </select>
+    <!--根据用户姓名查询用户部门信息-->
+    <select id="queryDeptByCname" resultType="java.util.Map">
+        WITH RECURSIVE S ( uid, cname,dept ) AS (
+        SELECT
+        du.uid,
+        du.cname,
+        cd.cname as dept
+        FROM
+        tb_dept_user du
+        LEFT JOIN tb_company_dept cd ON du.cid = cd.cid
+        AND du.cdid = cd.cdid
+        WHERE
+        du.cid = #{cid}
+        <if test="cname != null and cname !='' ">AND du.cname LIKE '%${cname}%'
+        </if>
+        <if test="list != null and list.size > 0">
+            and du.uid in
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.uid}
+            </foreach>
+        </if>
+
+        ) SELECT
+        uid,cname,
+        string_agg ( DISTINCT dept, ',' ) as dept
+        FROM
+        S
+        GROUP BY
+        uid,cname LIMIT #{pagesize} OFFSET #{start}
+    </select>
+
+
+    <!--根据用户id获取用户部门信息和在职状态总数-->
+    <select id="queryDeptUserCount" resultType="java.lang.Integer">
+        SELECT COUNT( 1 )
+        FROM
+        tb_company_dept cd
+        INNER JOIN tb_dept_user du ON cd.status = '1'
+        AND du.cid = cd.cid
+        AND du.cdid = cd.cdid
+        WHERE
+        cd.cid =#{cid}
+        <if test=" status !=null and status !='' ">and du.status=#{status}</if>
+        AND ( du.cname LIKE'%${value}%' OR du.phone LIKE'%${value}%' )
+    </select>
+
+    <!--根据用户姓名或手机号获取用户部门信息和在职状态-->
+    <select id="queryDeptUser" resultType="java.util.Map">
+        SELECT
+        du.uid,
+        du.cname,
+        du.phone,
+        du.mail,
+        du.cdid,
+        cd.cname AS dept,
+        du.status,
+        CASE
+        cd.duid
+        WHEN du.uid THEN
+        1 ELSE 2
+        END AS isduid,
+        to_char(to_timestamp(du.addtime/1000),'yyyy-MM-dd HH24:MI:SS') as addtime
+        FROM
+        tb_company_dept cd
+        INNER JOIN tb_dept_user du ON cd.status = '1'
+        AND du.cid = cd.cid
+        AND du.cdid = cd.cdid
+        WHERE
+        cd.cid = #{cid}
+        <if test=" cdid !=null and cdid !='' ">and cd.cdid=#{cdid}</if>
+        <if test=" status !=null and status !='' ">and du.status=#{status}</if>
+        AND ( du.cname LIKE'%${value}%' OR du.phone LIKE'%${value}%' )
+        ORDER BY du.uid,du.cdid LIMIT #{pagesize} OFFSET #{start}
+
+
+    </select>
+
+    <!--根据部门id和企业id查看部门是否存在该员工-->
+    <select id="queryDeptUserIF" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_dept_user WHERE uid =#{uid} AND cid=#{cid} AND cdid=#{cdid}
+    </select>
+    <!--根据企业id和部门名称查询部门信息-->
+    <select id="getDeptByIdAndName" resultType="java.util.Map">
+        SELECT
+            cid,
+            cdid,
+            cname
+        FROM
+            tb_company_dept
+        WHERE
+            status = '1'
+            AND cid =#{cid}
+            AND cname=#{cname}
+    </select>
+    <!--获取企业下属用户总数-->
+    <select id="queryDeptUserListCount" resultType="java.lang.Integer">
+        SELECT count(distinct uid)
+        FROM
+        tb_dept_user
+        WHERE
+        status = '1'
+        AND cid = #{cid}
+        <if test=" cdid !=null and cdid !=''">AND cdid = #{cdid}</if>
+    </select>
+    <!--获取企业下属用户数据-->
+    <select id="queryDeptUserList" resultType="java.util.Map">
+        SELECT distinct uid,cname,phone
+        FROM
+        tb_dept_user
+        WHERE
+        status = '1'
+        AND cid = #{cid}
+        <if test=" cdid !=null and cdid !=''">AND cdid = #{cdid}</if>
+        ORDER BY uid LIMIT #{pagesize} OFFSET #{start}
+    </select>
+
+    <!--获取部门下所有子级的用户包括自身-->
+    <select id="queryDeptUserChildList" resultType="java.util.Map">
+        WITH RECURSIVE users AS (
+        SELECT
+        cd.pcdid,
+        cd.cname,
+        cd.cdid,
+        cd.idx AS cidx,
+        cd.summary,
+        du.uid,
+        du.cname as uname,
+        du.idx AS didx,
+        du.addtime
+        FROM
+        tb_company_dept cd
+        LEFT JOIN tb_dept_user du ON cd.cid = du.cid
+        AND cd.cdid = du.cdid
+        AND du.status = '1'
+        WHERE
+        cd.status = '1'
+        AND cd.cid = #{cid}
+        <if test="cdid != null and cdid !=''">AND cd.cdid = #{cdid}</if>
+        UNION ALL
+        SELECT
+        cd.pcdid,
+        cd.cname,
+        cd.cdid,
+        cd.idx AS cidx,
+        cd.summary,
+        du.uid,
+        du.cname as uname,
+        du.idx AS didx,
+        du.addtime
+        FROM
+        tb_company_dept cd
+        JOIN users ON cd.pcdid = users.cdid
+        LEFT JOIN tb_dept_user du ON cd.cid = du.cid
+        AND cd.cdid = du.cdid
+        AND du.status = '1'
+        WHERE
+        cd.status = '1'
+        ) SELECT DISTINCT
+        users.*
+        FROM
+        users
+        ORDER BY
+        users.cidx,
+        users.didx
+    </select>
+    <!--获取企业下所有产品线-->
+    <select id="queryProLine" resultType="java.util.Map">
+        SELECT DISTINCT
+            pl.plid,
+            pl.cname
+        FROM
+            tb_product_line pl
+            RIGHT JOIN tb_company_product cp ON cp.plid = pl.plid
+        WHERE
+            cp.cid = #{cid}
+            AND cp.status = '1'
+            AND pl.status='1'
+    </select>
+    <!--获取企业名称-->
+    <select id="getCompanyName" resultType="java.lang.String">
+        select cname  from tb_company_list where cid=#{cid};
+    </select>
+
+
+</mapper>

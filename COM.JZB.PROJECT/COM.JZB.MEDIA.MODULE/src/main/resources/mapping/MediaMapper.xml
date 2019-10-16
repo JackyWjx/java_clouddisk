@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.media.dao.MediaMapper">
+
+    <!--添加文件信息-->
+    <insert id="insertMeduia"  parameterType="java.util.Map">
+        INSERT INTO tb_media_list ( fileid, filename, filetype, filepath, fileformat, filemd5, filesize, filefit, uid, addtime, status, summary )
+        VALUES
+        (
+        #{fileid},
+        #{filename},
+        #{filetype},
+        #{filepath},
+        #{fileformat},
+        #{filemd5},
+        #{filesize},
+        <choose>
+            <when test="filefit != null">
+                #{filefit},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        #{status},
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--查询-->
+    <select id="queryMedia" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from  tb_media_list
+        <where>
+            <choose>
+                <when test="filemd5 != null">
+                    filemd5 = #{filemd5}
+                </when>
+                <otherwise>
+                    1 = 1
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="fileid != null">
+                    and fileid = #{fileid}
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="filetype != null">
+                    and filetype = #{filetype}
+                </when>
+                <otherwise>
+
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="filename != null">
+                    and filename = #{filename}
+                </when>
+                <otherwise>
+
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+</mapper>

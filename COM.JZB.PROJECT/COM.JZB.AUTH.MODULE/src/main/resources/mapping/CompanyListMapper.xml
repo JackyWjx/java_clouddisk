@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.auth.dao.CompanyListMapper">
+
+    <!--添加企业表-->
+    <insert id="saveCompanyList" parameterType="java.util.Map">
+        INSERT INTO public.tb_company_list(cid, cname, nickname, region, uscc, idx, relperson, relphone, reguid,
+        regtime, manager, modtime, status, summary)
+        VALUES (
+        #{cid},
+        #{cname},
+        <choose>
+            <when test="nickname != null">
+                #{nickname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        #{region},
+        #{uscc},
+        #{idx},
+        <choose>
+            <when test="relperson != null">
+                #{relperson},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="relphone != null">
+                #{relphone},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        #{reguid},
+        #{regtime},
+        #{manager},
+        <choose>
+            <when test="modtime != null">
+                #{modtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        #{status},
+        <choose>
+            <when test="summary != null">
+                #{summary},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        );
+    </insert>
+
+    <!--添加企业信息-->
+    <insert id="saveCompanyInfo" parameterType="java.util.Map">
+        INSERT INTO tb_company_info(cid, curl, limitday, address, range, ctype, legaler, capital, birthday, content,
+        license, idcardup, idecarddown, ouid, updtime)
+        VALUES (
+        #{cid},
+        <choose>
+            <when test="curl != null">
+                #{curl},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="limitday != null">
+                #{limitday},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="address != null">
+                #{address},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="range != null">
+                #{range},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ctype != null">
+                #{ctype},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="legaler != null">
+                #{legaler},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="capital != null">
+                #{capital},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="birthday != null">
+                #{birthday},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="content != null">
+                #{content},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="license != null">
+                #{license},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idcardup != null">
+                #{idcardup},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idecarddown != null">
+                #{idecarddown},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid != null">
+                #{ouid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        );
+    </insert>
+
+    <!--成员申请/邀请-->
+    <insert id="saveInviteUser" parameterType="java.util.Map">
+        INSERT INTO tb_invite_user(reqtype, batchid, uid, reqtime, cdid, ustatus, resuid, resphone, restime, status,
+        summary)
+        VALUES (
+        #{reqtype},
+        #{batchid},
+        #{uid},
+        #{reqtime},
+        #{cdid},
+        #{ustatus},
+        #{resuid},
+        <choose>
+            <when test="resphone != null">
+                #{resphone},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="restime != null">
+                #{restime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        #{status},
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <select id="getConmpanyByName" parameterType="java.util.Map">
+
+    </select>
+
+
+
+</mapper>

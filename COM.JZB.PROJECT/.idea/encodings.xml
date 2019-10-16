@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.API.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.AUTH.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.BASE.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.CONFIG.BASE.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.CONFIG.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.EUREKA.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.LOGGER.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.MEDIA.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.OAUTH.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.OPEN.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.OPERATE.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.REDIS.MODULE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE" charset="UTF-8" />
+  </component>
+</project>

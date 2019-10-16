@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.message.dao.MsgTypeParaMapper">
+
+    <!-- 查询消息参数 -->
+    <select id="queryMsgTypePara" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_msg_type_para where status = '1'  
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询用户参数 -->
+    <select id="queryUserPara" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_user_parameter where status = '1'
+        <choose><when test="param != null">and param  =  #{param}</when></choose>
+        <choose><when test="uid != null">and uid  =  #{uid}</when></choose>
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询服务商 -->
+    <select id="queryServiceProviders" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_service_providers where status = '1'
+        <choose><when test="msgtype != null">and msgtype  =  #{msgtype}</when></choose>
+        <choose><when test="isp != null">and isp  =  #{isp}</when></choose>
+        <choose><when test="ispname != null">and ispname  =  #{ispname}</when></choose>
+        <choose><when test="ispdesc != null">and ispdesc  =  #{ispdesc}</when></choose>
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询消息参数总数 -->
+    <select id="queryMsgTypeParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_msg_type_para where status = '1'
+    </select>
+
+    <!-- 查询用户参数总数 -->
+    <select id="queryUserParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_user_parameter where status = '1'
+        <choose><when test="param != null">and param  =  #{param}</when></choose>
+        <choose><when test="uid != null">and uid  =  #{uid}</when></choose>
+    </select>
+
+    <!-- 查询服务商总数 -->
+    <select id="queryServiceProvidersCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_service_providers where status = '1'
+        <choose><when test="msgtype != null">and msgtype  =  #{msgtype}</when></choose>
+        <choose><when test="isp != null">and isp  =  #{isp}</when></choose>
+        <choose><when test="ispname != null">and ispname  =  #{ispname}</when></choose>
+        <choose><when test="ispdesc != null">and ispdesc  =  #{ispdesc}</when></choose>
+    </select>
+
+    <!-- 模糊消息参数查询 -->
+    <select id="searchMsgTypePara" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_msg_type_para where status = '1' and paraname like CONCAT('%',#{keys},'%') or paracode like CONCAT('%',#{keys},'%')
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊用户参数查询 -->
+    <select id="searchUserPara" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_user_parameter where status = '1'
+        and param like CONCAT('%',#{keys},'%')
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊服务商查询 -->
+    <select id="searchServiceProviders" resultType="java.util.Map" parameterType="java.util.Map">
+         select * from tb_service_providers where status = '1' and isp
+         like CONCAT('%',#{keys},'%') or ispname like CONCAT('%',#{keys},'%')
+         limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊查询消息参数总数 -->
+    <select id="searchMsgTypeParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from tb_msg_type_para where status = '1' and paraname like CONCAT('%',#{keys},'%') or paracode like CONCAT('%',#{keys},'%')
+    </select>
+
+    <!-- 模糊查询用户参数总数 -->
+    <select id="searchUserParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from tb_user_parameter where status = '1'
+          and param like CONCAT('%',#{keys},'%')
+    </select>
+
+    <!-- 模糊查询服务商总数 -->
+    <select id="searchServiceProvidersCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from tb_service_providers where status = '1' and isp
+         like CONCAT('%',#{keys},'%') or ispname like CONCAT('%',#{keys},'%')
+    </select>
+
+    <!-- 添加消息参数 -->
+    <insert id="insertMsgTypePara" parameterType="java.util.Map">
+        INSERT INTO tb_msg_type_para ( msgtype, paracode, paraname, idx, paratype, parasize, paraneed, status, summary )
+        VALUES
+        ( #{msgtype},
+        #{paracode},
+        #{paraname},
+        (select count(1)+1 from tb_msg_type_para),
+        #{paratype},
+        #{parasize},
+        #{paraneed},
+        #{status},
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose> );
+    </insert>
+
+    <!-- 添加用户参数 -->
+    <insert id="insertUserPara" parameterType="java.util.Map">
+        INSERT INTO public.tb_user_parameter(
+        uid, param, adduid, addtime, upduid, updtime, status, summary)
+        VALUES (
+        #{uid},
+        #{param},
+        #{adduid},
+        #{addtime},
+        #{upduid},
+        #{updtime},
+        #{status},
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>);
+    </insert>
+
+    <!-- 添加服务商 -->
+    <insert id="insertServiceProviders" parameterType="java.util.Map">
+        INSERT INTO public.tb_service_providers(
+        msgtype, isp, ispname, ispdesc, idx, addtime, ouid, updtime, status, summary)
+        VALUES (
+        #{msgtype},
+        #{isp},
+        #{ispname},
+        #{ispdesc},
+        (select count(1)+1 from tb_service_providers),
+        #{addtime},
+        #{ouid},
+        #{updtime},
+        #{status},
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>);
+    </insert>
+
+    <!-- 修改消息参数 -->
+    <update id="updateMsgTypePara" parameterType="java.util.Map">
+        update  tb_msg_type_para set status = '1'
+        <choose><when test="paracode != null">,paracode = #{paracode}</when></choose>
+        <choose><when test="paraname != null">,paraname = #{paraname}</when></choose>
+        <choose><when test="msgtype != null">,msgtype = #{msgtype}</when></choose>
+        <choose><when test="paratype != null">,paratype = #{paratype}</when></choose>
+        <choose><when test="parasize != null">,parasize = #{parasize}</when></choose>
+        <choose><when test="paraneed != null">,paraneed = #{paraneed}</when></choose>
+        <choose><when test="summary != null">,summary = #{summary}</when></choose>
+        where id = #{id}
+    </update>
+
+    <!-- 修改用户参数 -->
+    <update id="updateUserPara" parameterType="java.util.Map">
+        update  tb_user_parameter set status = '1' , upduid = #{upduid} ,updtime = #{updtime}
+        <choose><when test="uid != null">,uid = #{uid}</when></choose>
+        <choose><when test="param != null">,param = #{param}</when></choose>
+        where id = #{id}
+    </update>
+
+    <!-- 修改服务商 -->
+    <update id="updateServiceProviders" parameterType="java.util.Map">
+        update  tb_service_providers set status = '1' ,updtime = #{updtime} , ouid = #{uid}
+        <choose><when test="msgtype != null">,msgtype = #{msgtype}</when></choose>
+        <choose><when test="isp != null">,isp = #{isp}</when></choose>
+        <choose><when test="ispname != null">,ispname = #{ispname}</when></choose>
+        <choose><when test="ispdesc != null">,ispdesc = #{ispdesc}</when></choose>
+        <choose><when test="idx != null">,idx = #{idx}</when></choose>
+        where id = #{id}
+    </update>
+
+    <!-- 禁用消息参数 -->
+    <update id="deleteMsgTypePara" parameterType="java.util.Map">
+        update  tb_msg_type_para set  status = '2' where id = #{id}
+    </update>
+
+    <!-- 禁用用户参数 -->
+    <update id="deleteUserPara" parameterType="java.util.Map">
+        update  tb_user_parameter set  status = '2' where id = #{id}
+    </update>
+
+    <!-- 禁用服务商 -->
+    <update id="deleteServiceProviders" parameterType="java.util.Map">
+        update  tb_service_providers set  status = '2' where id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbMethodTypeMapper">
+
+    <!--1.查询方法论（父子级）-->
+    <select id="queryMethodType" resultType="java.util.Map" parameterType="java.util.Map">
+         WITH RECURSIVE modt AS (
+            SELECT
+                typeid,
+                cname,
+                parentid,
+                score,
+                days,
+                typedesc,
+                idx
+            FROM
+                tb_method_type
+            WHERE
+                parentid = '0000000'
+                <if test="keyword!=null">
+                    and cname ~ #{keyword}
+                </if>
+                AND status = '1'
+        UNION ALL
+            SELECT
+                tmt.typeid,
+                tmt.cname,
+                tmt.parentid,
+                tmt.score,
+                tmt.days,
+                tmt.typedesc,
+                tmt.idx
+            FROM
+                tb_method_type tmt
+                JOIN modt ON tmt.parentid = modt.typeid
+                AND tmt.status = '1'
+        )
+        SELECT
+            modt.*
+        FROM
+            modt
+        ORDER BY
+            modt.idx ASC
+    </select>
+
+    <!--1.1 查询方法论（分页）-->
+    <select id="queryMethodTypePage" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+        typeid,
+        cname,
+        parentid,
+        score,
+        days,
+        typedesc,
+        idx
+        FROM
+        tb_method_type
+        WHERE
+        parentid = '0000000'
+        <if test="keyword!=null">
+            and cname ~ #{keyword}
+        </if>
+        AND status = '1'
+        order by idx asc
+        LIMIT #{rows} offset #{page}
+    </select>
+
+    <!--1.1 查询方法论（分页）count-->
+    <select id="queryMethodTypePageCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        typeid,
+        cname,
+        parentid,
+        score,
+        days,
+        typedesc,
+        idx
+        FROM
+        tb_method_type
+        WHERE
+        parentid = '0000000'
+        AND status = '1'
+    </select>
+
+    <!--1.1 查询方法论（分页）(子级)-->
+    <select id="queryMethodTypePageSon" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+        typeid,
+        cname,
+        parentid,
+        score,
+        days,
+        typedesc,
+        idx
+        FROM
+        tb_method_type
+        WHERE
+        parentid = #{typeid}
+        AND status = '1'
+        order by idx asc
+    </select>
+
+    <!--2.新建方法论-->
+    <insert id="saveMethodType" parameterType="java.util.Map">
+        insert into tb_method_type(typeid,cname,parentid,score,days,typedesc,idx,ouid,addtime,updtime,status,summary)
+        values(
+        #{typeid},
+        #{cname},
+        <choose>
+            <when test="parentid !=null">
+                #{parentid},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="score !=null">
+                #{score},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="days !=null">
+                #{days},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typedesc !=null">
+                #{typedesc},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx !=null">
+                #{idx},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid !=null">
+                #{ouid},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime !=null">
+                #{addtime},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime !=null">
+                #{updtime},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status !=null">
+                #{status},
+            </when>
+            <otherwise>
+                1 ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary !=null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        );
+    </insert>
+
+    <!--3.修改方法论-->
+    <update id="updateMethodType" parameterType="java.util.Map">
+        update tb_method_type set
+        <if test="cname != null">cname=#{cname},</if>
+        <if test="score != null">score=#{score},</if>
+        <if test="days != null">days=#{days},</if>
+        <if test="typedesc != null">typedesc=#{typedesc},</if>
+        <if test="updtime != null">updtime=#{updtime}</if>
+        where typeid=#{typeid}
+    </update>
+
+    <!--4.获取排序-->
+    <select id="getMethodTypeIdx" resultType="java.lang.Integer">
+        select count(1)+1 from tb_method_type
+    </select>
+
+    <!--5.根据同级typeid查询 parentid-->
+    <select id="getParentByBrotherId" parameterType="java.util.Map" resultType="java.lang.String">
+        select parentid from tb_method_type where typeid=#{brotherid}
+    </select>
+
+    <!-- 6.查询方法论资料tab方法论类别第一级  如果传了parentid就查子级，没传就查第一级-->
+    <select id="queryMethodLevel" resultType="java.util.Map" parameterType="java.util.Map">
+        select id,typeid,cname,parentid,idx from tb_method_type where status='1'
+        <if test="parentid !=null">
+            and parentid=#{parentid}
+        </if>
+        <if test="parentid ==null">
+            and parentid='0000000'
+        </if>
+        order by idx asc
+    </select>
+
+</mapper>

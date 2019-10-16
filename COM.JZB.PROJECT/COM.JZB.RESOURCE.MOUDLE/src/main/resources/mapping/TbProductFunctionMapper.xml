@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbProductFunctionMapper">
+   <!--产品功能的查询-->
+    <select id="getTbProductFunction" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        a.id,
+        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        a.cname,
+        a.status,
+        a.paradesc,
+        a.summary
+        from
+        tb_product_function b
+        LEFT JOIN
+        tb_product_res_list a
+        on a.pid = b.pid
+        where 1=1
+        <if test="status != null">
+           and a.status = #{status}
+        </if>
+        <if test="cname != null">
+            and a.cname like concat('%',#{cname},'%')
+        </if>
+    </select>
+
+    <!--产品功能的添加-->
+    <insert id="saveTbProductFunction" parameterType="java.util.List">
+        insert into
+        tb_product_function
+        (
+         pid,
+         funtype,
+         funsubtype,
+         funid,
+         cname,
+         price,
+         weight,
+         introduce,
+         fundesc,
+         idx,
+         addtime,
+         updtime,
+         status,
+         summary
+        )values
+        <foreach collection="list" index="index" item="item" separator=",">
+        (
+        <choose>
+            <when test="item.pid != null">
+                #{item.pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.funtype != null">
+                cast(#{item.funtype} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.funsubtype != null">
+                cast(#{item.funsubtype} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.funid != null">
+                #{item.funid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.cname != null">
+                #{item.cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.price != null">
+                cast(#{item.price} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.weight != null">
+                cast(#{item.weight} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.introduce != null">
+                #{item.introduce},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.fundesc != null">
+                #{item.fundesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.idx != null">
+                #{item.idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_product_function),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.addtime != null">
+                #{item.addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.updtime != null">
+                #{item.updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+        <when test="item.status != null">
+            #{item.status},
+        </when>
+        <otherwise>
+            null,
+        </otherwise>
+    </choose>
+        <choose>
+            <when test="item.summary != null">
+                #{item.summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+        </foreach>
+    </insert>
+
+
+
+    <!--修改产品功能-->
+    <update id="updateTbProductFunction" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="item" separator=" ;">
+            update
+            tb_product_function
+            set
+
+            <if test="item.funtype != null">funtype=cast(#{item.funtype} as integer),</if>
+            <if test="item.funsubtype != null">funsubtype=cast(#{item.funsubtype} as integer),</if>
+            <if test="item.funid != null">funid=#{item.funid},</if>
+            <if test="item.cname != null">cname=#{item.cname},</if>
+            <if test="item.price != null">price=cast(#{item.price} as integer),</if>
+            <if test="item.weight != null">weight= cast(#{item.weight} as integer),</if>
+            <if test="item.introduce != null">introduce=#{item.introduce},</if>
+            <if test="item.fundesc != null">fundesc=#{item.fundesc},</if>
+            <if test="item.summary != null">summary=#{item.summary},</if>
+            <if test="item.status != null">status=#{item.status},</if>
+            <if test="item.updtime != null">updtime=#{item.updtime}</if>
+            where pid=#{item.pid}
+        </foreach>
+    </update>
+</mapper>
