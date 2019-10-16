@@ -146,4 +146,12 @@ public interface AuthUserMapper {
      * @Author: DingSC
      */
     List<Map<String, Object>> queryUserMenuList(Map<String, Object> param);
+
+    /**
+    * 激活修改用户状态
+    * @Author: DingSC
+    * @param param
+    * @return int
+    */
+    int updateUserStatus(Map<String, Object> param);
 } // End interface AuthUserMapper

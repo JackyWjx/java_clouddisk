@@ -1,6 +1,7 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.service.TbConsumeVerifyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author chenzhengduan
+ * 报销审核
+ */
 @RestController
 @RequestMapping(value = "/operate/consumeVerify")
 public class TbConsumeVerifyController {
@@ -53,7 +58,11 @@ public class TbConsumeVerifyController {
     public Response updateConsumeVerify(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            result = tbConsumeVerifyService.updateVerifyStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            if(JzbCheckParam.haveEmpty(param,new String[]{"status","travelid","ouid"})){
+                result=Response.getResponseError();
+            }else {
+                result = tbConsumeVerifyService.updateVerifyStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            }
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();

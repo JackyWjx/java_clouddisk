@@ -349,4 +349,37 @@ public class UserController {
         }
         return result;
     }
+
+    /**
+     * 根据uid获取用户所有权限
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/getUserAllMenuList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserAllMenuList
+    (@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String
+            token) {
+        Response result;
+        try {
+            String[] str = {"uid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
+                if (userInfo.size() > 0) {
+                    param.put("userinfo", userInfo);
+                    result = deptUserService.getUserAllMenuList(param);
+                } else {
+                    result = Response.getResponseError();
+                }
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 } // End class UserController

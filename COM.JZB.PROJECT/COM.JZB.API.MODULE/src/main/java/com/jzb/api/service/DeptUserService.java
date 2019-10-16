@@ -277,4 +277,29 @@ public class DeptUserService {
     }
 
 
+    /**
+     * 获取用户所有权限（拼接）
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    public Response getUserAllMenuList(Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userMap = new HashMap<>(2);
+        userMap.put("uid", param.get("uid"));
+        List<Map<String, Object>> userList = new ArrayList<>(1);
+        userList.add(userMap);
+        param.put("list", userList);
+        result = companyOrgApi.getCompanyByUid(param);
+        String cdId = "";
+        if (JzbDataType.isCollection(result.getResponseEntity())) {
+            List<Map<String, Object>> deptList = (List<Map<String, Object>>) result.getResponseEntity();
+            cdId = JzbDataType.getString(deptList.get(0).get("cdid"));
+        }
+        userMap.put("cdid", cdId);
+        userMap.put("userinfo", param.get("userinfo"));
+        result = userAuthApi.getUserAllMenuList(userMap);
+        return result;
+    }
 }

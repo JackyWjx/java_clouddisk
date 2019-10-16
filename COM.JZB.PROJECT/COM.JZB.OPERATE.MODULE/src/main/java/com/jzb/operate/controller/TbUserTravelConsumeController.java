@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author  chenzhengduan
+ * 用户出差报销
+ */
 @RestController
 @RequestMapping(value = "/operate/userTravelConsume")
 public class TbUserTravelConsumeController {
@@ -19,11 +23,11 @@ public class TbUserTravelConsumeController {
 
 
     /**
-     * 添加用户出差记录
+     * 添加用户出差报销记录
      * @param param
      * @return
      */
-    @RequestMapping(value = "/addConsumeVerify",method = RequestMethod.POST)
+    @RequestMapping(value = "/addTravelConsume",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional

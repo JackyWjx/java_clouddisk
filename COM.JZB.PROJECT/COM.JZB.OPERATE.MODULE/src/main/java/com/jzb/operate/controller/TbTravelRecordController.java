@@ -23,7 +23,7 @@ import java.util.Map;
  * 出差记录表
  */
 @RestController
-@RequestMapping(value = "/travelRecord")
+@RequestMapping(value = "/operate/travelRecord")
 public class TbTravelRecordController {
 
     @Autowired
@@ -140,7 +140,11 @@ public class TbTravelRecordController {
     public Response setDeleteStatus(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            result = tbTravelRecordService.setDeleteStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
+            if(JzbCheckParam.haveEmpty(param,new String[]{"travelid"})){
+                result=Response.getResponseError();
+            }else {
+                result = tbTravelRecordService.setDeleteStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
+            }
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
@@ -161,6 +165,7 @@ public class TbTravelRecordController {
     public Response getMyVerifyTravel(@RequestBody Map<String, Object> param) {
         Response result;
         try {
+
             // 验证指定参数为空返回error
             if (JzbCheckParam.haveEmpty(param, new String[]{"uid", "page", "rows"})) {
                 result = Response.getResponseError();
@@ -177,6 +182,7 @@ public class TbTravelRecordController {
                 result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
                 result.setPageInfo(pi);
             }
+
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();

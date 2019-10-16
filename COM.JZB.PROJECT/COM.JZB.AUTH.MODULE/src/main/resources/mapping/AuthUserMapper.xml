@@ -245,6 +245,18 @@
         WHERE
         uid = #{uid}
     </update>
+    <!--激活修改用户状态-->
+    <update id="updateUserStatus">
+        update tb_user_list
+        set status =#{status},
+            updtime=#{updtime}
+        where uid = #{uid};
+        update tb_user_key
+        set status =#{status},
+            updtime=#{updtime}
+        where uid = #{uid}
+          and ktid = '1';
+    </update>
 
     <!--  查询APP—ID 对应的密文数据 -->
     <select id="queryAppSecret" parameterType="java.util.Map" resultType="java.util.Map">
