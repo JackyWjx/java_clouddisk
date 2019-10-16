@@ -25,6 +25,7 @@
         group by a.id
     </select>
 
+
     <!--产品功能的添加-->
     <insert id="saveTbProductFunction" parameterType="java.util.List">
         insert into

@@ -5,6 +5,7 @@
 <mapper namespace="com.jzb.resource.dao.TbProductPriceMapper">
 
 
+
     <!--查询产品报价的总数-->
     <select id="getTbProductPriceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
          select
