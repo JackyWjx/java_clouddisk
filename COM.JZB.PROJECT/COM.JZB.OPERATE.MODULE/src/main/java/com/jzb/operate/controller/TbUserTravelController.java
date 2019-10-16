@@ -15,7 +15,7 @@ import java.util.Map;
  * 用户出差记录表
  */
 @RestController
-@RequestMapping(value = "/userTravel")
+@RequestMapping(value = "/operate/userTravel")
 public class TbUserTravelController {
 
     @Autowired

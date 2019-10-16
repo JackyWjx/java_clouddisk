@@ -122,4 +122,36 @@ public class AdvertController {
         return result;
     } // End modifyAdvertData
 
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击活动获取活动所有的系统推广信息(首页中需要加入白名单)
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getAdvertListPass", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getAdvertListPass(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取推广信息总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询所有符合条件的总数
+                count = advertService.getAdvertListCount(param);
+            }
+            // 返回所有的推广信息列表
+            List<Map<String, Object>> adverList = advertService.getAdvertList(param);
+            result = Response.getResponseSuccess();
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(adverList);
+            pageInfo.setTotal(count > 0 ? count : adverList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End getAdvertList
+
 }
