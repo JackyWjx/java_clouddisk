@@ -16,11 +16,6 @@ import java.util.Map;
 public interface MsgListMapper {
 
     /**
-     *  根据uid获取用户详情
-     */
-    Map<String , Object> queryUserParameter(@Param("uid") String uid);
-
-    /**
      * 获取消息组
      */
     List<Map<String , Object>>  queryMsgUserGroup(@Param("groupid") String groupid);
@@ -28,7 +23,7 @@ public interface MsgListMapper {
     /**
      * 获取消息组
      */
-    List<Map<String , Object>> queryMsgUserGroupTemplate(@Param("groupid") String groupid);
+    Map<String  , Object> queryMsgUserGroupTemplate(@Param("groupid") String groupid);
 
     /**
      * 获取配置
@@ -38,7 +33,7 @@ public interface MsgListMapper {
     /**
      * 根据appId 获取checkcode
      */
-    Map<String , Object>  queryMsgOrganizeCheckcode(String appid);
+    String queryMsgOrganizeCheckcode(String appid);
 
     /**
      * 添加一条用户消息
@@ -58,6 +53,6 @@ public interface MsgListMapper {
     /**
      * 修改成已发送
      */
-    int updateMessageListSendStatusByMegid(Map<String , Object> map);
+    int updateMessageListSendStatusByMegid(String msgid);
 
 }

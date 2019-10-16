@@ -27,7 +27,7 @@ public class MsgTypeParaController {
     MsgTypeParaService service;
 
     /**
-     * 查询消息参数
+     * 查询
      */
     @RequestMapping(value = "/queryMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -49,57 +49,9 @@ public class MsgTypeParaController {
         return  response;
     }
 
-    /**
-     * 查询用户参数
-     */
-    @RequestMapping(value = "/queryUserPara",method = RequestMethod.POST)
-    @ResponseBody
-    public Response queryUserPara(@RequestBody  Map<String , Object> map){
-        Response response;
-        try {
-            PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.queryUserPara(map);
-            int count = service.queryUserParaCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
-            info.setList(list);
-            info.setTotal(count);
-            response.setPageInfo(info);
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
 
     /**
-     * 查询服务商
-     */
-    @RequestMapping(value = "/queryServiceProviders",method = RequestMethod.POST)
-    @ResponseBody
-    public Response queryServiceProviders(@RequestBody  Map<String , Object> map){
-        Response response;
-        try {
-            PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.queryServiceProviders(map);
-            int count = service.queryServiceProvidersCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
-            info.setList(list);
-            info.setTotal(count);
-            response.setPageInfo(info);
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-
-
-    /**
-     * 模糊查询消息参数
+     * 模糊查询
      */
     @RequestMapping(value = "/searchMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -121,54 +73,9 @@ public class MsgTypeParaController {
         return  response;
     }
 
-    /**
-     * 模糊查询用户参数
-     */
-    @RequestMapping(value = "/searchUserPara",method = RequestMethod.POST)
-    @ResponseBody
-    public Response  searchUserPara(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.searchUserPara(map);
-            int count = service.searchUserParaCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
-            info.setList(list);
-            info.setTotal(count);
-            response.setPageInfo(info);
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
 
     /**
-     * 模糊查询服务商
-     */
-    @RequestMapping(value = "/searchServiceProviders",method = RequestMethod.POST)
-    @ResponseBody
-    public Response  searchServiceProviders(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.searchServiceProviders(map);
-            int count = service.searchServiceProvidersCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
-            info.setList(list);
-            info.setTotal(count);
-            response.setPageInfo(info);
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 添加消息参数
+     * 添加
      */
     @RequestMapping(value = "/saveMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -184,39 +91,7 @@ public class MsgTypeParaController {
     }
 
     /**
-     * 添加用户参数
-     */
-    @RequestMapping(value = "/saveUserPara",method = RequestMethod.POST)
-    @ResponseBody
-    public Response saveUserPara(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            response = service.saveUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 添加服务商
-     */
-    @RequestMapping(value = "/saveServiceProviders",method = RequestMethod.POST)
-    @ResponseBody
-    public Response saveServiceProviders(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            response = service.saveServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 修改消息参数
+     * 修改
      */
     @RequestMapping(value = "/upMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -232,39 +107,7 @@ public class MsgTypeParaController {
     }
 
     /**
-     * 修改用户参数
-     */
-    @RequestMapping(value = "/updateUserPara",method = RequestMethod.POST)
-    @ResponseBody
-    public Response updateUserPara(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            response = service.updateUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 修改服务商
-     */
-    @RequestMapping(value = "/updateServiceProviders",method = RequestMethod.POST)
-    @ResponseBody
-    public Response updateServiceProviders(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            response = service.updateServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 禁用消息参数
+     * 禁用
      */
     @RequestMapping(value = "/removeMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -272,38 +115,6 @@ public class MsgTypeParaController {
         Response response;
         try {
             response = service.removeMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 禁用用户参数
-     */
-    @RequestMapping(value = "/removeUserPara",method = RequestMethod.POST)
-    @ResponseBody
-    public Response removeUserPara(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            response = service.removeUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 禁用服务商
-     */
-    @RequestMapping(value = "/removeServiceProviders",method = RequestMethod.POST)
-    @ResponseBody
-    public Response removeServiceProviders(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            response = service.removeServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();

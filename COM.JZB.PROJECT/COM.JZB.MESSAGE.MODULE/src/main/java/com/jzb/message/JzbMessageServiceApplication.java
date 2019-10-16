@@ -20,7 +20,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableDiscoveryClient
 @MapperScan(basePackages = "com.jzb.**.dao")
 @ComponentScan(basePackages = {"com.jzb.**.controller",
-        "com.jzb.**.service", "com.jzb.**.dao"})
+        "com.jzb.**.service", "com.jzb.**.dao", "com.jzb.**.config"})
 public class JzbMessageServiceApplication {
     /**
      * 主入口

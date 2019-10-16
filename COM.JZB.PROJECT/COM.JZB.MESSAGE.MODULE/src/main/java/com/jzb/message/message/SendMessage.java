@@ -1,10 +1,10 @@
 package com.jzb.message.message;
 
-import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbTools;
 import com.jzb.message.service.ShortMessageService;
 import com.jzb.message.util.JzbSendMail;
 import com.jzb.message.util.JzbSendMsg;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,36 +24,57 @@ public class SendMessage {
     /**
      * 发送短信
      */
-    public static void sendMessage(MssageInfo map,ShortMessageService ssmService){
+    public static void sendMessage(MssageInfo msg,ShortMessageService ssmService){
         Map<String , Object> dataMap = new HashMap<>();
-        Map<String , Object> parajson = (Map)map.getItem("para").getObject();
         // 是否有定时任务
-//        if(JzbTools.isEmpty(parajson.get("sendtime"))){
-        try{
-            dataMap.put("sendtime",System.currentTimeMillis());
-            dataMap.put("status","1");
-            if(parajson.containsKey("senduid")){
-                dataMap.put("receiveuid",parajson.get("senduid").toString());
+        if(msg.isItem("sendtime")){
+            // 是否到发送时间
+            if(System.currentTimeMillis() >= msg.getItem("sendtime").getLong()  ){
+                try{
+                    JSONObject json =  JSONObject.fromObject(msg.getItem("sendpara").getString());
+                    dataMap.put("sendtime",System.currentTimeMillis());
+                    dataMap.put("status","1");
+                    if(msg.isItem("userid")){
+                        dataMap.put("receiveuid",msg.getItem("userid").getString());
+                        dataMap.put("receivename",msg.getItem("username").getString());
+                    }
+                    dataMap.put("msgtype",1);
+                    dataMap.put("msgid",msg.getItem("msgid").getString());
+                    ssmService.updateMessageListSendStatusByMsgid(msg.getItem("msgid").getString());
+                    String message = JzbSendMsg.sendShortMessage(json);
+                    logger.info("发送状态"+message);
+                    dataMap.put("summary",message);
+                }catch (Exception e){
+                    JzbTools.logError(e);
+                    dataMap.put("msgtype",2);
+                }finally {
+                    ssmService.saveSendsUserMessage(dataMap);
+                }
+            }else{
+                // 返回发送队列
+                MessageQueue.addShortMessage(msg);
             }
-            if(parajson.containsKey("receivename")){
-                dataMap.put("receivename",parajson.get("sendname").toString());
+        }else{
+            try{
+                JSONObject json =  JSONObject.fromObject(msg.getItem("sendpara").getString());
+                dataMap.put("sendtime",System.currentTimeMillis());
+                dataMap.put("status","1");
+                if(msg.isItem("userid")){
+                    dataMap.put("receiveuid",msg.getItem("userid").getString());
+                    dataMap.put("receivename",msg.getItem("username").getString());
+                }
+                dataMap.put("msgtype",1);
+                dataMap.put("msgid",msg.getItem("msgid").getString());
+                String message = JzbSendMsg.sendShortMessage(json);
+                ssmService.updateMessageListSendStatusByMsgid(msg.getItem("msgid").getString());
+                logger.info("发送状态"+message);
+                dataMap.put("summary",message);
+            }catch (Exception e){
+                JzbTools.logError(e);
+                dataMap.put("msgtype",2);
+            }finally {
+                ssmService.saveSendsUserMessage(dataMap);
             }
-            dataMap.put("msgtype",1);
-            dataMap.put("msgid",parajson.get("msgid"));
-            Map<String , Object> para = new HashMap<>();
-            para.put("msgid",parajson.get("msgid").toString());
-            para.put("sendtime",System.currentTimeMillis());
-            para.put("sendpara",map.getItem("temp").getString());
-            para.put("context",map.getItem("config").getString());
-            ssmService.updateMessageListSendStatusByMsgid(para);
-            String message = JzbSendMsg.sendShortMessage(map);
-            logger.info("发送状态"+message);
-            dataMap.put("summary",message);
-        }catch (Exception e){
-            JzbTools.logError(e);
-            dataMap.put("msgtype",2);
-        }finally {
-            ssmService.saveSendsUserMessage(dataMap);
         }
     }
 
@@ -62,29 +83,52 @@ public class SendMessage {
      */
     public static void sendMail(MssageInfo msg,ShortMessageService ssmService){
         Map<String , Object> dataMap = new HashMap<>();
-        try {
-            Map<String , Object> parajson = (Map)msg.getItem("para").getObject();
-            dataMap.put("sendtime", System.currentTimeMillis());
-            dataMap.put("msgid", msg.getItem("msgid").getString());
-            boolean result = JzbSendMail.sendMime(msg);
-            //发送状态
-            dataMap.put("msgtype", result ? 1 : 2);
-            if (msg.isItem("userid")) {
-                dataMap.put("receivename", msg.getItem("userid").getString());
-                dataMap.put("receiveuid", msg.getItem("username").getString());
+        // 是否定时任务
+        if (msg.isItem("sendtime")) {
+            // 是否到发送时间
+            if (System.currentTimeMillis() >= msg.getItem("sendtime").getLong()) {
+                try {
+                    JSONObject json =  JSONObject.fromObject(msg.getItem("sendpara").getString());
+                    dataMap.put("sendtime", System.currentTimeMillis());
+                    dataMap.put("msgtype", 1);
+                    dataMap.put("msgid", msg.getItem("msgid").getString());
+                    // 获取邮件对象
+                    boolean result = JzbSendMail.sendMime(json);
+                    // 发送状态
+                    dataMap.put("status", result ? "1" : "2");
+                    dataMap.put("receiveuid",msg.getItem("userid").getString());
+                    dataMap.put("receivename",msg.getItem("username").getString());
+                } catch (Exception e) {
+                    JzbTools.logError(e);
+                    dataMap.put("msgtype", 2);
+                } finally {
+                    ssmService.saveSendsUserMessage(dataMap);
+                }
+            } else {
+                //返回待发送队列
+                MessageQueue.addShortMail(msg);
             }
-            Map<String , Object> para = new HashMap<>();
-            para.put("msgid",parajson.get("msgid").toString());
-            para.put("sendtime",System.currentTimeMillis());
-            para.put("sendpara",msg.getItem("temp").getString());
-            para.put("context",msg.getItem("config").getString());
-            ssmService.updateMessageListSendStatusByMsgid(para);
-        } catch (Exception e) {
-            JzbTools.logError(e);
-            dataMap.put("msgtype", 2);
-        } finally {
-            // 添加日志
-            ssmService.saveSendsUserMessage(dataMap);
+        } else {
+            try {
+                JSONObject json =  JSONObject.fromObject(msg.getItem("sendpara").getString());
+                // 无定时任务 直接发送
+                dataMap.put("sendtime", System.currentTimeMillis());
+                dataMap.put("msgtype", 1);
+                dataMap.put("msgid", msg.getItem("msgid").getString());
+                boolean result = JzbSendMail.sendMime(json);
+                 //发送状态
+                dataMap.put("status", result ? "1" : "2");
+                if (msg.isItem("userid")) {
+                    dataMap.put("receivename", msg.getItem("userid").getString());
+                    dataMap.put("receiveuid", msg.getItem("username").getString());
+                }
+            } catch (Exception e) {
+                JzbTools.logError(e);
+                dataMap.put("msgtype", 2);
+            } finally {
+                // 添加日志
+                ssmService.saveSendsUserMessage(dataMap);
+            }
         }
     }
 

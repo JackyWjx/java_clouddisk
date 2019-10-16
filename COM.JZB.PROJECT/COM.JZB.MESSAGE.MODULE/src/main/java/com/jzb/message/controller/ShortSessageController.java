@@ -1,6 +1,5 @@
 package com.jzb.message.controller;
 
-import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
@@ -46,23 +45,13 @@ public class ShortSessageController {
             String userType = param.get("usertype").toString();
             String receiver = param.get("receiver").toString();
             String secret = param.get("secret").toString();
+            logger.info("秘钥appId and secret===========================>>",appId, secret);
             // get appid => checkcode
-            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
-            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
-            param.put("cid",checkCode.get("cid"));
-
-            String md5 = JzbDataCheck.Md5(appId + secret + groupId + title + userType + receiver + checkCode.get("checkcode").toString());
-            logger.info("MD5 ===========>>" + md5 );
+            String checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            String md5 = JzbDataCheck.Md5(appId + secret + groupId + title + userType + receiver + checkCode);
             if (md5.equals(param.get("checkcode"))) {
-                Map<String , Object> msgMap = smsService.sendShortMsg(param,checkCode);
-                result = JzbDataType.getInteger(msgMap.get("sendstatus")) == 1 ? Response.getResponseSuccess() : Response.getResponseError();
-                if(msgMap.containsKey("status")){
-                    msgMap.remove("receiver");
-                    msgMap.remove("addtime");
-                    msgMap.remove("title");
-                    msgMap.remove("status");
-                }
-                result.setResponseEntity(msgMap);
+                logger.info("MD5 ===========>>" + md5 );
+                result = smsService.sendShortMsg(param) == "success" ? Response.getResponseSuccess() : Response.getResponseError();
             }else{
                 logger.info("MD5 ===========>> fail  error  401 " );
                 result = Response.getResponseError();
@@ -90,23 +79,5 @@ public class ShortSessageController {
         }
         return response;
     } // End function saveMsgUserTeamplate
-
-    /**
-     * 根据业务id删除待发送消息队列
-     */
-    @RequestMapping(value = "/cancelSend", method = RequestMethod.POST)
-    @ResponseBody
-    public Response cancelSend(@RequestBody Map<String, Object> param){
-        Response response;
-        try{
-            Map<String , Object> resultMap = smsService.waitSendMessage(param);
-            response = Response.getResponseSuccess();
-            response.setResponseEntity(resultMap);
-        }catch (Exception e){
-            response = Response.getResponseError();
-            JzbTools.logError(e);
-        }
-        return  response;
-    }
 
 } // End class ShortSessageController
