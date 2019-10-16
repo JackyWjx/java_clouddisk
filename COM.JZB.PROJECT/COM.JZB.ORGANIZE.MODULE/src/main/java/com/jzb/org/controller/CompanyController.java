@@ -671,7 +671,7 @@ public class CompanyController {
                 Map<Object, Object> mapCompany = (Map<Object, Object>) objCompany;
                 // 获取管理员信息
                 String manager = JzbDataType.getString(mapCompany.get("manager"));
-                param.put("uid",manager);
+                param.put("uid", manager);
                 Response user = userRedisServiceApi.getCacheUserInfo(param);
                 mapCompany.put("relperson", user.getResponseEntity());
                 // 获取地区id
@@ -937,6 +937,35 @@ public class CompanyController {
             } else {
                 result = Response.getResponseError();
             }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-供应商5
+     * 点击新建供应商建立单位下供应商
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/11
+     */
+    @RequestMapping(value = "/addCompanySupplier", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanySupplier(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            String uid = JzbDataType.getString(userInfo.get("uid"));
+            long time = System.currentTimeMillis();
+            param.put("addtime", time);
+            param.put("adduid", uid);
+            param.put("status", "1");
+            int add = companyService.addCompanySupplier(param);
+            result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
