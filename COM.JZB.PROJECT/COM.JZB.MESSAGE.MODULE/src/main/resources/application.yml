@@ -23,6 +23,7 @@ eureka:
   instance:
     prefer-ip-address: true
 
+
 # 请求处理的超时时间 请求连接的超时时间
 ribbon:
   ReadTimeout: 120000

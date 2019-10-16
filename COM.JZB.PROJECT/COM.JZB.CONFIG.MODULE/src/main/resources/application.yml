@@ -8,9 +8,8 @@ spring:
   datasource:
     username: jzb
     password: AAAaaa111***
-    url: jdbc:postgresql://127.0.0.1:9123/JDB_BASE
+    url: jdbc:postgresql://192.168.0.251:9123/JDB_BASE
     driver-class-name: org.postgresql.Driver
-
   cloud:
     config:
       server:
@@ -45,4 +44,4 @@ logging:
 # 请求处理的超时时间 请求连接的超时时间
 ribbon:
   ReadTimeout: 120000
-  ConnectTimeout: 30000
+  ConnectT  imeout: 30000

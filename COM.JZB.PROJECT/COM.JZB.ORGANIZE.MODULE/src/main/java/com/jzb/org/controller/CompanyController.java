@@ -8,6 +8,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbIdEntification;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
+import com.jzb.org.api.message.MessageApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.service.CompanyService;
@@ -29,6 +30,7 @@ import java.util.*;
 @RestController
 @RequestMapping("org")
 public class CompanyController {
+
     @Autowired
     private CompanyService companyService;
 
