@@ -27,11 +27,29 @@ public interface FriendComMapper {
     List<Map<String, Object>> searchFriendComByValue(Map<String, Object> map);
 
     /**
-    * 通过负责人或者单位名称查伙伴单位数据总数
+     * 通过负责人或者单位名称查伙伴单位数据总数
+     *
+     * @param map
+     * @return int
+     * @Author: DingSC
+     * @DateTime: 2019/9/24 16:00
+     */
+    int searchFriendComByValueCount(Map<String, Object> map);
+
+    /**
+     * 获取被邀请人的cid和cdid
+     *
+     * @param map
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    List<Map<String, Object>> searchInviteCidAndCdId(Map<String, Object> map);
+
+    /**
+    * 修改邀请表状态
     * @Author: DingSC
-    * @DateTime: 2019/9/24 16:00
     * @param map
     * @return int
     */
-    int searchFriendComByValueCount(Map<String, Object> map);
+    int updateInvite(Map<String, Object> map);
 }

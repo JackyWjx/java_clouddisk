@@ -83,7 +83,6 @@ public class AdvertService {
     public List<Map<String, Object>> getAdvertList(Map<String, Object> param) {
         // 设置分页参数
         param = setPageSize(param);
-        param.put("status", "1");
         List<Map<String, Object>> list = advertMapper.queryAdvertList(param);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> advertMap = list.get(i);

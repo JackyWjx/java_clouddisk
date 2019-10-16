@@ -70,4 +70,16 @@ public interface UserAuthApi {
     @PostMapping("/searchUserUid")
     @CrossOrigin
     public Response searchUserUid(@RequestBody Map<String, Object> param);
+
+    /**
+     * 查询用户所有权限（除用户所属部门）加上传入部门的权限
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/10/14 16:42
+     */
+    @RequestMapping(value = "/getUserAllMenuList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserAllMenuList(@RequestBody Map<String, Object> param);
 } // End interface UserAuthApi

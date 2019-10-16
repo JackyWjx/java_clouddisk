@@ -3,6 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.org.dao.FriendComMapper">
+    <!--修改邀请表状态-->
+    <update id="updateInvite">
+        update tb_invite_user
+        set status = #{status},restime=#{time}
+        where id = #{id};
+    </update>
 
     <!--通过负责人或者单位名称查伙伴单位数据-->
     <select id="searchFriendComByValue" resultType="java.util.Map">
@@ -60,5 +66,14 @@
         left join tb_company_info ci on ci.cid = cl.cid
         WHERE (du.cname LIKE '%%' OR cl.cname LIKE '%%')
         AND cf.status in ('1','2');
+    </select>
+    <!--获取被邀请人的cid和cdId-->
+    <select id="searchInviteCidAndCdId" resultType="java.util.Map">
+        select id,cid, cdid
+        from tb_invite_user
+        where ustatus = '2'
+          and status = '2'
+          and reqtype = '2'
+          and resuid = #{uid};
     </select>
 </mapper>

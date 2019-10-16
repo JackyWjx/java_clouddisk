@@ -11,6 +11,7 @@
         <module name="COM.JZB.AUTH.MODULE" />
         <module name="COM.JZB.BASE.MODULE" />
         <module name="COM.JZB.CONFIG.MODULE" />
+        <module name="COM.JZB.CONFIG.MODULE (1)" />
         <module name="COM.JZB.EUREKA.MODULE" />
         <module name="COM.JZB.LOGGER.MODULE" />
         <module name="COM.JZB.MEDIA.MODULE" />
@@ -22,13 +23,21 @@
         <module name="COM.JZB.REDIS.MODULE" />
         <module name="COM.JZB.RESOURCE.MOUDLE" />
       </profile>
+      <profile name="Annotation profile for COM.JZB.PROJECT" enabled="true">
+        <sourceOutputDir name="../COM.JZB.CONFIG.MODULE/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../COM.JZB.CONFIG.MODULE/target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="COMJZBCONFIGBASEMODULE" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="COM.JZB.ACTIVITY.MODULE" target="1.8" />
       <module name="COM.JZB.API.MODULE" target="1.8" />
       <module name="COM.JZB.AUTH.MODULE" target="1.8" />
       <module name="COM.JZB.BASE.MODULE" target="1.8" />
+      <module name="COM.JZB.CONFIG.BASE.MODULE" target="1.8" />
       <module name="COM.JZB.CONFIG.MODULE" target="1.8" />
+      <module name="COM.JZB.CONFIG.MODULE (1)" target="1.8" />
       <module name="COM.JZB.EUREKA.MODULE" target="1.8" />
       <module name="COM.JZB.LOGGER.MODULE" target="1.8" />
       <module name="COM.JZB.MEDIA.MODULE" target="1.8" />
@@ -40,6 +49,7 @@
       <module name="COM.JZB.PROJECT" target="1.8" />
       <module name="COM.JZB.REDIS.MODULE" target="1.8" />
       <module name="COM.JZB.RESOURCE.MOUDLE" target="1.8" />
+      <module name="COMJZBCONFIGBASEMODULE" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -48,7 +58,9 @@
       <module name="COM.JZB.API.MODULE" options="-parameters" />
       <module name="COM.JZB.AUTH.MODULE" options="-parameters" />
       <module name="COM.JZB.BASE.MODULE" options="-parameters" />
+      <module name="COM.JZB.CONFIG.BASE.MODULE" options="-parameters" />
       <module name="COM.JZB.CONFIG.MODULE" options="-parameters" />
+      <module name="COM.JZB.CONFIG.MODULE (1)" options="-parameters" />
       <module name="COM.JZB.EUREKA.MODULE" options="-parameters" />
       <module name="COM.JZB.LOGGER.MODULE" options="-parameters" />
       <module name="COM.JZB.MEDIA.MODULE" options="-parameters" />
@@ -59,6 +71,7 @@
       <module name="COM.JZB.ORGANIZE.MODULE" options="-parameters" />
       <module name="COM.JZB.REDIS.MODULE" options="-parameters" />
       <module name="COM.JZB.RESOURCE.MOUDLE" options="-parameters" />
+      <module name="COMJZBCONFIGBASEMODULE" options="-parameters" />
     </option>
   </component>
 </project>

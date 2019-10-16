@@ -8,6 +8,7 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/pom.xml" />
+        <option value="$PROJECT_DIR$/COM.JZB.CONFIG.BASE.MODULE/pom.xml" />
       </list>
     </option>
   </component>

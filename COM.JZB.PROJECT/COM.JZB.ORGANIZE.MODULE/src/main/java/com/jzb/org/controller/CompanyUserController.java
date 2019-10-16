@@ -59,11 +59,6 @@ public class CompanyUserController {
             }
             // 返回所有的企业列表
             List<Map<String, Object>> companyList = companyUserService.getCompanyList(param);
-            for (int i = 0; i < companyList.size(); i++) {
-                Map<String, Object> companyMap = companyList.get(i);
-                Response region = regionBaseApi.getRegionInfo(companyMap);
-                companyMap.put("region", region.getResponseEntity());
-            }
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
@@ -157,4 +152,36 @@ public class CompanyUserController {
         return result;
     }
 
+    /**
+     * CRM-销售业主-公海-业主4
+     * 根据单位ID显示对应的供应商或全部供应商
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getCompanySupplierList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanySupplierList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取单位总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询单位总数
+                count = companyUserService.getCompanySupplierCount(param);
+            }
+            // 返回所有的企业列表
+            List<Map<String, Object>> companyList = companyUserService.getCompanySupplierList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }

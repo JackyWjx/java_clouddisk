@@ -21,7 +21,7 @@ spring:
     store-type: redis
   redis:
     database: 5
-    host: 192.168.0.251
+    host: 175.6.7.218
     port: 6100
     password: AAAaaa111***
     timeout: 3000

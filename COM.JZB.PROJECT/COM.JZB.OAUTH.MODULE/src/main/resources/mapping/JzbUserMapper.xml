@@ -7,7 +7,7 @@
 	<select id="queryUserByPhone" parameterType="java.util.Map"
 		resultType="java.util.Map">
 		SELECT k.uid, k.keyid, u.cname, u.nickname, u.passwd FROM
-		      (SELECT uid, keyid FROM tb_user_key WHERE ktid = 1 AND keyid = #{phone} AND status = '1') k
+		      (SELECT uid, keyid FROM tb_user_key WHERE ktid = 1 AND keyid = #{phone} AND status in ('1','8')) k
 			  INNER JOIN tb_user_list u ON k.uid = u.uid;
 	</select>
 </mapper>

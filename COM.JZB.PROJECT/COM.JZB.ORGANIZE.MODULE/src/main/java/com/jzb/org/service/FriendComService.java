@@ -1,12 +1,15 @@
 package com.jzb.org.service;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.dao.FriendComMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,5 +59,48 @@ public class FriendComService {
      */
     public int searchFriendComByValueCount(Map<String, Object> map) {
         return friendComMapper.searchFriendComByValueCount(map);
+    }
+
+    /**
+     * 获取被邀请人企业和部门id
+     *
+     * @param map
+     * @return java.util.Map<java.lang.String, java.lang.Object>
+     * @Author: DingSC
+     */
+    public List<Map<String, Object>> getInviteCD(Map<String, Object> map) {
+        List<Map<String, Object>> result = new ArrayList<>(2);
+        List<Map<String, Object>> list = friendComMapper.searchInviteCidAndCdId(map);
+        int size = list == null ? 0 : list.size();
+        for (int i = 0; i < size; i++) {
+            Map<String, Object> tempMap = list.get(i);
+            String cid = JzbDataType.getString(tempMap.get("cid"));
+            if (!JzbTools.isEmpty(cid)) {
+                Map<String, Object> comMap = new HashMap<>(3);
+                comMap.put("id", tempMap.get("id"));
+                comMap.put("cid", tempMap.get("cid"));
+                comMap.put("uid", tempMap.get("uid"));
+                comMap.put("cname", tempMap.get("cname"));
+                comMap.put("phone", tempMap.get("relphone"));
+                comMap.put("status", tempMap.get("1"));
+                if (JzbTools.isEmpty(tempMap.get("cdid"))) {
+                    comMap.put("cdid", cid + "0000");
+                } else {
+                    comMap.put("cdid", tempMap.get("cdid"));
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 修改邀请表状态
+     *
+     * @param map
+     * @return int
+     * @Author: DingSC
+     */
+    public int updateInvite(Map<String, Object> map) {
+        return friendComMapper.updateInvite(map);
     }
 }
