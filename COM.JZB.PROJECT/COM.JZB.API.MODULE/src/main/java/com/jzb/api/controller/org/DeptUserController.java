@@ -23,10 +23,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -324,8 +322,7 @@ public class DeptUserController {
     public Response addCompanyCommon(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
         Response result;
         try {
-            String[] str = {"cname", "region", "phone", "managername"};
-            if (JzbCheckParam.allNotEmpty(param, str)) {
+            if (toPhone(JzbDataType.getString(param.get("phone")))) {
                 Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
                 if (userInfo.size() > 0) {
                     //先确认负责人id
@@ -336,7 +333,7 @@ public class DeptUserController {
                     } else {
                         // 创建公海单位
                         param.put("userinfo", userInfo);
-                        param.put("companyname",JzbDataType.getString(param.get("cname")));
+                        param.put("companyname", JzbDataType.getString(param.get("cname")));
                         param.put("manager", uid);
                         param.put("managername", JzbDataType.getString(param.get("managername")));
                         // 公海单位默认初级认证
@@ -359,10 +356,105 @@ public class DeptUserController {
                 }
             } else {
                 result = Response.getResponseError();
+                result.setResponseEntity("电话号码输入有误!");
             }
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-供应商5
+     * 点击新建供应商建立单位下供应商
+     *
+     * @param param
+     * @param token
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/11
+     */
+    @RequestMapping(value = "/addCompanySupplier", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanySupplier(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
+        Response result;
+        try {
+            if (toPhone(JzbDataType.getString(param.get("phone")))) {
+                Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
+                if (userInfo.size() > 0) {
+                    //先确认负责人id
+                    Map<String, Object> send = companyService.getUid(param);
+                    String uid = JzbDataType.getString(send.get("uid"));
+                    if (JzbTools.isEmpty(uid)) {
+                        result = Response.getResponseError();
+                    } else {
+                       /* // 获取前台传过来的营业期限
+                        String limit = JzbDataType.getString(param.get("limitday"));
+
+                        // 获取前台传过来的成立日期
+                        String birth = JzbDataType.getString(param.get("birthday"));
+
+                        // 注意是空格+UTC,获取UTC通用标准时格式yyyy-MM-dd'T'HH:mm:ss.SSS UTC
+                        limit = limit.replace("Z", " UTC");
+                        birth = birth.replace("Z", " UTC");
+                        // 设置时间格式yyyy-MM-dd'T'HH:mm:ss.SSS Z
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+                        Date date = simpleDateFormat.parse(limit);
+
+                        // 将日期从毫秒转化为毫秒值
+                        long limitday = date.getTime() / 1000;
+                        param.put("limitday", limitday);
+
+                        date = simpleDateFormat.parse(birth);
+                        // 将日期从毫秒转化为毫秒值
+                        long birthday = date.getTime() / 1000;
+                        param.put("birthday", birthday);*/
+                        param.put("type", "1");
+                        // 创建供应商单位
+                        param.put("userinfo", userInfo);
+                        param.put("companyname", JzbDataType.getString(param.get("cname")));
+                        param.put("manager", uid);
+                        String cid = "";
+                        Response comRes = companyService.addCompany(param);
+                        if (JzbDataType.isMap(comRes.getResponseEntity())) {
+                            Map<String, Object> comMap = (Map<String, Object>) comRes.getResponseEntity();
+                            cid = JzbDataType.getString(comMap.get("cid"));
+                        }
+                        // 创建供应商单位表数据
+                        param.put("cid", cid);
+                        param.put("send", send);
+                        result = companyOrgApi.addCompanySupplier(param);
+                        authService.addAdmin(param);
+                    }
+                } else {
+                    result = Response.getResponseError();
+                }
+            }else {
+                result = Response.getResponseError();
+                result.setResponseEntity("电话号码输入有误!");
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 校验手机号
+     *
+     * @param obj
+     * @return
+     */
+    private boolean toPhone(String obj) {
+        boolean result = true;
+        try {
+            String eg = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
+            result = Pattern.matches(eg, obj);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            e.printStackTrace();
         }
         return result;
     }
