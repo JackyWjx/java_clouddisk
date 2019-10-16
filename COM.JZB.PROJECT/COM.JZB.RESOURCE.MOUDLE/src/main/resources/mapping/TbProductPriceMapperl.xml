@@ -35,6 +35,7 @@
         <if test="cname != null">
             and a.cname like concat('%',#{cname},'%')
         </if>
+        group by a.id
     </select>
 
     <!--添加产品报价表-->

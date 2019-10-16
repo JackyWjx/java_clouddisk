@@ -12,21 +12,41 @@
         a.cname,
         a.status,
         a.paradesc,
-        a.summary
+        a.summary,
+        a.accept,
+        a.pid,
+        a.plid,
+        a.service,
+        a.price,
+        a.prodesc
         from
         tb_product_paramete_item b
         LEFT JOIN
         tb_product_res_list a
         on a.pid = b.prodid
         where 1=1
+        <if test="plid != null">
+            and a.plid = #{plid}
+        </if>
         <if test="status != null">
             and a.status = #{status}
         </if>
         <if test="cname != null">
             and a.cname ~ #{cname}
         </if>
+         group by
+         a.id
     </select>
 
+
+    <select id="getProductItem" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        *
+        from
+        tb_product_paramete_item
+        where
+        prodid = #{pid}
+    </select>
 
     <!--添加产品参数-->
     <insert id="saveTbProductParameteItem" parameterType="java.util.List">
@@ -75,13 +95,20 @@
             </choose>
             <choose>
                 <when test="item.datasize !='' and  item.datasize != null">
-                    #{item.datasize},
+                    cast(#{item.datasize} as integer),
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
-            select count(1)+1 from tb_product_paramete_item,
+            <choose>
+                <when test="item.idx !='' and  item.idx != null">
+                   cast(#{item.idx} as integer),
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
             <choose>
                 <when test="item.ouid !='' and  item.ouid != null">
                     #{item.ouid},
@@ -134,7 +161,7 @@
         )values(
         <choose>
             <when test="pid != null">
-                cast(#{pid} as integer),
+                #{pid},
             </when>
             <otherwise>
                 null,

@@ -16,7 +16,9 @@
         department,
         to_char(to_timestamp(effective / 1000), 'yyyy-MM-dd') as effective,
         stdrange,
-        status from
+        status,
+        domdesc
+        from
         tb_standard_document
         where
         status != '4'
