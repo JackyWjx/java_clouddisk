@@ -1,8 +1,0 @@
-spring:
-  cloud:
-    config:
-      label: 'master'
-      uri: http://localhost:7506
-      name: 'jzb-message'
-      profile: 'test'
-      status: 1

@@ -1,8 +1,0 @@
-spring:
-  cloud:
-    config:
-      label: 'master'
-      uri: http://localhost:7504
-      name: 'jzb-resource'
-      profile: 'test'
-      status: 1
