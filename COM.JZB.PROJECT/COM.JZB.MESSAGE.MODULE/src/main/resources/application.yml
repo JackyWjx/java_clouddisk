@@ -9,7 +9,7 @@ spring:
   datasource:
     username: jzb
     password: AAAaaa111***
-    url: jdbc:postgresql://127.0.0.1:9123/JDB_MSG
+    url: jdbc:postgresql://192.168.0.251:9123/JDB_MSG
     driver-class-name: org.postgresql.Driver
 
 mybatis:
@@ -22,11 +22,6 @@ eureka:
       defaultZone: http://localhost:7101/eureka/
   instance:
     prefer-ip-address: true
-
-logging:
-  config: classpath:logback.xml
-  path: localhost\msg\log
-  #path: D:\msglog
 
 # 请求处理的超时时间 请求连接的超时时间
 ribbon:

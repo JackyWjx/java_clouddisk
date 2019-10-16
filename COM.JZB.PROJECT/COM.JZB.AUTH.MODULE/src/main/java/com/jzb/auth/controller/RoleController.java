@@ -378,6 +378,8 @@ public class RoleController {
                     result.setResponseEntity(res);
                 } else {
                     result = Response.getResponseError();
+                    res.remove(key);
+                    result.setResponseEntity(res);
                 }
             } else {
                 result = Response.getResponseError();

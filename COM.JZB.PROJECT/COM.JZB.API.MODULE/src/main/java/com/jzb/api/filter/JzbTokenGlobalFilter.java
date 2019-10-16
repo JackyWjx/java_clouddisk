@@ -178,6 +178,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/systemMenu/getProductSystemMenuList", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/systemMenu/addProductSystemMenuList", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/systemMenu/editProductSystemMenuList", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/advertising/getAdvertListPass", "");
 
         //---- end resource
 
@@ -207,6 +208,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/importPageExcel", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/importControlExcel", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/importCompanyTemplate", "");
+        GATEWAY_WHITE_LIST.put("/JZB-ORG/org/importCompanyCommon", "");
         //---- end org
 
         //---- begin auth

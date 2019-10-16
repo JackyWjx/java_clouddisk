@@ -122,14 +122,18 @@ public class JzbTree {
                 List<Map<String, Object>> pageList = (List<Map<String, Object>>) value.get(listName);
                 //合并字段添加
                 Map<String, Object> pageMap = toPageMap(map, merge);
-                pageList.add(pageMap);
+                if (pageMap.size()>0) {
+                    pageList.add(pageMap);
+                }
             } else {
                 //主干字段添加
                 Map<String, Object> value = toPageMap(map,main);
                 List<Map<String, Object>> pageList = new ArrayList<>();
                 //合并字段添加
                 Map<String, Object> pageMap = toPageMap(map, merge);
-                pageList.add(pageMap);
+                if (pageMap.size()>0) {
+                    pageList.add(pageMap);
+                }
                 value.put(listName, pageList);
                 //id值不为空就加入result中
                 if (!JzbTools.isEmpty(mid)) {
@@ -157,7 +161,7 @@ public class JzbTree {
         int m = merge.size();
         for (int i = 0; i < m; i++) {
             if (JzbTools.isEmpty(map.get(merge.get(i)))) {
-                pageMap.put(merge.get(i),"");
+
             }else{
                 pageMap.put(merge.get(i), map.get(merge.get(i)));
             }

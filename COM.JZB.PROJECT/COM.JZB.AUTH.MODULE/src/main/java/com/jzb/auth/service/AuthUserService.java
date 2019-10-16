@@ -82,6 +82,7 @@ public class AuthUserService {
         }
         return count;
     }
+
     /**
      * 加解密对象
      *
@@ -109,7 +110,7 @@ public class AuthUserService {
      */
     public Map<String, Object> getUserRole(Map<String, Object> param) {
         // 获取用户角色
-        return  userMapper.queryRoleByUid(param);
+        return userMapper.queryRoleByUid(param);
     }
 
     /**
@@ -213,5 +214,16 @@ public class AuthUserService {
             count = 0;
         }
         return count;
+    }
+
+    /**
+     * 查询用户所有权限
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    public List<Map<String, Object>> queryUserMenuList(Map<String, Object> param) {
+        return userMapper.queryUserMenuList(param);
     }
 } // End class AuthUserService

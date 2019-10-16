@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -155,7 +152,12 @@ public class AuthUserLoginService {
         map.put("sendpara", JSON.toJSONString(smsMap));
         map.put("usertype", "1");
         map.put("title", "计支云");
-        map.put("receiver", telNumber);
+        Map<String, Object> telMap = new HashMap<>(2);
+        telMap.put("photo",telNumber);
+        List<Map<String, Object>> telList = new ArrayList<>(1);
+        telList.add(telMap);
+        smsMap.put("sms", telList);
+        map.put("receiver", JSON.toJSONString(smsMap));
         //发送验证码到缓存，限制保存时间
         Map<String, Object> param = new HashMap<>(3);
         param.put("key", telNumber);
@@ -176,6 +178,8 @@ public class AuthUserLoginService {
             map.put("checkcode", md5);
             map.put("appid", appId);
             map.put("secret", secret);
+            map.put("msgtag","00001");
+            map.put("senduid","0000");
             //发送短信
             rul = messageApi.sendShortMsg(map);
         } catch (Exception e) {
