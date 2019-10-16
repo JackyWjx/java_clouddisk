@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.message.dao.UserParameterMapper">
+
+    <!-- 查询 -->
+    <select id="queryUserParameter" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from  tb_user_parameter where status = '1'
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="queryUserParameterCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from  tb_user_parameter where status = '1'
+    </select>
+
+    <!-- 模糊查询 -->
+    <select id="searchUserParameter" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from  tb_user_parameter where status = '1' and summary like CONCAT('%',#{summary},'%')
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊查询总数 -->
+    <select id="searchUserParameterCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from  tb_user_parameter where status = '1' and summary like CONCAT('%',#{summary},'%')
+    </select>
+
+    <!-- 添加 -->
+    <insert id="insertUserParameter" parameterType="java.util.Map">
+        INSERT INTO tb_user_parameter ( uid, param, adduid, addtime, upduid, updtime, status, summary )
+        VALUES
+        ( #{uid},
+        #{param},
+        #{adduid},
+        #{addtime},
+        #{upduid},
+        #{updtime},
+        #{status},
+        <choose>
+            <when test="summary != null">#{summary}</when>
+            <otherwise>null</otherwise>
+        </choose>
+        );
+    </insert>
+
+    <!-- 修改 -->
+    <update id="updateUserParameter" parameterType="java.util.Map">
+        update tb_user_parameter set
+        <choose>
+            <when test="uid != null">uid = #{uid},</when>
+        </choose>
+        <choose>
+            <when test="param != null">param = #{param},</when>
+        </choose>
+        <choose>
+            <when test="adduid != null">adduid = #{adduid},</when>
+        </choose>
+        <choose>
+            <when test="addtime != null">addtime = #{addtime},</when>
+        </choose>
+        <choose>
+            <when test="upduid != null">upduid = #{upduid},</when>
+        </choose>
+        <choose>
+            <when test="updtime != null">updtime = #{updtime},</when>
+        </choose>
+        <choose>
+            <when test="summary != null">summary = #{summary},</when>
+        </choose>
+        status = #{status}
+        where id = #{id}
+
+    </update>
+
+    <!-- 禁用 -->
+    <update id="deleteUserParameter" parameterType="java.util.Map">
+        update   tb_user_parameter set  status = '2' where id = #{id}
+    </update>
+
+</mapper>

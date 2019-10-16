@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.oauth.service.JzbPermissionService">
+    <!-- -->
+    <select id="queryRoleByUserId" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        select *from steel_user_role u left join steel_sys_role s
+                                                 on u.roleid = s.rid
+                                       left join steel_role_permission rp on u.roleid = rp.roleid left join
+                         steel_sys_permission sp
+                         on rp.permissionid = sp.sid where sid is not null and u.userid = #{uid};
+    </select>
+</mapper>

@@ -1,0 +1,41 @@
+server:
+  port: 7504
+spring:
+  application:
+    name: jzb-resource
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    username: jzb
+    password: AAAaaa111***
+    url: jdbc:postgresql://192.168.0.251:9123/JDB_RESOURCE
+    driver-class-name: org.postgresql.Driver
+
+mybatis:
+    typeAliasesPackage: com.jzb.**.**.entity
+    mapperLocations: classpath:/mapping/*.xml
+    configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+      call-setters-on-nulls: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:7101/eureka/
+  instance:
+    prefer-ip-address: true
+
+#username: jzb
+#  password: AAAaaa111***
+#  url: jdbc:postgresql://175.6.7.218:9123/JZBRESOURCE
+#  driver-class-name: org.postgresql.Driver
+
+#username: postgres
+#  password: chenduan
+#  url: jdbc:postgresql://localhost:5432/JZBRESOURCE
+#  driver-class-name: org.postgresql.Driver
+
+# 请求处理的超时时间 请求连接的超时时间
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 30000

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbCostItemMapper">
+
+
+    <!--根据模板列表查询费用条算-->
+    <select id="queryCostItem" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            typeid,
+            itemid,
+            itemcode,
+            cname,
+            parentid,
+            costtype,
+            payback,
+            counttype,
+            autotype,
+            planmoney,
+            totalmoney,
+            usualback,
+            backup,
+            originrate,
+            uprate,
+            backmultiple,
+            backrate,
+            itemdesc,
+            idx,
+            ouid,
+            addtime,
+            updtime,
+            status,
+            summary
+        FROM
+            tb_cost_item
+        WHERE
+            typeid =#{ typeid }
+            order by idx asc
+            limit #{page} offset #{rows}
+    </select>
+
+    <!--添加费用条算-->
+    <insert id="saveCostItem" parameterType="java.util.Map">
+        insert into
+        tb_cost_item(typeid,itemid,itemcode,cname,parentid,costtype,payback,counttype,autotype,planmoney,totalmoney,
+        usualback,backup,originrate,uprate,backmultiple,backrate,itemdesc,idx,ouid, addtime,updtime,status,summary)
+        values(
+        #{typeid},
+        #{itemid},
+        <choose>
+            <when test="itemcode != null">
+                #{itemcode},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cname != null">
+                #{cname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        #{parentid},
+        <choose>
+            <when test="costtype != null">
+                #{costtype},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="payback != null">
+                #{payback},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="counttype != null">
+                #{counttype},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="autotype != null">
+                #{autotype},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="planmoney != null">
+                #{planmoney},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="totalmoney != null">
+                #{totalmoney},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="usualback != null">
+                #{usualback},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="backup != null">
+                #{backup},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="originrate != null">
+                #{originrate},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="uprate != null">
+                #{uprate},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="backmultiple != null">
+                #{backmultiple},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="backrate != null">
+                #{backrate},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemdesc != null">
+                #{itemdesc},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null">
+                #{idx},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid != null">
+                #{ouid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        );
+    </insert>
+
+    <!--修改费用条算-->
+    <update id="updateCostItem" parameterType="java.util.Map">
+        update tb_cost_item set
+        <if test="itemcode != null">itemcode=#{itemcode},</if>
+        <if test="cname != null">cname=#{cname},</if>
+        <if test="parentid != null">parentid=#{parentid},</if>
+        <if test="costtype != null">costtype=#{costtype},</if>
+        <if test="payback != null">payback=#{payback},</if>
+        <if test="counttype != null">counttype=#{counttype},</if>
+        <if test="autotype != null">autotype=#{autotype},</if>
+        <if test="planmoney != null">planmoney=#{planmoney},</if>
+        <if test="totalmoney != null">totalmoney=#{totalmoney},</if>
+        <if test="usualback != null">usualback=#{usualback},</if>
+        <if test="backup != null">backup=#{backup},</if>
+        <if test="originrate != null">originrate=#{originrate},</if>
+        <if test="counttype != null">counttype=#{counttype},</if>
+        <if test="autotype != null">autotype=#{autotype},</if>
+        <if test="planmoney != null">planmoney=#{planmoney},</if>
+        <if test="totalmoney != null">totalmoney=#{totalmoney},</if>
+        <if test="usualback != null">usualback=#{usualback},</if>
+        <if test="backup != null">backup=#{backup},</if>
+        <if test="originrate != null">originrate=#{originrate},</if>
+        <if test="uprate != null">uprate=#{uprate},</if>
+        <if test="backmultiple != null">backmultiple=#{backmultiple},</if>
+        <if test="backrate != null">backrate=#{backrate},</if>
+        <if test="itemdesc != null">itemdesc=#{itemdesc},</if>
+        <if test="idx != null">idx=#{idx},</if>
+        <if test="ouid != null">ouid=#{ouid},</if>
+        <if test="addtime != null">addtime=#{addtime},</if>
+        <if test="updtime != null">updtime=#{updtime},</if>
+        <if test="status != null">status=#{status},</if>
+        <if test="summary != null">summary=#{summary}</if>
+        where itemid=#{itemid}
+    </update>
+
+    <!--修改费用条算状态（删除）-->
+    <update id="updateCostItemStatus" parameterType="java.util.Map">
+        update tb_cost_item set status=#{status} where itemid=#{itemid}
+    </update>
+
+    <!--获取排序-->
+    <select id="getCostItemIdx" resultType="java.lang.Integer">
+        select count(1)+1 from tb_cost_item
+    </select>
+
+    <!--获取总数-->
+    <select id="getCostItemCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_cost_item WHERE typeid =#{ typeid }
+    </select>
+</mapper>

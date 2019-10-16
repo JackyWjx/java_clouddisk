@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.AdvertMapper">
+
+    <!--    查询图片信息-->
+    <select id="queryAdvertisingList" resultType="java.util.Map">
+        select photo from tb_advert_list
+    </select>
+
+    <!--点击活动获取所有的系统推广信息的总数-->
+    <select id="queryAdvertListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        tb_advert_list
+        where
+        status = #{status}
+        <if test="cid != null and cid != ''">and cid = #{cid}</if>
+        <if test="pageid != null and pageid != ''">and pageid = #{pageid}</if>
+    </select>
+
+    <!--点击活动获取所有的系统推广信息-->
+    <select id="queryAdvertList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        advid,
+        advname,
+        advtype,
+        cid,
+        photo,
+        advurl,
+        newpage,
+        visits,
+        ouid,
+        status,
+        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        summary
+        from
+        tb_advert_list
+        where
+        status = #{status}
+        <if test="cid != null and cid != ''">and cid = #{cid}</if>
+        <if test="pageid != null and pageid != ''">and pageid = #{pageid}</if>
+    </select>
+
+    <!-- CRM推广图片中点击保存后修改对应的推广信息 -->
+    <update id="updateAdvertData" parameterType="java.util.Map">
+        UPDATE
+        tb_advert_list
+        SET
+        photo = #{photo},
+        advurl = #{advurl},
+        newpage = #{newpage},
+        <if test="visits != null and visits != ''">visits = ${visits},</if>
+        <if test="idx != null and idx != ''">idx = ${idx},</if>
+        status = #{status},
+        ouid = #{uid},
+        updtime = #{updtime}
+        <if test="summary != null">,summary = #{summary}</if>
+        WHERE
+        advid = #{advid}
+    </update>
+
+    <!--点击保存增加系统广告表中的推广信息-->
+    <insert id="insertAdvertData" parameterType="java.util.Map">
+        INSERT INTO
+        tb_advert_list (advid, advname, advtype, cid, pid, pageid, pageseat, idx,
+                        photo, advurl, newpage, visits, ouid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{advid},
+        #{advname},
+        <choose>
+            <when test="advtype != null and advtype != ''">
+                ${advtype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cid != null and cid != ''">
+                #{cid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pid != null and pid != ''">
+                #{pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{pageid},
+        <choose>
+            <when test="pageseat != null and pageseat != ''">
+                ${pageseat},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        (select count(1)+1 from tb_advert_list),
+        #{photo},
+        #{advurl},
+        #{newpage},
+        <choose>
+            <when test="visits != null and visits != ''">
+                ${visits},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        #{addtime},
+        #{status}
+        <choose>
+            <when test="summary != null and summary != ''">
+                ,#{summary}
+            </when>
+            <otherwise>
+                ,null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+
+</mapper>

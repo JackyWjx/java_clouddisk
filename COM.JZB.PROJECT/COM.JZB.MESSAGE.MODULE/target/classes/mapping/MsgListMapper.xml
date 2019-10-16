@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.message.dao.MsgListMapper">
+
+    <!--  根据uid获取用户信息 -->
+    <select id="queryUserParameter" resultType="java.util.Map"  parameterType="java.lang.String">
+        select * from tb_user_parameter where uid = #{uid}
+    </select>
+
+    <!--  根据消息组id查询config  -->
+    <select id="queryMsgGroupConfigure" resultType="java.util.Map"  parameterType="java.util.Map">
+        select * from tb_msg_group_configure where groupid = #{groupid}
+    </select>
+
+    <!--  根据appid查询checkcode  -->
+    <select id="queryMsgOrganizeCheckcode" parameterType="java.lang.String" resultType="java.util.Map">
+            select  * from tb_message_organize
+            where appid = #{appid} and status = '1'
+    </select>
+
+    <!--  根据消息组查询  -->
+    <select id="queryMsgUserGroup" parameterType="java.lang.String" resultType="java.util.Map">
+            select  * from tb_msg_user_group
+            where groupid = #{groupid} and status = '1'
+    </select>
+
+    <!--  根据消息查询模板  -->
+    <select id="queryMsgUserGroupTemplate" parameterType="java.lang.String" resultType="java.util.Map">
+            select  * from tb_msg_group_template
+            where groupid = #{groupid} and status = '1'
+    </select>
+
+    <!--  添加消息  -->
+    <insert id="insertMsgList"  parameterType="java.util.Map">
+        INSERT INTO tb_message_list (
+        msgid,
+        cid,
+        groupid,
+        senduid,
+        sendname,
+        addtime,
+        sendtime,
+        sendpara,
+        msgtag,
+        title,
+        context,
+        usertype,
+        receiver,
+        sendstatus,
+        status,
+        summary
+        )
+        VALUES
+        ( #{msgid},
+        <choose>
+            <when test="cid != null">
+                #{cid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="groupid != null">
+                #{groupid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{senduid}, #{sendname}, #{addtime}, #{sendtime},
+        <choose>
+            <when test="sendpara != null">
+                #{sendpara},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{msgtag},
+        <choose>
+            <when test="title != null">
+                #{title},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="context != null">
+                #{context},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="usertype != null">
+                #{usertype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{receiver} ,#{sendstatus} ,#{status},
+        <choose>
+            <when test="summary != null">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>);
+    </insert>
+
+    <!--  添加消息发送详情  -->
+    <insert id="insertSendUserMessage" parameterType="java.util.Map">
+        INSERT INTO tb_send_user_message ( msgid, msgtype, receiveuid, receivename, sendtime, status, summary )
+        VALUES
+        ( #{msgid}, #{msgtype}, #{receiveuid}, #{receivename}, #{sendtime}, #{status}, <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose> );
+    </insert>
+
+    <!--  添加消息模板信息  -->
+    <insert id="insertMsgUserTemplate" parameterType="java.util.Map">
+      INSERT INTO tb_msg_group_template ( tempid, cid, groupid, msgtype, tempname, context, remark, status, summary )
+      VALUES( #{tempid},
+      <choose><when test="cid != null">#{cid}</when><otherwise>null</otherwise></choose>,
+      #{groupid},
+      #{msgtype},
+      #{tempname},
+      #{context},
+      <choose><when test="remark != null">#{remark}</when><otherwise>null</otherwise></choose>,
+      #{status},
+      <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose> );
+    </insert>
+
+    <!--  修改消息信息变为已发送  -->
+    <update id="updateMessageListSendStatusByMegid" parameterType="java.util.Map" >
+        update tb_message_list set sendstatus = 2 , sendtime = #{sendtime} ,context = #{context} , sendpara = #{sendpara} where msgid = #{msgid}
+    </update>
+
+</mapper>

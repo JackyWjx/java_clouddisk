@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbProductPriceMapper">
+
+
+    <!--查询产品报价的总数-->
+    <select id="getTbProductPriceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+         select
+         count(1)
+         from
+         tb_product_res_list
+         where status='1'
+     </select>
+
+    <!--查询合同配置中的资源产品-->
+    <select id="getProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        a.id,
+        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        a.cname,
+        a.status,
+        a.paradesc,
+        a.summary
+        from
+        tb_product_price b
+        LEFT JOIN
+        tb_product_res_list a
+        on a.pid = b.pid
+        where 1=1
+        <if test="plid != null">
+            and a.plid = #{plid}
+        </if>
+        <if test="cname != null">
+            and a.cname like concat('%',#{cname},'%')
+        </if>
+    </select>
+
+    <!--添加产品报价表-->
+    <insert id="saveProductPrice" parameterType="java.util.List">
+        insert into
+        tb_product_price(
+        pid,
+        pricetype,
+        itemid,
+        itemname,
+        pricedesc,
+        size,
+        unit,
+        price,
+        weight,
+        idx,
+        addtime,
+        updtime,
+        status,
+        summary
+        )values
+        <foreach collection="list" index="index" item="item" separator=",">
+        (
+        <choose>
+            <when test="item.pid != null">
+                #{item.pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.pricetype != null">
+               cast(#{item.pricetype} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.itemid != null">
+                #{item.itemid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.itemname != null">
+                #{item.itemname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.pricedesc != null">
+                #{item.pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.size != null">
+                #{item.size},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.unit != null">
+                #{item.unit},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose><choose>
+        <when test="item.price != null">
+            #{item.price},
+        </when>
+        <otherwise>
+            null,
+        </otherwise>
+       </choose>
+        <choose>
+        <when test="item.weight != null">
+            #{item.weight},
+        </when>
+        <otherwise>
+            null,
+        </otherwise>
+        </choose>
+        <choose>
+            <when test="item.idx != null">
+                cast (#{item.idx} as integer),
+            </when>
+            <otherwise>
+              (select count(1)+1 from tb_product_price),
+            </otherwise>
+        </choose>
+        #{item.addtime},
+        #{item.updtime},
+        <choose>
+            <when test="item.status != null">
+                #{item.status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.summary != null">
+                #{item.summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+        </foreach>
+    </insert>
+
+    <!--修改产品报价表中的数据-->
+    <update id="updateProductPrice" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="item" separator=";">
+        update
+        tb_product_price
+        set
+        <if test="item.pricetype != null">pricetype=cast(#{item.pricetype} as integer),</if>
+        <if test="item.itemid != null">itemid=#{item.itemid},</if>
+        <if test="item.itemname != null">itemname=#{item.itemname},</if>
+        <if test="item.pricedesc != null">pricedesc=#{item.pricedesc},</if>
+        <if test="item.size != null">size=#{item.size},</if>
+        <if test="item.unit != null">unit=#{item.unit},</if>
+        <if test="item.price != null">price=#{item.price},</if>
+        <if test="item.weight != null">weight=#{item.weight},</if>
+        <if test="item.adduid != null">adduid=#{item.adduid},</if>
+        <if test="item.upduid != null">upduid=#{item.upduid},</if>
+        <if test="item.status != null">status=#{item.status},</if>
+        <if test="item.summary != null">summary=#{item.summary},</if>
+        <if test="item.updtime != null">updtime=#{item.updtime}</if>
+            where
+        pid=#{item.pid}
+        </foreach>
+    </update>
+
+    <!--修改时查询数据-->
+    <select id="getTbProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        pricetype,
+        itemid,
+        itemname,
+        pricedesc,
+        size,
+        unit,
+        price,
+        weight,
+        status,
+        summary
+        from
+        tb_product_price
+        where
+        pid=#{pid}
+    </select>
+</mapper>

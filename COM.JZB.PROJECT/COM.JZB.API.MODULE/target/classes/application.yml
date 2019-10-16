@@ -1,0 +1,4 @@
+spring:
+  application:
+    profiles:
+      include: release

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.message.dao.SendUserMessageMapper">
+
+    <!-- 查询 -->
+    <select id="querySendUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from  tb_send_user_message where status = '1'
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="querySendUserMessageCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from  tb_send_user_message where status = '1'
+    </select>
+
+    <!-- 模糊查询 -->
+    <select id="searchSendUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from  tb_send_user_message where status = '1' and receivename like CONCAT('%',#{receivename},'%')
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊查询总数 -->
+    <select id="searchSendUserMessageCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from  tb_send_user_message where status = '1' and receivename like CONCAT('%',#{receivename},'%')
+    </select>
+
+    <!-- 添加 -->
+    <insert id="insertSendUserMessage" parameterType="java.util.Map">
+        INSERT INTO tb_send_user_message ( msgid, msgtype, receiveuid, sendtime, status, summary, sendid, account,
+        receivetime )
+        VALUES
+        ( #{msgid},
+        #{msgtype},
+        #{receiveuid},
+        #{sendtime},
+        #{status},
+        #{summary},
+        #{sendid},
+        #{account},
+        <choose>
+            <when test="receivetime != null">#{receivetime}</when>
+            <otherwise>null</otherwise>
+        </choose>
+        );
+    </insert>
+
+    <!-- 修改 -->
+    <update id="updateSendUserMessage" parameterType="java.util.Map">
+        update tb_send_user_message set
+        <choose>
+            <when test="msgid != null">msgid = #{msgid},</when>
+        </choose>
+        <choose>
+            <when test="sendid != null">sendid = #{sendid},</when>
+        </choose>
+        <choose>
+            <when test="msgtype != null">msgtype = #{msgtype},</when>
+        </choose>
+        <choose>
+            <when test="receiveuid != null">receiveuid = #{receiveuid},</when>
+        </choose>
+        <choose>
+            <when test="account != null">account = #{account},</when>
+        </choose>
+        <choose>
+            <when test="receivename != null">receivename = #{receivename},</when>
+        </choose>
+        <choose>
+            <when test="sendtime != null">sendtime = #{sendtime},</when>
+        </choose>
+        <choose>
+            <when test="receivetime != null">receivetime = #{receivetime},</when>
+        </choose>
+        <choose>
+            <when test="summary != null">summary = #{summary},</when>
+        </choose>
+        status = #{status}
+        where id = #{id}
+
+    </update>
+
+    <!-- 禁用 -->
+    <update id="deleteSendUserMessage" parameterType="java.util.Map">
+        update   tb_send_user_message set  status = '4' where id = #{id}
+    </update>
+
+</mapper>
