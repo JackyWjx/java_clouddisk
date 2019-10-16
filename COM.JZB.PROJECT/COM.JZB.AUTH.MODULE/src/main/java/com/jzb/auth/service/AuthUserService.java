@@ -226,4 +226,17 @@ public class AuthUserService {
     public List<Map<String, Object>> queryUserMenuList(Map<String, Object> param) {
         return userMapper.queryUserMenuList(param);
     }
+
+    /**
+     * 激活修改用户状态
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int updateUserStatus(Map<String, Object> param) {
+        param.put("status","1");
+        param.put("updtime",System.currentTimeMillis());
+        return userMapper.updateUserStatus(param);
+    }
 } // End class AuthUserService

@@ -760,4 +760,27 @@ public class AuthUserController {
         }
         return result;
     }
+
+    /**
+     * 修改用户状态（用户表和用户唯一键关联表）
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/modifyUserStatus", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyUserStatus(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid",userInfo.get("uid"));
+                int up = userService.updateUserStatus(param);
+                result = up > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 } // End class AuthUserController
