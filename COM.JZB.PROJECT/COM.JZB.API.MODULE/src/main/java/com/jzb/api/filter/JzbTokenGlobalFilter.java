@@ -179,6 +179,8 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/systemMenu/addProductSystemMenuList", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/systemMenu/editProductSystemMenuList", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/advertising/getAdvertListPass", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/ProductResList/saveFile", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/ProductResList/creatFile", "");
 
         //---- end resource
 
