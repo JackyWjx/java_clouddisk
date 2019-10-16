@@ -73,4 +73,16 @@ public interface CompanyOrgApi {
     @RequestMapping(value = "/addCompanyCommon", method = RequestMethod.POST)
     @CrossOrigin
     public Response addCompanyCommon(@RequestBody Map<String, Object> param);
+
+    /**
+     * 管理员创建公海单位(公海单位表)
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/16
+     */
+    @RequestMapping(value = "/addCompanySupplier", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanySupplier(@RequestBody Map<String, Object> param);
 }
