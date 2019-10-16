@@ -292,8 +292,8 @@
 
     <!--新增企业和企业信息表-->
     <insert id="insertCompany">
-    INSERT into tb_company_list (cid,cname,reguid,regtime,manager,logo,relphone,relmail,region,status,authid) VALUES
-    (#{cid},#{cname},#{uid},#{regtime},#{manager},#{logo},#{phone},#{relmail},#{region},'1',#{authid});
+    INSERT into tb_company_list (cid,cname,reguid,regtime,manager,logo,relphone,relmail,region,status,authid,summary) VALUES
+    (#{cid},#{cname},#{uid},#{regtime},#{manager},#{logo},#{phone},#{relmail},#{region},'1',#{authid},#{summary});
     INSERT into	tb_company_info(cid,address,ouid,updtime)VALUES
     (#{cid},#{address},#{uid},#{regtime});
 
@@ -606,7 +606,8 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         SELECT
         du.uid,
         string_agg ( DISTINCT cl.joname, ',' ) AS joname,
-        string_agg ( DISTINCT reg.regname, ',' ) AS regname
+        string_agg ( DISTINCT reg.regname, ',' ) AS regname,
+        string_agg ( DISTINCT du.cdid, ',' ) AS cdid
         FROM
         ( SELECT cid, cname || '-' || CASE COALESCE ( authid, 0 ) WHEN 0 THEN '未认证' ELSE'已认证' END AS joname FROM
         tb_company_list ) cl
@@ -815,7 +816,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
                 ${index},
             </when>
             <otherwise>
-                (SELECT count(1)+1 FROM tb_company_common WHERE cid=#{cid}),
+                (SELECT count(1)+1 FROM tb_company_common),
             </otherwise>
         </choose>
         #{uid},
