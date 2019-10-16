@@ -82,4 +82,15 @@ public interface UserAuthApi {
     @RequestMapping(value = "/getUserAllMenuList", method = RequestMethod.POST)
     @CrossOrigin
     public Response getUserAllMenuList(@RequestBody Map<String, Object> param);
+
+    /**
+     * 修改用户状态（用户表和用户唯一键关联表）
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/modifyUserStatus", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyUserStatus(@RequestBody Map<String, Object> param);
 } // End interface UserAuthApi

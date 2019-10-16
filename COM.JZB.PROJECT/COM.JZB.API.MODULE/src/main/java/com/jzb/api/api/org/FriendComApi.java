@@ -31,4 +31,15 @@ public interface FriendComApi {
     @RequestMapping(value = "/searchCompanyFriend", method = RequestMethod.POST)
     @CrossOrigin
     public Response searchCompanyFriend(@RequestBody Map<String, Object> param);
+
+    /**
+     * 获取邀请人信息部门信息加入部门
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/modifyUserDept", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyUserDept(@RequestBody Map<String, Object> param);
 }

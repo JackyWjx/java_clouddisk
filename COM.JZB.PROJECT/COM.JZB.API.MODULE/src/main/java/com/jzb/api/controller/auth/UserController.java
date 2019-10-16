@@ -382,4 +382,33 @@ public class UserController {
         }
         return result;
     }
+
+    /**
+     * 激活用户，同时将邀请表中的部门邀请同意
+     *
+     * @param param
+     * @param token
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/enableUser", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response enableUser
+    (@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String
+            token) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
+            if (userInfo.size() > 0) {
+                param.put("userinfo", userInfo);
+                result = deptUserService.enableUser(param);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 } // End class UserController

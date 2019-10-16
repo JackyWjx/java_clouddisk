@@ -4,6 +4,7 @@ import com.jzb.api.api.auth.RoleAuthApi;
 import com.jzb.api.api.auth.UserAuthApi;
 import com.jzb.api.api.org.CompanyOrgApi;
 import com.jzb.api.api.org.DeptOrgApi;
+import com.jzb.api.api.org.FriendComApi;
 import com.jzb.api.api.redis.UserRedisApi;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
@@ -39,6 +40,8 @@ public class DeptUserService {
     private UserRedisApi redisApi;
     @Autowired
     private CompanyOrgApi companyOrgApi;
+    @Autowired
+    private FriendComApi friendComApi;
 
     /**
      * 获取部门的用户信息，用户的角色组名称和用户积分
@@ -302,4 +305,19 @@ public class DeptUserService {
         result = userAuthApi.getUserAllMenuList(userMap);
         return result;
     }
+
+    /**
+     * 激活用户
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    public Response enableUser(Map<String, Object> param) {
+        Response result;
+        result = userAuthApi.modifyUserStatus(param);
+        friendComApi.modifyUserDept(param);
+        return result;
+    }
+
 }
