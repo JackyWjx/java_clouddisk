@@ -3,6 +3,7 @@ package com.jzb.org.service;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.dao.CompanyUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,12 @@ public class CompanyUserService {
      */
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
+    /**
+     * 查询地区信息
+     */
+    @Autowired
+    private RegionBaseApi regionBaseApi;
 
     /**
      * 设置分页数
@@ -70,7 +77,13 @@ public class CompanyUserService {
     public List<Map<String, Object>> getCompanyList(Map<String, Object> param) {
         param.put("status", "1");
         param = setPageSize(param);
-        return companyUserMapper.queryCompanyList(param);
+        List<Map<String, Object>> companyList = companyUserMapper.queryCompanyList(param);
+        for (int i = 0; i < companyList.size(); i++) {
+            Map<String, Object> companyMap = companyList.get(i);
+            Response region = regionBaseApi.getRegionInfo(companyMap);
+            companyMap.put("region", region.getResponseEntity());
+        }
+        return companyList;
     }
 
     /**
@@ -133,5 +146,41 @@ public class CompanyUserService {
         param.put("status", "1");
         param = setPageSize(param);
         return companyUserMapper.queryCompanyCommonList(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主4
+     * 根据单位ID显示对应的供应商或全部供应商的总数
+     *
+     * @author kuangbin
+     */
+    public int getCompanySupplierCount(Map<String, Object> param) {
+        int count;
+        try {
+            param.put("status", "1");
+            count = companyUserMapper.queryCompanySupplierCount(param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主4
+     * 根据单位ID显示对应的供应商或全部供应商
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getCompanySupplierList(Map<String, Object> param) {
+        param.put("status", "1");
+        param = setPageSize(param);
+        List<Map<String, Object>> list = companyUserMapper.queryCompanySupplierList(param);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> companyMap = list.get(i);
+            Response region = regionBaseApi.getRegionInfo(companyMap);
+            companyMap.put("region", region.getResponseEntity());
+        }
+        return list;
     }
 }
