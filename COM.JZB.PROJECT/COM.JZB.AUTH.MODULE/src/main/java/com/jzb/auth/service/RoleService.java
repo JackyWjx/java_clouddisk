@@ -168,48 +168,56 @@ public class RoleService implements Service {
                 if (tempList.size() > 0) {
                     //循环第一个list
                     List<Map<String, Object>> data = tempList.get(0);
-                    int dataSize = data.size();
+                    int dataSize = data == null ? 0 : data.size();
                     for (int i = 0; i < dataSize; i++) {
                         //获取最上层的菜单权限
                         Map<String, Object> midMap = data.get(i);
-                        List<Map<String, Object>> pageList = (List<Map<String, Object>>) midMap.get("pageList");
-                        int page = pageList.size();
-                        if (pageList.size() > 0 && (!JzbTools.isEmpty(pageList.get(0).get("pageid")))) {
+                        List<Map<String, Object>> pageList = (List<Map<String, Object>>) midMap.get("children");
+                        int page = JzbDataType.getInteger(pageList == null ? "0" : pageList.size());
+                        if (page > 0) {
                             for (int j = 0; j < page; j++) {
                                 //循环页面数据
                                 Map<String, Object> pageTemp = pageList.get(j);
-                                Map<String, Object> pageMap = new HashMap(conMap);
-                                pageMap.put("mid", midMap.get("mid"));
-                                if (!JzbTools.isEmpty(pageTemp.get("pageid"))) {
-                                    pageMap.put("pageid", pageTemp.get("pageid"));
-                                    //控件数据
-                                    List<Map<String, Object>> conList = (List<Map<String, Object>>) pageTemp.get("conList");
-                                    for (int k = 0, s = conList.size(); k < s; k++) {
-                                        Map<String, Object> conTemp = conList.get(k);
-                                        if (!JzbTools.isEmpty(conTemp.get("controlid"))) {
-                                            //添加控件id
-                                            Map<String, Object> controlMap = new HashMap(pageMap);
-                                            controlMap.put("controlid", conTemp.get("controlid"));
-                                            controlList.add(controlMap);
+                                if (JzbDataType.getInteger(pageTemp.get("status")) == 1) {
+                                    Map<String, Object> pageMap = new HashMap(conMap);
+                                    pageMap.put("mid", midMap.get("id"));
+                                    if (!JzbTools.isEmpty(pageTemp.get("id"))) {
+                                        pageMap.put("pageid", pageTemp.get("id"));
+                                        //控件数据
+                                        List<Map<String, Object>> conList = (List<Map<String, Object>>) pageTemp.get("children");
+                                        if (conList != null) {
+                                            int conSize = JzbDataType.getInteger(conList.size());
+                                            for (int k = 0; k < conSize; k++) {
+                                                Map<String, Object> conTemp = conList.get(k);
+                                                if (JzbDataType.getInteger(conTemp.get("status")) == 2) {
+                                                    //添加控件id
+                                                    Map<String, Object> controlMap = new HashMap(pageMap);
+                                                    controlMap.put("controlid", conTemp.get("id"));
+                                                    controlList.add(controlMap);
+                                                }
+                                            }
                                         }
                                     }
+                                    menuList.add(pageMap);
                                 }
-                                menuList.add(pageMap);
                             }
                         } else {
-                            //菜单没有页面
-                            Map<String, Object> pageMap = new HashMap(conMap);
-                            pageMap.put("mid", midMap.get("mid"));
-                            menuList.add(pageMap);
+                            if (JzbDataType.getInteger(midMap.get("status")) == 0) {
+                                //菜单没有页面
+                                Map<String, Object> pageMap = new HashMap(conMap);
+                                pageMap.put("mid", midMap.get("id"));
+                                menuList.add(pageMap);
+                            }
                         }
                         //获取子菜单的数据
                         List<Map<String, Object>> children = (List<Map<String, Object>>) midMap.get("children");
-                        int mapSize = children.size();
+                        int mapSize = children == null ? 0 : children.size();
                         if (mapSize > 1) {
                             //存在子菜单，放入临时list中
                             tempList.add(children);
                         }
                     }
+                    //删除掉第一个list
                     tempList.remove(0);
                 }
             } while (tempList.size() > 0);
@@ -424,7 +432,7 @@ public class RoleService implements Service {
         if (crList.size() > 0) {
             result.put("code", "2");
             result.put("add", "0");
-        }else{
+        } else {
             int add = roleMapper.insertCompanyRole(map);
             result.put("add", add);
             result.put("crid", crId);
