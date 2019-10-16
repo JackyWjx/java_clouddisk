@@ -50,4 +50,11 @@ public interface TbProductResListMapper {
      */
     List<Map<String, Object>> getTbProductParameteItem(Map<String, Object> param);
 
+
+    /**
+     * 产品参数修改时的查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getProductItem(Map<String, Object> param);
 }

@@ -8,7 +8,7 @@ spring:
   datasource:
     username: jzb
     password: AAAaaa111***
-    url: jdbc:postgresql://127.0.0.1:9123/JDB_OPEN
+    url: jdbc:postgresql://192.168.0.251:9123/JDB_OPEN
     driver-class-name: org.postgresql.Driver
 
 mybatis:

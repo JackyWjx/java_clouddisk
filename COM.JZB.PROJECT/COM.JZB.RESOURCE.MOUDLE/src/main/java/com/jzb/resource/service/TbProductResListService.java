@@ -69,4 +69,7 @@ public class TbProductResListService {
           return tbProductResListMapper.getTbProductParameteItem(param);
     }
 
+    public List<Map<String, Object>> getProductItem(Map<String, Object> param) {
+        return tbProductResListMapper.getProductItem(param);
+    }
 }
