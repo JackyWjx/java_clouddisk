@@ -267,7 +267,7 @@
     <select id="queryUserByValue" parameterType="java.util.Map"
             resultType="java.util.Map">
         SELECT k.uid FROM
-            (SELECT uid FROM tb_user_key WHERE ktid = #{ktid} AND keyid = #{keyid} AND status = '1') k
+            (SELECT uid FROM tb_user_key WHERE ktid = #{ktid} AND keyid = #{keyid} AND status in ('1','8')) k
                 INNER JOIN tb_user_list u ON k.uid = u.uid;
     </select>
     <!--查询用户所有权限-->
