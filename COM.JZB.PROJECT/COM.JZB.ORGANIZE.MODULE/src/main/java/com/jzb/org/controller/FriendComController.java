@@ -88,27 +88,23 @@ public class FriendComController {
     public Response modifyUserDept(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"uid"};
-            if (JzbCheckParam.allNotEmpty(param, str)) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("uid",userInfo.get("uid"));
-                param.put("cname",userInfo.get("cname"));
-                param.put("relphone",userInfo.get("relphone"));
-                //第一步，获取企业和部门id
-                List<Map<String, Object>> comDeptList = friendComService.getInviteCD(param);
-                //第二步，加入部门,修改邀请表状态
-                int size = comDeptList.size();
-                for (int i = 0; i < size; i++) {
-                    Map<String, Object> comDeptMap = comDeptList.get(i);
-                    deptService.addDeptUser(comDeptMap);
-                    comDeptMap.put("status",10);
-                    comDeptMap.put("time",System.currentTimeMillis());
-                    friendComService.updateInvite(comDeptMap);
-                }
-                result = Response.getResponseSuccess(userInfo);
-            } else {
-                result = Response.getResponseError();
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", userInfo.get("uid"));
+            param.put("cname", userInfo.get("cname"));
+            param.put("relphone", userInfo.get("relphone"));
+            //第一步，获取企业和部门id
+            List<Map<String, Object>> comDeptList = friendComService.getInviteCD(param);
+            //第二步，加入部门,修改邀请表状态
+            int size = comDeptList.size();
+            for (int i = 0; i < size; i++) {
+                Map<String, Object> comDeptMap = comDeptList.get(i);
+                deptService.addDeptUser(comDeptMap);
+                comDeptMap.put("status", 10);
+                comDeptMap.put("time", System.currentTimeMillis());
+                friendComService.updateInvite(comDeptMap);
             }
+            result = Response.getResponseSuccess(userInfo);
+
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
