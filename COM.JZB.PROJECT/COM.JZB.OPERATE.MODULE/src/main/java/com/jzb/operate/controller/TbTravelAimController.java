@@ -14,7 +14,7 @@ import java.util.Map;
  * 出差目标
  */
 @RestController
-@RequestMapping(value = "/travelAim")
+@RequestMapping(value = "/opreate/travelAim")
 public class TbTravelAimController {
 
     @Autowired

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 出差报销
+ */
 @RestController
 @RequestMapping(value = "/operate/travelConsume")
 public class TbTravelConsumeController {
@@ -18,7 +21,7 @@ public class TbTravelConsumeController {
     private TbTravelConsumeService tbTravelConsumeServicel;
 
     /**
-     * 添加出差记录
+     * 添加出差报销记录
      *
      * @param param
      * @return

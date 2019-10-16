@@ -17,7 +17,7 @@ import java.util.Map;
  * 出差审核Controller
  */
 @RestController
-@RequestMapping(value = "/travelVerify")
+@RequestMapping(value = "/operate/travelVerify")
 public class TbTravelVerifyController {
 
     @Autowired

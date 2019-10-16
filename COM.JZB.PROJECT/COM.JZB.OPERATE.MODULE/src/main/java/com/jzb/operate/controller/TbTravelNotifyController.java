@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 抄送
+ */
 @RestController
-@RequestMapping(value = "/travelNotify")
+@RequestMapping(value = "/operate/travelNotify")
 public class TbTravelNotifyController {
     @Autowired
     private TbTravelNotifyService tbTravelNotifyService;
