@@ -60,6 +60,7 @@ public class TbProductResListService {
     }
 
 
+
     /**
      * 点击修改的时候查询产品参数返回给前端
      * @param param
