@@ -44,7 +44,9 @@ public class JzbTree {
             }
             //添加子级list
             List<Map<String, Object>> childrenNew =  new LinkedList<>();
-            record.put("children",childrenNew);
+            if (!JzbDataType.isCollection(record.get("children"))) {
+                record.put("children",childrenNew);
+            }
             //判断一级菜单
             if (pmId.equals(firstParent)) {
                 result.add(record);
