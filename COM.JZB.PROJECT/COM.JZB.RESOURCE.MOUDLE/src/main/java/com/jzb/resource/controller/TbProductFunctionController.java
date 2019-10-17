@@ -44,9 +44,7 @@ public class TbProductFunctionController {
 
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(list);
-
                 //总数
-
                 int count = list.size();
                 pageInfo.setTotal(count);
                 // 定义返回结果
@@ -129,4 +127,30 @@ public class TbProductFunctionController {
         return result;
     }
 
+    /**
+     * 点击修改时查询产品功能表中的数据
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getProductFunction", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getProductFunction(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            List<Map<String, Object>> list = tbProductFunctionService.getProductFunction(param);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+
+            //设置返回响应结果
+            result = Response.getResponseSuccess(userInfo);
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+
+        return result;
+    }
 }

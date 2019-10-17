@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,9 +24,7 @@ import java.io.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import static sun.plugin.javascript.navig.JSType.URL;
 
 @RestController
 @RequestMapping(value = "/ProductResList")
