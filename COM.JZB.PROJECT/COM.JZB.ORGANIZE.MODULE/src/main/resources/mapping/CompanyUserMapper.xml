@@ -175,4 +175,187 @@
         offset
         #{pageno}
     </select>
+
+    <!--根据单位ID显示对应的供应商或全部供应商的总数-->
+    <select id="queryCompanySupplierCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_company_common cc
+        LEFT JOIN
+        tb_company_list cl on cc.cid = cl.cid
+        LEFT JOIN
+        tb_dept_user du
+        ON du.cid = cl.cid
+        AND du.uid = cl.manager
+        left join
+        tb_company_info ci on ci.cid = cl.cid
+        where
+        cc.status = #{status}
+        <if test="region != null and region != ''">and cl.region = #{region}</if>
+        <if test="cname != null and cname != ''">
+            and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
+        </if>
+    </select>
+
+    <!--根据单位ID显示对应的供应商或全部供应商-->
+    <select id="queryCompanySupplierList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        cl.cid,
+        cl.cname,
+        cl.region,
+        du.cname AS uname,
+        du.phone,
+        ci.address,
+        cl.authid
+        FROM
+        tb_company_supplier cs
+        LEFT JOIN
+        tb_company_list cl on cs.cid = cl.cid
+        LEFT JOIN
+        tb_dept_user du
+        ON du.cid = cl.cid
+        AND du.uid = cl.manager
+        left join
+        tb_company_info ci on ci.cid = cl.cid
+        where
+        cs.status = #{status}
+        <if test="cid != null and cid != ''">and cs.cid = #{cid}</if>
+        order by cs.id desc
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--点击业主下的项目获取项目列表的总数-->
+    <select id="queryCompanyProjectCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_company_project
+        where
+        status = #{status}
+        and
+        cid = #{cid}
+        <if test="projectname != null and projectname != ''">
+            and projectname LIKE CONCAT( '%',#{projectname},'%')
+        </if>
+    </select>
+
+    <!--点击业主下的项目获取项目列表-->
+    <select id="queryCompanyProjectList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        cid,
+        projectid,
+        projectname,
+        region,
+        address,
+        plantime,
+        verifytime,
+        tendertime,
+        tenderuid,
+        tendername,
+        tenderphone,
+        wintime,
+        buildstime,
+        buildetime,
+        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        summary
+        FROM
+        tb_company_project
+        where
+        status = #{status}
+        and
+        cid = #{cid}
+        <if test="projectname != null and projectname != ''">
+            and projectname LIKE CONCAT( '%',#{projectname},'%')
+        </if>
+        order by id desc
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--CRM-销售业主-公海-业主下的项目7-点击业主下的项目中新建项目-->
+    <insert id="addCompanyProject" parameterType="java.util.Map">
+        INSERT INTO tb_company_project
+        (cid, projectid, projectname, region, address, tendertime, tenderuid,
+         tendername, tenderphone, wintime, idx, adduid, addtime, status, summary)
+        VALUES
+        (
+        #{cid},
+        #{projectid},
+        #{projectname},
+        #{region},
+        <choose>
+            <when test=" address != null and address !=''">
+                #{address},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test=" tendertime != null and tendertime !=''">
+                ${tendertime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test=" tenderuid != null and tenderuid !=''">
+                #{tenderuid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{tendername},
+        #{tenderphone},
+        ${wintime},
+        <choose>
+            <when test=" idx != null and idx !=''">
+                ${idx},
+            </when>
+            <otherwise>
+                (SELECT count(1)+1 FROM tb_company_project),
+            </otherwise>
+        </choose>
+        #{uid},
+        ${addtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--主页中单位设置基本资料进行企业系统配置表修改-->
+    <update id="updateCompanyProject" parameterType="java.util.Map">
+        UPDATE
+        tb_company_project
+        SET
+        projectname = #{projectname},
+        region = #{region},
+        tendertime = ${tendertime},
+        tendername = #{tendername},
+        tenderphone = #{tenderphone},
+        upduid = #{uid},
+        updtime = ${updtime}
+        <if test="address != null ">,address = #{address}</if>
+        <if test="tenderuid != null ">,tenderuid = #{tenderuid}</if>
+        <if test="summary != null ">,summary = #{summary}</if>
+        WHERE
+        cid = #{cid}
+        and
+        projectid = #{projectid}
+    </update>
 </mapper>
