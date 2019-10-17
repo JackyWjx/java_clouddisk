@@ -73,4 +73,14 @@ public class TbProductResListService {
     public List<Map<String, Object>> getProductItem(Map<String, Object> param) {
         return tbProductResListMapper.getProductItem(param);
     }
+
+
+    /**
+     * 查询验收单的URl
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getURL(Map<String, Object> param) {
+        return tbProductResListMapper.getURL(param);
+    }
 }
