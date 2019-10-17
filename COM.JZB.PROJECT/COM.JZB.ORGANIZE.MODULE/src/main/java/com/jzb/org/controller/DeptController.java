@@ -13,6 +13,7 @@ import com.jzb.org.service.OrgToken;
 import com.jzb.org.service.ProductService;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -468,8 +469,8 @@ public class DeptController {
             } else {
                 url = "static/excel/importuserdept.xlsx";
             }
-
-            InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(url);
+            ClassPathResource resource = new ClassPathResource(url);
+            InputStream in = resource.getInputStream();
             //读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             //响应到客户端
