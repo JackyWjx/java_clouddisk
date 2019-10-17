@@ -10,7 +10,7 @@
         <if test="keyword!='' and keyword!=null">
             and (cname ~ #{keyword} or tempcode ~ #{keyword})
         </if>
-        order by idx asx
+        order by idx
         limit #{rows} offset #{page}
     </select>
 
