@@ -23,6 +23,7 @@
         a.cname,
         a.status,
         a.paradesc,
+        a.service,
         a.summary,
         b.pricetype,
         b.price,
