@@ -75,4 +75,36 @@ public interface CompanyUserMapper {
      * @author kuangbin
      */
     List<Map<String, Object>> queryCompanySupplierList(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的项目6
+     * 点击业主下的项目获取项目列表的总数
+     *
+     * @author kuangbin
+     */
+    int queryCompanyProjectCount(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的项目6
+     * 点击业主下的项目获取项目列表
+     *
+     * @author kuangbin
+     */
+    List<Map<String, Object>> queryCompanyProjectList(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中新建项目
+     *
+     * @author kuangbin
+     */
+    int addCompanyProject(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的项目8
+     * 点击业主下的项目中的修改项目按钮
+     *
+     * @author kuangbin
+     */
+    int updateCompanyProject(Map<String, Object> param);
 } // End interface CompanyMapper
