@@ -42,6 +42,7 @@ public class DeptController {
 
     @Autowired
     private ProductService productService;
+
     /**
      * 根据企业id获取部门信息
      *
@@ -467,8 +468,8 @@ public class DeptController {
             } else {
                 url = "static/excel/importuserdept.xlsx";
             }
-            String srcFilePath = Thread.currentThread().getContextClassLoader().getResource(url).getPath();
-            FileInputStream in = new FileInputStream(srcFilePath);
+            
+            InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(url);
             //读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             //响应到客户端
