@@ -154,7 +154,7 @@
         price,
         pricedesc,
         accept,
-        accpetname,
+        accceptname,
         addtime,
         updtime,
         paradesc,
@@ -204,7 +204,7 @@
         </choose>
         <choose>
             <when test="price != null">
-                #{price},
+                cast(#{price} as integer),
             </when>
             <otherwise>
                 null,
@@ -227,8 +227,8 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="accpetname != null">
-                #{accpetname},
+            <when test="accceptname != null">
+                #{accceptname},
             </when>
             <otherwise>
                 null,
@@ -286,14 +286,14 @@
         set
         <if test="prodesc">prodesc=#{prodesc},</if>
         <if test="service">service=#{service},</if>
-        <if test="price">price=#{price},</if>
+        <if test="price">price=cast(#{price} as integer),</if>
         <if test="pricedesc">pricedesc=#{pricedesc},</if>
         <if test="accept">accept=#{accept},</if>
         <if test="paradesc">paradesc=#{paradesc},</if>
         <if test="upduid">upduid=#{upduid},</if>
-        <if test="updtime">updtime=#{updtime},</if>
         <if test="summary">summary=#{summary},</if>
-        <if test="status">status=#{status}</if>
+        <if test="status">status=#{status},</if>
+        <if test="updtime">updtime=#{updtime}</if>
     </insert>
 
 

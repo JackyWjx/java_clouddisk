@@ -25,6 +25,24 @@
         group by a.id
     </select>
 
+    <!--点击修改查询出产品功能的-->
+    <select id="getProductFunction" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        pid,
+        funtype,
+        funsubtype,
+        funid,
+        cname,
+        price,
+        weight,
+        introduce,
+        fundesc,
+        summary
+        from
+        tb_product_function
+        where
+        pid = #{pid}
+    </select>
 
     <!--产品功能的添加-->
     <insert id="saveTbProductFunction" parameterType="java.util.List">

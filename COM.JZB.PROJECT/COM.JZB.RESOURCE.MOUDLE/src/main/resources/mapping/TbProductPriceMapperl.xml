@@ -23,7 +23,10 @@
         a.cname,
         a.status,
         a.paradesc,
-        a.summary
+        a.summary,
+        b.pricetype,
+        b.price,
+        a.pid
         from
         tb_product_price b
         LEFT JOIN
@@ -36,7 +39,6 @@
         <if test="cname != null">
             and a.cname like concat('%',#{cname},'%')
         </if>
-        group by a.id
     </select>
 
     <!--添加产品报价表-->
@@ -102,7 +104,7 @@
         </choose>
         <choose>
             <when test="item.size != null">
-                #{item.size},
+                cast(#{item.size} as integer),
             </when>
             <otherwise>
                 null,
@@ -117,7 +119,7 @@
             </otherwise>
         </choose><choose>
         <when test="item.price != null">
-            #{item.price},
+            cast(#{item.price} as integer),
         </when>
         <otherwise>
             null,
@@ -171,9 +173,9 @@
         <if test="item.itemid != null">itemid=#{item.itemid},</if>
         <if test="item.itemname != null">itemname=#{item.itemname},</if>
         <if test="item.pricedesc != null">pricedesc=#{item.pricedesc},</if>
-        <if test="item.size != null">size=#{item.size},</if>
+        <if test="item.size != null">size=cast(#{item.size} as integer),</if>
         <if test="item.unit != null">unit=#{item.unit},</if>
-        <if test="item.price != null">price=#{item.price},</if>
+        <if test="item.price != null">price=cast(#{item.price} as integer),</if>
         <if test="item.weight != null">weight=#{item.weight},</if>
         <if test="item.adduid != null">adduid=#{item.adduid},</if>
         <if test="item.upduid != null">upduid=#{item.upduid},</if>
