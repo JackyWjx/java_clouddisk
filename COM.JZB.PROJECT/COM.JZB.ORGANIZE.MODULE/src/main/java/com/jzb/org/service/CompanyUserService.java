@@ -2,6 +2,7 @@ package com.jzb.org.service;
 
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
@@ -182,5 +183,65 @@ public class CompanyUserService {
             companyMap.put("region", region.getResponseEntity());
         }
         return list;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目6
+     * 点击业主下的项目获取项目列表的总数
+     *
+     * @author kuangbin
+     */
+    public int getCompanyProjectCount(Map<String, Object> param) {
+        int count;
+        try {
+            param.put("status", "1");
+            count = companyUserMapper.queryCompanyProjectCount(param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目6
+     * 点击业主下的项目获取项目列表
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getCompanyProjectList(Map<String, Object> param) {
+        param.put("status", "1");
+        param = setPageSize(param);
+        List<Map<String, Object>> list = companyUserMapper.queryCompanyProjectList(param);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> companyMap = list.get(i);
+            Response region = regionBaseApi.getRegionInfo(companyMap);
+            companyMap.put("region", region.getResponseEntity());
+        }
+        return list;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中新建项目
+     *
+     * @author kuangbin
+     */
+    public int addCompanyProject(Map<String, Object> param) {
+        param.put("status", "1");
+        param.put("projectid", JzbRandom.getRandomCharCap(19));
+        return companyUserMapper.addCompanyProject(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目8
+     * 点击业主下的项目中的修改项目按钮
+     *
+     * @author kuangbin
+     */
+    public int modifyCompanyProject(Map<String, Object> param) {
+        param.put("status", "1");
+        param.put("updtime", System.currentTimeMillis());
+        return companyUserMapper.updateCompanyProject(param);
     }
 }
