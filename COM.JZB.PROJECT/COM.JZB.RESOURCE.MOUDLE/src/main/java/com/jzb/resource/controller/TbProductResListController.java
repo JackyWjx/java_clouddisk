@@ -11,6 +11,7 @@ import com.jzb.resource.service.AdvertService;
 import com.jzb.resource.service.TbProductPriceService;
 import com.jzb.resource.service.TbProductResListService;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,8 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static sun.plugin.javascript.navig.JSType.URL;
 
 @RestController
 @RequestMapping(value = "/ProductResList")
@@ -283,8 +286,10 @@ public class TbProductResListController {
             file.transferTo(desFile);
             //返回成功的结果
             result = Response.getResponseSuccess();
-            result.setResponseEntity(filePath);
-
+            Map<String, String> stringObjectMap = new HashedMap();
+            stringObjectMap.put("accept",filePath);
+            stringObjectMap.put("acceptname", filename);
+            result.setResponseEntity(stringObjectMap);
 
         }
         catch (Exception e){
@@ -313,10 +318,15 @@ public class TbProductResListController {
         ServletOutputStream out = null;
         try {
             //获取url地址
-            String URL = String.valueOf(param.get("accept"));
+//            String URL = String.valueOf(param.get("accept"));
+             List<Map<String,Object>> list = tbProductResListService.getURL(param);
+            String url = null;
+            for (Map<String, Object> stringObjectMap : list) {
+                url = String.valueOf(stringObjectMap.get("accept"));
+            }
             //设置编码集
             request.setCharacterEncoding("utf-8");
-            file = new File(URL);
+            file = new File(url);
             //读取文件的路径
             fis = new FileInputStream(file);
             //写出文件
