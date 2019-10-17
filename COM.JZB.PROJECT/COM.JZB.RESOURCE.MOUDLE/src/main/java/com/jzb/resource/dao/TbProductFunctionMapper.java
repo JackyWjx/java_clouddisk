@@ -30,4 +30,11 @@ public interface TbProductFunctionMapper {
      * @return
      */
     int updateTbProductFunction(List<Map<String, Object>> paramList);
+
+    /**
+     * 点击修改时查询产品功能表中的数据
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getProductFunction(Map<String, Object> param);
 }
