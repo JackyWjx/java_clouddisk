@@ -154,6 +154,7 @@
         price,
         pricedesc,
         accept,
+        accpetname,
         addtime,
         updtime,
         paradesc,
@@ -220,6 +221,14 @@
         <choose>
             <when test="accept != null">
                 #{accept},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="accpetname != null">
+                #{accpetname},
             </when>
             <otherwise>
                 null,
@@ -302,6 +311,16 @@
             where prodid=#{item.prodid}
         </foreach>
     </update>
+
+    <select id="getURL" parameterType="java.util.Map" resultType="java.util.Map">
+            select
+            accept
+            from
+            tb_product_res_list
+            where
+            pid = #{pid}
+    </select>
+
 </mapper>
 
 
