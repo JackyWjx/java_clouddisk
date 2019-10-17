@@ -58,4 +58,12 @@ public interface TbProductResListMapper {
      * @return
      */
     List<Map<String, Object>> getProductItem(Map<String, Object> param);
+
+    /**
+     * 查询验收单的URL
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getURL(Map<String, Object> param);
+
 }
