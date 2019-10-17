@@ -1,9 +1,19 @@
 package com.jzb.message.util;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.util.JzbTools;
+import com.jzb.message.dao.MsgListMapper;
+import com.jzb.message.message.MessageQueue;
+import com.jzb.message.message.MssageInfo;
+import com.jzb.message.message.ShortMessage;
+import com.jzb.message.service.ShortMessageService;
 import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Description: 工具类
@@ -11,95 +21,190 @@ import java.util.*;
  */
 public class MessageUtile {
 
+    private final static Logger logger = LoggerFactory.getLogger(MessageUtile.class);
+
     /**
-     *  替换发送参数
+     * 私有实例
      */
-    public static Map<String , Object> setUpPara(List<Map<String , Object>> list , String sendPara){
+    private final static MessageUtile utile = new MessageUtile();
+
+    /**
+     *  微信 添加至发送队列
+     */
+    public static boolean saveWeChatInfo(String receive,Map<String , Object> map,Map<String , Object> dataMap){
+
+        return true;
+    }
+
+    /**
+     *  平台 添加至发送队列
+     */
+    public static boolean saveSystemInfo(String receive,Map<String , Object> map,Map<String , Object> dataMap){
+        return true;
+    }
+
+    /**
+     *  邮件 添加至发送队列
+     */
+    public static boolean saveMeilInfo(String receive,Map<String , Object> map,Map<String , Object> dataMap){
+        boolean result ;
+        try{
+            logger.info("邮件接收人=======>>"+receive);
+            logger.info("邮件模板  =======>>"+map.get("temp").toString());
+            logger.info("邮件配置  =======>>"+map.get("config").toString());
+            map.put("receive",receive);
+            map.put("para",dataMap);
+            // 添加至发送队列
+            MssageInfo info = new ShortMessage(map);
+            MessageQueue.setWaitSendQueue(info);
+            logger.info("添加至发送队列");
+            result = true;
+        }catch (Exception e){
+            result =  false;
+            JzbTools.logError(e);
+        }
+        return result;
+    }
+
+    /**
+     *  短信 添加至发送队列
+     */
+    public static boolean saveMessageInfo(String receive,Map<String , Object> map,Map<String , Object> dataMap){
+        boolean result ;
+        try{
+            logger.info("短信接收人 =======>>"+receive);
+            logger.info("短信模板   =======>>"+map.get("temp").toString());
+            logger.info("短信配置   =======>>"+map.get("config").toString());
+            map.put("receive",receive);
+            map.put("para",dataMap);
+            // 添加至发送队列
+            MssageInfo info = new ShortMessage(map);
+            MessageQueue.setWaitSendQueue(info);
+            logger.info("添加至发送队列");
+            result = true;
+        }catch (Exception e){
+            result =  false;
+            JzbTools.logError(e);
+        }
+        return result;
+    }
+
+    /***
+     *  分类
+     */
+    public static Map<String , Object> msgTypeGroup(List<Map<String , Object>> configList ,Map<String , Object> tempList){
+        Map<String , Object> map  = new HashMap<>();
+        try{
+            for(int k = 0 ; k < configList.size() ;k++){
+                Map<String , Object> list = new HashMap<>();
+                if(JzbDataType.getInteger(configList.get(k).get("msgtype")) == 1){
+                    list.put("config",configList.get(k));
+                    list.put("temp",tempList.get("1"));
+                    map.put("1",list);
+                }else if(JzbDataType.getInteger(configList.get(k).get("msgtype")) == 2){
+                    list.put("config",configList.get(k));
+                    list.put("temp",tempList.get("2"));
+                    map.put("2",list);
+                }else if(JzbDataType.getInteger(configList.get(k).get("msgtype")) == 4){
+                    list.put("config",configList.get(k));
+                    list.put("temp",tempList.get("4"));
+                    map.put("4",list);
+                }else if (JzbDataType.getInteger(configList.get(k).get("msgtype")) == 8) {
+                    list.put("config",configList.get(k));
+                    list.put("temp",tempList.get("8"));
+                    map.put("8",list);
+                }
+            }
+        }catch (Exception e){
+            JzbTools.logError(e);
+        }
+        return  map;
+    }
+
+    /**
+     *  替换发送参数  用户
+     */
+    public static Map<String , Object> setUpParaByUser(String para , String sendPara,Map<String , Object> sendMap){
         Map<String , Object> map = new HashMap<>();
         try{
-                JSONObject json = JSONObject.fromObject(sendPara);
-                for(int i = 0; i<list.size();i++){
-                    if(JzbDataType.getInteger(list.get(i).get("msgtype")) == 1){
-
-                        // 短信消息 判断是否存在需要修改的参数
-                        if(json.containsKey("sms")){
-                            JSONObject smsJson =  JSONObject.fromObject(json.getString("sms"));
-                            // 获取所有需要修改参数的key
-                            Set smsSet =  smsJson.keySet();
-                            // 循环替换
-                            Iterator<String> iterator =smsSet.iterator();
-                            JSONObject smsParaJson = JSONObject .fromObject(list.get(i).get("context").toString());
-                            while (iterator.hasNext()){
-                                String code =  iterator.next();
-                                smsParaJson.remove(code);
-                                smsParaJson.accumulate(code,smsJson.getString(code));
-                            }
-                            map.put("1",smsParaJson);
-                        }else{
-                            JSONObject smsParaJson = JSONObject .fromObject(list.get(i).get("context").toString());
-                            map.put("1",smsParaJson);
-                        }
-                    }else if(JzbDataType.getInteger(list.get(i).get("msgtype")) == 2){
-                        // 邮件消息
-                        if (json.containsKey("mail")) {
-                            JSONObject mailJson =  JSONObject.fromObject(json.getString("mail"));
-                            // 获取所有需要修改参数的key
-                            Set mailSet =  mailJson.keySet();
-                            // 循环替换
-                            Iterator<String> iterator =mailSet.iterator();
-                            JSONObject mailParaJson = JSONObject .fromObject(list.get(i).get("context").toString());
-                            while (iterator.hasNext()){
-                                String code =  iterator.next();
-                                mailParaJson.remove(code);
-                                mailParaJson.accumulate(code,mailJson.getString(code));
-                            }
-                            // 添加输出队列
-                            map.put("2",mailParaJson);
-                        }else {
-                            JSONObject mailParaJson = JSONObject.fromObject(list.get(i).get("context").toString());
-                            map.put("2",mailParaJson);
-                        }
-                    }else if(JzbDataType.getInteger(list.get(i).get("msgtype")) == 4){
-                        // 微信消息
-                        if(json.containsKey("sys")){
-                            JSONObject sysJson =  JSONObject.fromObject(json.getString("sys"));
-                            // 获取所有需要修改参数的key
-                            Set sysSet =  sysJson.keySet();
-                            // 循环替换
-                            Iterator<String> iterator =sysSet.iterator();
-                            JSONObject sysParaJson = JSONObject .fromObject(list.get(i).get("context").toString());
-                            while (iterator.hasNext()){
-                                String code =  iterator.next();
-                                sysParaJson.remove(code);
-                                sysParaJson.accumulate(code,sysJson.getString(code));
-                            }
-                            map.put("4",sysParaJson);
-                        }else{
-                            JSONObject sysParaJson = JSONObject .fromObject(list.get(i).get("context").toString());
-                            map.put("4",sysParaJson);
-                        }
-
-                    } else if (JzbDataType.getInteger(list.get(i).get("msgtype")) == 8) {
-                        // 系统消息
-                        if(json.containsKey("wechat")){
-                            JSONObject wechatJson =  JSONObject.fromObject(json.getString("wechat"));
-                            // 获取所有需要修改参数的key
-                            Set wechatSet =  wechatJson.keySet();
-                            // 循环替换
-                            Iterator<String> iterator =wechatSet.iterator();
-                            JSONObject weChatParaJson = JSONObject .fromObject(list.get(i).get("context").toString());
-                            while (iterator.hasNext()){
-                                String code =  iterator.next();
-                                weChatParaJson.remove(code);
-                                weChatParaJson.accumulate(code,wechatJson.getString(code));
-                            }
-                            map.put("8",weChatParaJson);
-                        }else{
-                            JSONObject weChatParaJson = JSONObject .fromObject(list.get(i).get("context").toString());
-                            map.put("8",weChatParaJson);
-                        }
-                    }
+            if(!JzbTools.isEmpty(para)){
+                JSONObject smsJson = JSONObject.fromObject(para);
+                // 获取所有需要修改参数的key
+                Set smsSet =  smsJson.keySet();
+                // 循环替换
+                Iterator<String> iterator =smsSet.iterator();
+                JSONObject smsParaJson = JSONObject .fromObject(sendPara);
+                while (iterator.hasNext()){
+                    String code =  iterator.next();
+                    smsParaJson.remove(code);
+                    smsParaJson.accumulate(code,smsJson.getString(code));
                 }
+                map.put("1",smsParaJson);
+            }else{
+                map.put("1",sendPara);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  map;
+    }
+
+
+    /**
+     *  替换发送参数  用户组
+     */
+    public static Map<String , Object> setUpParaByGroupid(List<Map<String , Object>> list , String sendPara,Map<String , Object> sendMap){
+        Map<String , Object> map = new HashMap<>();
+        try{
+            JSONObject sendpa = JSONObject.fromObject(sendPara);
+            for(int i = 0; i<list.size();i++){
+                if(JzbDataType.getInteger(list.get(i).get("msgtype")) == 1){
+                    JSONObject smsParaJson ;
+                    JSONObject smsParas = JSONObject.fromObject( list.get(i).get("context").toString());
+                    if (sendpa.containsKey(sendMap.get("groupid"))) {
+                        smsParaJson = JSONObject.fromObject(sendpa.getString(sendMap.get("groupid").toString()));
+                    } else {
+                        smsParaJson = JSONObject.fromObject(sendpa.getString("common"));
+                    }
+                    if(!JzbTools.isEmpty(sendpa)){
+                        Set set = smsParas.keySet();
+                        // 循环替换
+                        Iterator<String> iterator = set.iterator();
+                        while (iterator.hasNext()){
+                            String code =  iterator.next();
+                            smsParas.remove(code);
+                            smsParas.accumulate(code,smsParaJson.getString(code));
+                        }
+                        map.put("1",smsParas);
+                    }else{
+                        map.put("1",smsParas);
+                    }
+                } else if(JzbDataType.getInteger(list.get(i).get("msgtype")) == 2){
+                    String context = list.get(i).get("context").toString();
+                    if(!JzbTools.isEmpty(sendpa)){
+                        JSONObject meilParaJson ;
+                        if (sendpa.containsKey(sendMap.get("groupid"))) {
+                            meilParaJson = JSONObject.fromObject(sendpa.getString(sendMap.get("groupid").toString()));
+                        } else {
+                            meilParaJson = JSONObject.fromObject(sendpa.getString("common"));
+                        }
+                        // 正则替换
+                        String regex = "\\{\\{([^}])*\\}\\}";
+                        Pattern compile = Pattern.compile(regex);
+                        Matcher matcher = compile.matcher(context);
+                        while(matcher.find()){
+                            String group = matcher.group();
+                            context = context.replace(group,meilParaJson.getString(group.replace("{","").replace("}","")));
+                        }
+                        map.put("2",context);
+                    }else {
+                        // 添加输出队列
+                        map.put("2",context);
+                    }
+                } else if(JzbDataType.getInteger(list.get(i).get("msgtype")) == 4){
+                } else if (JzbDataType.getInteger(list.get(i).get("msgtype")) == 8) {
+                }
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -206,7 +311,7 @@ public class MessageUtile {
     }
 
     /***
-     *
+     * 发送的电话号码一次不能超过一千个 分割
      */
     public static List<String> sendPhoneLengthMap(Map<String , Object> list){
         List<String> resultList =  new ArrayList<>();

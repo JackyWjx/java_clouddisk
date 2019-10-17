@@ -85,7 +85,7 @@ public class MessageGroupController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String , Object>> list = groupService.listMsgGroupConfigure(map);
             int count  =  groupService.queryMsgGroupConfigureCount(map);
-            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
+            response =  Response.getResponseSuccess();
             pageInfo.setList(list);
             pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
