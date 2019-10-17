@@ -463,13 +463,12 @@ public class DeptController {
             String url;
             int type = JzbDataType.getInteger(param.get("type"));
             if (type == 1) {
-                url = "D:/v3/static/excel/importuser.xlsx";
+                url = "static/excel/importuser.xlsx";
             } else {
-                url = "D:/v3/static/excel/importuserdept.xlsx";
+                url = "static/excel/importuserdept.xlsx";
             }
-
-            //      String srcFilePath = Thread.currentThread().getContextClassLoader().getResource(url).getPath();
-            FileInputStream in = new FileInputStream(url);
+            String srcFilePath = Thread.currentThread().getContextClassLoader().getResource(url).getPath();
+            FileInputStream in = new FileInputStream(srcFilePath);
             //读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             //响应到客户端
