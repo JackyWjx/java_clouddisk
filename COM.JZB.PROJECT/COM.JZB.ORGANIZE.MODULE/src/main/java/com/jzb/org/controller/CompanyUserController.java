@@ -9,6 +9,7 @@ import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.service.CompanyService;
 import com.jzb.org.service.CompanyUserService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -178,6 +179,85 @@ public class CompanyUserController {
             pageInfo.setList(companyList);
             pageInfo.setTotal(count > 0 ? count : companyList.size());
             result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目6
+     * 点击业主下的项目获取项目列表
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getCompanyProjectList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyProjectList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取单位总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询单位总数
+                count = companyUserService.getCompanyProjectCount(param);
+            }
+            // 返回所有的企业列表
+            List<Map<String, Object>> companyList = companyUserService.getCompanyProjectList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中新建项目
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/addCompanyProject", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyProject(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回所有的企业列表
+            int count = companyUserService.addCompanyProject(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目8
+     * 点击业主下的项目中的修改项目按钮
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/modifyCompanyProject", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyCompanyProject(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回所有的企业列表
+            int count = companyUserService.modifyCompanyProject(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
