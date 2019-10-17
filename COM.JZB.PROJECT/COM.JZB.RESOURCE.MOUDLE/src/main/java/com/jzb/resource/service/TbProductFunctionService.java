@@ -39,4 +39,13 @@ public class TbProductFunctionService {
     public int updateTbProductFunction(List<Map<String, Object>> paramList) {
         return tbProductFunctionMapper.updateTbProductFunction(paramList);
     }
+
+    /**
+     * 点击修改时查询产品功能表中的数据
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getProductFunction(Map<String, Object> param) {
+        return tbProductFunctionMapper.getProductFunction(param);
+    }
 }
