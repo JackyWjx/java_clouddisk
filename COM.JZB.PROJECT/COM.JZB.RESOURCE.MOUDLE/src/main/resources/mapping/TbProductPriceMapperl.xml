@@ -12,7 +12,8 @@
          count(1)
          from
          tb_product_res_list
-         where status='1'
+         where
+         status='1'
      </select>
 
     <!--查询合同配置中的资源产品-->
@@ -25,8 +26,8 @@
         a.paradesc,
         a.service,
         a.summary,
-        b.pricetype,
-        b.price,
+        a.pricedesc,
+        a.price,
         a.pid
         from
         tb_product_price b
@@ -40,8 +41,37 @@
         <if test="cname != null">
             and a.cname like concat('%',#{cname},'%')
         </if>
+        group by
+        a.id
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
     </select>
-
+    <!--查询分页的总数-->
+    <select id="getCount" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from
+        (
+        select
+        a.id
+        from
+        tb_product_price b
+        LEFT JOIN
+        tb_product_res_list a
+        on a.pid = b.pid
+        where 1=1
+        <if test="plid != null">
+            and a.plid = #{plid}
+        </if>
+        <if test="cname != null">
+            and a.cname like concat('%',#{cname},'%')
+        </if>
+        group by
+        a.id
+        ) as num
+        </select>
     <!--添加产品报价表-->
     <insert id="saveProductPrice" parameterType="java.util.List">
         insert into
@@ -183,7 +213,7 @@
         <if test="item.status != null">status=#{item.status},</if>
         <if test="item.summary != null">summary=#{item.summary},</if>
         <if test="item.updtime != null">updtime=#{item.updtime}</if>
-            where
+        where
         pid=#{item.pid}
         </foreach>
     </update>
@@ -191,16 +221,13 @@
     <!--修改时查询数据-->
     <select id="getTbProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
         select
-        pricetype,
-        itemid,
+        pid,
         itemname,
         pricedesc,
         size,
         unit,
         price,
-        weight,
-        status,
-        summary
+        status
         from
         tb_product_price
         where

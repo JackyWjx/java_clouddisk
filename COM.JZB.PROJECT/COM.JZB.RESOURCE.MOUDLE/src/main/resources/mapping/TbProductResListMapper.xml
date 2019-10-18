@@ -36,9 +36,36 @@
         </if>
          group by
          a.id
+         limit
+         #{rows}
+         offset
+         #{page}
     </select>
 
-
+    <!--查询分页的总数-->
+       <select id="getCount" resultType="int" parameterType="java.util.Map">
+          select count(1)
+          from
+          (select
+           a.id
+           from
+           tb_product_paramete_item b
+           LEFT JOIN
+           tb_product_res_list a
+           on a.pid = b.prodid
+           where 1=1
+           <if test="plid != null">
+               and a.plid = #{plid}
+           </if>
+           <if test="status != null">
+               and a.status = #{status}
+           </if>
+           <if test="cname != null">
+               and a.cname ~ #{cname}
+           </if>
+           group by
+           a.id) as num
+       </select>
 
 
     <select id="getProductItem" parameterType="java.util.Map" resultType="java.util.Map">
@@ -154,7 +181,7 @@
         price,
         pricedesc,
         accept,
-        accceptname,
+        acceptname,
         addtime,
         updtime,
         paradesc,
@@ -204,7 +231,7 @@
         </choose>
         <choose>
             <when test="price != null">
-                cast(#{price} as integer),
+                cast(#{price} as float),
             </when>
             <otherwise>
                 null,
@@ -228,7 +255,7 @@
         </choose>
         <choose>
             <when test="accceptname != null">
-                #{accceptname},
+                #{acceptname},
             </when>
             <otherwise>
                 null,
@@ -286,7 +313,7 @@
         set
         <if test="prodesc">prodesc=#{prodesc},</if>
         <if test="service">service=#{service},</if>
-        <if test="price">price=cast(#{price} as integer),</if>
+        <if test="price">price=cast(#{price} as float),</if>
         <if test="pricedesc">pricedesc=#{pricedesc},</if>
         <if test="accept">accept=#{accept},</if>
         <if test="paradesc">paradesc=#{paradesc},</if>
@@ -314,7 +341,8 @@
 
     <select id="getURL" parameterType="java.util.Map" resultType="java.util.Map">
             select
-            accept
+            accept,
+            acceptname
             from
             tb_product_res_list
             where

@@ -23,8 +23,40 @@
             and a.cname like concat('%',#{cname},'%')
         </if>
         group by a.id
+        limit
+        #{rows}
+        offset
+        #{page}
     </select>
 
+    <!--查询分页的总数-->
+    <select id="getCount" resultType="int" parameterType="java.util.Map">
+        select
+        count(1)
+        from
+        (
+        select
+        a.id,
+        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        a.cname,
+        a.status,
+        a.paradesc,
+        a.summary
+        from
+        tb_product_function b
+        LEFT JOIN
+        tb_product_res_list a
+        on a.pid = b.pid
+        where 1=1
+        <if test="status != null">
+            and a.status = #{status}
+        </if>
+        <if test="cname != null">
+            and a.cname like concat('%',#{cname},'%')
+        </if>
+        group by a.id
+        ) as num
+    </select>
     <!--点击修改查询出产品功能的-->
     <select id="getProductFunction" parameterType="java.util.Map" resultType="java.util.Map">
         select
