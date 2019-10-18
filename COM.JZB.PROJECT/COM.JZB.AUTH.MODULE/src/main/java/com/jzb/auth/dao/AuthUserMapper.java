@@ -154,4 +154,20 @@ public interface AuthUserMapper {
     * @return int
     */
     int updateUserStatus(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 点击业主下的人员中的新增人员按钮进行加入员工
+     *
+     * @author kuangbin
+     */
+    int insertCompanyEmployee(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的人员12
+     * 点击业主下的人员中的修改人员按钮进行修改员工信息
+     *
+     * @author kuangbin
+     */
+    int updateCompanyEmployee(Map<String, Object> param);
 } // End interface AuthUserMapper
