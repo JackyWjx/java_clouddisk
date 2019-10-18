@@ -1,5 +1,6 @@
 package com.jzb.resource.service;
 
+import com.jzb.base.util.JzbRandom;
 import com.jzb.resource.dao.TbContractTemplateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class TbContractTemplateService {
      * @return
      */
     public int addContractTemplate(Map<String, Object> param){
+        param.put("typeid", JzbRandom.getRandomChar(5));
         return tbContractTemplateMapper.addContractTemplate(param);
     }
 

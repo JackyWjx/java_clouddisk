@@ -1,5 +1,6 @@
 package com.jzb.resource.service;
 
+import com.jzb.base.util.JzbRandom;
 import com.jzb.resource.dao.TbContractTemplateItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,12 @@ public class TbContractTemplateItemService {
 
     /**
      * 修改合同模板项
-     * @param list
+     * @param map
      * @return
      */
-    public int updateContractTemplateItem(List<Map<String, Object>> list){
-        return tbContractTemplateItemMapper.updateContractTemplateItem(list);
+    public int updateContractTemplateItem(Map<String, Object> map){
+        map.put("updtime", System.currentTimeMillis());
+        return tbContractTemplateItemMapper.updateContractTemplateItem(map);
     }
 
 
@@ -46,6 +48,15 @@ public class TbContractTemplateItemService {
      * @return
      */
     public int  addContractTemplateItem(List<Map<String, Object>> list){
+        for (int i = 0; i <list.size(); i++) {
+            list.get(i).put("itemid", JzbRandom.getRandomChar(11));
+        }
         return tbContractTemplateItemMapper.addContractTemplateItem(list);
+    }
+
+    public int addContractTemplateItems(Map<String, Object> map) {
+       map.put("itemid", JzbRandom.getRandomChar(11));
+        //map.put("tempid", JzbRandom.getRandomChar(9));
+       return tbContractTemplateItemMapper.addContractTemplateItems(map);
     }
 }

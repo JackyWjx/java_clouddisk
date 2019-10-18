@@ -92,4 +92,14 @@ public class TbProductResListService {
     public int getCount(Map<String, Object> param) {
         return tbProductResListMapper.getCount(param);
     }
+
+
+    /**
+     * 查询引用合同模板
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getResList(Map<String, Object> param) {
+        return tbProductResListMapper.getResList(param);
+    }
 }
