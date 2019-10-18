@@ -174,7 +174,7 @@ public class TbContractTemplateItemController {
 
             List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
 
-            result = tbContractTemplateItemService.updateContractTemplateItem(list) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            result = tbContractTemplateItemService.updateContractTemplateItem(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
