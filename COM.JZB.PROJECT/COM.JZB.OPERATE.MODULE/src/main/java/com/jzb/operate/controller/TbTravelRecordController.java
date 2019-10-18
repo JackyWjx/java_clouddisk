@@ -97,7 +97,7 @@ public class TbTravelRecordController {
     }
 
     /**
-     * 添加出差记录
+     * 添加出差记录 (添加用户出差记录，出差目标)
      *
      * @param param
      * @return
@@ -110,8 +110,8 @@ public class TbTravelRecordController {
         Response result;
         try {
             // 获取参数中的list
-            List<Map<String, Object>> paramList = (List) param.get("list");
-            result = tbTravelRecordService.addTravelRecord(paramList) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
+            List<Map<String, Object>> travelList = (List) param.get("travelList");
+            result = tbTravelRecordService.addTravelRecord(travelList) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.isEmpty(ex);
             result = Response.getResponseError();
