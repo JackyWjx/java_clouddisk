@@ -14,7 +14,7 @@
     </select>
 
     <select id="queryMessageUserGroup" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_msg_user_group where status = '1'
+        select cid,groupid,uid,nickname,msgtype,tarobj from tb_msg_user_group where status = '1'
         <choose><when test="cid != null">and cid = #{cid}</when></choose>
         <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
         <choose><when test="uid != null">and uid = #{uid}</when></choose>
@@ -58,7 +58,7 @@
     </select>
 
     <select id="searchMessageUserGroup" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_msg_user_group where status = '1'
+        select cid,groupid,uid,nickname,msgtype,tarobj from tb_msg_user_group where status = '1'
         and nickname like CONCAT('%',#{nickname},'%')
         limit #{rows}  offset #{page}
     </select>
@@ -154,7 +154,7 @@
         <choose><when test="uid != null">, uid = #{uid}</when></choose>
         <choose><when test="nickname != null">, nickname = #{nickname}</when></choose>
         <choose><when test="tarobj != null">, tarobj = #{tarobj}</when></choose>
-        where id = #{id}
+        where cid = #{cid} and groupid =  #{groupid} and uid = #{uid}
     </update>
 
     <update id="updateMsgGroupConfigure" parameterType="java.util.Map">
@@ -176,8 +176,9 @@
     </update>
 
     <update id="deleteMessageUserGroup" parameterType="java.util.Map">
-        update tb_msg_user_group set status = '2',ouid = #{ouid} , updtime = #{updtime}
-        where id = #{id}
+        update tb_msg_user_group set status = '2', updtime = #{updtime}
+        <choose><when test="upduid != null">, upduid = #{upduid}</when></choose>
+        where cid = #{cid} and groupid =  #{groupid} and uid = #{uid}
     </update>
 
     <update id="deleteMsgGroupConfigure" parameterType="java.util.Map">

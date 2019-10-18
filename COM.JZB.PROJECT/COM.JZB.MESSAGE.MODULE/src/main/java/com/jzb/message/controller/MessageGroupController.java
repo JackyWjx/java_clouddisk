@@ -115,36 +115,23 @@ public class MessageGroupController {
     public Response queryMsgGroupConfigure(@RequestBody  Map<String , Object> map){
         Response response;
         try{
+            logger.info("===================>>queryMsgGroupConfigure");
+            List<Map<String , Object>> list ;
             PageInfo pageInfo = new PageInfo();
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list = groupService.listMsgGroupConfigure(map);
-            int count  =  groupService.queryMsgGroupConfigureCount(map);
+            if(map.containsKey("nickname") && !JzbTools.isEmpty(map.get("nickname"))){
+                list  = groupService.searchMsgGroupConfigure(map);
+                if(JzbDataType.getInteger(map.get("count")) == 0){
+                    pageInfo.setTotal(groupService.searchMsgGroupConfigureCount(map));
+                }
+            }else{
+                list = groupService.listMsgGroupConfigure(map);
+                if(JzbDataType.getInteger(map.get("count")) == 0){
+                    pageInfo.setTotal(groupService.queryMsgGroupConfigureCount(map));
+                }
+            }
             response =  Response.getResponseSuccess();
             pageInfo.setList(list);
-            pageInfo.setTotal(count);
-            response.setPageInfo(pageInfo);
-        }catch (Exception e){
-            e.printStackTrace();
-            response =  Response.getResponseError();
-        }
-        return response;
-    }
-
-    /**
-     * 模糊查询企业消息组配置
-     */
-    @RequestMapping("/searchMsgGroupConfigure")
-    @ResponseBody
-    public Response searchMsgGroupConfigure(@RequestBody Map<String , Object> map){
-        Response response;
-        try{
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list = groupService.searchMsgGroupConfigure(map);
-            int count  =  groupService.searchMsgGroupConfigureCount(map);
-            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
-            pageInfo.setList(list);
-            pageInfo.setTotal(count);
             response.setPageInfo(pageInfo);
         }catch (Exception e){
             e.printStackTrace();
@@ -193,7 +180,23 @@ public class MessageGroupController {
     public Response saveMessageUserGroup(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.saveMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>saveMessageUserGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String groupname = map.get("groupid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = groupService.saveMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -209,7 +212,23 @@ public class MessageGroupController {
     public  Response saveMsgGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.saveMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>saveMsgGroupConfigure");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String groupname = map.get("groupid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = groupService.saveMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -256,7 +275,23 @@ public class MessageGroupController {
     public  Response upMessageUserGroup(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.upMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>upMessageUserGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String groupname = map.get("groupid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = groupService.upMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -272,7 +307,23 @@ public class MessageGroupController {
     public  Response upMsgGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.upMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>upMsgGroupConfigure");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String groupname = map.get("groupid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = groupService.upMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -288,7 +339,7 @@ public class MessageGroupController {
     public  Response removerMessageGroup(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            logger.info("===================>>upMessageGroup");
+            logger.info("===================>>removerMessageGroup");
             String appId = map.get("appid").toString();
             String secret = map.get("secret").toString();
             String cid = map.get("cid").toString();
@@ -319,7 +370,23 @@ public class MessageGroupController {
     public  Response removerMessageUserGroup (@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.removeMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>removerMessageUserGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String groupname = map.get("groupid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = groupService.removeMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
@@ -335,7 +402,23 @@ public class MessageGroupController {
     public Response removerMsgGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            response = groupService.removeMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>removerMsgGroupConfigure");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String groupname = map.get("groupid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = groupService.removeMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response =  Response.getResponseError();
