@@ -1,14 +1,12 @@
 package com.jzb.message.service;
 
 import com.jzb.base.data.JzbDataType;
-import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.message.dao.MessageGroupMapper;
 import com.jzb.message.util.MessageUtile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

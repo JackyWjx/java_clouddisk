@@ -26,8 +26,10 @@ import java.util.Map;
 @RequestMapping("/message/group")
 public class MessageGroupController {
 
-    private final static Logger logger = LoggerFactory.getLogger(ShortSessageController.class);
-
+    /**
+     * logger
+     */
+    private final static Logger logger = LoggerFactory.getLogger(MessageGroupController.class);
 
     /**
      * 企业消息业务操作
@@ -52,7 +54,7 @@ public class MessageGroupController {
             logger.info("===================>>queryMessageGroup");
             List<Map<String , Object>> list ;
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             if(map.containsKey("groupname") && !JzbTools.isEmpty(map.get("greoupname"))){
                 list = groupService.searchMessageGroup(map);
@@ -85,7 +87,7 @@ public class MessageGroupController {
             logger.info("===================>>queryMessageUserGroup");
             List<Map<String , Object>> list ;
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             if(map.containsKey("nickname") && !JzbTools.isEmpty(map.get("nickname"))){
                 list  = groupService.searchMessageUserGroup(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
@@ -97,7 +99,7 @@ public class MessageGroupController {
                     pageInfo.setTotal(groupService.queryMessageUserGroupCount(map));
                 }
             }
-            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
+            response =  Response.getResponseSuccess();
             pageInfo.setList(list);
             response.setPageInfo(pageInfo);
         }catch (Exception e){
@@ -118,7 +120,7 @@ public class MessageGroupController {
             logger.info("===================>>queryMsgGroupConfigure");
             List<Map<String , Object>> list ;
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             if(map.containsKey("nickname") && !JzbTools.isEmpty(map.get("nickname"))){
                 list  = groupService.searchMsgGroupConfigure(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
@@ -191,7 +193,7 @@ public class MessageGroupController {
             String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if(md5.equals(map.get("checkcode"))){
-                response = groupService.saveMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = groupService.saveMessageUserGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
             }else{
                 logger.info("MD5 ===========>> fail  error  401 " );
                 response = Response.getResponseError();
@@ -223,7 +225,7 @@ public class MessageGroupController {
             String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if(md5.equals(map.get("checkcode"))){
-                response = groupService.saveMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = groupService.saveMsgGroupConfigure(map) ? Response.getResponseSuccess() : Response.getResponseError();
             }else{
                 logger.info("MD5 ===========>> fail  error  401 " );
                 response = Response.getResponseError();
@@ -286,7 +288,7 @@ public class MessageGroupController {
             String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if(md5.equals(map.get("checkcode"))){
-                response = groupService.upMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = groupService.upMessageUserGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
             }else{
                 logger.info("MD5 ===========>> fail  error  401 " );
                 response = Response.getResponseError();
@@ -318,7 +320,7 @@ public class MessageGroupController {
             String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if(md5.equals(map.get("checkcode"))){
-                response = groupService.upMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = groupService.upMsgGroupConfigure(map) ? Response.getResponseSuccess() : Response.getResponseError();
             }else{
                 logger.info("MD5 ===========>> fail  error  401 " );
                 response = Response.getResponseError();
@@ -349,7 +351,7 @@ public class MessageGroupController {
             String md5 = JzbDataCheck.Md5(appId + secret  + cid + groupid + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if(md5.equals(map.get("checkcode"))){
-                response = groupService.removeMessageGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = groupService.removeMessageGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
             }else{
                 logger.info("MD5 ===========>> fail  error  401 " );
                 response = Response.getResponseError();
@@ -381,7 +383,7 @@ public class MessageGroupController {
             String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if(md5.equals(map.get("checkcode"))){
-                response = groupService.removeMessageUserGroup(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = groupService.removeMessageUserGroup(map) ? Response.getResponseSuccess() : Response.getResponseError();
             }else{
                 logger.info("MD5 ===========>> fail  error  401 " );
                 response = Response.getResponseError();
@@ -413,7 +415,7 @@ public class MessageGroupController {
             String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if(md5.equals(map.get("checkcode"))){
-                response = groupService.removeMsgGroupConfigure(map) ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = groupService.removeMsgGroupConfigure(map) ? Response.getResponseSuccess() : Response.getResponseError();
             }else{
                 logger.info("MD5 ===========>> fail  error  401 " );
                 response = Response.getResponseError();

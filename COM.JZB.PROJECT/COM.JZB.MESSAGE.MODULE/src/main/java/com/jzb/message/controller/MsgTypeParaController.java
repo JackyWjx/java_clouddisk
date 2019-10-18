@@ -1,10 +1,15 @@
 package com.jzb.message.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbTools;
 import com.jzb.message.service.MsgTypeParaService;
+import com.jzb.message.service.ShortMessageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +28,16 @@ import java.util.Map;
 @RequestMapping("/message/para")
 public class MsgTypeParaController {
 
+    /**
+     * logger
+     */
+    private final static Logger logger = LoggerFactory.getLogger(MsgTypeParaController.class);
+
     @Autowired
     MsgTypeParaService service;
+
+    @Autowired
+    private ShortMessageService smsService;
 
     /**
      * 查询消息参数
@@ -34,13 +47,23 @@ public class MsgTypeParaController {
     public Response queryMsgTypePara(@RequestBody  Map<String , Object> map){
         Response response;
         try {
+            logger.info("===================>>queryMsgTypePara");
+            List<Map<String , Object>> list ;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.queryMsgTypePara(map);
-            int count = service.queryMsgTypeParaCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
+            if(map.containsKey("paraname") && !JzbTools.isEmpty(map.get("paraname"))){
+                list = service.searchMsgTypePara(map);
+                if(JzbDataType.getInteger(map.get("count")) == 0){
+                    info.setTotal(service.searchMsgTypeParaCount(map));
+                }
+            }else{
+                list  = service.queryMsgTypePara(map);
+                if(JzbDataType.getInteger(map.get("count")) == 0){
+                    info.setTotal(service.queryMsgTypeParaCount(map));
+                }
+            }
+            response = Response.getResponseSuccess();
             info.setList(list);
-            info.setTotal(count);
             response.setPageInfo(info);
         }catch (Exception e){
             e.printStackTrace();
@@ -57,13 +80,23 @@ public class MsgTypeParaController {
     public Response queryUserPara(@RequestBody  Map<String , Object> map){
         Response response;
         try {
+            logger.info("===================>>queryUserPara");
+            List<Map<String , Object>> list ;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.queryUserPara(map);
-            int count = service.queryUserParaCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
+            if(map.containsKey("paraname") && !JzbTools.isEmpty(map.get("paraname"))){
+                list =  service.searchUserPara(map);
+                if(JzbDataType.getInteger(map.get("count")) == 0){
+                    info.setTotal(service.searchUserParaCount(map));
+                }
+            }else{
+                list =  service.queryUserPara(map);
+                if(JzbDataType.getInteger(map.get("count")) == 0){
+                    info.setTotal(service.queryUserParaCount(map));
+                }
+            }
+            response = Response.getResponseSuccess();
             info.setList(list);
-            info.setTotal(count);
             response.setPageInfo(info);
         }catch (Exception e){
             e.printStackTrace();
@@ -81,84 +114,23 @@ public class MsgTypeParaController {
     public Response queryServiceProviders(@RequestBody  Map<String , Object> map){
         Response response;
         try {
+            logger.info("===================>>queryUserPara");
+            List<Map<String , Object>> list ;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.queryServiceProviders(map);
-            int count = service.queryServiceProvidersCount(map);
+            if(map.containsKey("paraname") && !JzbTools.isEmpty(map.get("paraname"))){
+                list =  service.searchServiceProviders(map);
+                if(JzbDataType.getInteger(map.get("count")) == 0){
+                    info.setTotal(service.searchServiceProvidersCount(map));
+                }
+            }else{
+                list =  service.queryServiceProviders(map);
+                if(JzbDataType.getInteger(map.get("count")) == 0){
+                    info.setTotal(service.queryServiceProvidersCount(map));
+                }
+            }
             response = Response.getResponseSuccess((Map)map.get("userinfo"));
             info.setList(list);
-            info.setTotal(count);
-            response.setPageInfo(info);
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-
-
-    /**
-     * 模糊查询消息参数
-     */
-    @RequestMapping(value = "/searchMsgTypePara",method = RequestMethod.POST)
-    @ResponseBody
-    public Response  searchMsgTypePara(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.searchMsgTypePara(map);
-            int count = service.searchMsgTypeParaCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
-            info.setList(list);
-            info.setTotal(count);
-            response.setPageInfo(info);
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 模糊查询用户参数
-     */
-    @RequestMapping(value = "/searchUserPara",method = RequestMethod.POST)
-    @ResponseBody
-    public Response  searchUserPara(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.searchUserPara(map);
-            int count = service.searchUserParaCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
-            info.setList(list);
-            info.setTotal(count);
-            response.setPageInfo(info);
-        }catch (Exception e){
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return  response;
-    }
-
-    /**
-     * 模糊查询服务商
-     */
-    @RequestMapping(value = "/searchServiceProviders",method = RequestMethod.POST)
-    @ResponseBody
-    public Response  searchServiceProviders(@RequestBody Map<String , Object> map){
-        Response response;
-        try {
-            PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            List<Map<String , Object>> list =  service.searchServiceProviders(map);
-            int count = service.searchServiceProvidersCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
-            info.setList(list);
-            info.setTotal(count);
             response.setPageInfo(info);
         }catch (Exception e){
             e.printStackTrace();
@@ -175,7 +147,22 @@ public class MsgTypeParaController {
     public Response saveMsgTypePara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.saveMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>saveMsgGroupConfigure");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String paracode = map.get("paracode").toString();
+            String paraname = map.get("paraname").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + paraname + paracode + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.saveMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -191,7 +178,22 @@ public class MsgTypeParaController {
     public Response saveUserPara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.saveUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>saveMsgGroupConfigure");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid + cid + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.saveUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -207,7 +209,22 @@ public class MsgTypeParaController {
     public Response saveServiceProviders(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.saveServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>saveMsgGroupConfigure");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String msgtype = map.get("msgtype").toString();
+            String isp = map.get("isp").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + msgtype + isp + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.saveServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -223,7 +240,22 @@ public class MsgTypeParaController {
     public Response upMsgTypePara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.upMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>upMessageGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String paracode = map.get("paracode").toString();
+            String paraname = map.get("paraname").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + paraname + paracode + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.upMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -239,7 +271,22 @@ public class MsgTypeParaController {
     public Response updateUserPara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.updateUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>upMessageGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid + cid + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.updateUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -255,7 +302,22 @@ public class MsgTypeParaController {
     public Response updateServiceProviders(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.updateServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>upMessageGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String msgtype = map.get("msgtype").toString();
+            String isp = map.get("isp").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + msgtype + isp + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.updateServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -271,7 +333,22 @@ public class MsgTypeParaController {
     public Response removeMsgTypePara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.removeMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>removerMessageGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String paracode = map.get("paracode").toString();
+            String paraname = map.get("paraname").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + paraname + paracode + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.removeMsgTypePara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -287,7 +364,22 @@ public class MsgTypeParaController {
     public Response removeUserPara(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.removeUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>removerMessageGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String cid = map.get("cid").toString();
+            String uid = map.get("uid").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + uid + cid + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.removeUserPara(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();
@@ -303,7 +395,22 @@ public class MsgTypeParaController {
     public Response removeServiceProviders(@RequestBody Map<String , Object> map){
         Response response;
         try {
-            response = service.removeServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            logger.info("===================>>removerMessageGroup");
+            String appId = map.get("appid").toString();
+            String secret = map.get("secret").toString();
+            String msgtype = map.get("msgtype").toString();
+            String isp = map.get("isp").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret  + msgtype + isp + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if(md5.equals(map.get("checkcode"))){
+                response = service.removeServiceProviders(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             e.printStackTrace();
             response = Response.getResponseError();

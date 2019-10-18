@@ -22,9 +22,9 @@ public class MsgTypeParaService {
      * 查询消息参数
      */
     public List<Map<String , Object>> queryMsgTypePara(Map<String , Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return  msgTypePara.queryMsgTypePara(map);
     }
 
@@ -32,9 +32,9 @@ public class MsgTypeParaService {
      * 查询用户参数
      */
     public List<Map<String , Object>> queryUserPara(Map<String , Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return  msgTypePara.queryUserPara(map);
     }
 
@@ -42,9 +42,9 @@ public class MsgTypeParaService {
      * 查询服务商
      */
     public List<Map<String , Object>> queryServiceProviders(Map<String , Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return  msgTypePara.queryServiceProviders(map);
     }
 
@@ -73,9 +73,9 @@ public class MsgTypeParaService {
      * 模糊查询消息参数
      */
     public List<Map<String , Object>>  searchMsgTypePara(Map<String , Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return  msgTypePara.searchMsgTypePara(map);
     }
 
@@ -83,9 +83,9 @@ public class MsgTypeParaService {
      * 模糊查询用户参数
      */
     public List<Map<String , Object>>  searchUserPara(Map<String , Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return  msgTypePara.searchUserPara(map);
     }
 
@@ -93,9 +93,9 @@ public class MsgTypeParaService {
      * 模糊查询服务商
      */
     public List<Map<String , Object>>  searchServiceProviders(Map<String , Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows",JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return  msgTypePara.searchServiceProviders(map);
     }
 
@@ -126,9 +126,12 @@ public class MsgTypeParaService {
      */
     public int saveMsgTypePara(Map<String , Object> map){
         map.put("status",'1');
-        map.put("msgtype",JzbDataType.getInteger(map.get("msgtype")));
-        map.put("paratype",JzbDataType.getInteger(map.get("paratype")));
-        map.put("parasize",JzbDataType.getInteger(map.get("parasize")));
+        if(map.containsKey("ouid")){
+            map.put("adduid",map.get("ouid"));
+            map.put("upduid",map.get("ouid"));
+        }
+        map.put("updtime",System.currentTimeMillis());
+        map.put("addtime",System.currentTimeMillis());
         return  msgTypePara.insertMsgTypePara(map);
     }
 
@@ -139,8 +142,10 @@ public class MsgTypeParaService {
         map.put("status",'1');
         map.put("addtime",System.currentTimeMillis());
         map.put("updtime",System.currentTimeMillis());
-        map.put("ouid",map.get("uid"));
-        map.put("adduid",map.get("uid"));
+        if(map.containsKey("ouid")){
+            map.put("upduid",map.get("ouid"));
+            map.put("adduid",map.get("ouid"));
+        }
         return  msgTypePara.insertUserPara(map);
     }
 
@@ -149,11 +154,12 @@ public class MsgTypeParaService {
      */
     public int saveServiceProviders(Map<String , Object> map){
         map.put("status",'1');
-        map.put("msgtype",JzbDataType.getInteger(map.get("msgtype")));
         map.put("addtime",System.currentTimeMillis());
         map.put("updtime",System.currentTimeMillis());
-        map.put("ouid",map.get("uid"));
-        map.put("adduid",map.get("uid"));
+        if(map.containsKey("ouid")){
+            map.put("upduid",map.get("ouid"));
+            map.put("adduid",map.get("ouid"));
+        }
         return  msgTypePara.insertServiceProviders(map);
     }
 
@@ -161,10 +167,10 @@ public class MsgTypeParaService {
      * 修改消息参数
      */
     public int upMsgTypePara(Map<String , Object> map){
-        map.put("msgtype",JzbDataType.getInteger(map.get("msgtype")));
-        map.put("paratype",JzbDataType.getInteger(map.get("paratype")));
-        map.put("parasize",JzbDataType.getInteger(map.get("parasize")));
-        map.put("id",JzbDataType.getInteger(map.get("id")));
+        if(map.containsKey("ouid")){
+            map.put("upduid",map.get("ouid"));
+        }
+        map.put("updtime",System.currentTimeMillis());
         return  msgTypePara.updateMsgTypePara(map);
     }
 
@@ -172,9 +178,10 @@ public class MsgTypeParaService {
      * 修改用户参数
      */
     public int updateUserPara(Map<String , Object> map){
-        map.put("id",JzbDataType.getInteger(map.get("id")));
         map.put("updtime",System.currentTimeMillis());
-        map.put("ouid",map.get("uid"));
+        if(map.containsKey("ouid")){
+            map.put("updtime",map.get("ouid"));
+        }
         return  msgTypePara.updateUserPara(map);
     }
 
@@ -182,11 +189,10 @@ public class MsgTypeParaService {
      * 修改服务商
      */
     public int updateServiceProviders(Map<String , Object> map){
-        map.put("msgtype",JzbDataType.getInteger(map.get("msgtype")));
-        map.put("paratype",JzbDataType.getInteger(map.get("isp")));
         map.put("updtime",System.currentTimeMillis());
-        map.put("ouid",map.get("uid"));
-        map.put("id",JzbDataType.getInteger(map.get("id")));
+        if (map.containsKey("ouid")) {
+            map.put("upduid",map.get("ouid"));
+        }
         return  msgTypePara.updateServiceProviders(map);
     }
 
@@ -194,7 +200,10 @@ public class MsgTypeParaService {
      * 禁用消息参数
      */
     public int removeMsgTypePara(Map<String , Object> map){
-        map.put("id",JzbDataType.getInteger(map.get("id")));
+        if(map.containsKey("ouid")){
+            map.put("upduid",map.get("ouid"));
+        }
+        map.put("updtime",System.currentTimeMillis());
         return  msgTypePara.deleteMsgTypePara(map);
     }
 
@@ -202,7 +211,10 @@ public class MsgTypeParaService {
      * 禁用用户参数
      */
     public int removeUserPara(Map<String , Object> map){
-        map.put("id",JzbDataType.getInteger(map.get("id")));
+        if(map.containsKey("ouid")){
+            map.put("upduid",map.get("ouid"));
+        }
+        map.put("updtime",System.currentTimeMillis());
         return  msgTypePara.deleteUserPara(map);
     }
 
@@ -210,7 +222,10 @@ public class MsgTypeParaService {
      * 禁用服务商
      */
     public int removeServiceProviders(Map<String , Object> map){
-        map.put("id",JzbDataType.getInteger(map.get("id")));
+        if(map.containsKey("ouid")){
+            map.put("upduid",map.get("ouid"));
+        }
+        map.put("updtime",System.currentTimeMillis());
         return  msgTypePara.deleteServiceProviders(map);
     }
 

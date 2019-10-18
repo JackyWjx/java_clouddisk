@@ -6,39 +6,56 @@
 
     <!-- 查询 -->
     <select id="queryMsgTypePara" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_msg_type_para where status = '1'  
+        select msgtype,isp,paracode,paraname,paradesc,paratype,parasize,paraneed,summary from tb_msg_type_para where status = '1'
+        <choose><when test="paracode != null">and paracode = #{paracode}</when></choose>
+        <choose><when test="paratype != null">and paratype = #{paratype}</when></choose>
+        <choose><when test="paraneed != null">and paraneed = #{paraneed}</when></choose>
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        <choose><when test="isp != null">and isp = #{isp}</when></choose>
         limit  #{rows}  offset #{page}
     </select>
 
     <!-- 查询总数 -->
     <select id="queryMsgTypeParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_msg_type_para where status = '1'
+        <choose><when test="paracode != null">and paracode = #{paracode}</when></choose>
+        <choose><when test="paratype != null">and paratype = #{paratype}</when></choose>
+        <choose><when test="paraneed != null">and paraneed = #{paraneed}</when></choose>
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        <choose><when test="isp != null">and isp = #{isp}</when></choose>
     </select>
 
     <!-- 模糊查询 -->
     <select id="searchMsgTypePara" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_msg_type_para where status = '1' and paraname like CONCAT('%',#{keys},'%') or paracode like CONCAT('%',#{keys},'%')
+        select msgtype,isp,paracode,paraname,paradesc,paratype,parasize,paraneed,summary
+        from tb_msg_type_para where status = '1' and paraname like CONCAT('%',#{keys},'%')
         limit  #{rows}  offset #{page}
     </select>
 
     <!-- 模糊查询总数 -->
     <select id="searchMsgTypeParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-         select count(1) from tb_msg_type_para where status = '1' and paraname like CONCAT('%',#{keys},'%') or paracode like CONCAT('%',#{keys},'%')
+         select count(1) from tb_msg_type_para where status = '1'
+         and paraname like CONCAT('%',#{keys},'%')
     </select>
 
     <!-- 添加 -->
     <insert id="insertMsgTypePara" parameterType="java.util.Map">
-        INSERT INTO tb_msg_type_para ( msgtype, paracode, paraname, idx, paratype, parasize, paraneed, status, summary )
-        VALUES
-        ( #{msgtype},
-         #{paracode},
-         #{paraname},
-         (select count(1)+1 from tb_msg_type_para)  ,
-         #{paratype},
-         #{parasize},
-         #{paraneed},
-         #{status},
-         <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose> );
+        INSERT INTO public.tb_msg_type_para(
+        msgtype, paracode, paraname, paradesc, idx, paratype, parasize, paraneed, status, summary, isp, adduid, upduid, addtime, updtime)
+        VALUES ( #{msgtype},
+        #{paracode},
+        #{paraname},
+        (select count(1)+1 from tb_msg_type_para)  ,
+        #{paratype},
+        #{parasize},
+        #{paraneed},
+        #{status},
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>,
+        #{isp},
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>,
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>,
+        #{addtime},
+        #{updtime});
     </insert>
 
     <!-- 修改 -->
@@ -51,12 +68,140 @@
         <choose><when test="parasize != null">,parasize = #{parasize}</when></choose>
         <choose><when test="paraneed != null">,paraneed = #{paraneed}</when></choose>
         <choose><when test="summary != null">,summary = #{summary}</when></choose>
-        where id = #{id}
+        where msgtype = #{msgtype} and isp = #{isp}  and paracode = #{paracode}
     </update>
 
     <!-- 禁用 -->
     <update id="deleteMsgTypePara" parameterType="java.util.Map">
-        update  tb_msg_type_para set  status = '2' where id = #{id}
+        update  tb_msg_type_para set  status = '2' , updtime = #{updtime}
+        where msgtype = #{msgtype} and isp = #{isp}  and paracode = #{paracode}
+    </update>
+
+
+    <!-- 查询 -->
+    <select id="queryUserPara" resultType="java.util.Map" parameterType="java.util.Map">
+        select cid,uid,param
+        from tb_user_parameter where status = '1'
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="uid != null">and uid = #{uid}</when></choose>
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="queryUserParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1)    from tb_user_parameter where status = '1'
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="uid != null">and uid = #{uid}</when></choose>
+    </select>
+
+    <!-- 模糊查询 -->
+    <select id="searchUserPara" resultType="java.util.Map" parameterType="java.util.Map">
+        select cid,uid,param
+        from tb_user_parameter where status = '1' and paraname like CONCAT('%',#{paraname},'%')
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊查询总数 -->
+    <select id="searchUserParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from tb_user_parameter where status = '1'
+         and paraname like CONCAT('%',#{paraname},'%')
+    </select>
+
+    <!-- 添加 -->
+    <insert id="insertUserPara" parameterType="java.util.Map">
+        INSERT INTO public.tb_user_parameter(
+        uid, param, adduid, addtime, upduid, updtime, status, summary)
+        VALUES (#{uid},
+        #{para},
+        <choose><when test="adduid != null">,adduid = #{adduid},</when><otherwise>null,</otherwise></choose>
+        #{addtime},
+        <choose><when test="upduid != null">,upduid = #{upduid},</when><otherwise>null,</otherwise></choose>
+        #{updtime},
+        #{status},
+        <choose><when test="summary != null">,summary = #{summary},</when><otherwise>null,</otherwise></choose>
+        );
+    </insert>
+
+    <!-- 修改 -->
+    <update id="updateUserPara" parameterType="java.util.Map">
+        update  tb_msg_type_para set status = '1' , updtime = #{updtime}
+        <choose><when test="upduid != null">,upduid = #{upduid}</when></choose>
+        <choose><when test="cid != null">,cid = #{cid}</when></choose>
+        <choose><when test="uid != null">,uid = #{uid}</when></choose>
+        <choose><when test="param != null">,param = #{param}</when></choose>
+        where cid = #{cid} and uid = #{uid}
+    </update>
+
+    <!-- 禁用 -->
+    <update id="deleteUserPara" parameterType="java.util.Map">
+        update  tb_msg_type_para set  status = '2' , updtime = #{updtime}
+        <choose><when test="upduid != null">,upduid = #{upduid}</when></choose>
+        where cid = #{cid} and uid = #{uid}
+    </update>
+
+
+    <!-- 查询 -->
+    <select id="queryServiceProviders" resultType="java.util.Map" parameterType="java.util.Map">
+        select msgtype,isp,ispname,ispdesc from tb_service_providers where status = '1'
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        <choose><when test="isp != null">and isp = #{isp}</when></choose>
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="queryServiceProvidersCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1)    from tb_service_providers where status = '1'
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        <choose><when test="isp != null">and isp = #{isp}</when></choose>
+    </select>
+
+    <!-- 模糊查询 -->
+    <select id="searchServiceProviders" resultType="java.util.Map" parameterType="java.util.Map">
+        select msgtype,isp,ispname,ispdesc
+        from tb_service_providers where status = '1' and ispname like CONCAT('%',#{ispname},'%')
+        limit  #{rows}  offset #{page}
+    </select>
+
+    <!-- 模糊查询总数 -->
+    <select id="searchServiceProvidersCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from tb_service_providers where status = '1'
+         and ispname like CONCAT('%',#{ispname},'%')
+    </select>
+
+    <!-- 添加 -->
+    <insert id="insertServiceProviders" parameterType="java.util.Map">
+
+        INSERT INTO public.tb_service_providers(
+         msgtype, isp, ispname, ispdesc, idx, addtime, upduid, updtime, status, summary, adduid)
+        VALUES (
+         #{msgtype},
+         #{isp},
+         #{ispname},
+         #{ispdesc},
+        (select count(1)+1 from tb_service_providers) ,
+        #{addtime},
+        <choose><when test="upduid != null">,upduid = #{upduid},</when><otherwise>null,</otherwise></choose>
+        #{updtime}, #{status},
+        <choose><when test="summary != null">,summary = #{summary},</when><otherwise>null,</otherwise></choose>
+        <choose><when test="adduid != null">,adduid = #{adduid}</when><otherwise>null</otherwise></choose>
+        );
+    </insert>
+
+    <!-- 修改 -->
+    <update id="updateServiceProviders" parameterType="java.util.Map">
+        update  tb_msg_type_para set status = '1'  , updtime = #{updtime}
+        <choose><when test="upduid != null">,upduid = #{upduid}</when></choose>
+        <choose><when test="msgtype != null">,msgtype = #{msgtype}</when></choose>
+        <choose><when test="isp != null">,isp = #{isp}</when></choose>
+        <choose><when test="ispname != null">,ispname = #{ispname}</when></choose>
+        where msgtype = #{msgtype} and isp  = #{isp}
+    </update>
+
+    <!-- 禁用 -->
+    <update id="deleteServiceProviders" parameterType="java.util.Map">
+        update  tb_msg_type_para set  status = '2' , updtime = #{updtime}
+        <choose><when test="upduid != null">,upduid = #{upduid}</when></choose>
+        where msgtype = #{msgtype} and isp  = #{isp}
     </update>
 
 </mapper>
