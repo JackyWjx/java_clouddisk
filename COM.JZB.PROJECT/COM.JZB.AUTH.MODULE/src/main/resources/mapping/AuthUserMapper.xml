@@ -302,4 +302,46 @@
         pageid LIMIT #{pagesize}  OFFSET #{start}
     </select>
 
+    <!--增加用户信息,增加用户注册信息-->
+    <insert id="insertCompanyEmployee">
+        INSERT INTO
+        tb_user_list ( uid,cname, passwd, relphone, sex, authid, regtime, authtime, status,relmail )
+        VALUES
+	    (#{uid},#{cname},#{passwd},#{relphone},#{sex},${authid},#{addtime},#{addtime},#{status},#{relmail});
+	    INSERT INTO
+	    tb_user_info ( uid, origin, college, education, likes, marriage, born, adduid, addtime, status)
+        VALUES
+	    (#{uid},#{origin},#{college},#{education},#{likes},#{marriage},#{born},#{adduid},#{addtime},#{status});
+        INSERT INTO
+        tb_user_key ( uid, keyid, ktid, addtime, status )
+        VALUES
+        (#{uid},#{phone},#{ktid},#{addtime},#{status})
+    </insert>
+
+    <!-- CRM-销售业主-公海-业主下的人员12-点击业主下的人员中的修改人员按钮进行修改员工信息 -->
+    <update id="updateCompanyEmployee" parameterType="java.util.Map">
+        UPDATE
+        tb_user_list
+        SET
+        cname = #{cname},
+        relphone = #{relphone},
+        updtime = #{updtime},
+        relmail = #{relmail},
+        sex = #{sex}
+        WHERE
+        uid = #{uid};
+        UPDATE
+        tb_user_info
+        SET
+        origin = #{origin},
+        college = #{college},
+        likes = #{likes},
+        education = #{education},
+        marriage = #{marriage},
+        upduid = #{upduid},
+        updtime = #{updtime},
+        born = #{born}
+        WHERE
+        uid = #{uid};
+    </update>
 </mapper>
