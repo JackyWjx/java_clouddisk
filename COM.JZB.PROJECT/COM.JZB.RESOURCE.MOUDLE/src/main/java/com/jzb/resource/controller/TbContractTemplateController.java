@@ -4,8 +4,11 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.resource.service.TbContractTemplateItemService;
 import com.jzb.resource.service.TbContractTemplateService;
+import com.jzb.resource.util.CheckParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,9 @@ import java.util.Map;
 public class TbContractTemplateController {
     @Autowired
     private TbContractTemplateService tbContractTemplateService;
+
+    @Autowired
+    private TbContractTemplateItemService tbContractTemplateItemService;
 
     /**
      * 查询合同模板
@@ -73,15 +79,25 @@ public class TbContractTemplateController {
     public Response addContractTemplate(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            int count = tbContractTemplateService.addContractTemplate(param);
-            if (count > 0) {
-                // 定义返回结果
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                result = Response.getResponseSuccess(userInfo);
-            } else {
-                result = Response.getResponseError();
+            if(JzbCheckParam.haveEmpty(param,new String[]{"cname"})){
+                result=Response.getResponseError();
+            }else {
+                String tempid="t000"+ JzbRandom.getRandomCharCap(5);
+                param.put("tempid", tempid);
+                int count=tbContractTemplateService.addContractTemplate(param);
+                if(count>0){
+                    result=Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+                    // 获取模板项
+                    List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+                    // 放入模板id
+                    for (int i=0,l=list.size();i<l;i++){
+                        list.get(i).put("tempid",tempid);
+                    }
+                    tbContractTemplateItemService.addContractTemplateItem(list);
+                }else {
+                    result = Response.getResponseError();
+                }
             }
-            result = Response.getResponseSuccess();
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
