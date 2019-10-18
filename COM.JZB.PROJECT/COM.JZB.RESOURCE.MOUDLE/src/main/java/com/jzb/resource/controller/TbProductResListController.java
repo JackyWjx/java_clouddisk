@@ -275,11 +275,10 @@ public class TbProductResListController {
             String filePath = path + File.separator + time + filename;
             //保存在本地
             File desFile = new File(filePath);
-            if (!desFile.getParentFile().exists()) {
-                desFile.mkdirs();
-            }
+            desFile.getParentFile().mkdirs();
             //保存多媒体文件
             file.transferTo(desFile);
+            filePath = filePath.replace("\\","/");
             //返回成功的结果
             result = Response.getResponseSuccess();
             Map<String, String> stringObjectMap = new HashedMap();
@@ -301,7 +300,7 @@ public class TbProductResListController {
      * 文件下载
      *
      * @param response
-     * @param param
+     * @param
      * @return
      */
     @RequestMapping(value = "/creatFile", method = RequestMethod.GET)
@@ -346,6 +345,37 @@ public class TbProductResListController {
         }
     }
 
+    /**
+     * 应用模板的查询
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getResList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getResList(@RequestBody Map<String, Object> param) {
+        Response result;
+        //判断参数为空返回404
+        try {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"paraid'"})) {
+                result = Response.getResponseError();
+            } else {
+               //查询结果
+                List<Map<String,Object>> list  = tbProductResListService.getResList(param);
+                PageInfo pageInfo = new PageInfo();
+                pageInfo.setList(list);
+                // 定义返回结果
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+                result.setPageInfo(pageInfo);
+            }
+
+        } catch (Exception e) {
+            //打印异常信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
 
 

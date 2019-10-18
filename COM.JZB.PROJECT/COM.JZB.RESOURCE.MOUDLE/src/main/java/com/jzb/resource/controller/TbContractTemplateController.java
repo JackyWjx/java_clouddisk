@@ -118,13 +118,20 @@ public class TbContractTemplateController {
         Response result;
         try {
             int count = tbContractTemplateService.updateContractTemplate(param);
-            if (count > 0) {
                 // 定义返回结果
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                result = Response.getResponseSuccess(userInfo);
-            } else {
-                result = Response.getResponseError();
-            }
+                //修改获取参数中的数据
+                List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+                for (int i = 0; i < list.size(); i++) {
+                       Map<String,Object> map = list.get(i);
+                    if (list.get(i).get("itemid") == null || list.get(i).get("itemid") == "") {
+                      int counts =  tbContractTemplateItemService.addContractTemplateItems(map);
+                    } else {
+                        tbContractTemplateItemService.updateContractTemplateItem(map);
+                    }
+                }
+
+
             result = Response.getResponseSuccess();
         } catch (Exception ex) {
             JzbTools.logError(ex);
