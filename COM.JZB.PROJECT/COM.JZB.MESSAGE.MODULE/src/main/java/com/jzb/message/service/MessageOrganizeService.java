@@ -52,6 +52,8 @@ public class MessageOrganizeService {
      */
     public int saveMsgOrganize(Map<String, Object> map) {
         map.put("status", '1');
+        map.put("addtime", JzbDataType.getInteger(map.get("addtime")));
+        map.put("updtime", JzbDataType.getInteger(map.get("updtime")));
         return messageOrganizeMapper.insertMsgOrganize(map);
     }
 
@@ -60,6 +62,8 @@ public class MessageOrganizeService {
      */
     public int upMsgOrganize(Map<String, Object> map) {
         map.put("id", JzbDataType.getInteger(map.get("id")));
+        map.put("addtime", JzbDataType.getInteger(map.get("addtime")));
+        map.put("updtime", JzbDataType.getInteger(map.get("updtime")));
         return messageOrganizeMapper.updateMsgOrganize(map);
     }
 
