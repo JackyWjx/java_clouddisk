@@ -2,9 +2,11 @@ package com.jzb.message.controller;
 
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.message.service.MessageOrganizeService;
+import com.jzb.message.service.ShortMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,9 @@ import java.util.Map;
 public class MessageOrganizeController {
     @Autowired
     private MessageOrganizeService service;
+
+    @Autowired
+    private ShortMessageService smsService;
 
     /**
      * 查询
@@ -81,7 +86,8 @@ public class MessageOrganizeController {
     public Response saveMsgType(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-            response = service.saveMsgOrganize(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = service.saveMsgOrganize(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.getResponseError();
@@ -97,7 +103,7 @@ public class MessageOrganizeController {
     public Response upMsgType(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-            response = service.upMsgOrganize(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = service.upMsgOrganize(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.getResponseError();
@@ -113,12 +119,11 @@ public class MessageOrganizeController {
     public Response removeMsgType(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-            response = service.removeMsgOrganize(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
+                response = service.removeMsgOrganize(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.getResponseError();
         }
         return response;
     }
-
 }
