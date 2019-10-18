@@ -20,9 +20,23 @@
         insert into tb_contract_template (typeid,tempid,tempcode,cname,tempdesc,path,cid,idx,ouid,addtime,updtime,status,summary)
         values
         (
-        #{typeid},
+        <choose>
+            <when test="typeid != null and typeid != ''">
+                #{typeid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{tempid},
-        #{tempcode},
+        <choose>
+            <when test="tempcode != null and tempcode != ''">
+                #{tempcode},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="cname != null and cname != ''">
                 #{cname},
