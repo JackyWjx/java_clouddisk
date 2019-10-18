@@ -25,12 +25,12 @@
     <!--2.修改方法论资料-->
     <update id="updateMethodData" parameterType="java.util.Map">
         update tb_method_data set
-        <if test="datacode!=null">datacode=#{datacode}</if>
-        <if test="cname!=null">cname=#{cname}</if>
-        <if test="context!=null">context=#{context}</if>
-        <if test="typedesc!=null">typedesc=#{typedesc}</if>
-        <if test="idx!=null">idx=#{idx}</if>
-        <if test="ouid!=null">ouid=#{ouid}</if>
+        <if test="datacode!=null">datacode=#{datacode},</if>
+        <if test="cname!=null">cname=#{cname},</if>
+        <if test="context!=null">context=#{context},</if>
+        <if test="typedesc!=null">typedesc=#{typedesc},</if>
+        <if test="idx!=null">idx=#{idx},</if>
+        <if test="ouid!=null">ouid=#{ouid},</if>
         <if test="updtime!=null">updtime=#{updtime}</if>
         where dataid=#{dataid}
     </update>

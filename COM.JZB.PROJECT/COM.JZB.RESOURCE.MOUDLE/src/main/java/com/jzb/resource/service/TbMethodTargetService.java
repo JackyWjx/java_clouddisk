@@ -27,8 +27,10 @@ public class TbMethodTargetService {
     public int addMethodTarget(List<Map<String, Object>> list) {
         Long time=System.currentTimeMillis();
         for (int i=0,l=list.size();i<l;i++){
-            list.get(i).put("tarkey",list.get(i).get("dataid")+ JzbRandom.getRandomCharCap(2));
-            list.get(i).put("addtime",time);
+            if(list.get(i).get("tarkey")==null||list.get(i).get("tarkey").equals("")){
+                list.get(i).put("tarkey",list.get(i).get("dataid")+ JzbRandom.getRandomCharCap(2));
+                list.get(i).put("addtime",time);
+            }
             list.get(i).put("updtime",time);
             list.get(i).put("idx",getMethodTargetIdx());
         }

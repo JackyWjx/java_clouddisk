@@ -68,8 +68,11 @@ public class TbMethodTargetController {
     public Response addMethodTarget(@RequestBody Map<String, Object> param) {
         Response result;
         try {
+
+            List<Map<String, Object>> list=(List<Map<String, Object>>) param.get("list");
             // 调用添加目标的方法
-            int count = tbMethodTargetService.addMethodTarget((List)param.get("list"));
+
+            int count = tbMethodTargetService.addMethodTarget(list);
             if (count > 0) {
                 // 定义返回结果
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
@@ -83,4 +86,34 @@ public class TbMethodTargetController {
         }
         return result;
     }
+
+
+
+    @RequestMapping(value = "/deleteMethodTarget",method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Response deleteMethod(@RequestBody Map<String, Object> param){
+        Response result;
+        try {
+            int count=0;
+            List<Map<String, Object>> list=(List<Map<String, Object>>) param.get("list");
+            for (int i=0,l=list.size();i<l;i++){
+                list.get(i).put("status",2);
+                count= tbMethodTargetService.updateMethodTargetStatus(list.get(i));
+            }
+            // 调用添加目标的方法
+            if (count > 0) {
+                // 定义返回结果
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 }

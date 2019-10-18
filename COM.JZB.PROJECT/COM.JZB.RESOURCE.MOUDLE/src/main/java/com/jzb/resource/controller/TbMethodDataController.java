@@ -143,17 +143,6 @@ public class TbMethodDataController {
         return result;
     }
 
-    @RequestMapping(value = "/updateMethodTarget", method = RequestMethod.POST)
-    @ResponseBody
-    @CrossOrigin
-    public Response updateMethodTarget() {
-        Response result;
-        try {
 
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
-        }
-        return null;
-    }
 
 }
