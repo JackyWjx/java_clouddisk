@@ -53,6 +53,11 @@ public class MessageGroupTemplateService {
     public int saveMsgGroupTemplate(Map<String, Object> map) {
         map.put("status", '1');
         map.put("addtime",System.currentTimeMillis());
+        if(map.containsKey("ouid")){
+            map.put("updtime",map.get("ouid"));
+            map.put("addtime",map.get("ouid"));
+        }
+        map.put("addtime",System.currentTimeMillis());
         return messageGroupTemplateMapper.insertMsgGroupTemplate(map);
     }
 
@@ -60,8 +65,10 @@ public class MessageGroupTemplateService {
      * 修改
      */
     public int upMsgGroupTemplate(Map<String, Object> map) {
+        if(map.containsKey("ouid")){
+            map.put("updtime",map.get("ouid"));
+        }
         map.put("addtime",System.currentTimeMillis());
-        map.put("id", JzbDataType.getInteger(map.get("id")));
         return messageGroupTemplateMapper.updateMsgGroupTemplate(map);
     }
 
@@ -69,7 +76,10 @@ public class MessageGroupTemplateService {
      * 禁用
      */
     public int removeMsgGroupTemplate(Map<String, Object> map) {
-        map.put("id", JzbDataType.getInteger(map.get("id")));
+        if(map.containsKey("ouid")){
+            map.put("updtime",map.get("ouid"));
+        }
+        map.put("addtime",System.currentTimeMillis());
         return messageGroupTemplateMapper.removeMsgGroupTemplate(map);
     }
 

@@ -18,9 +18,9 @@ public class MessageListService {
      * 查询
      */
     public List<Map<String, Object>> queryMsgList(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("page")) == 0 ? 0 : JzbDataType.getInteger(map.get("page")) - 1;
-        map.put("page", page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return messageListMapper.queryMsgList(map);
     }
 
@@ -35,9 +35,9 @@ public class MessageListService {
      * 模糊查询
      */
     public List<Map<String, Object>> searchMsgList(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("page")) == 0 ? 0 : JzbDataType.getInteger(map.get("page")) - 1;
-        map.put("page", page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return messageListMapper.searchMsgList(map);
     }
 
@@ -46,34 +46,6 @@ public class MessageListService {
      */
     public int searchMsgListCount(Map<String, Object> map) {
         return messageListMapper.searchMsgListCount(map);
-    }
-
-    /**
-     * 添加
-     */
-    public int saveMsgList(Map<String, Object> map) {
-        map.put("status", '1');
-        map.put("addtime",System.currentTimeMillis());
-        map.put("sendtime",System.currentTimeMillis());;
-        return messageListMapper.insertMsgList(map);
-    }
-
-    /**
-     * 修改
-     */
-    public int upMsgList(Map<String, Object> map) {
-        map.put("addtime",System.currentTimeMillis());
-        map.put("sendtime",System.currentTimeMillis());;
-        map.put("id", JzbDataType.getInteger(map.get("id")));
-        return messageListMapper.updateMsgList(map);
-    }
-
-    /**
-     * 禁用
-     */
-    public int removeMsgList(Map<String, Object> map) {
-        map.put("id", JzbDataType.getInteger(map.get("id")));
-        return messageListMapper.deleteMsgList(map);
     }
 
 }

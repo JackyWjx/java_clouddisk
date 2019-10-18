@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * @Description: 消息模版控制层
- * @Author Han Bin
+ * @Author tang sheng jun
  */
 @Controller
 @RequestMapping("/message/group/template")
@@ -39,13 +39,12 @@ public class MessageGroupTemplateController {
     @RequestMapping(value = "/queryMsgGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
     public Response queryMsgGroupTemplate(@RequestBody Map<String, Object> map) {
-        List<Map<String, Object>> list;
         Response response;
         try {
-
+            List<Map<String, Object>> list;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
-            response = Response.getResponseSuccess((Map) map.get("userinfo"));
+            response = Response.getResponseSuccess();
             if (map.containsKey("tempname") && !JzbTools.isEmpty(map.get("tempname"))) {
                 list = messageGroupTemplateService.searchMsgGroupTemplate(map);
                 if (JzbDataType.getInteger(map.get("count")) == 0) {
@@ -86,11 +85,10 @@ public class MessageGroupTemplateController {
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
             String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
             if (md5.equals(map.get("checkcode"))) {
-                response = messageGroupTemplateService.saveMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
+                response = messageGroupTemplateService.saveMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
                 response = Response.getResponseError();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.getResponseError();
@@ -106,7 +104,6 @@ public class MessageGroupTemplateController {
     public Response upMsgGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-
             // check request param
             String appId = map.get("appId").toString();
             String secret = map.get("secret").toString();
@@ -116,7 +113,7 @@ public class MessageGroupTemplateController {
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appId);
             String md5 = JzbDataCheck.Md5(appId + secret + tempid + cid + checkcode);
             if (md5.equals(map.get("checkcode"))) {
-                response = messageGroupTemplateService.upMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
+                response = messageGroupTemplateService.upMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
                 response = Response.getResponseError();
             }
@@ -141,12 +138,11 @@ public class MessageGroupTemplateController {
             String secret = map.get("secret").toString();
             String tempid = map.get("tempid").toString();
             String cid = map.get("cid").toString();
-
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appId);
             String md5 = JzbDataCheck.Md5(appId + secret + tempid + cid + checkcode);
             if (md5.equals("checkcode")) {
-                response = messageGroupTemplateService.removeMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
+                response = messageGroupTemplateService.removeMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
                 response = Response.getResponseError();
             }

@@ -7,106 +7,39 @@
 
     <!-- 查询 -->
     <select id="queryMsgList" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_message_list where status = '1'
-        limit  #{rows}  offset #{page}
+        select msgid,cid,groupid,senduid,sendname,msgtag,title,context,usertype,receiver,sendstatus from tb_message_list
+        where status = '1'
+        <choose><when test="msgid != null">and msgid = #{msgid}</when></choose>
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="senduid != null">and senduid = #{senduid}</when></choose>
+        <choose><when test="msgtag != null">and msgtag = #{msgtag}</when></choose>
+        <choose><when test="sendname != null">and sendname = #{sendname}</when></choose>
+        <choose><when test="sendstatus != null">and sendstatus = #{sendstatus}</when></choose>
+        limit  #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
     <select id="queryMsgListCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_message_list where status = '1'
+        <choose><when test="msgid != null">and msgid = #{msgid}</when></choose>
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="senduid != null">and senduid = #{senduid}</when></choose>
+        <choose><when test="msgtag != null">and msgtag = #{msgtag}</when></choose>
+        <choose><when test="sendname != null">and sendname = #{sendname}</when></choose>
+        <choose><when test="sendstatus != null">and sendstatus = #{sendstatus}</when></choose>
     </select>
 
     <!-- 模糊查询 -->
     <select id="searchMsgList" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_message_list where status = '1' and sendname like CONCAT('%',#{sendname},'%')
-        limit  #{rows}  offset #{page}
+        select msgid,cid,groupid,senduid,sendname,msgtag,title,context,usertype,receiver,sendstatus from tb_message_list
+         where status = '1' and sendname like CONCAT('%',#{sendname},'%')
+        limit  #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 模糊查询总数 -->
     <select id="searchMsgListCount" resultType="java.lang.Integer" parameterType="java.util.Map">
          select count(1) from tb_message_list where status = '1' and sendname like CONCAT('%',#{sendname},'%')
    </select>
-    <!-- 添加 -->
-    <insert id="insertMsgList" parameterType="java.util.Map">
-        INSERT INTO tb_message_list ( msgid, cid, groupid, senduid, sendname, addtime, sendtime,
-        sendpara,title,context,usertype,
-        receiver, sendstatus, status, summary, msgtag )
-        VALUES
-        ( #{msgid},
-        #{cid},
-        #{groupid},
-        #{senduid},
-        #{sendname},
-        #{addtime},
-        #{sendtime},
-        #{sendpara},
-        #{title},
-        #{context},
-        #{usertype},
-        #{receiver},
-        #{sendstatus},
-        #{status},
-        #{msgtag},
-        <choose>
-            <when test="summary != null">#{summary}</when>
-            <otherwise>null</otherwise>
-        </choose>
-        );
-    </insert>
-
-    <!-- 修改 -->
-    <update id="updateMsgList" parameterType="java.util.Map">
-        update tb_message_list set status = '1'
-        <choose>
-            <when test="msgid != null">,msgid = #{msgid}</when>
-        </choose>
-        <choose>
-            <when test="cid != null">,cid = #{cid}</when>
-        </choose>
-        <choose>
-            <when test="groupid != null">,groupid = #{groupid}</when>
-        </choose>
-        <choose>
-            <when test="senduid != null">,senduid = #{senduid}</when>
-        </choose>
-        <choose>
-            <when test="sendname != null">,sendname = #{sendname}</when>
-        </choose>
-        <choose>
-            <when test="addtime != null">,addtime = #{addtime}</when>
-        </choose>
-        <choose>
-            <when test="sendtime != null">,sendtime = #{sendtime}</when>
-        </choose>
-        <choose>
-            <when test="sendpara != null">,sendpara = #{sendpara}</when>
-        </choose>
-        <choose>
-            <when test="title != null">,title = #{title}</when>
-        </choose>
-        <choose>
-            <when test="context != null">,context = #{context}</when>
-        </choose>
-        <choose>
-            <when test="usertype != null">,usertype = #{usertype}</when>
-        </choose>
-        <choose>
-            <when test="receiver != null">,receiver = #{receiver}</when>
-        </choose>
-        <choose>
-            <when test="sendstatus != null">,sendstatus = #{sendstatus}</when>
-        </choose>
-        <choose>
-            <when test="summary != null">,summary = #{summary}</when>
-        </choose>
-        <choose>
-            <when test="msgtag != null">,msgtag = #{msgtag}</when>
-        </choose>
-        where id = #{id}
-    </update>
-
-    <!-- 禁用 -->
-    <update id="removeMsgList" parameterType="java.util.Map">
-        update  tb_message_list set  status = '2' where id = #{id}
-    </update>
 </mapper>

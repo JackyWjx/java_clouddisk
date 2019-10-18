@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * @Description: 消息发送详情制层
- * @Author Han Bin
+ * @Author tang sheng jun
  */
 @Controller
 @RequestMapping("/senduser/message")

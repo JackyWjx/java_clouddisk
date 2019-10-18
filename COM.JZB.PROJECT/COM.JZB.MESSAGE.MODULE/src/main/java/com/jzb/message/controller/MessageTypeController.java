@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * @Description: 消息类型控制层
- * @Author
+ * @Author tang sheng jun
  */
 @Controller
 @RequestMapping("/message/type")

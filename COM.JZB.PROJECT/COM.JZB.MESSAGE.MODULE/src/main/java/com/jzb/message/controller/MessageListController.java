@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * @Description: 用户消息控制层
- * @Author
+ * @Author   tang sheng jun
  */
 @Controller
 @RequestMapping("/message/list")
@@ -40,10 +40,10 @@ public class MessageListController {
     @ResponseBody
     public Response queryMsgList(@RequestBody Map<String, Object> map) {
         Response response;
-        List<Map<String, Object>> list;
         try {
+            List<Map<String, Object>> list;
             PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             response = Response.getResponseSuccess();
             if (map.containsKey("sendname") && !JzbTools.isEmpty(map.get("sendname"))) {
                 list = messageListService.searchMsgList(map);
@@ -58,103 +58,8 @@ public class MessageListController {
                     info.setTotal(count);
                 }
             }
-            list = messageListService.queryMsgList(map);
-            int count = messageListService.queryMsgListCount(map);
-            response = Response.getResponseSuccess((Map) map.get("userinfo"));
             info.setList(list);
-            info.setTotal(count);
             response.setPageInfo(info);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return response;
-    }
-
-    /**
-     * 添加
-     */
-    @RequestMapping(value = "/saveMsgList", method = RequestMethod.POST)
-    @ResponseBody
-    public Response saveMsgList(@RequestBody Map<String, Object> map) {
-        Response response;
-        try {
-
-            // check request param
-            String appid = map.get("appId").toString();
-            String secret = map.get("secret").toString();
-            String tempid = map.get("msgid").toString();
-            String cid = map.get("cid").toString();
-
-            // get appid => checkcode
-            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
-            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
-            if (md5.equals(map.get("checkcode"))) {
-                response = messageListService.saveMsgList(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
-            } else {
-                response = Response.getResponseError();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return response;
-    }
-
-    /**
-     * 修改
-     */
-    @RequestMapping(value = "/upMsgList", method = RequestMethod.POST)
-    @ResponseBody
-    public Response upMsgList(@RequestBody Map<String, Object> map) {
-        Response response;
-        try {
-
-            // check request param
-            String appid = map.get("appId").toString();
-            String secret = map.get("secret").toString();
-            String tempid = map.get("msgid").toString();
-            String cid = map.get("cid").toString();
-
-            // get appid => checkcode
-            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
-            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
-            if (md5.equals(map.get("checkcode"))) {
-                response = messageListService.upMsgList(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
-            } else {
-                response = Response.getResponseError();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response = Response.getResponseError();
-        }
-        return response;
-    }
-
-    /**
-     * 禁用
-     */
-    @RequestMapping(value = "/removeMsgList", method = RequestMethod.POST)
-    @ResponseBody
-    public Response removeMsgList(@RequestBody Map<String, Object> map) {
-        Response response;
-        try {
-            // check request param
-            String appid = map.get("appId").toString();
-            String secret = map.get("secret").toString();
-            String tempid = map.get("msgid").toString();
-            String cid = map.get("cid").toString();
-
-            // get appid => checkcode
-            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
-            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
-            if (md5.equals(map.get("checkcode"))) {
-                response = messageListService.removeMsgList(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
-            } else {
-                response = Response.getResponseError();
-            }
-
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.getResponseError();
