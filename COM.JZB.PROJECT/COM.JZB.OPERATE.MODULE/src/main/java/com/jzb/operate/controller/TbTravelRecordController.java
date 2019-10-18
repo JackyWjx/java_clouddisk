@@ -7,6 +7,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.service.TbTravelRecordService;
+import com.jzb.operate.service.TbTravelVehicleService;
 import com.jzb.operate.util.PageConvert;
 import com.jzb.operate.util.VeriafitionParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,9 @@ public class TbTravelRecordController {
 
     @Autowired
     private TbTravelRecordService tbTravelRecordService;
+
+    @Autowired
+    private TbTravelVehicleService tbTravelVehicleService;
 
     /**
      * 根据uid 获取出差申请记录
@@ -58,6 +63,15 @@ public class TbTravelRecordController {
                 // 得到结果集
                 List<Map<String, Object>> list = tbTravelRecordService.getTravelRecordListByUid(param);
 
+                for (int i = 0, l = list.size(); i < l; i++) {
+                    Map<String,Object> map=new HashMap<>();
+
+                    // 取出每一行记录的出差工具id
+                    map.put("vehicleid",list.get(i).get("vehicle"));
+                    // 查出name 后放入
+                    list.get(i).put("vehicleName",tbTravelVehicleService.getTravelName(map));
+                }
+
                 // 得到总数
                 int count = tbTravelRecordService.getTravelRecordCountByUid(param);
 
@@ -67,7 +81,7 @@ public class TbTravelRecordController {
                 pi.setTotal(count);
 
                 // 设置userinfo
-                result = Response.getResponseSuccess((Map<String, Object>) param.get("userInfo"));
+                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
 
                 result.setPageInfo(pi);
 
@@ -140,9 +154,9 @@ public class TbTravelRecordController {
     public Response setDeleteStatus(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            if(JzbCheckParam.haveEmpty(param,new String[]{"travelid"})){
-                result=Response.getResponseError();
-            }else {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid"})) {
+                result = Response.getResponseError();
+            } else {
                 result = tbTravelRecordService.setDeleteStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
