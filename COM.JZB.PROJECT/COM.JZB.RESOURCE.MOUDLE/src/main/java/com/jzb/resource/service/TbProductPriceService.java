@@ -59,4 +59,13 @@ public class TbProductPriceService {
     public List<Map<String, Object>> getTbProductPrice(Map<String, Object> param) {
         return tbProductPriceMapper.getTbProductPrice(param);
     }
+
+    /**
+     * 查询分页的总数
+     * @param param
+     * @return
+     */
+    public int getCount(Map<String, Object> param) {
+        return tbProductPriceMapper.getCount(param);
+    }
 }

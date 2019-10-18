@@ -83,4 +83,13 @@ public class TbProductResListService {
     public List<Map<String, Object>> getURL(Map<String, Object> param) {
         return tbProductResListMapper.getURL(param);
     }
+
+    /**
+     * 查询总数
+     * @param param
+     * @return
+     */
+    public int getCount(Map<String, Object> param) {
+        return tbProductResListMapper.getCount(param);
+    }
 }

@@ -48,4 +48,13 @@ public class TbProductFunctionService {
     public List<Map<String, Object>> getProductFunction(Map<String, Object> param) {
         return tbProductFunctionMapper.getProductFunction(param);
     }
+
+    /**
+     * 查询分页的总数
+     * @param param
+     * @return
+     */
+    public int getCount(Map<String, Object> param) {
+        return tbProductFunctionMapper.getCount(param);
+    }
 }
