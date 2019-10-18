@@ -17,7 +17,7 @@ import java.util.Map;
  * @Date: 2019/8/7 15:46
  */
 @FeignClient(name = "jzb-message")
-@RequestMapping("/sms")
+@RequestMapping("/message")
 public interface MessageApi {
     /**
      * 送短信消息，根据手机号、template和code发送短信消息
