@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbTravelVehicleMapper">
+
+
+        <!-- 查询交通工具  -->
+    <select id="queryCnameById" parameterType="java.util.Map" resultType="java.lang.String">
+        select cname from tb_travel_vehicle where status='1' and vehicleid=#{vehicleid}
+    </select>
+
+</mapper>
+

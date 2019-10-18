@@ -8,6 +8,8 @@
     <select id="queryTravelRecordByUid" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
             travelid,
+            uid,
+            typeid,
             curcid,
             cname,
             travedesc,
@@ -32,11 +34,12 @@
             times,
             nexttime,
             status,
-            summary
+            summary,
+        (select vehicle from tb_user_travel where uid =#{ uid } and travelid=tt.travelid )
         FROM tb_travel_record
         WHERE
-            travelid IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
-            and status != 8
+            travelid tt IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
+            and status != '8'
             <if test="beginTime != null and beginTime != '' ">
                 and starttime &gt;= #{beginTime}
             </if>
