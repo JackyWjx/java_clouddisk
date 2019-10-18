@@ -72,4 +72,11 @@ public interface TbProductResListMapper {
      * @return
      */
     int getCount(Map<String, Object> param);
+
+    /**
+     * 查询引用合同模板
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getResList(Map<String, Object> param);
 }

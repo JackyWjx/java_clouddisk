@@ -27,10 +27,10 @@ public interface TbContractTemplateItemMapper {
 
     /**
      * 修改合同模板项
-     * @param list
+     * @param map
      * @return
      */
-    int updateContractTemplateItem(List<Map<String, Object>> list);
+    int updateContractTemplateItem(Map<String, Object> map);
 
 
     /**
@@ -39,4 +39,6 @@ public interface TbContractTemplateItemMapper {
      * @return
      */
     int  addContractTemplateItem(List<Map<String, Object>> list);
+
+    int addContractTemplateItems(Map<String, Object> map);
 }
