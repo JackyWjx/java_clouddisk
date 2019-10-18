@@ -10,7 +10,7 @@
         <choose><when test="groupname != null">and groupname = #{groupname}</when></choose>
         <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
         <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
-        limit #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <select id="queryMessageUserGroup" resultType="java.util.Map" parameterType="java.util.Map">
@@ -19,14 +19,16 @@
         <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
         <choose><when test="uid != null">and uid = #{uid}</when></choose>
         <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
-        limit #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <select id="queryMsgGroupConfigure" resultType="java.util.Map" parameterType="java.util.Map">
         select cid,groupid,isp,msgtype,context,passwd,summary from tb_msg_group_configure where status = '1'
-        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
         <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
-        limit #{rows}  offset #{page}
+        <choose><when test="isp != null">and isp = #{isp}</when></choose>
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="cid != null">and groupid = #{groupid}</when></choose>
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
@@ -48,27 +50,28 @@
     <select id="queryMsgGroupConfigureCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_msg_group_configure where status = '1'
         <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        <choose><when test="isp != null">and isp = #{isp}</when></choose>
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="cid != null">and groupid = #{groupid}</when></choose>
     </select>
 
     <!-- 模糊查询 -->
     <select id="searchMessageGroup" resultType="java.util.Map" parameterType="java.util.Map">
         select cid,groupid,groupname,msgtype,business from tb_message_group where status = '1'
-        or groupname like CONCAT('%',#{keys},'%')
-        limit  #{rows}  offset #{page}
+        or groupname like CONCAT('%',#{groupname},'%')
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <select id="searchMessageUserGroup" resultType="java.util.Map" parameterType="java.util.Map">
         select cid,groupid,uid,nickname,msgtype,tarobj from tb_msg_user_group where status = '1'
         and nickname like CONCAT('%',#{nickname},'%')
-        limit #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <select id="searchMsgGroupConfigure" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_msg_group_configure where status = '1'
-        and cid like CONCAT('%',#{keys},'%')
-        or groupid like CONCAT('%',#{keys},'%')
-        or ouid like CONCAT('%',#{keys},'%')
-        limit #{rows}  offset #{page}
+        select cid,groupid,isp,msgtype,context,passwd,summary from tb_msg_group_configure where status = '1'
+        and context like CONCAT('%',#{context},'%')
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 模糊查询总数 -->
@@ -84,25 +87,25 @@
 
     <select id="searchMsgGroupConfigureCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_msg_group_configure where status = '1'
-        and cid like CONCAT('%',#{keys},'%')
-        or groupid like CONCAT('%',#{keys},'%')
-        or ouid like CONCAT('%',#{keys},'%')
+        and context like CONCAT('%',#{context},'%')
     </select>
 
     <!-- 添加 -->
     <insert id="insertMessageGroup" parameterType="java.util.Map">
-        INSERT INTO tb_message_group ( cid, groupid, groupname, msgtype, adduid,addtime, upduid, updtime, status, summary )
+        INSERT INTO tb_message_group ( cid, groupid, groupname, msgtype, addtime, upduid, updtime, status, summary, business, adduid )
         VALUES
         ( #{cid},
         #{groupid},
         #{groupname},
         #{msgtype},
-        <choose><when test="adduid != null">#{adduid}</when><otherwise>null</otherwise></choose>,
         #{addtime},
-        #{upduid},
-        <choose><when test="adduid != null">#{adduid}</when><otherwise>null</otherwise></choose>,
+        <choose><when test="upduid != null">#{upduid}</when><otherwise>null</otherwise></choose>,
+        #{updtime},
         #{status},
-        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose> );
+        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>,
+        #{business},
+        <choose><when test="adduid != null">#{adduid}</when><otherwise>null</otherwise></choose>
+        );
     </insert>
 
     <insert id="insertMessageUserGroup" parameterType="java.util.Map">

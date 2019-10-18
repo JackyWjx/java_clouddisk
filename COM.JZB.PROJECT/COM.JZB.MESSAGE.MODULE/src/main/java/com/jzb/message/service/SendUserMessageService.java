@@ -55,7 +55,8 @@ public class SendUserMessageService {
     public int saveSendUserMessage(Map<String, Object> map) {
         map.put("status", '1');
         map.put("msgtype", JzbDataType.getInteger(map.get("msgtype")));
-        map.put("sendtime", JzbDataType.getInteger(map.get("sendtime")));
+        map.put("sendtime",System.currentTimeMillis());
+        map.put("receivetime",System.currentTimeMillis());
         return sendUserMessageMapper.insertSendUserMessage(map);
     }
 
@@ -64,7 +65,8 @@ public class SendUserMessageService {
      */
     public int upSendUserMessage(Map<String, Object> map) {
         map.put("msgtype", JzbDataType.getInteger(map.get("msgtype")));
-        map.put("sendtime", JzbDataType.getInteger(map.get("sendtime")));
+        map.put("sendtime",System.currentTimeMillis());
+        map.put("receivetime",System.currentTimeMillis());
         map.put("id", JzbDataType.getInteger(map.get("id")));
         return sendUserMessageMapper.updateSendUserMessage(map);
     }

@@ -773,10 +773,51 @@ public class AuthUserController {
     public Response modifyUserStatus(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("uid",userInfo.get("uid"));
-                int up = userService.updateUserStatus(param);
-                result = up > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", userInfo.get("uid"));
+            int up = userService.updateUserStatus(param);
+            result = up > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 点击业主下的人员中的新增人员按钮进行加入员工
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/addCompanyEmployee", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyEmployee(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            result = userService.addCompanyEmployee(param);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员12
+     * 点击业主下的人员中的修改人员按钮进行修改员工信息
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/modifyCompanyEmployee", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyCompanyEmployee(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("upduid", userInfo.get("uid"));
+            int count = userService.modifyCompanyEmployee(param);
+            result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

@@ -55,7 +55,7 @@ public class MessageGroupController {
             List<Map<String , Object>> list ;
             PageInfo pageInfo = new PageInfo();
             pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
-            response =  Response.getResponseSuccess((Map)map.get("userinfo"));
+            response =  Response.getResponseSuccess();
             if(map.containsKey("groupname") && !JzbTools.isEmpty(map.get("greoupname"))){
                 list = groupService.searchMessageGroup(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
@@ -121,7 +121,7 @@ public class MessageGroupController {
             List<Map<String , Object>> list ;
             PageInfo pageInfo = new PageInfo();
             pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
-            if(map.containsKey("nickname") && !JzbTools.isEmpty(map.get("nickname"))){
+            if(map.containsKey("context") && !JzbTools.isEmpty(map.get("context"))){
                 list  = groupService.searchMsgGroupConfigure(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
                     pageInfo.setTotal(groupService.searchMsgGroupConfigureCount(map));
@@ -219,10 +219,10 @@ public class MessageGroupController {
             String secret = map.get("secret").toString();
             String cid = map.get("cid").toString();
             String groupname = map.get("groupid").toString();
-            String uid = map.get("uid").toString();
+            String isp = map.get("isp").toString();
             Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
             logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
-            String md5 = JzbDataCheck.Md5(appId + secret  + uid   + cid + groupname + checkCode.get("checkcode").toString());
+            String md5 = JzbDataCheck.Md5(appId + secret  + isp   + cid + groupname + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if(md5.equals(map.get("checkcode"))){
                 response = groupService.saveMsgGroupConfigure(map) ? Response.getResponseSuccess() : Response.getResponseError();

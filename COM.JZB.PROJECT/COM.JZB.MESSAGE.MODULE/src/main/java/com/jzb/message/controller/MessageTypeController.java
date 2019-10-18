@@ -5,7 +5,6 @@ import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
-import com.jzb.message.service.MessageGroupTemplateService;
 import com.jzb.message.service.MessageTypeService;
 import com.jzb.message.service.ShortMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +13,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * @Description: 消息模版控制层
+ * @Description: 消息类型控制层
  * @Author tang sheng jun
  */
 @Controller
-@RequestMapping("/message/group/template")
-public class MessageGroupTemplateController {
+@RequestMapping("/message/type")
+public class MessageTypeController {
+
+    private final static Logger logger= LoggerFactory.getLogger(MessageTypeController.class);
 
     @Autowired
-    private MessageGroupTemplateService messageGroupTemplateService;
+    private MessageTypeService service;
 
     @Autowired
     private ShortMessageService smsService;
@@ -36,25 +39,26 @@ public class MessageGroupTemplateController {
      * 查询
      */
 
-    @RequestMapping(value = "/queryMsgGroupTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/queryMsgType", method = RequestMethod.POST)
     @ResponseBody
-    public Response queryMsgGroupTemplate(@RequestBody Map<String, Object> map) {
+    public Response queryMsgType(@RequestBody Map<String, Object> map) {
         Response response;
         try {
+            logger.info("==============>>queryMsgType");
             List<Map<String, Object>> list;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             response = Response.getResponseSuccess();
-            if (map.containsKey("tempname") && !JzbTools.isEmpty(map.get("tempname"))) {
-                list = messageGroupTemplateService.searchMsgGroupTemplate(map);
+            if (map.containsKey("typename") && !JzbTools.isEmpty(map.get("typename"))) {
+                list = service.searchMsgType(map);
                 if (JzbDataType.getInteger(map.get("count")) == 0) {
-                    int count = messageGroupTemplateService.searchMsgGroupTemplateCount(map);
+                    int count = service.searchMsgTypeCount(map);
                     info.setTotal(count);
                 }
             } else {
-                list = messageGroupTemplateService.queryMsgGroupTemplate(map);
+                list = service.queryMsgType(map);
                 if (JzbDataType.getInteger(map.get("count")) == 0) {
-                    int count = messageGroupTemplateService.queryMsgGroupTemplateCount(map);
+                    int count = service.queryMsgTypeCount(map);
                     info.setTotal(count);
                 }
             }
@@ -68,24 +72,28 @@ public class MessageGroupTemplateController {
     }
 
 
+
+
     /**
      * 添加
      */
-    @RequestMapping(value = "/saveMsgGroupTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveMsgType", method = RequestMethod.POST)
     @ResponseBody
-    public Response saveMsgGroupTemplate(@RequestBody Map<String, Object> map) {
+    public Response saveMsgType(@RequestBody Map<String, Object> map) {
         Response response;
         try {
+            logger.info("==============>>saveMsgType");
             // check request param
             String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();
-            String tempid = map.get("tempid").toString();
-            String cid = map.get("cid").toString();
+            String msgtype = map.get("msgtype").toString();
+            String typename = map.get("typename").toString();
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
-            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
+            String md5 = JzbDataCheck.Md5(appid + secret + msgtype + typename + checkcode);
+            logger.info("---------MD5="+md5+"--------------");
             if (md5.equals(map.get("checkcode"))) {
-                response = messageGroupTemplateService.saveMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+                response = service.saveMsgType(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
                 response = Response.getResponseError();
             }
@@ -99,21 +107,23 @@ public class MessageGroupTemplateController {
     /**
      * 修改
      */
-    @RequestMapping(value = "/upMsgGroupTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/upMsgType", method = RequestMethod.POST)
     @ResponseBody
-    public Response upMsgGroupTemplate(@RequestBody Map<String, Object> map) {
+    public Response upMsgType(@RequestBody Map<String, Object> map) {
         Response response;
         try {
+            logger.info("==============>>upMsgType");
             // check request param
-            String appId = map.get("appId").toString();
+            String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();
-            String tempid = map.get("tempid").toString();
-            String cid = map.get("cid").toString();
+            String msgtype = map.get("msgtype").toString();
+            String typename = map.get("typename").toString();
             // get appid => checkcode
-            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appId);
-            String md5 = JzbDataCheck.Md5(appId + secret + tempid + cid + checkcode);
+            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
+            String md5 = JzbDataCheck.Md5(appid + secret + msgtype + typename + checkcode);
+            logger.info("---------------MD5="+md5);
             if (md5.equals(map.get("checkcode"))) {
-                response = messageGroupTemplateService.upMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+                response = service.upMsgType(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
                 response = Response.getResponseError();
             }
@@ -128,29 +138,31 @@ public class MessageGroupTemplateController {
     /**
      * 禁用
      */
-    @RequestMapping(value = "/removeMsgGroupTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/removeMsgType", method = RequestMethod.POST)
     @ResponseBody
-    public Response removeMsgGroupTemplate(@RequestBody Map<String, Object> map) {
+    public Response removeMsgType(@RequestBody Map<String, Object> map) {
         Response response;
         try {
             // check request param
-            String appId = map.get("appId").toString();
+            String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();
-            String tempid = map.get("tempid").toString();
-            String cid = map.get("cid").toString();
+            String msgtype = map.get("msgtype").toString();
+            String typename = map.get("typename").toString();
             // get appid => checkcode
-            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appId);
-            String md5 = JzbDataCheck.Md5(appId + secret + tempid + cid + checkcode);
-            if (md5.equals("checkcode")) {
-                response = messageGroupTemplateService.removeMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
+            String md5 = JzbDataCheck.Md5(appid + secret + msgtype + typename + checkcode);
+            System.out.println("---------------MD5="+md5);
+            if (md5.equals(map.get("checkcode"))) {
+                response = service.removeMsgType(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
                 response = Response.getResponseError();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.getResponseError();
         }
         return response;
     }
+
+
 }

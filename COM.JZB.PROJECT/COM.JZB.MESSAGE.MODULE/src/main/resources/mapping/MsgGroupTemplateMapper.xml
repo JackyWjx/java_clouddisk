@@ -6,29 +6,38 @@
 
 
     <!-- 查询 -->
-    <select id="queryMsgType" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_msg_group_template where status = '1'
-        limit  #{rows}  offset #{page}
+    <select id="queryMsgGroupTemplate" resultType="java.util.Map" parameterType="java.util.Map">
+        select tempid,cid,groupid,msgtype,tempname,context,remark from tb_msg_group_template where status = '1'
+        <choose><when test="tempid != null">and tempid = #{tempid}</when></choose>
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
+        limit  #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
-    <select id="queryMsgTypeCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    <select id="queryMsgGroupTemplateCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_msg_group_template where status = '1'
+        <choose><when test="tempid != null">and tempid = #{tempid}</when></choose>
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="groupid != null">and groupid = #{groupid}</when></choose>
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
     </select>
 
     <!-- 模糊查询 -->
-    <select id="searchMsgType" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_msg_group_template  where status = '1' and tempname ~ #{tempname}
-        limit  #{rows}  offset #{page}
+    <select id="searchMsgGroupTemplate" resultType="java.util.Map" parameterType="java.util.Map">
+        select tempid,cid,groupid,msgtype,tempname,context,remark from tb_msg_group_template
+          where status = '1'  and tempname like CONCAT('%',#{tempname},'%')
+        limit  #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 模糊查询总数 -->
-    <select id="searchMsgTypeCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-         select count(1) from tb_msg_group_template  where status = '1' and tempname ~ #{tempname}
+    <select id="searchMsgGroupTemplateCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+         select count(1) from tb_msg_group_template   where status = '1'  and tempname like CONCAT('%',#{tempname},'%')
     </select>
 
     <!-- 添加 -->
-    <insert id="insertMsgType" parameterType="java.util.Map">
+    <insert id="insertMsgGroupTemplate" parameterType="java.util.Map">
         INSERT INTO tb_msg_group_template ( tempid, cid, groupid, msgtype, tempname, context, remark,
         status,summary,adduid,upduid,updtime,addtime )
         VALUES
@@ -41,8 +50,14 @@
         #{remark},
         #{status},
         #{summary},
-        #{adduid},
-        #{upduid},
+        <choose>
+            <when test="adduid != null">#{adduid}</when>
+            <otherwise>null</otherwise>
+        </choose>,
+        <choose>
+            <when test="upduid != null">#{upduid}</when>
+            <otherwise>null</otherwise>
+        </choose>,
         #{updtime},
         <choose>
             <when test="addtime != null">#{addtime}</when>
@@ -52,51 +67,36 @@
     </insert>
 
     <!-- 修改 -->
-    <update id="updateMsgType" parameterType="java.util.Map">
-        update tb_msg_group_template set
+    <update id="updateMsgGroupTemplate" parameterType="java.util.Map">
+        update tb_msg_group_template set updtime = #{updtime}
         <choose>
-            <when test="tempid != null">tempid = #{tempid},</when>
+            <when test="cid != null">,cid = #{cid},</when>
         </choose>
         <choose>
-            <when test="cid != null">cid = #{cid},</when>
+            <when test="groupid != null">,groupid = #{groupid}</when>
         </choose>
         <choose>
-            <when test="groupid != null">groupid = #{groupid},</when>
+            <when test="msgtype != null">,msgtype = #{msgtype}</when>
         </choose>
         <choose>
-            <when test="msgtype != null">msgtype = #{msgtype},</when>
+            <when test="tempname != null">,tempname = #{tempname}</when>
         </choose>
         <choose>
-            <when test="tempname != null">tempname = #{tempname},</when>
+            <when test="context != null">,context = #{context}</when>
         </choose>
         <choose>
-            <when test="context != null">context = #{context},</when>
+            <when test="remark != null">,remark = #{remark}</when>
         </choose>
         <choose>
-            <when test="remark != null">remark = #{remark},</when>
-        </choose>
-        <choose>
-            <when test="summary != null">summary = #{summary},</when>
-        </choose>
-        <choose>
-            <when test="adduid != null">adduid = #{adduid},</when>
-        </choose>
-        <choose>
-            <when test="upduid != null">upduid = #{upduid},</when>
-        </choose>
-        <choose>
-            <when test="updtime != null">updtime = #{updtime},</when>
-        </choose>
-        <choose>
-            <when test="addtime != null">addtime = #{addtime},</when>
+            <when test="upduid != null">,upduid = #{upduid}</when>
         </choose>
         status = #{status}
-        where id = #{id}
+        where tempid = #{tempid}
     </update>
 
     <!-- 删除 -->
-    <update id="deleteMsgType" parameterType="java.util.Map">
-        update  tb_msg_group_template set  status = '2' where id = #{id}
+    <update id="removeMsgGroupTemplate" parameterType="java.util.Map">
+        update  tb_msg_group_template set  status = '2'  where tempid = #{tempid}
     </update>
 
 </mapper>

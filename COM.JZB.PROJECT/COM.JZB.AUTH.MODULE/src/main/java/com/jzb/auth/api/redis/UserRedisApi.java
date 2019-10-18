@@ -71,4 +71,13 @@ public interface UserRedisApi {
      */
     @RequestMapping(value = "/cachePhoneUid", method = RequestMethod.POST)
     public Response cachePhoneUid(@RequestBody Map<String, Object> param);
+
+    /**
+     * 根据联系方式获取用户ID
+     *
+     * @param phone
+     * @return
+     */
+    @RequestMapping(value = "/getPhoneUid", method = RequestMethod.POST)
+    Response getPhoneUid(@RequestParam("phone") String phone);
 }

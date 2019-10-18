@@ -107,4 +107,20 @@ public interface CompanyUserMapper {
      * @author kuangbin
      */
     int updateCompanyProject(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 根据用户ID查询企业中是否存在用户
+     *
+     * @author kuangbin
+     */
+    int queryDeptCount(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 将用户加入单位资源池中
+     *
+     * @author kuangbin
+     */
+    int insertCompanyDept(Map<String, Object> param);
 } // End interface CompanyMapper

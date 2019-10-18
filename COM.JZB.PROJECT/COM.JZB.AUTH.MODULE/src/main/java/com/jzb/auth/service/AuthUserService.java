@@ -1,7 +1,12 @@
 package com.jzb.auth.service;
 
+import com.jzb.auth.api.organize.CompanyUserApi;
+import com.jzb.auth.api.redis.UserRedisApi;
 import com.jzb.auth.dao.AuthUserMapper;
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.code.JzbDataCheck;
+import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.base.entity.auth.UserInfo;
 import org.apache.commons.lang.StringUtils;
@@ -11,10 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 用户服务类
@@ -28,6 +30,18 @@ public class AuthUserService {
      */
     @Autowired
     private AuthUserMapper userMapper;
+
+    /**
+     * 用户缓存操作对象
+     */
+    @Autowired
+    private UserRedisApi userRedisApi;
+
+    /**
+     * 企业操作对象
+     */
+    @Autowired
+    private CompanyUserApi companyUserApi;
 
     /**
      * 认证修改用户数据
@@ -235,8 +249,67 @@ public class AuthUserService {
      * @Author: DingSC
      */
     public int updateUserStatus(Map<String, Object> param) {
-        param.put("status","1");
-        param.put("updtime",System.currentTimeMillis());
+        param.put("status", "1");
+        param.put("updtime", System.currentTimeMillis());
         return userMapper.updateUserStatus(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 点击业主下的人员中的新增人员按钮进行加入员工
+     *
+     * @author kuangbin
+     */
+    public Response addCompanyEmployee(Map<String, Object> param) throws Exception{
+        Response result;
+        Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+        param.put("adduid", userInfo.get("uid"));
+        Object redisRes = userRedisApi.getPhoneUid(JzbDataType.getString(param.get("relphone"))).getResponseEntity();
+        param.put("uid", JzbDataType.getString(redisRes));
+        if (JzbTools.isEmpty(redisRes)) {
+            // 获取用户ID
+            param.put("uid", JzbRandom.getRandomCharCap(12));
+            // 获取随机密码
+            String passwd = "*jzb" + JzbRandom.getRandomNum(3);
+            param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
+            param.put("passwd", password().encode(JzbDataType.getString(param.get("passwd"))));
+            param.put("password", passwd);
+            // 默认此用户为初级认证
+            param.put("status", "1");
+            param.put("authid", "1");
+            param.put("phone", JzbDataType.getString(param.get("relphone")));
+            param.put("addtime", System.currentTimeMillis());
+            param.put("ktid", 1);
+            // 创建用户
+            int count = userMapper.insertCompanyEmployee(param);
+            userRedisApi.cachePhoneUid(param);
+            if (count >= 1){
+                // 将该用户加入单位资源池中
+                result = companyUserApi.addCompanyDept(param);
+            }else {
+                result = Response.getResponseError();
+            }
+        } else {
+            // 查询企业部门中是否有该员工
+            result = companyUserApi.getDeptCount(param);
+            if (JzbDataType.getInteger(result.getResponseEntity())==1){
+                result.setResponseEntity("此用户在单位中已存在!");
+            }else {
+                // 将该用户加入单位资源池中
+                result = companyUserApi.addCompanyDept(param);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员12
+     * 点击业主下的人员中的修改人员按钮进行修改员工信息
+     *
+     * @author kuangbin
+     */
+    public int modifyCompanyEmployee(Map<String, Object> param) {
+        param.put("updtime", System.currentTimeMillis());
+        return userMapper.updateCompanyEmployee(param);
     }
 } // End class AuthUserService

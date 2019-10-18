@@ -18,10 +18,9 @@ public class MessageTypeService {
      * 查询
      */
     public List<Map<String, Object>> queryMsgType(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("page")) == 0 ? 0 : JzbDataType.getInteger(map.get("page")) - 1;
-        map.put("page", page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
-
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return msgType.queryMsgType(map);
     }
 
@@ -36,9 +35,9 @@ public class MessageTypeService {
      * 模糊查询
      */
     public List<Map<String, Object>> searchMsgType(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("page")) == 0 ? 0 : JzbDataType.getInteger(map.get("page")) - 1;
-        map.put("page", page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return msgType.searchMsgType(map);
     }
 
@@ -54,7 +53,8 @@ public class MessageTypeService {
      */
     public int saveMsgType(Map<String, Object> map) {
         map.put("status", '1');
-        map.put("msgtype", JzbDataType.getInteger(map.get("msgtype")));
+        map.put("updtime",System.currentTimeMillis());
+        map.put("addtime",System.currentTimeMillis());
         return msgType.insertMsgType(map);
     }
 
@@ -62,8 +62,8 @@ public class MessageTypeService {
      * 修改
      */
     public int upMsgType(Map<String, Object> map) {
-        map.put("msgtype", JzbDataType.getInteger(map.get("msgtype")));
-        map.put("id", JzbDataType.getInteger(map.get("id")));
+        map.put("updtime",System.currentTimeMillis());
+        map.put("addtime",System.currentTimeMillis());
         return msgType.updateMsgType(map);
     }
 
@@ -71,9 +71,7 @@ public class MessageTypeService {
      * 禁用
      */
     public int removeMsgType(Map<String, Object> map) {
-        map.put("id", JzbDataType.getInteger(map.get("id")));
+        map.put("updtime",System.currentTimeMillis());
         return msgType.deleteMsgType(map);
     }
-
-
 }

@@ -264,4 +264,51 @@ public class CompanyUserController {
         }
         return result;
     }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 根据用户ID查询企业中是否存在用户
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getDeptCount", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getDeptCount(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            // 返回所有的企业列表
+            int count = companyUserService.getDeptCount(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            result.setResponseEntity(count);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 将用户加入单位资源池中
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/addCompanyDept", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyDept(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            // 返回所有的企业列表
+            int count = companyUserService.addCompanyDept(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
 }

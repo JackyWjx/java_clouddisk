@@ -84,7 +84,7 @@ public class MsgTypeParaController {
             List<Map<String , Object>> list ;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            if(map.containsKey("paraname") && !JzbTools.isEmpty(map.get("paraname"))){
+            if(map.containsKey("param") && !JzbTools.isEmpty(map.get("param"))){
                 list =  service.searchUserPara(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
                     info.setTotal(service.searchUserParaCount(map));
@@ -118,7 +118,7 @@ public class MsgTypeParaController {
             List<Map<String , Object>> list ;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
-            if(map.containsKey("paraname") && !JzbTools.isEmpty(map.get("paraname"))){
+            if(map.containsKey("ispname") && !JzbTools.isEmpty(map.get("ispname"))){
                 list =  service.searchServiceProviders(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
                     info.setTotal(service.searchServiceProvidersCount(map));

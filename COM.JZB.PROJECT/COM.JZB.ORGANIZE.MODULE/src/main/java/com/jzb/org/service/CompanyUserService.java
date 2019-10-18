@@ -38,6 +38,8 @@ public class CompanyUserService {
     @Autowired
     private RegionBaseApi regionBaseApi;
 
+    @Autowired
+    private CompanyService companyService;
     /**
      * 设置分页数
      */
@@ -146,7 +148,13 @@ public class CompanyUserService {
     public List<Map<String, Object>> getCompanyCommonList(Map<String, Object> param) {
         param.put("status", "1");
         param = setPageSize(param);
-        return companyUserMapper.queryCompanyCommonList(param);
+        List<Map<String, Object>> list = companyUserMapper.queryCompanyCommonList(param);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> companyMap = list.get(i);
+            Response region = regionBaseApi.getRegionInfo(companyMap);
+            companyMap.put("region", region.getResponseEntity());
+        }
+        return list;
     }
 
     /**
@@ -243,5 +251,34 @@ public class CompanyUserService {
         param.put("status", "1");
         param.put("updtime", System.currentTimeMillis());
         return companyUserMapper.updateCompanyProject(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 根据用户ID查询企业中是否存在用户
+     *
+     * @author kuangbin
+     */
+    public int getDeptCount(Map<String, Object> param) {
+        param.put("status", "1");
+        return companyUserMapper.queryDeptCount(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 将用户加入单位资源池中
+     *
+     * @author kuangbin
+     */
+    public int addCompanyDept(Map<String, Object> param) {
+        param.put("status", "1");
+        int count = companyUserMapper.insertCompanyDept(param);
+        if (count == 1){
+            param.put("groupid", "1014");
+            param.put("msgtag", "addCompanyDept");
+            param.put("senduid", "addCompanyDept");
+            companyService.sendRemind(param);
+        }
+        return count;
     }
 }
