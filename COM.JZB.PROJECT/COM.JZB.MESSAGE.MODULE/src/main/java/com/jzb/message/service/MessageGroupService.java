@@ -117,10 +117,6 @@ public class MessageGroupService {
             map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
             map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
             resultMap =  groupMapper.searchMessageGroup(map);
-            // 解析
-            for(int i =0 ;i <resultMap.size();i++){
-                resultMap.get(i).put("msgtype",MessageUtile.decryptMsgType(JzbDataType.getInteger(resultMap.get(i).get("msgtype"))));
-            }
         }catch (Exception e){
             e.printStackTrace();
             resultMap = null;
@@ -138,10 +134,6 @@ public class MessageGroupService {
             map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
             map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
             resultMap =  groupMapper.searchMessageUserGroup(map);
-            // 解析
-            for(int i =0 ;i <resultMap.size();i++){
-                resultMap.get(i).put("msgtype",MessageUtile.decryptMsgType(JzbDataType.getInteger(resultMap.get(i).get("msgtype"))));
-            }
         }catch (Exception e){
             e.printStackTrace();
             resultMap = null;
@@ -159,10 +151,6 @@ public class MessageGroupService {
             map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
             map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
             resultMap =  groupMapper.searchMsgGroupConfigure(map);
-            // 解析
-            for(int i =0 ;i <resultMap.size();i++){
-                resultMap.get(i).put("msgtype",MessageUtile.decryptMsgType(JzbDataType.getInteger(resultMap.get(i).get("msgtype"))));
-            }
         }catch (Exception e){
             e.printStackTrace();
             resultMap = null;
@@ -200,7 +188,6 @@ public class MessageGroupService {
             // 设置修改时间 修改人
             map.put("addtime", System.currentTimeMillis());
             map.put("status",1);
-            map.put("msgtype",JzbDataType.getInteger(map.get("msgtype")));
             if(map.containsKey("ouid")){
                 map.put("adduid",map.get("ouid"));
                 map.put("upduid",map.get("ouid"));

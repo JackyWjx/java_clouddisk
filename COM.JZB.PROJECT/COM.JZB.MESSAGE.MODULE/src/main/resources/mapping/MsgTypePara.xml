@@ -12,7 +12,7 @@
         <choose><when test="paraneed != null">and paraneed = #{paraneed}</when></choose>
         <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
         <choose><when test="isp != null">and isp = #{isp}</when></choose>
-        limit  #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
@@ -29,13 +29,13 @@
     <select id="searchMsgTypePara" resultType="java.util.Map" parameterType="java.util.Map">
         select msgtype,isp,paracode,paraname,paradesc,paratype,parasize,paraneed,summary
         from tb_msg_type_para where status = '1' and paraname like CONCAT('%',#{keys},'%')
-        limit  #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 模糊查询总数 -->
     <select id="searchMsgTypeParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
          select count(1) from tb_msg_type_para where status = '1'
-         and paraname like CONCAT('%',#{keys},'%')
+         and paraname like CONCAT('%',#{paraname},'%')
     </select>
 
     <!-- 添加 -->
@@ -84,7 +84,7 @@
         from tb_user_parameter where status = '1'
         <choose><when test="cid != null">and cid = #{cid}</when></choose>
         <choose><when test="uid != null">and uid = #{uid}</when></choose>
-        limit  #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
@@ -98,13 +98,13 @@
     <select id="searchUserPara" resultType="java.util.Map" parameterType="java.util.Map">
         select cid,uid,param
         from tb_user_parameter where status = '1' and paraname like CONCAT('%',#{paraname},'%')
-        limit  #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 模糊查询总数 -->
     <select id="searchUserParaCount" resultType="java.lang.Integer" parameterType="java.util.Map">
          select count(1) from tb_user_parameter where status = '1'
-         and paraname like CONCAT('%',#{paraname},'%')
+         and param like CONCAT('%',#{param},'%')
     </select>
 
     <!-- 添加 -->
@@ -145,7 +145,7 @@
         select msgtype,isp,ispname,ispdesc from tb_service_providers where status = '1'
         <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
         <choose><when test="isp != null">and isp = #{isp}</when></choose>
-        limit  #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
@@ -159,7 +159,7 @@
     <select id="searchServiceProviders" resultType="java.util.Map" parameterType="java.util.Map">
         select msgtype,isp,ispname,ispdesc
         from tb_service_providers where status = '1' and ispname like CONCAT('%',#{ispname},'%')
-        limit  #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 模糊查询总数 -->
@@ -170,7 +170,6 @@
 
     <!-- 添加 -->
     <insert id="insertServiceProviders" parameterType="java.util.Map">
-
         INSERT INTO public.tb_service_providers(
          msgtype, isp, ispname, ispdesc, idx, addtime, upduid, updtime, status, summary, adduid)
         VALUES (

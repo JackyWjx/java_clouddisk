@@ -10,8 +10,8 @@
     </select>
 
     <!--  根据appid查询checkcode  -->
-    <select id="queryMsgOrganizeCheckcode" parameterType="java.lang.String" resultType="java.lang.String">
-            select  checkcode from tb_message_organize
+    <select id="queryMsgOrganizeCheckcode" parameterType="java.lang.String" resultType="java.util.Map">
+            select  * from tb_message_organize
             where appid = #{appid} and status = '1'
     </select>
 
