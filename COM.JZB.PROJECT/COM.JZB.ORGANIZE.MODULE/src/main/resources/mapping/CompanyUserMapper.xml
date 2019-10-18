@@ -358,4 +358,69 @@
         and
         projectid = #{projectid}
     </update>
+
+    <!--根据用户ID查询企业中是否存在用户-->
+    <select id="queryDeptCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        (
+        SELECT
+        distinct
+        uid
+        FROM
+        tb_dept_user
+        where
+        status = #{status}
+        and
+        cid = #{cid}
+        )as dept
+    </select>
+
+    <!--CRM-销售业主-公海-业主下的人员11-将用户加入单位资源池中-->
+    <insert id="insertCompanyDept" parameterType="java.util.Map">
+        INSERT INTO
+        tb_dept_user
+        (cid, cdid, uid, cname, phone, origin, college,
+        education, likes, marriage, idx, adduid, addtime, status, summary)
+        VALUES
+        (
+        #{cid},
+        <choose>
+            <when test=" cdid != null and cdid !=''">
+                #{cdid},
+            </when>
+            <otherwise>
+                CONCAT( #{cid},'0000'),
+            </otherwise>
+        </choose>
+        #{uid},
+        #{cname},
+        #{relphone},
+        #{origin},
+        #{college},
+        #{education},
+        #{likes},
+        #{marriage},
+        <choose>
+            <when test=" idx != null and idx !=''">
+                ${idx},
+            </when>
+            <otherwise>
+                (SELECT count(1)+1 FROM tb_dept_user),
+            </otherwise>
+        </choose>
+        #{adduid},
+        ${addtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
 </mapper>
