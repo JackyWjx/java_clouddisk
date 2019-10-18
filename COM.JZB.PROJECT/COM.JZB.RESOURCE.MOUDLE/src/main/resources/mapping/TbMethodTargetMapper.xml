@@ -18,6 +18,7 @@
         WHERE
             dataid = #{ dataid }
             AND status = '1'
+            order by addtime
     </select>
 
     <!--2.添加方法论目标-->
@@ -72,7 +73,7 @@
             </choose>
             <choose>
                 <when test="method.typedesc !=null">
-                    #{method.  },
+                    #{method.typedesc  },
                 </when>
                 <otherwise>
                     null,
@@ -127,23 +128,25 @@
                 </otherwise>
             </choose>
             )
-            ON conflict(tarkey) DO update set
-            <if test="cname !=null">cname=#{cname},</if>
-            <if test="controltype !=null">controltype=#{controltype},</if>
-            <if test="datatype !=null">datatype=#{datatype},</if>
-            <if test="datasize !=null">datasize=#{datasize},</if>
-            <if test="canempty !=null">canempty=#{canempty},</if>
-            <if test="regex !=null">regex=#{regex},</if>
-            <if test="typedesc !=null">typedesc=#{typedesc},</if>
-            <if test="idx !=null">idx=#{idx},</if>
-            <if test="ouid !=null">ouid=#{ouid},</if>
-            <if test="addtime !=null">addtime=#{addtime},</if>
-            <if test="updtime !=null">updtime=#{updtime},</if>
-            <if test="status !=null">status=#{status},</if>
-            <if test="summary !=null">summary=#{summary}</if>
-            where dataid=#{dataid} and tarkey=#{tarkey}
+            ON conflict(dataid,tarkey) DO update
+            <trim prefix="set" suffixOverrides="," suffix="  where tb_method_target.dataid=#{method.dataid} and tb_method_target.tarkey=#{method.tarkey} ">
+            <if test="method.cname !=null">cname=#{method.cname},</if>
+            <if test="method.controltype !=null">controltype=#{method.controltype},</if>
+            <if test="method.datatype !=null">datatype=#{method.datatype},</if>
+            <if test="method.datasize !=null">datasize=#{method.datasize},</if>
+            <if test="method.canempty !=null">canempty=#{method.canempty},</if>
+            <if test="method.regex !=null">regex=#{method.regex},</if>
+            <if test="method.typedesc !=null">typedesc=#{method.typedesc},</if>
+            <if test="method.idx !=null">idx=#{method.idx},</if>
+            <if test="method.ouid !=null">ouid=#{method.ouid},</if>
+            <if test="method.addtime !=null">addtime=#{method.addtime},</if>
+            <if test="method.updtime !=null">updtime=#{method.updtime},</if>
+            <if test="method.status !=null">status=#{method.status},</if>
+            <if test="method.summary !=null">summary=#{method.summary}</if>
+            </trim>
         </foreach>
     </insert>
+
 
     <!--3.修改目标状态（删除）-->
     <update id="updateMethodTargetStatus" parameterType="java.util.Map">
