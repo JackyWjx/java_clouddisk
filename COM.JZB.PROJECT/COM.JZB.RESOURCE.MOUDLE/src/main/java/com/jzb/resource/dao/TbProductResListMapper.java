@@ -66,4 +66,10 @@ public interface TbProductResListMapper {
      */
     List<Map<String, Object>> getURL(Map<String, Object> param);
 
+    /**
+     * 查询分页的总数
+     * @param param
+     * @return
+     */
+    int getCount(Map<String, Object> param);
 }

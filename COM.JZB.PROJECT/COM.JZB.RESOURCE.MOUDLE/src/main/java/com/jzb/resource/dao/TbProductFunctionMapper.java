@@ -37,4 +37,11 @@ public interface TbProductFunctionMapper {
      * @return
      */
     List<Map<String, Object>> getProductFunction(Map<String, Object> param);
+
+    /**
+     * 查询分页的总数
+     * @param param
+     * @return
+     */
+    int getCount(Map<String, Object> param);
 }
