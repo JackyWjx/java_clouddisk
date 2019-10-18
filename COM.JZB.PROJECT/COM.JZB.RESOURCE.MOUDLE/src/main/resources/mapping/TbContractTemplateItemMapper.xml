@@ -4,50 +4,48 @@
 
     <!-- 根据模板查询项-->
     <select id="quertContractTemplateItemByTempid" parameterType="java.util.Map" resultType="java.util.Map">
-        select tempid,itemid,cname,itemtype,controlid,datasize,defaultvalue,idx,ouid,addtime,updtime,status,summary
+        select id,tempid,itemid,cname,itemtype,controlid,datasize,defaultvalue,idx,ouid,addtime,updtime,status,summary
         from tb_contract_template_item where status!='4' and tempid=#{tempid} order by idx asc
     </select>
 
     <!-- 修改合同项-->
-    <update id="updateContractTemplateItem" parameterType="java.util.List">
-        <foreach collection="list" item="item" index="index" separator=";" open="" close="">
+    <update id="updateContractTemplateItem" parameterType="java.util.Map">
             update tb_contract_template_item
             set
-            <if test="item.cname!= null and item.cname!=null">
-                cname=#{item.cname},
+            <if test="cname!= null and cname!=null">
+                cname=#{cname},
             </if>
-            <if test="item.itemtype!= null and item.itemtype!=null">
-                itemtype=#{item.itemtype},
+            <if test="itemtype!= null and itemtype!=null">
+                itemtype=#{itemtype},
             </if>
-            <if test="item.controlid!= null and item.controlid!=null">
-                controlid=#{item.controlid},
+            <if test="controlid!= null and controlid!=null">
+                controlid=#{controlid},
             </if>
-            <if test="item.datasize!= null and item.datasize!=null">
-                datasize=#{item.datasize},
+            <if test="datasize!= null and datasize!=null">
+                datasize=#{datasize},
             </if>
-            <if test="item.defaultvalue!= null and item.defaultvalue!=null">
-                defaultvalue=#{item.defaultvalue},
+            <if test="defaultvalue!= null and defaultvalue!=null">
+                defaultvalue=#{defaultvalue},
             </if>
-            <if test="item.idx!= null and item.idx!=null">
-                idx=#{item.idx},
+            <if test="idx!= null and idx!=null">
+                idx=#{idx},
             </if>
-            <if test="item.ouid!= null and item.ouid!=null">
-                ouid=#{item.ouid},
+            <if test="ouid!= null and ouid!=null">
+                ouid=#{ouid},
             </if>
-            <if test="item.addtime!= null and item.addtime!=null">
-                idx=#{item.addtime},
+            <if test="addtime!= null and addtime!=null">
+                idx=#{addtime},
             </if>
-            <if test="item.updtime!= null and item.updtime!=null">
-                updtime=#{item.updtime},
+            <if test="status!= null and status!=null">
+                status=#{status},
             </if>
-            <if test="item.status!= null and item.status!=null">
-                status=#{item.status},
+            <if test="summary!= null and summary!=null">
+                summary=#{summary},
             </if>
-            <if test="item.summary!= null and item.summary!=null">
-                summary=#{item.summary}
-            </if>
-            where itemid=#{item.itemid}
-        </foreach>
+         <if test="updtime!= null and updtime!=null">
+            updtime=#{updtime}
+         </if>
+            where itemid=#{itemid}
     </update>
 
     <!-- 添加合同项-->
@@ -100,7 +98,7 @@
             </choose>
             <choose>
                 <when test="item.idx != null  and item.idx != '' ">
-                    #{item.idx},
+                    cast(#{item.idx} as integer),
                 </when>
                 <otherwise>
                    select count(1)+#{index} from  tb_contract_template_item,
@@ -135,21 +133,117 @@
                     #{item.status},
                 </when>
                 <otherwise>
-                    null,
+                    1,
                 </otherwise>
             </choose>
             <choose>
                 <when test="item.summary != null  and item.summary != '' ">
-                    #{item.summary},
+                    #{item.summary}
                 </when>
                 <otherwise>
-                    null,
+                    null
                 </otherwise>
             </choose>
             )
         </foreach>
     </insert>
 
+    <insert id="addContractTemplateItems" parameterType="java.util.Map">
+        insert into tb_contract_template_item(tempid,itemid,cname,itemtype,controlid,datasize,defaultvalue,idx,ouid,addtime,updtime,status,summary)
+        values
+            (
+            #{tempid},
+            #{itemid},
+            <choose>
+                <when test="cname != null  and cname != '' ">
+                    #{cname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="itemtype != null  and itemtype != '' ">
+                    #{itemtype},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="controlid != null  and controlid != '' ">
+                    #{controlid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="datasize != null  and datasize != '' ">
+                    #{datasize},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="defaultvalue != null  and defaultvalue != '' ">
+                    #{defaultvalue},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="idx != null  and idx != '' ">
+                    cast(#{idx} as integer),
+                </when>
+                <otherwise>
+                    select count(1)+#{index} from  tb_contract_template_item,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="ouid != null  and ouid != '' ">
+                    #{ouid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="addtime != null  and addtime != '' ">
+                    #{addtime},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="updtime != null  and updtime != '' ">
+                    #{updtime},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="status != null  and status != '' ">
+                    #{status},
+                </when>
+                <otherwise>
+                    1,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="summary != null  and summary != '' ">
+                    #{summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+    </insert>
     <!-- 根据模板查询项-->
     <select id="quertContractTemplateItemByItemid" parameterType="java.util.Map" resultType="java.util.Map">
         select tempid,itemid,cname,itemtype,controlid,datasize,defaultvalue,idx,ouid,addtime,updtime,status,summary
