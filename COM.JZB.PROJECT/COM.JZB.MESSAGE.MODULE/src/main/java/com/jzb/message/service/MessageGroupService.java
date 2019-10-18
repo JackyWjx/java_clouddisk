@@ -31,9 +31,9 @@ public class MessageGroupService {
     public List<Map<String , Object>> listMessageGroup(Map<String , Object> map){
         List<Map<String , Object>> resultMap;
         try {
-            int page = JzbDataType.getInteger(map.get("page")) == 0 ? 0 : JzbDataType.getInteger(map.get("page")) - 1;
-            map.put("page", page * JzbDataType.getInteger(map.get("rows")));
-            map.put("rows", JzbDataType.getInteger(map.get("rows")));
+            int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+            map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+            map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
             resultMap = groupMapper.queryMessageGroup(map);
             // 解析
             for(int i =0 ;i <resultMap.size();i++){
@@ -52,9 +52,9 @@ public class MessageGroupService {
     public List<Map<String , Object>> listMessageUserGroup(Map<String , Object> map){
         List<Map<String , Object>> resultMap;
         try {
-            int page = JzbDataType.getInteger(map.get("page")) == 0 ? 0 : JzbDataType.getInteger(map.get("page")) - 1;
-            map.put("page", page * JzbDataType.getInteger(map.get("rows")));
-            map.put("rows", JzbDataType.getInteger(map.get("rows")));
+            int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+            map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+            map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
             resultMap = groupMapper.queryMessageUserGroup(map);
             // 解析
             for(int i =0 ;i <resultMap.size();i++){
@@ -115,9 +115,9 @@ public class MessageGroupService {
     public List<Map<String , Object>> searchMessageGroup(Map<String , Object> map){
         List<Map<String , Object>> resultMap;
         try {
-            int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-            map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-            map.put("rows",JzbDataType.getInteger(map.get("rows")));
+            int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+            map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+            map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
             resultMap =  groupMapper.searchMessageGroup(map);
             // 解析
             for(int i =0 ;i <resultMap.size();i++){
@@ -136,9 +136,9 @@ public class MessageGroupService {
     public List<Map<String , Object>> searchMessageUserGroup(Map<String , Object> map){
         List<Map<String , Object>> resultMap;
         try {
-            int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-            map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-            map.put("rows",JzbDataType.getInteger(map.get("rows")));
+            int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+            map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+            map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
             resultMap =  groupMapper.searchMessageUserGroup(map);
             // 解析
             for(int i =0 ;i <resultMap.size();i++){
@@ -200,11 +200,15 @@ public class MessageGroupService {
         boolean resuleBoolean;
         try{
             // 设置修改时间 修改人
-            map.put("ouid",map.get("ouid"));
             map.put("addtime", System.currentTimeMillis());
             map.put("status",1);
             map.put("msgtype",JzbDataType.getInteger(map.get("msgtype")));
+            if(map.containsKey("ouid")){
+                map.put("adduid",map.get("ouid"));
+                map.put("upduid",map.get("ouid"));
+            }
             map.put("updtime", System.currentTimeMillis());
+            map.put("groupid",JzbRandom.getRandomChar(11));
             resuleBoolean = groupMapper.insertMessageGroup(map) > 0 ? true :false ;
         }catch (Exception e){
             e.printStackTrace();
@@ -261,12 +265,10 @@ public class MessageGroupService {
         boolean resuleBoolean;
         try{
             // 设置修改时间 修改人
-            map.put("ouid",map.get("userid"));
+            if(map.containsKey("ouid")){
+                map.put("upduid",map.get("ouid"));
+            }
             map.put("updtime",System.currentTimeMillis());
-            // 解析
-            map.put("msgtype", MessageUtile.encryptionMsgType(map.get("msgtype").toString()));
-            map.put("groupid",JzbDataType.getInteger(map.get("groupid")));
-            map.put("id",JzbDataType.getInteger(map.get("id")));
             resuleBoolean =  groupMapper.updateMessageGroup(map) > 0 ? true : false ;
         }catch (Exception e){
             e.printStackTrace();
@@ -324,9 +326,10 @@ public class MessageGroupService {
         boolean resuleBoolean;
         try{
             // 设置修改时间 修改人
-            map.put("ouid",map.get("userid"));
+            if(map.containsKey("ouid")){
+                map.put("upduid",map.get("ouid"));
+            }
             map.put("updtime",System.currentTimeMillis());
-            map.put("id",JzbDataType.getInteger(map.get("id")));
             resuleBoolean  = groupMapper.deleteMessageGroup(map) > 0 ? true : false ;
         }catch (Exception e){
             e.printStackTrace();

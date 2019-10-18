@@ -1,8 +1,10 @@
 package com.jzb.message.message;
 
 import com.jzb.base.util.JzbTools;
+import net.sf.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -48,6 +50,138 @@ public final class MessageQueue {
      */
     public static Map<String , Map<String , Map<String , MssageInfo>>> getWaitSendQueue(){
         return waitSendQueue;
+    }
+
+    /***
+     * 删除待发送队列
+     * @param map
+     * @return
+     */
+    public static boolean removerSendQuere(Map<String , Object > map ){
+        boolean result ;
+        try{
+            Map<String , Map<String , Map<String , MssageInfo>>> waitMap = MessageQueue.getWaitSendQueue();
+            String msgtag = map.get("msgtag").toString();
+            // 根据业务id获取
+            Map<String , Map<String , MssageInfo>> umap =  waitMap.get(msgtag);
+            // 业务id下有多少个待发送消息
+            int  msgtagCount  =   umap.size();
+            if(map.containsKey("userids")){
+                JSONObject  parajson = JSONObject.fromObject(map.get("userids"));
+                if(map.get("usertype").equals("1")){
+                    // 用户
+                    if(parajson.containsKey("sms")  ){
+                        List<Map<String , Object>> list  =(List<Map<String, Object>>) parajson.get("sms");
+                        for(int i = 0 ; i< list.size() ;i++){
+                            String  sms  =  list.get(i).get("sms").toString();
+                            Map<String , MssageInfo> ms  =  umap.get(sms);
+                            //  是否只有一种发送记录
+                            if(map.size() == 1){
+                                if(msgtagCount == 1){
+                                    //  根据业务id删除
+                                    umap.remove(msgtag);
+                                } else{
+                                    // 根据用户删除
+                                    umap.remove(sms);
+                                }
+                            } else{
+                                if(!JzbTools.isEmpty(map.get("msgtype"))){
+                                    // 删除单个消息
+                                    ms.remove(map.get("msgtype"));
+                                } else{
+                                    // 根据用户删除
+                                    umap.remove(sms);
+                                }
+                            }
+                        }
+                    } else if(parajson.containsKey("meil") &&  map.get("msgtype").equals("2")){
+                        List<Map<String , Object>> list  =(List<Map<String, Object>>)  parajson.get("meli");
+                        for(int i = 0 ; i< list.size() ;i++){
+                            String  emil  =  list.get(i).get("emil").toString();
+                            Map<String , MssageInfo> ms  =  umap.get(emil);
+                            //  是否只有一种发送记录
+                            if(map.size() == 1){
+                                if(msgtagCount == 1){
+                                    //  根据业务id删除
+                                    umap.remove(msgtag);
+                                } else{
+                                    // 根据用户删除
+                                    umap.remove(emil);
+                                }
+                            } else{
+                                if(!JzbTools.isEmpty(map.get("msgtype"))){
+                                    // 删除单个消息
+                                    ms.remove(map.get("msgtype"));
+                                } else{
+                                    // 根据用户删除
+                                    umap.remove(emil);
+                                }
+                            }
+                        }
+                    }
+
+                }else{
+                    // 用户
+                    if(parajson.containsKey("sms")  &&  map.get("msgtype").equals("1")){
+                        List<Map<String , Object>> list  =(List<Map<String, Object>>) parajson.get("sms");
+                        for(int i = 0 ; i< list.size() ;i++){
+                            String  sms  =  list.get(i).get("sms").toString();
+                            Map<String , MssageInfo> ms  =  umap.get(sms);
+                            //  是否只有一种发送记录
+                            if(map.size() == 1){
+                                if(msgtagCount == 1){
+                                    //  根据业务id删除
+                                    umap.remove(msgtag);
+                                } else{
+                                    // 根据用户删除
+                                    umap.remove(sms);
+                                }
+                            } else{
+                                if(!JzbTools.isEmpty(map.get("msgtype"))){
+                                    // 删除单个消息
+                                    ms.remove(map.get("msgtype"));
+                                } else{
+                                    // 根据用户删除
+                                    umap.remove(sms);
+                                }
+                            }
+                        }
+                    } else if(parajson.containsKey("meil") &&  map.get("msgtype").equals("2")){
+                        List<Map<String , Object>> list  =(List<Map<String, Object>>)  parajson.get("meli");
+                        for(int i = 0 ; i< list.size() ;i++){
+                            String  emil  =  list.get(i).get("emil").toString();
+                            Map<String , MssageInfo> ms  =  umap.get(emil);
+                            //  是否只有一种发送记录
+                            if(map.size() == 1){
+                                if(msgtagCount == 1){
+                                    //  根据业务id删除
+                                    umap.remove(msgtag);
+                                } else{
+                                    // 根据用户删除
+                                    umap.remove(emil);
+                                }
+                            } else{
+                                if(!JzbTools.isEmpty(map.get("msgtype"))){
+                                    // 删除单个消息
+                                    ms.remove(map.get("msgtype"));
+                                } else{
+                                    // 根据用户删除
+                                    umap.remove(emil);
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{
+                //  根据业务id删除
+                umap.remove(msgtag);
+            }
+            result = true;
+        }catch (Exception e){
+            JzbTools.logError(e);
+            result = false;
+        }
+        return result;
     }
 
     /**

@@ -4,6 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
+import com.jzb.message.message.MessageQueue;
 import com.jzb.message.service.ShortMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,22 +77,6 @@ public class ShortSessageController {
     } // End function sendShortMsg
 
     /**
-     * 添加消息模板
-     */
-    @RequestMapping(value = "/saveMsgUserTeamplate", method = RequestMethod.POST)
-    @ResponseBody
-    public Response saveMsgUserTeamplate(@RequestBody Map<String, Object> param){
-        Response response;
-        try {
-            response =  smsService.saveMsgUserTeamplate(param) ? Response.getResponseSuccess() : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            response =  Response.getResponseError();
-        }
-        return response;
-    } // End function saveMsgUserTeamplate
-
-    /**
      * 根据业务id删除待发送消息队列
      */
     @RequestMapping(value = "/cancelSend", method = RequestMethod.POST)
@@ -99,7 +84,22 @@ public class ShortSessageController {
     public Response cancelSend(@RequestBody Map<String, Object> param){
         Response response;
         try{
-            response = Response.getResponseSuccess();
+            // check request param
+            String appId = param.get("appid").toString();
+            String secret = param.get("secret").toString();
+            String userType = param.get("usertype").toString();
+            String msgtag = param.get("msgtag").toString();
+            Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
+            logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
+            String md5 = JzbDataCheck.Md5(appId + secret + msgtag + userType + checkCode.get("checkcode").toString());
+            logger.info("MD5 ===========>>" + md5 );
+            if (md5.equals(param.get("checkcode"))) {
+                response = MessageQueue.removerSendQuere(param) ? Response.getResponseSuccess() : Response.getResponseError();
+            }else{
+                logger.info("MD5 ===========>> fail  error  401 " );
+                response = Response.getResponseError();
+                response.setResponseEntity(" fail  error  401 ");
+            }
         }catch (Exception e){
             response = Response.getResponseError();
             JzbTools.logError(e);

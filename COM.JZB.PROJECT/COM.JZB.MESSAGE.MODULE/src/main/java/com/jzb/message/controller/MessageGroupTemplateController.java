@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * @Description: 消息模版控制层
- * @Author Han Bin
+ * @Author
  */
 @Controller
 @RequestMapping("/message/group/template")
