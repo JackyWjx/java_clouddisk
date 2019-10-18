@@ -17,23 +17,24 @@
 
     <!-- 模糊查询 -->
     <select id="searchSendUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from  tb_send_user_message where status = '1' and receivename like CONCAT('%',#{receivename},'%')
+        select * from  tb_send_user_message where status = '1' and msgtype like CONCAT('%',#{msgtype},'%')
         limit  #{rows}  offset #{page}
     </select>
 
     <!-- 模糊查询总数 -->
     <select id="searchSendUserMessageCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-         select count(1) from  tb_send_user_message where status = '1' and receivename like CONCAT('%',#{receivename},'%')
+         select count(1) from  tb_send_user_message where status = '1' and msgtype like CONCAT('%',#{msgtype},'%')
     </select>
 
     <!-- 添加 -->
     <insert id="insertSendUserMessage" parameterType="java.util.Map">
-        INSERT INTO tb_send_user_message ( msgid, msgtype, receiveuid, sendtime, status, summary, sendid, account,
+        INSERT INTO tb_send_user_message ( msgid, msgtype, receiveuid, receivename, sendtime, status, summary, sendid, account,
         receivetime )
         VALUES
         ( #{msgid},
         #{msgtype},
         #{receiveuid},
+        #{receivename},
         #{sendtime},
         #{status},
         #{summary},

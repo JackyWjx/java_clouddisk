@@ -106,7 +106,7 @@
     </update>
 
     <!-- 禁用 -->
-    <update id="deleteMsgList" parameterType="java.util.Map">
+    <update id="removeMsgList" parameterType="java.util.Map">
         update  tb_message_list set  status = '2' where id = #{id}
     </update>
 </mapper>

@@ -7,24 +7,28 @@
 
     <!-- 查询 -->
     <select id="queryMsgType" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_message_type where status = '1'
+        select msgtype,typename,typedesc,summary from tb_message_type where status = '1'
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
         limit  #{rows}  offset #{page}
     </select>
 
     <!-- 查询总数 -->
     <select id="queryMsgTypeCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_message_type where status = '1'
+        <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
     </select>
 
     <!-- 模糊查询 -->
     <select id="searchMsgType" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_message_type where status = '1' and typename like CONCAT('%',#{typename},'%')
+        select msgtype,typename,typedesc,summary from tb_message_type where status = '1'
+        and typename like CONCAT('%',#{typename},'%')
         limit  #{rows}  offset #{page}
     </select>
 
     <!-- 模糊查询总数 -->
     <select id="searchMsgTypeCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-         select count(1) from tb_message_type where status = '1' and typename like CONCAT('%',#{typename},'%')
+         select count(1) from tb_message_type where status = '1'
+         and typename like CONCAT('%',#{typename},'%')
     </select>
 
     <!-- 添加 -->
@@ -35,7 +39,10 @@
         #{typename},
         #{typedesc},
         #{addtime},
-        #{ouid},
+        <choose>
+            <when test="ouid != null">#{ouid}</when>
+            <otherwise>null</otherwise>
+        </choose>,
         #{updtime},
         #{status},
         <choose>
@@ -47,7 +54,7 @@
 
     <!-- 修改 -->
     <update id="updateMsgType" parameterType="java.util.Map">
-        update tb_message_type set status = '1'
+        update tb_message_type set updtime = #{updtime}
         <choose>
             <when test="msgtype != null">,msgtype = #{msgtype}</when>
         </choose>
@@ -58,23 +65,17 @@
             <when test="typedesc != null">,typedesc = #{typedesc}</when>
         </choose>
         <choose>
-            <when test="addtime != null">,addtime = #{addtime}</when>
-        </choose>
-        <choose>
             <when test="ouid != null">,ouid = #{ouid}</when>
         </choose>
-        <choose>
-            <when test="updtime != null">,updtime = #{updtime}</when>
-        </choose>
-        <choose>
-            <when test="summary != null">,summary = #{summary}</when>
-        </choose>
-        where id = #{id}
+        <choose><when test="summary != null">,summary = #{summary}</when></choose>
+        where msgtype  = #{msgtype}
     </update>
 
     <!-- 禁用 -->
     <update id="deleteMsgType" parameterType="java.util.Map">
-        update  tb_message_type set  status = '2' where id = #{id}
+        update  tb_message_type set  status = '2' , updtime = #{updtime}
+        <choose><when test="ouid != null">,ouid = #{ouid}</when></choose>
+        where msgtype  = #{msgtype}
     </update>
 
 
