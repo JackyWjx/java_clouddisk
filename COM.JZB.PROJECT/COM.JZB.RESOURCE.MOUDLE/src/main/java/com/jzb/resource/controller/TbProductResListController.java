@@ -11,6 +11,7 @@ import com.jzb.resource.service.AdvertService;
 import com.jzb.resource.service.TbProductPriceService;
 import com.jzb.resource.service.TbProductResListService;
 
+import com.jzb.resource.util.PageConvert;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -61,12 +63,12 @@ public class TbProductResListController {
             // 获取单位总数
             count = count < 0 ? 0 : count;
             //把分页参数在设置好
-            param = advertService.setPageSize(param);
+            PageConvert.setPageRows(param);
             //返回所有合同配置中的产品资源
             List<Map<String, Object>> productResList = tbProductResListService.getProductResList(param);
             if (count == 0) {
                 // 查询单位总数
-                count = productResList.size();
+                count = tbProductResListService.getCount(param);
             }
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             PageInfo pageInfo = new PageInfo();
@@ -264,7 +266,6 @@ public class TbProductResListController {
             request.setCharacterEncoding("UTF-8");//你的编码格式
         }
         try {
-
             //获取文件名称
             String filename = file.getOriginalFilename();
             //文件后缀
@@ -274,7 +275,6 @@ public class TbProductResListController {
             String filePath = path + File.separator + time + filename;
             //保存在本地
             File desFile = new File(filePath);
-
             if (!desFile.getParentFile().exists()) {
                 desFile.mkdirs();
             }
@@ -283,10 +283,9 @@ public class TbProductResListController {
             //返回成功的结果
             result = Response.getResponseSuccess();
             Map<String, String> stringObjectMap = new HashedMap();
-            stringObjectMap.put("accept",filePath);
+            stringObjectMap.put("accept","//"+time+filename);
             stringObjectMap.put("acceptname", filename);
             result.setResponseEntity(stringObjectMap);
-
         }
         catch (Exception e){
             JzbTools.logError(e);
@@ -305,22 +304,22 @@ public class TbProductResListController {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/creatFile", method = RequestMethod.POST)
+    @RequestMapping(value = "/creatFile", method = RequestMethod.GET)
     @CrossOrigin
-    public void creatFile(HttpServletResponse response, @RequestBody Map<String, Object> param,HttpServletRequest request) {
+    public void creatFile(HttpServletResponse response,@RequestParam("pid")String pid,HttpServletRequest request) {
 
         File file;
         FileInputStream fis = null;
         ServletOutputStream out = null;
         try {
             //获取url地址
-//            String URL = String.valueOf(param.get("accept"));
-             List<Map<String,Object>> list = tbProductResListService.getURL(param);
-            String url = null;
-            for (Map<String, Object> stringObjectMap : list) {
-                url = String.valueOf(stringObjectMap.get("accept"));
-            }
+            Map<String , Object>  map  = new HashedMap();
+            map.put("pid",pid);
+            List<Map<String,Object>> list = tbProductResListService.getURL(map);
+            String url ="D:\\01-project\\java\\COM.JZB.PROJECT\\COM.JZB.RESOURCE.MOUDLE\\src\\main\\resources\\file"+list.get(0).get("accept").toString();
             //设置编码集
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + URLEncoder.encode(list.get(0).get("acceptname").toString(),"UTF-8"));
             request.setCharacterEncoding("utf-8");
             file = new File(url);
             //读取文件的路径

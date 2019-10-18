@@ -41,17 +41,19 @@ public class TbProductPriceController {
     public Response getProductPrice(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            //前端传过来的分页总条数
+            // 前端传过来的分页总条数
             int count = JzbDataType.getInteger(param.get("count"));
+
             // 获取产品报价总数
             count = count < 0 ? 0 : count;
-            //把分页参数在设置好
+
+            // 把分页参数在设置好
             param = advertService.setPageSize(param);
             //返回所有合同配置中的产品功能
             List<Map<String, Object>> ProductPriceList = tbProductPriceService.getProductPrice(param);
             if (count == 0) {
                 // 查询产品报价的总数
-                count = ProductPriceList.size();
+                count = tbProductPriceService.getCount(param);
             }
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
