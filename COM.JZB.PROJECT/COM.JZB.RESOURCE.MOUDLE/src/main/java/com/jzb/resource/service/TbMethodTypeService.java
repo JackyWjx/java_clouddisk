@@ -52,7 +52,7 @@ public class TbMethodTypeService {
             param.put("parentid", "0000000");
 
         } else {
-            param.put("parantid", getParentByBrotherId(param));
+            param.put("parentid", getParentByBrotherId(param));
             param.put("score",100);
         }
         if(JzbCheckParam.haveEmpty(param, new String[]{"score"})){
