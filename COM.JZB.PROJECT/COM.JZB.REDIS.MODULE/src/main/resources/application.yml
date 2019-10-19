@@ -10,7 +10,7 @@ spring:
       content-type: application/x-www-form-urlencoded;charset=UTF-8
   redis:
     database: 0
-    host: 192.168.0.251
+    host: 175.6.7.218
     port: 6100
     password: AAAaaa111***
     timeout: 3000
