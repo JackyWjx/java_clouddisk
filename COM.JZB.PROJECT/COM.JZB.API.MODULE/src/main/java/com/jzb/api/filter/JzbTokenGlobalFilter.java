@@ -275,9 +275,6 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
 
 
         GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/senduser/message/querySendUserMessage", "");
-        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/senduser/message/saveSendUserMessage", "");
-        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/senduser/message/upSendUserMessage", "");
-        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/senduser/message/removeSendUserMessage", "");
         //---- end message
 
         // end hb

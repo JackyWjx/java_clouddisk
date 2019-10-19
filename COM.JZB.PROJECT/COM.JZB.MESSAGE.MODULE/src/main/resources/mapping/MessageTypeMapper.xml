@@ -9,7 +9,7 @@
     <select id="queryMsgType" resultType="java.util.Map" parameterType="java.util.Map">
         select msgtype,typename,typedesc,summary from tb_message_type where status = '1'
         <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
-        limit  #{rows}  offset #{page}
+        limit  #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
@@ -22,7 +22,7 @@
     <select id="searchMsgType" resultType="java.util.Map" parameterType="java.util.Map">
         select msgtype,typename,typedesc,summary from tb_message_type where status = '1'
         and typename like CONCAT('%',#{typename},'%')
-        limit  #{rows}  offset #{page}
+        limit  #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 模糊查询总数 -->
@@ -72,7 +72,7 @@
     </update>
 
     <!-- 禁用 -->
-    <update id="deleteMsgType" parameterType="java.util.Map">
+    <update id="removeMsgType" parameterType="java.util.Map">
         update  tb_message_type set  status = '2' , updtime = #{updtime}
         <choose><when test="ouid != null">,ouid = #{ouid}</when></choose>
         where msgtype  = #{msgtype}

@@ -72,6 +72,6 @@ public class MessageTypeService {
      */
     public int removeMsgType(Map<String, Object> map) {
         map.put("updtime",System.currentTimeMillis());
-        return msgType.deleteMsgType(map);
+        return msgType.removeMsgType(map);
     }
 }
