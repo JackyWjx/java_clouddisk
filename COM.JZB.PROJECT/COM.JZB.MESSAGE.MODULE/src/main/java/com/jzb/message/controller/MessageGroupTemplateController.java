@@ -8,6 +8,8 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.message.service.MessageGroupTemplateService;
 import com.jzb.message.service.MessageTypeService;
 import com.jzb.message.service.ShortMessageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +27,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/message/group/template")
 public class MessageGroupTemplateController {
+    private final static Logger logger= LoggerFactory.getLogger(MessageTypeController.class);
 
     @Autowired
     private MessageGroupTemplateService messageGroupTemplateService;
@@ -41,6 +44,7 @@ public class MessageGroupTemplateController {
     public Response queryMsgGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
+            logger.info("==============>>queryMsgGroupTemplate");
             List<Map<String, Object>> list;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
@@ -76,6 +80,7 @@ public class MessageGroupTemplateController {
     public Response saveMsgGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
+            logger.info("==============>>saveMsgGroupTemplate");
             // check request param
             String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();
@@ -84,6 +89,7 @@ public class MessageGroupTemplateController {
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
             String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
+            logger.info("==============>>md5"+md5);
             if (md5.equals(map.get("checkcode"))) {
                 response = messageGroupTemplateService.saveMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
@@ -104,14 +110,16 @@ public class MessageGroupTemplateController {
     public Response upMsgGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
+            logger.info("==============>>upMsgGroupTemplate");
             // check request param
-            String appId = map.get("appId").toString();
+            String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();
             String tempid = map.get("tempid").toString();
             String cid = map.get("cid").toString();
             // get appid => checkcode
-            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appId);
-            String md5 = JzbDataCheck.Md5(appId + secret + tempid + cid + checkcode);
+            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
+            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
+            logger.info("==============>>md5"+md5);
             if (md5.equals(map.get("checkcode"))) {
                 response = messageGroupTemplateService.upMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
@@ -133,20 +141,21 @@ public class MessageGroupTemplateController {
     public Response removeMsgGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
+            logger.info("==============>>removeMsgGroupTemplate");
             // check request param
-            String appId = map.get("appId").toString();
+            String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();
             String tempid = map.get("tempid").toString();
             String cid = map.get("cid").toString();
             // get appid => checkcode
-            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appId);
-            String md5 = JzbDataCheck.Md5(appId + secret + tempid + cid + checkcode);
-            if (md5.equals("checkcode")) {
+            Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
+            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
+            logger.info("==============>>md5="+md5);
+            if (md5.equals(map.get("checkcode"))) {
                 response = messageGroupTemplateService.removeMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             } else {
                 response = Response.getResponseError();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.getResponseError();
