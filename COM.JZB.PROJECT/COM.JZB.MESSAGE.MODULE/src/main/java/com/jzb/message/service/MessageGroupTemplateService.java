@@ -66,9 +66,9 @@ public class MessageGroupTemplateService {
      */
     public int upMsgGroupTemplate(Map<String, Object> map) {
         if(map.containsKey("ouid")){
-            map.put("updtime",map.get("ouid"));
+            map.put("upduid",map.get("ouid"));
         }
-        map.put("addtime",System.currentTimeMillis());
+        map.put("updtime",System.currentTimeMillis());
         return messageGroupTemplateMapper.updateMsgGroupTemplate(map);
     }
 

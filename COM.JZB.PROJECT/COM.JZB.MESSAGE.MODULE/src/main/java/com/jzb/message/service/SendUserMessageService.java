@@ -19,9 +19,9 @@ public class SendUserMessageService {
      * 查询
      */
     public List<Map<String, Object>> querySendUserMessage(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("page")) == 0 ? 0 : JzbDataType.getInteger(map.get("page")) - 1;
-        map.put("page", page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return sendUserMessageMapper.querySendUserMessage(map);
     }
 
@@ -36,9 +36,9 @@ public class SendUserMessageService {
      * 模糊查询
      */
     public List<Map<String, Object>> searchSendUserMessage(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("page")) == 0 ? 0 : JzbDataType.getInteger(map.get("page")) - 1;
-        map.put("page", page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return sendUserMessageMapper.searchSendUserMessage(map);
     }
 
@@ -47,36 +47,6 @@ public class SendUserMessageService {
      */
     public int searchSendUserMessageCount(Map<String, Object> map) {
         return sendUserMessageMapper.searchSendUserMessageCount(map);
-    }
-
-    /**
-     * 添加
-     */
-    public int saveSendUserMessage(Map<String, Object> map) {
-        map.put("status", '1');
-        map.put("msgtype", JzbDataType.getInteger(map.get("msgtype")));
-        map.put("sendtime",System.currentTimeMillis());
-        map.put("receivetime",System.currentTimeMillis());
-        return sendUserMessageMapper.insertSendUserMessage(map);
-    }
-
-    /**
-     * 修改
-     */
-    public int upSendUserMessage(Map<String, Object> map) {
-        map.put("msgtype", JzbDataType.getInteger(map.get("msgtype")));
-        map.put("sendtime",System.currentTimeMillis());
-        map.put("receivetime",System.currentTimeMillis());
-        map.put("id", JzbDataType.getInteger(map.get("id")));
-        return sendUserMessageMapper.updateSendUserMessage(map);
-    }
-
-    /**
-     * 禁用
-     */
-    public int removeSendUserMessage(Map<String, Object> map) {
-        map.put("id", JzbDataType.getInteger(map.get("id")));
-        return sendUserMessageMapper.deleteSendUserMessage(map);
     }
 
 }
