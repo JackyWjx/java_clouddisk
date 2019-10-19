@@ -47,6 +47,6 @@ public interface MessageTypeMapper {
     /**
      * 禁用
      */
-    int deleteMsgType(Map<String, Object> map);
+    int removeMsgType(Map<String, Object> map);
 
 }

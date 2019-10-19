@@ -33,19 +33,4 @@ public interface SendUserMessageMapper {
      * 模糊查询总数
      */
     int searchSendUserMessageCount(Map<String, Object> map);
-
-    /**
-     * 添加
-     */
-    int insertSendUserMessage(Map<String, Object> map);
-
-    /**
-     * 修改
-     */
-    int updateSendUserMessage(Map<String, Object> map);
-
-    /**
-     * 禁用
-     */
-    int deleteSendUserMessage(Map<String, Object> map);
 }
