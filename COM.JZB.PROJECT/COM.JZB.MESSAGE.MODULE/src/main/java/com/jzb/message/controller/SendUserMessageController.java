@@ -1,12 +1,10 @@
-﻿package com.jzb.message.controller;
+package com.jzb.message.controller;
 
 import com.jzb.base.data.JzbDataType;
-import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.message.service.SendUserMessageService;
-import com.jzb.message.service.ShortMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +18,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Description: 消息发送详情制层
+ * @Description:
  * @Author tang sheng jun
  */
 @Controller
 @RequestMapping("/senduser/message")
 public class SendUserMessageController {
 
-    private final static Logger logger= LoggerFactory.getLogger(MessageTypeController.class);
+    private final static Logger logger= LoggerFactory.getLogger(SendUserMessageController.class);
 
     @Autowired
     private SendUserMessageService service;
-
-    @Autowired
-    private ShortMessageService smsService;
-
     /**
      * 查询
      */
