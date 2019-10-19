@@ -266,7 +266,7 @@ public class MsgTypeParaController {
     /**
      * 修改用户参数
      */
-    @RequestMapping(value = "/updateUserPara",method = RequestMethod.POST)
+    @RequestMapping(value = "/upUserPara",method = RequestMethod.POST)
     @ResponseBody
     public Response updateUserPara(@RequestBody Map<String , Object> map){
         Response response;
@@ -297,7 +297,7 @@ public class MsgTypeParaController {
     /**
      * 修改服务商
      */
-    @RequestMapping(value = "/updateServiceProviders",method = RequestMethod.POST)
+    @RequestMapping(value = "/upServiceProviders",method = RequestMethod.POST)
     @ResponseBody
     public Response updateServiceProviders(@RequestBody Map<String , Object> map){
         Response response;

@@ -38,7 +38,6 @@ public class SendUserMessageController {
     public Response querySendUserMessage(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             List<Map<String, Object>> list = service.querySendUserMessage(map);
@@ -87,17 +86,14 @@ public class SendUserMessageController {
     public Response saveSendUserMessage(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-
             // check request param
             String appid = map.get("appId").toString();
             String secret = map.get("secret").toString();
             String msgid = map.get("msgid").toString();
             String msgtype = map.get("msgtype").toString();
-
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
             String md5 = JzbDataCheck.Md5(appid + secret + msgtype + msgid + checkcode);
-
             if (md5.equals(map.get("checkcode"))) {
                 response = service.saveSendUserMessage(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
             } else {
@@ -123,11 +119,9 @@ public class SendUserMessageController {
             String secret = map.get("secret").toString();
             String msgid = map.get("msgid").toString();
             String msgtype = map.get("msgtype").toString();
-
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
             String md5 = JzbDataCheck.Md5(appid + secret + msgtype + msgid + checkcode);
-
             if (md5.equals(map.get("checkcode"))) {
                 response = service.upSendUserMessage(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
             } else {
@@ -149,17 +143,14 @@ public class SendUserMessageController {
     public Response removeSendUserMessage(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-
             // check request param
             String appid = map.get("appId").toString();
             String secret = map.get("secret").toString();
             String msgid = map.get("msgid").toString();
             String msgtype = map.get("msgtype").toString();
-
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
             String md5 = JzbDataCheck.Md5(appid + secret + msgtype + msgid + checkcode);
-
             if (md5.equals(map.get("checkcode"))) {
                 response = service.removeSendUserMessage(map) > 0 ? Response.getResponseSuccess((Map) map.get("userinfo")) : Response.getResponseError();
             } else {

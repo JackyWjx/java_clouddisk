@@ -231,6 +231,53 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         //---- begin message
         GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/SMSService/SendMsg", "");
         GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/sms/sendShortMsg", "");
+
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/queryMessageGroup", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/queryMessageUserGroup", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/queryMsgGroupConfigure", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/saveMessageGroup", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/saveMessageUserGroup", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/saveMsgGroupConfigure", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/upMessageGroup", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/upMessageUserGroup", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/upMsgGroupConfigure", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/removerMessageGroup", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/removerMessageUserGroup", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/removerMsgGroupConfigure", "");
+
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/queryMsgTypePara", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/queryUserPara", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/queryServiceProviders", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/saveMsgTypePara", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/saveUserPara", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/saveServiceProviders", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/upMsgTypePara", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/upUserPara", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/upServiceProviders", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/removeMsgTypePara", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/removeUserPara", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/para/removeServiceProviders", "");
+
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/sendShortMsg", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/cancelSend", "");
+
+
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/group/template/queryMsgGroupTemplate", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/group/template/saveMsgGroupTemplate", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/group/template/upMsgGroupTemplate", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/group/template/removeMsgGroupTemplate", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/list/queryMsgList", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/type/queryMsgType", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/type/saveMsgType", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/type/upMsgType", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/type/removeMsgType", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/message/type/queryMsgType", "");
+
+
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/senduser/message/querySendUserMessage", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/senduser/message/saveSendUserMessage", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/senduser/message/upSendUserMessage", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/senduser/message/removeSendUserMessage", "");
         //---- end message
 
         // end hb
