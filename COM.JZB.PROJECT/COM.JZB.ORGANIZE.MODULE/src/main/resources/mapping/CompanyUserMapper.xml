@@ -181,27 +181,15 @@
         SELECT
         count(1)
         FROM
-        tb_company_common cc
-        LEFT JOIN
-        tb_company_list cl on cc.cid = cl.cid
-        LEFT JOIN
-        tb_dept_user du
-        ON du.cid = cl.cid
-        AND du.uid = cl.manager
-        left join
-        tb_company_info ci on ci.cid = cl.cid
+        tb_company_supplier
         where
-        cc.status = #{status}
-        <if test="region != null and region != ''">and cl.region = #{region}</if>
-        <if test="cname != null and cname != ''">
-            and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
-        </if>
+        cid = #{cid}
     </select>
 
     <!--根据单位ID显示对应的供应商或全部供应商-->
     <select id="queryCompanySupplierList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-        cl.cid,
+        cs.supid,
         cl.cname,
         cl.region,
         du.cname AS uname,
@@ -209,19 +197,20 @@
         ci.address,
         cl.authid
         FROM
-        tb_company_supplier cs
-        LEFT JOIN
-        tb_company_list cl on cs.cid = cl.cid
+        tb_company_list cl
         LEFT JOIN
         tb_dept_user du
         ON du.cid = cl.cid
         AND du.uid = cl.manager
         left join
         tb_company_info ci on ci.cid = cl.cid
+        left join
+		tb_company_supplier cs on cl.cid = cs.supid
         where
         cs.status = #{status}
-        <if test="cid != null and cid != ''">and cs.cid = #{cid}</if>
-        order by cs.id desc
+        and
+        cl.cid in (select supid from tb_company_supplier where cid = #{cid})
+        order by cl.id desc
         limit
         #{pagesize}
         offset
