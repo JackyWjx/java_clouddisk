@@ -230,8 +230,6 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
 
         //---- begin message
         GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/SMSService/SendMsg", "");
-        GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/sms/sendShortMsg", "");
-
         GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/queryMessageGroup", "");
         GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/queryMessageUserGroup", "");
         GATEWAY_WHITE_LIST.put("/JZB-MESSAGE/mssage/group/queryMsgGroupConfigure", "");
