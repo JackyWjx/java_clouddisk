@@ -16,9 +16,9 @@
        addtime
 	    desc
 	    limit
-	    #{rows}
+	    #{pagesize}
 	    offset
-	    #{page}
+	    #{pageno}
     </select>
 
     <!--查询图片推广信息-->
@@ -175,9 +175,9 @@
        addtime
        desc
        limit
-	    #{rows}
+	    #{pagesize}
 	    offset
-	    #{page}
+	    #{pageno}
     </select>
 
     <!--   根据活动名称模糊查询czd-->
@@ -207,7 +207,7 @@
         </if>
         ORDER BY
         tal.addtime DESC
-        LIMIT #{rows} OFFSET #{page}
+        LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
     <!--  查询 资源类型 资源ID 相关的数据-->
