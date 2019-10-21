@@ -238,7 +238,7 @@ public class CompanyUserService {
     public int addCompanyProject(Map<String, Object> param) {
         param.put("status", "1");
         param.put("projectid", JzbRandom.getRandomCharCap(19));
-        return companyUserMapper.addCompanyProject(param);
+        return companyUserMapper.insertCompanyProject(param);
     }
 
     /**

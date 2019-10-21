@@ -268,7 +268,7 @@
     </select>
 
     <!--CRM-销售业主-公海-业主下的项目7-点击业主下的项目中新建项目-->
-    <insert id="addCompanyProject" parameterType="java.util.Map">
+    <insert id="insertCompanyProject" parameterType="java.util.Map">
         INSERT INTO tb_company_project
         (cid, projectid, projectname, region, address, tendertime, tenderuid,
          tendername, tenderphone, wintime, idx, adduid, addtime, status, summary)

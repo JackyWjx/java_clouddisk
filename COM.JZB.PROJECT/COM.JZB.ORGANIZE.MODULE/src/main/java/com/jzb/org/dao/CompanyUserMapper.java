@@ -98,7 +98,7 @@ public interface CompanyUserMapper {
      *
      * @author kuangbin
      */
-    int addCompanyProject(Map<String, Object> param);
+    int insertCompanyProject(Map<String, Object> param);
 
     /**
      * CRM-销售业主-公海-业主下的项目8
