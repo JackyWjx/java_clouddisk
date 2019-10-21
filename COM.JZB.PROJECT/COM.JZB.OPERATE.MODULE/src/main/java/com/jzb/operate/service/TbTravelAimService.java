@@ -4,6 +4,7 @@ import com.jzb.operate.dao.TbTravelAimMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -14,11 +15,11 @@ public class TbTravelAimService {
 
     /**
      * 添加出差目标记录
-     * @param param
+     * @param list
      * @return
      */
-    public int addTravelAim(Map<String, Object> param){
-        return tbTravelAimMapper.addTravelAim(param);
+    public int addTravelAim(List<Map<String, Object>> list){
+        return tbTravelAimMapper.addTravelAim(list);
     }
 
 

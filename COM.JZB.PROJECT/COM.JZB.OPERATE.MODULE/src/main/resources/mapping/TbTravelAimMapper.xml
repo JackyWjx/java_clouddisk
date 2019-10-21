@@ -6,7 +6,7 @@
 
 
     <!-- 添加出差目标记录-->
-    <insert id="addTravelAim" parameterType="java.util.Map">
+    <insert id="addTravelAim" parameterType="java.util.List">
         insert into tb_travel_aim(travelid,methodid,aimid,cname,status,summary)
         values
         <foreach collection="list" item="travel" separator=",">
