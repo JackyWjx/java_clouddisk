@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 交通工具类
+ * @author chenzhengduan
+ */
 @RestController
 @RequestMapping(value = "/operate/travelVehicle")
 public class TbTravelVehicleController {
@@ -18,6 +22,11 @@ public class TbTravelVehicleController {
     @Autowired
     private TbTravelVehicleService tbTravelVehicleService;
 
+    /**
+     * 获取交通工具
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/getVehicleList",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
