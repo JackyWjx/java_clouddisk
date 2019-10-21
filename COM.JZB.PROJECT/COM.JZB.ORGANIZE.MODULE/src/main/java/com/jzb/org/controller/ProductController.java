@@ -790,7 +790,7 @@ public class ProductController {
                 // 获取模板中的单位地址
                 String address = JzbDataType.getString(map.get(4));
 
-                // 获取模板中的系统名称
+                // 获取模板中的备注
                 String systemname = JzbDataType.getString(map.get(5));
                 param.put("name", name);
                 param.put("authid", "8");

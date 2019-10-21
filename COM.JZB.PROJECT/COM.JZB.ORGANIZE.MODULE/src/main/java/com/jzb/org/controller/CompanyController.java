@@ -963,6 +963,7 @@ public class CompanyController {
             long time = System.currentTimeMillis();
             param.put("addtime", time);
             param.put("adduid", uid);
+            param.put("uid", uid);
             param.put("status", "1");
             int add = companyService.addCompanySupplier(param);
             result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
@@ -972,4 +973,5 @@ public class CompanyController {
         }
         return result;
     }
+
 }
