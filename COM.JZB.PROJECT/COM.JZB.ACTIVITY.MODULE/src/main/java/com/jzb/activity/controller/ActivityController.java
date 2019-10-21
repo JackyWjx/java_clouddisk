@@ -56,18 +56,18 @@ public class ActivityController {
         try {
 
             // 验证参数为空返回error
-            if (params.get("rows") == null || params.get("page") == null) {
+            if (params.get("pagesize") == null || params.get("pageno") == null) {
 
                 response = Response.getResponseError();
 
             } else {
                 // 获取行数和页数
-                int rows = JzbDataType.getInteger(params.get("rows"));
-                int page = JzbDataType.getInteger(params.get("page"));
+                int rows = JzbDataType.getInteger(params.get("pagesize"));
+                int page = JzbDataType.getInteger(params.get("pageno"));
 
                 // 给param设置page and  rows
-                params.put("page", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
-                params.put("rows", rows);
+                params.put("pageno", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
+                params.put("pagesize", rows);
 
                 // 获取结果集
                 List<Map<String, Object>> list = activityService.queryActivityList(params);
@@ -247,7 +247,7 @@ public class ActivityController {
         Response response;
         try {
 
-            if (!CheckParam.verifition(params, new String[]{"page", "rows", "actid"})) {
+            if (!CheckParam.verifition(params, new String[]{"pageno", "pagesize", "actid"})) {
 
                 response = Response.getResponseError();
 
@@ -301,19 +301,19 @@ public class ActivityController {
         try {
 
             // 验证参数为空返回error
-            if (params.get("rows") == null || params.get("page") == null || params.get("keyword") == null) {
+            if (params.get("pagesize") == null || params.get("pageno") == null || params.get("keyword") == null) {
 
                 response = Response.getResponseError();
 
             } else {
 
                 // 获取行数和页数
-                int rows = JzbDataType.getInteger(params.get("rows"));
-                int page = JzbDataType.getInteger(params.get("page"));
+                int rows = JzbDataType.getInteger(params.get("pagesize"));
+                int page = JzbDataType.getInteger(params.get("pageno"));
 
                 // 给param设置page and  rows
-                params.put("page", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
-                params.put("rows", rows);
+                params.put("pageno", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
+                params.put("pagesize", rows);
 
                 // 模糊查询zongshu
                 int count = activityService.likeActivityCount(params);
