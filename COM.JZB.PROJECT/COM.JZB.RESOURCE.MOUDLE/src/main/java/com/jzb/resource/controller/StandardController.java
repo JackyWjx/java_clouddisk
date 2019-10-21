@@ -130,7 +130,7 @@ public class StandardController {
         Response result;
         try {
             // 判断如果参数为空则返回404
-            if (JzbCheckParam.haveEmpty(params, new String[]{"page", "rows", "typeid"})) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"pageno", "pagesize", "typeid"})) {
                 result = Response.getResponseError();
             } else {
                 List<Map<String, Object>> list;

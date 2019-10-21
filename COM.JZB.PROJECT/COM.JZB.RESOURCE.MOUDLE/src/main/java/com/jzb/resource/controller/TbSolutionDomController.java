@@ -40,7 +40,7 @@ public class TbSolutionDomController {
         Response result;
         try {
             // 如果参数typeid为"" 则不进mapper.xml
-            if (JzbCheckParam.haveEmpty(param, new String[]{"rows", "page"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
             } else {
                 // 设置分页参数
@@ -79,7 +79,7 @@ public class TbSolutionDomController {
         Response result;
         try {
             // 判断如果指定参数为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"rows", "page"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
             } else {
                 // 查询结果

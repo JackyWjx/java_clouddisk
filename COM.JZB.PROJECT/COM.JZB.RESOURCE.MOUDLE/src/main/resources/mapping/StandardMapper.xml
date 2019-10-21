@@ -71,9 +71,9 @@
 		addtime
 		desc
 		limit
-		#{rows}
+		#{pagesize}
 		offset
-		#{page}
+		#{pageno}
 	</select>
 
 	<!--    查询文档详情-->

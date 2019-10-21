@@ -11,7 +11,7 @@
             and (cname ~ #{keyword} or tempcode ~ #{keyword})
         </if>
         order by idx
-        limit #{rows} offset #{page}
+        limit #{pagesize} offset #{pageno}
     </select>
 
 
