@@ -37,7 +37,7 @@ public class TbTravelVehicleController {
             // 获取交通工具list
             List<Map<String, Object>> list = tbTravelVehicleService.queryVehicle();
             // 获取用户信息返回
-            result=Response.getResponseSuccess((Map<String, Object>) param.get("username"));
+            result=Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
 
             // 定义返回对象pageinfo
             PageInfo pi=new PageInfo();
