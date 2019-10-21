@@ -56,7 +56,7 @@ public class TbTravelRecordController {
     public Response getTravekRecordList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            if (JzbCheckParam.allNotEmpty(param, new String[]{"uid", "rows", "page"})) {
+            if (JzbCheckParam.allNotEmpty(param, new String[]{"uid", "pagesize", "pageno"})) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 // 设置分页
                 PageConvert.setPageRows(param);
@@ -225,7 +225,7 @@ public class TbTravelRecordController {
         try {
 
             // 验证指定参数为空返回error
-            if (JzbCheckParam.haveEmpty(param, new String[]{"uid", "page", "rows"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"uid", "pageno", "pagesize"})) {
                 result = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
