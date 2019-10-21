@@ -6,3 +6,6 @@ spring:
       name: 'jzb-org'
       profile: 'test'
       status: 1
+      backup:
+        enable: true
+        fallbackLocation: ./config/application-release.yml
