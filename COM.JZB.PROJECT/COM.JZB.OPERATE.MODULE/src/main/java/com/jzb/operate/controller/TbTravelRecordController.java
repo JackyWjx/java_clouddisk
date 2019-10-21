@@ -5,9 +5,12 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.service.TbTravelAimService;
 import com.jzb.operate.service.TbTravelRecordService;
 import com.jzb.operate.service.TbTravelVehicleService;
+import com.jzb.operate.service.TbUserTravelService;
 import com.jzb.operate.util.PageConvert;
 import com.jzb.operate.util.VeriafitionParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,12 @@ public class TbTravelRecordController {
 
     @Autowired
     private TbTravelVehicleService tbTravelVehicleService;
+
+    @Autowired
+    private TbTravelAimService tbTravelAimService;
+
+    @Autowired
+    private TbUserTravelService tbUserTravelService;
 
     /**
      * 根据uid 获取出差申请记录
@@ -64,12 +73,12 @@ public class TbTravelRecordController {
                 List<Map<String, Object>> list = tbTravelRecordService.getTravelRecordListByUid(param);
 
                 for (int i = 0, l = list.size(); i < l; i++) {
-                    Map<String,Object> map=new HashMap<>();
+                    Map<String, Object> map = new HashMap<>();
 
                     // 取出每一行记录的出差工具id
-                    map.put("vehicleid",list.get(i).get("vehicle"));
+                    map.put("vehicleid", list.get(i).get("vehicle"));
                     // 查出name 后放入
-                    list.get(i).put("vehicleName",tbTravelVehicleService.getTravelName(map));
+                    list.get(i).put("vehicleName", tbTravelVehicleService.getTravelName(map));
                 }
 
                 // 得到总数
@@ -109,8 +118,43 @@ public class TbTravelRecordController {
     public Response addTravelRecord(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            // 获取参数中的list
-            List<Map<String, Object>> travelList = (List) param.get("travelList");
+            // 获取参数中的出差list
+            List<Map<String, Object>> travelList = (List) param.get("list");
+
+            List<Map<String, Object>> userTravelList;
+
+            List<Map<String, Object>> travelAim;
+
+            // 循环生成出差id
+            for (int i = 0, l = travelList.size(); i < l; i++) {
+                // 生成出差id
+                String travelid = JzbRandom.getRandomCharLow(19);
+
+                // 放入出差id
+                travelList.get(i).put("travelid", travelid);
+
+                // 获取参数中的用户出差list
+                userTravelList = (List<Map<String, Object>>) travelList.get(i).get("userList");
+
+                // 给用户出差记录添加出差id
+                for (int k = 0, j = userTravelList.size(); k < j; k++) {
+                    userTravelList.get(k).put("travelid", travelid);
+                }
+
+                // 获取参数中目标list
+                travelAim = (List) param.get("travelAim");
+
+                // 遍历赋值出差id
+                for (int q = 0, w = travelAim.size(); q < w; q++) {
+                    travelAim.get(q).put("travelid",travelid);
+                }
+                // 添加用户出差记录
+                tbUserTravelService.addUserTravel(userTravelList);
+                // 添加出差目标
+                tbTravelAimService.addTravelAim(travelAim);
+
+            }
+            // 获取参数中的出差目标list
             result = tbTravelRecordService.addTravelRecord(travelList) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.isEmpty(ex);
