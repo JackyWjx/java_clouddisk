@@ -356,7 +356,7 @@ public class TbProductResListController {
         Response result;
         //判断参数为空返回404
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"paraid'"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"paraid"})) {
                 result = Response.getResponseError();
             } else {
                //查询结果
