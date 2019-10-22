@@ -13,7 +13,7 @@
             #{travel.travelid},
             <choose>
               <when test="travel.uid!='' and travel.uid!= null">
-                  #{travel.uid}
+                  #{travel.uid},
               </when>
               <otherwise>
                   null,
@@ -21,7 +21,7 @@
             </choose>
             <choose>
                 <when test="travel.startcity!='' and travel.startcity!= null">
-                    #{travel.startcity}
+                    #{travel.startcity},
                 </when>
                 <otherwise>
                     null,
@@ -29,7 +29,7 @@
             </choose>
             <choose>
                 <when test="travel.starttime!='' and travel.starttime!= null">
-                    #{travel.starttime}
+                    #{travel.starttime},
                 </when>
                 <otherwise>
                     null,
@@ -37,7 +37,7 @@
             </choose>
             <choose>
                 <when test="travel.backtime!='' and travel.backtime!= null">
-                    #{travel.backtime}
+                    #{travel.backtime},
                 </when>
                 <otherwise>
                     null,
@@ -45,7 +45,7 @@
             </choose>
             <choose>
                 <when test="travel.vehicle!='' and travel.vehicle!= null">
-                    #{travel.vehicle}
+                    #{travel.vehicle},
                 </when>
                 <otherwise>
                     null,
@@ -53,7 +53,7 @@
             </choose>
             <choose>
                 <when test="travel.payfare!='' and travel.payfare!= null">
-                    #{travel.payfare}
+                    #{travel.payfare},
                 </when>
                 <otherwise>
                     null,
@@ -61,7 +61,7 @@
             </choose>
             <choose>
                 <when test="travel.payexpenses!='' and travel.payexpenses!= null">
-                    #{travel.payexpenses}
+                    #{travel.payexpenses},
                 </when>
                 <otherwise>
                     null,
@@ -69,7 +69,7 @@
             </choose>
             <choose>
                 <when test="travel.status!='' and travel.status!= null">
-                    #{travel.status}
+                    #{travel.status},
                 </when>
                 <otherwise>
                     null,

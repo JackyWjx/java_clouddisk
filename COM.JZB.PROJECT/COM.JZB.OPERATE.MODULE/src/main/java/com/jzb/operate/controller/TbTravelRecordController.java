@@ -1,6 +1,8 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.date.JzbDateStr;
+import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,6 +135,10 @@ public class TbTravelRecordController {
 
                 // 放入出差id
                 travelList.get(i).put("travelid", travelid);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                travelList.get(i).put("starttime", JzbDateUtil.getDate(sdf.format(JzbDataType.getDateTime(travelList.get(i).get("starttime"))), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
+                travelList.get(i).put("finishtime", JzbDateUtil.getDate(sdf.format(JzbDataType.getDateTime(travelList.get(i).get("finishtime"))), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
+                travelList.get(i).put("nexttime", JzbDateUtil.getDate(sdf.format(JzbDataType.getDateTime(travelList.get(i).get("nexttime"))), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
 
                 // 获取参数中的用户出差list
                 userTravelList = (List<Map<String, Object>>) travelList.get(i).get("userList");
@@ -146,16 +153,17 @@ public class TbTravelRecordController {
 
                 // 遍历赋值出差id
                 for (int q = 0, w = travelAim.size(); q < w; q++) {
-                    travelAim.get(q).put("travelid",travelid);
+                    travelAim.get(q).put("travelid", travelid);
                 }
                 // 添加用户出差记录
                 tbUserTravelService.addUserTravel(userTravelList);
+                travelList.get(i).remove("userList");
                 // 添加出差目标
                 tbTravelAimService.addTravelAim(travelAim);
-
+                travelList.get(i).remove("travelAim");
             }
             // 获取参数中的出差目标list
-            result = tbTravelRecordService.addTravelRecord(travelList) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
+            result = tbTravelRecordService.addTravelRecord(travelList) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.isEmpty(ex);
             result = Response.getResponseError();

@@ -26,7 +26,6 @@
             fare,
             expenses,
             amount,
-            participants,
             speed,
             speeddesc,
             payfare,
@@ -36,9 +35,9 @@
             status,
             summary,
         (select vehicle from tb_user_travel where uid =#{ uid } and travelid=tt.travelid )
-        FROM tb_travel_record
+        FROM tb_travel_record tt
         WHERE
-            travelid tt IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
+            travelid  IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
             and status != '8'
             <if test="beginTime != null and beginTime != '' ">
                 and starttime &gt;= #{beginTime}
@@ -78,7 +77,6 @@
             fare,
             expenses,
             amount,
-            participants,
             speed,
             speeddesc,
             payfare,
@@ -92,9 +90,16 @@
         <foreach collection="list" item="travel" separator=",">
             (
             #{travel.travelid},
-            #{travel.curcid},
             <choose>
-              <when test="travel.cname != null">
+                <when test="travel.curcid != null and travel.curcid!=''">
+                    #{travel.curcid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+              <when test="travel.cname != null and travel.cname!=''">
                   #{travel.cname},
               </when>
               <otherwise>
@@ -102,7 +107,7 @@
               </otherwise>
             </choose>
             <choose>
-                <when test="travel.travedesc != null">
+                <when test="travel.travedesc != null and travel.travedesc!=''">
                     #{travel.travedesc},
                 </when>
                 <otherwise>
@@ -110,7 +115,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.tarcity != null">
+                <when test="travel.tarcity != null and travel.tarcity!=''">
                     #{travel.tarcity},
                 </when>
                 <otherwise>
@@ -118,7 +123,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.tarcid != null">
+                <when test="travel.tarcid != null and travel.tarcid!=''">
                     #{travel.tarcid},
                 </when>
                 <otherwise>
@@ -126,7 +131,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.tarname != null">
+                <when test="travel.tarname != null and travel.tarname!=''">
                     #{travel.tarname},
                 </when>
                 <otherwise>
@@ -134,7 +139,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.relperson != null">
+                <when test="travel.relperson != null and travel.relperson!=''">
                     #{travel.relperson},
                 </when>
                 <otherwise>
@@ -142,7 +147,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.relphone != null">
+                <when test="travel.relphone != null and travel.relphone!=''">
                     #{travel.relphone},
                 </when>
                 <otherwise>
@@ -150,7 +155,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.projectid != null">
+                <when test="travel.projectid != null and travel.projectid!=''">
                     #{travel.projectid},
                 </when>
                 <otherwise>
@@ -158,7 +163,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.project != null">
+                <when test="travel.project != null and travel.project!=''">
                     #{travel.project},
                 </when>
                 <otherwise>
@@ -166,7 +171,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.starttime != null">
+                <when test="travel.starttime != null and travel.starttime!=''">
                     #{travel.starttime},
                 </when>
                 <otherwise>
@@ -174,7 +179,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.finishtime != null">
+                <when test="travel.finishtime != null and travel.finishtime!=''">
                     #{travel.finishtime},
                 </when>
                 <otherwise>
@@ -182,7 +187,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.method != null">
+                <when test="travel.method != null and travel.method!=''">
                     #{travel.method},
                 </when>
                 <otherwise>
@@ -190,7 +195,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.fare != null">
+                <when test="travel.fare != null and travel.fare!=''">
                     #{travel.fare},
                 </when>
                 <otherwise>
@@ -198,7 +203,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.expenses != null">
+                <when test="travel.expenses != null and travel.expenses!=''">
                     #{travel.expenses},
                 </when>
                 <otherwise>
@@ -206,7 +211,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.amount != null">
+                <when test="travel.amount != null and travel.amount!=''">
                     #{travel.amount},
                 </when>
                 <otherwise>
@@ -214,15 +219,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.participants != null">
-                    #{travel.participants},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="travel.speed != null">
+                <when test="travel.speed != null and travel.speed!=''">
                     #{travel.speed},
                 </when>
                 <otherwise>
@@ -230,7 +227,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.speeddesc != null">
+                <when test="travel.speeddesc != null and travel.speeddesc!=''">
                     #{travel.speeddesc},
                 </when>
                 <otherwise>
@@ -238,7 +235,23 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.times != null">
+                <when test="travel.payfare != null and travel.payfare!=''">
+                    #{travel.payfare},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.payexpenses != null and travel.payexpenses!=''">
+                    #{travel.payexpenses},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.times != null and travel.times!=''" >
                     #{travel.times},
                 </when>
                 <otherwise>
@@ -246,7 +259,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.nexttime != null">
+                <when test="travel.nexttime != null and travel.nexttime!=''">
                     #{travel.nexttime},
                 </when>
                 <otherwise>
@@ -254,15 +267,15 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.status != null">
+                <when test="travel.status != null and travel.status!=''">
                     #{travel.status},
                 </when>
                 <otherwise>
-                    null ,
+                    1 ,
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.summary != null">
+                <when test="travel.summary != null and travel.summary!=''">
                     #{travel.summary}
                 </when>
                 <otherwise>
@@ -322,9 +335,6 @@
         <if test="amount!='' and amount !=null">
             amount=#{amount},
         </if>
-        <if test="participants!='' and participants !=null">
-            participants=#{participants},
-        </if>
         <if test="speed!='' and speed !=null">
             speed=#{speed},
         </if>
@@ -381,7 +391,6 @@
             fare,
             expenses,
             amount,
-            participants,
             speed,
             speeddesc,
             payfare,
@@ -428,7 +437,6 @@
             fare,
             expenses,
             amount,
-            participants,
             speed,
             speeddesc,
             payfare,
