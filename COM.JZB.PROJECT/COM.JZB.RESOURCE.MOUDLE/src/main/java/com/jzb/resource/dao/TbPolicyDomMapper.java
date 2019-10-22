@@ -20,6 +20,7 @@ public interface TbPolicyDomMapper {
      */
     int queryDocumentsCount(Map<String, Object> param);
 
+
     /**
      *     查询政策文档详情
      */

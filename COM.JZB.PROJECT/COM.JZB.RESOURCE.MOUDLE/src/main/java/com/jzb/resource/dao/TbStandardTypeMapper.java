@@ -18,6 +18,7 @@ public interface TbStandardTypeMapper {
      */
     int saveStandardType(Map<String, Object> param);
 
+
     /**
      * 运营管理下菜单类别的修改
      *

@@ -20,6 +20,8 @@ public interface TbPolicyTypeMapper {
      List<Map<String, Object>> queryPolicyType(Map<String, Object> param);
 
 
+
+
     /**
      * LBQ
      * 查询运营管理下政策中的菜单类别

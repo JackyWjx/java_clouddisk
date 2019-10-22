@@ -17,6 +17,7 @@ public interface TbProductFunctionMapper {
      */
     List<Map<String, Object>> getTbProductFunction(Map<String, Object> param);
 
+
     /**
      * 添加产品功能
      * @param paramList

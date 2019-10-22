@@ -19,6 +19,7 @@ public interface TbProductResListMapper {
      */
     List<Map<String, Object>> getProductResList(Map<String, Object> param);
 
+
     /**
      * 添加新建产品参数
      * @param paramList

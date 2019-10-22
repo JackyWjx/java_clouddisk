@@ -17,3 +17,4 @@ public interface TbContractTemplateTypeMapper {
      */
     List<Map<String, Object>> queryTemplateType(Map<String, Object> param);
 }
+
