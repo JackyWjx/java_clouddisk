@@ -5,6 +5,7 @@
 <mapper namespace="com.jzb.resource.dao.TbStandardDocumentMapper">
 
 
+
     <!--根据文档类别进行查询-->
     <select id="getTbStandardDocument" parameterType="java.util.Map" resultType="java.util.Map">
         select

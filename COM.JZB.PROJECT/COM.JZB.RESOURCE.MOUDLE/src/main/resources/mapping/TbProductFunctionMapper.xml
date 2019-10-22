@@ -29,6 +29,7 @@
         #{pageno}
     </select>
 
+
     <!--查询分页的总数-->
     <select id="getCount" resultType="int" parameterType="java.util.Map">
         select

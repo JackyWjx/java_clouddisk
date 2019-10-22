@@ -86,6 +86,7 @@
         prodid = #{pid}
     </select>
 
+
     <!--添加产品参数-->
     <insert id="saveTbProductParameteItem" parameterType="java.util.List">
         insert into

@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.resource.dao.TbPolicyDomMapper">
 
+
     <!--  查询政策文档列表(模糊查询)-->
     <select id="queryPolicyDomList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
