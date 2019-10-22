@@ -3,7 +3,7 @@ spring:
     config:
       label: 'master'
       uri: http://localhost:7506
-      name: 'jzb-media'
+      name: 'jzb-oauth'
       profile: 'test'
       status: 1
       backup:
