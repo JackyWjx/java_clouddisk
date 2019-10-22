@@ -10,6 +10,8 @@ import java.util.Map;
 @Repository
 public interface TbStandardTypeMapper {
 
+
+
     /**
      * 运营管理下菜单类别的新建
      *
