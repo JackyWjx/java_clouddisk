@@ -24,6 +24,7 @@ public class TbProductPriceService {
         return tbProductPriceMapper.getTbProductPriceCount(param);
     }
 
+
     /**
      * 根据产品线的plId查询产品表
      * @param param

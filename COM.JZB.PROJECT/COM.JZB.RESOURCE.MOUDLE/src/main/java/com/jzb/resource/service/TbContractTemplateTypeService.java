@@ -22,3 +22,4 @@ public class TbContractTemplateTypeService {
         return tbContractTemplateTypeMapper.queryTemplateType(param);
     }
 }
+

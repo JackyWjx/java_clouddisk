@@ -22,6 +22,7 @@ public class TbProductFunctionService {
         return tbProductFunctionMapper.getTbProductFunction(param);
     }
 
+
     /**
      * 添加产品功能
      * @param paramList
