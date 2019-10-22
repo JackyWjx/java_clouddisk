@@ -223,7 +223,7 @@ public class ProductService {
     }
 
     /**
-     * 根据查询出来的控件所有信息加入数据库
+     * 新建单位和用户
      *
      * @author kuangbin
      */

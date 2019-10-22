@@ -37,7 +37,7 @@ public class TbContractTemplateTypeController {
     public Response getContractTemplateType(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"page", "rows"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pageno", "pagesize"})) {
                 result = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);

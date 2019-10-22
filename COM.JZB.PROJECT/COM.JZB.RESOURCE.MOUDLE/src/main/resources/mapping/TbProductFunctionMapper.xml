@@ -24,9 +24,9 @@
         </if>
         group by a.id
         limit
-        #{rows}
+        #{pagesize}
         offset
-        #{page}
+        #{pageno}
     </select>
 
     <!--查询分页的总数-->

@@ -40,7 +40,7 @@
         <if test="typeid!=null and typeid!=''">
             and typeid=#{typeid}
         </if>
-        limit #{rows} offset #{page}
+        limit #{pagesize} offset #{pageno}
     </select>
 
 

@@ -20,9 +20,9 @@ public class JzbPageConvert {
      * @param params
      */
     public static void setPageRows(Map<String ,Object> params){
-        int rows = JzbDataType.getInteger(params.get("rows"));
-        int page = JzbDataType.getInteger(params.get("page"));
-        params.put("page", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
-        params.put("rows", rows);
+        int rows = JzbDataType.getInteger(params.get("pagesize"));
+        int page = JzbDataType.getInteger(params.get("pageno"));
+        params.put("pageno", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
+        params.put("pagesize", rows);
     }
 }

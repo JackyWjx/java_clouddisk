@@ -47,7 +47,7 @@
                 and finishtime &lt;= #{endTime}
             </if>
         order by id asc
-        LIMIT #{rows} OFFSET #{page}
+        LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
     <!--  获取总数-->

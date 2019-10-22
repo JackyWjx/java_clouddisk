@@ -389,7 +389,7 @@ public class DeptUserController {
                     if (JzbTools.isEmpty(uid)) {
                         result = Response.getResponseError();
                     } else {
-                       /* // 获取前台传过来的营业期限
+                        // 获取前台传过来的营业期限
                         String limit = JzbDataType.getString(param.get("limitday"));
 
                         // 获取前台传过来的成立日期
@@ -409,7 +409,8 @@ public class DeptUserController {
                         date = simpleDateFormat.parse(birth);
                         // 将日期从毫秒转化为毫秒值
                         long birthday = date.getTime() / 1000;
-                        param.put("birthday", birthday);*/
+                        System.out.println(birthday+"!!!"+limitday);
+                        param.put("birthday", birthday);
                         param.put("type", "1");
                         // 创建供应商单位
                         param.put("userinfo", userInfo);

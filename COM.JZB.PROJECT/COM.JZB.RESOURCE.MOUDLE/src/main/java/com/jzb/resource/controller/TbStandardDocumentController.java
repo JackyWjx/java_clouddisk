@@ -39,7 +39,7 @@ public class TbStandardDocumentController {
         Response result;
         try {
             //判断分页参数是否为空
-            if (JzbCheckParam.haveEmpty(param, new String[]{"rows", "page"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
             } else {
                 // 设置分页参数
@@ -183,7 +183,7 @@ public class TbStandardDocumentController {
         Response result;
         try {
             //判断分页参数是否为空
-            if (JzbCheckParam.haveEmpty(param, new String[]{"rows", "page"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
             } else {
                 // 设置分页参数

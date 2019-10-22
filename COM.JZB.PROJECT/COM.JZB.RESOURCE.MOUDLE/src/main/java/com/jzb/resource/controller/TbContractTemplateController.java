@@ -42,7 +42,7 @@ public class TbContractTemplateController {
         Response result;
         try {
             // 判断指定参数为空则返回error
-            if(JzbCheckParam.haveEmpty(param,new String[]{"page","rows"})){
+            if(JzbCheckParam.haveEmpty(param,new String[]{"pageno","pagesize"})){
                 result=Response.getResponseError();
             }else {
                 // 设置好分页参数
@@ -52,12 +52,12 @@ public class TbContractTemplateController {
                 List<Map<String, Object>> list = tbContractTemplateService.queryContractTemplate(param);
 
                 // 定义返回结果
-                Map<String, Object> userinfo=(Map<String, Object>) param.get("userinfo");
-                result = Response.getResponseSuccess(userinfo);
-                PageInfo pi=new PageInfo();
-                pi.setList(list);
-                pi.setTotal(tbContractTemplateService.getContractTemplateCount(param));
-                result.setPageInfo(pi);
+                Map<String, Object> userInfo=(Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+                PageInfo pageInfo=new PageInfo();
+                pageInfo.setList(list);
+                pageInfo.setTotal(tbContractTemplateService.getContractTemplateCount(param));
+                result.setPageInfo(pageInfo);
             }
 
         } catch (Exception ex) {

@@ -126,6 +126,7 @@
         SET
         <if test="cname!= null ">cname = #{cname} ,</if>
         <if test="uscc!= null ">uscc = #{uscc} ,</if>
+        <if test="region!= null ">region = #{region} ,</if>
         modtime = #{modtime},
         authid = ${authid}
         WHERE
@@ -820,6 +821,36 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
             </otherwise>
         </choose>
         #{uid},
+        #{addtime},
+        #{addtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--管理员创建公海单位-->
+    <insert id="insertCompanySupplier" parameterType="java.util.Map">
+        INSERT INTO tb_company_supplier (cid, supid, idx, adduid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{maincid},
+        #{cid},
+        <choose>
+            <when test=" index != null and index !=''">
+                ${index},
+            </when>
+            <otherwise>
+                (SELECT count(1)+1 FROM tb_company_supplier),
+            </otherwise>
+        </choose>
+        #{adduid},
         #{addtime},
         #{addtime},
         #{status},

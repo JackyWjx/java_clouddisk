@@ -150,7 +150,6 @@ public class TbContractTemplateItemController {
             } else {
                 result = Response.getResponseError();
             }
-            result = Response.getResponseSuccess();
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();

@@ -39,7 +39,7 @@ public class TbPolicyDomController {
         Response result;
         try {
             // 判断如果参数为空则返回404
-            if (JzbCheckParam.haveEmpty(params, new String[]{"typeid", "page", "rows"})) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"typeid", "pageno", "pagesize"})) {
                 result = Response.getResponseError();
             } else {
                 // 设置分页参数
@@ -171,7 +171,7 @@ public class TbPolicyDomController {
         Response result;
         try {
             //判断分页参数是否为空
-            if (JzbCheckParam.haveEmpty(param, new String[]{"rows", "page"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
             } else {
                 // 设置分页参数

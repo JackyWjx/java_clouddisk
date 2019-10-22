@@ -10,5 +10,10 @@
         select cname from tb_travel_vehicle where status='1' and vehicleid=#{vehicleid}
     </select>
 
+
+    <!-- 查询交通工具  -->
+    <select id="queryVehicle"  resultType="java.util.Map">
+        select vehicleid,cname from tb_travel_vehicle where status='1'
+    </select>
 </mapper>
 
