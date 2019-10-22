@@ -8,7 +8,7 @@ spring:
   datasource:
     username: jzb
     password: AAAaaa111***
-    url: jdbc:postgresql://192.168.0.251:9123/JDB_RESOURCE
+    url: jdbc:postgresql://192.168.0.251:9123/jdb_resource
     driver-class-name: org.postgresql.Driver
 
 mybatis:
@@ -41,5 +41,8 @@ ribbon:
   ConnectTimeout: 30000
 
   #配置图片上传的路径
+#ftpConfig:
+  #  path: /home/V3/jzb/application/service/upload
+
 ftpConfig:
   path: D:\01-project\java\COM.JZB.PROJECT\COM.JZB.RESOURCE.MOUDLE\src\main\resources\file

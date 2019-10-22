@@ -9,7 +9,7 @@ spring:
   datasource:
     username: jzb
     password: AAAaaa111***
-    url: jdbc:postgresql://192.168.0.251:9123/JDB_AUTH
+    url: jdbc:postgresql://192.168.0.251:9123/jdb_auth
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
@@ -21,7 +21,7 @@ spring:
     store-type: redis
   redis:
     database: 5
-    host: 175.6.7.218
+    host: 192.168.0.251
     port: 6100
     password: AAAaaa111***
     timeout: 3000

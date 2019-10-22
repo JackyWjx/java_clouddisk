@@ -1,4 +1,34 @@
+server:
+  port: 7502
 spring:
   application:
-    profiles:
-      include: release
+    name: jzb-org
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    username: jzb
+    password: AAAaaa111***
+    url: jdbc:postgresql://192.168.0.251:9123/JDB_ORG
+    driver-class-name: org.postgresql.Driver
+
+mybatis:
+  typeAliasesPackage: com.jzb.**.**.entity
+  mapperLocations: classpath:/mapping/*.xml
+  configuration:
+    map-underscore-to-camel-case: true #自动开启驼峰规则映射
+    call-setters-on-nulls: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:7101/eureka/
+  instance:
+    prefer-ip-address: true
+logging:
+  level:
+    com.jzb.org.dao.*: debug     #这是你的mapper包路径。
+
+# 请求处理的超时时间 请求连接的超时时间
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 30000

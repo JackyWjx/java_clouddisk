@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+  <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.API.MODULE" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.AUTH.MODULE" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.BASE.MODULE" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/COM.JZB.CONFIG.BASE.MODULE" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.CONFIG.MODULE" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.EUREKA.MODULE" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.LOGGER.MODULE" charset="UTF-8" />
@@ -18,5 +17,8 @@
     <file url="file://$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.REDIS.MODULE" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/file/1571314018843测试文件.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/file/1571314062145测试文件.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/file/1571619574364新建文本文档 (2).txt" charset="GBK" />
   </component>
 </project>
