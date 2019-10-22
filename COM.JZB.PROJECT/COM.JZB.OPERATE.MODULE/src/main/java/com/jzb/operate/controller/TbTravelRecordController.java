@@ -142,7 +142,7 @@ public class TbTravelRecordController {
                 }
 
                 // 获取参数中目标list
-                travelAim = (List) param.get("travelAim");
+                travelAim = (List<Map<String, Object>>) travelList.get(i).get("travelAim");
 
                 // 遍历赋值出差id
                 for (int q = 0, w = travelAim.size(); q < w; q++) {
