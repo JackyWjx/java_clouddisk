@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCompanySupplierMapper">
+
+    <!-- 已分配的业主下 新建供应商-->
+    <insert id="addCompanySupplier" parameterType="java.util.Map">
+        insert into tb_company_supplier (cid,supid,idx,adduid,addtime,upduid,updtime,status,summary) values
+        (
+        #{cid},
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_company_supplier),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                1 ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 已分配的业主下 修改供应商-->
+    <update id="updateCompanySupplier" parameterType="java.util.Map">
+        update tb_company_supplier
+        <trim prefix="set" suffixOverrides="," suffix=" where supid = #{supid} ">
+    　　　　<if test="cid != null and cid!=''"> cid=#{cid} ,</if>
+    　　　　<if test="adduid != null and adduid!=''"> adduid=#{adduid} ,</if>
+    　　　　<if test="upduid != null and upduid!=''"> upduid=#{upduid} ,</if>
+    　　　　<if test="updtime != null and updtime!=''"> updtime=#{updtime} ,</if>
+    　　　　<if test="summary != null and summary!=''"> summary=#{summary} ,</if>
+        </trim>
+    </update>
+
+    <!-- 已分配业主下查询供应商-->
+    <select id="queryCompanySupplier" parameterType="java.util.Map">
+        SELECT
+            tcs.cid,
+            tcs.supid,
+            tcs.idx,
+            tcs.adduid,
+            tcs.addtime,
+            tcs.upduid,
+            tcs.updtime,
+            tcs.status,
+            tcs.summary,
+            tcl.cname,
+            tcl.region,
+            tcl.manager,
+            tcd.cdid,
+            tdu.cname username
+        FROM
+            tb_company_supplier tcs
+            inner join tb_company_list tcl on tcs.cid=tcl.cid
+            inner join tb_company_dept tcd on tcs.cid=tcd.cid
+            inner join tb_dept_user tdu on tcd.cdid=tdu.cdid and tdu.cid=tcs.cid
+        WHERE
+        tcl.manager=tdu.uid
+--         and tcs.status='2'
+--         and	cid =#{ cid}
+    </select>
+
+</mapper>

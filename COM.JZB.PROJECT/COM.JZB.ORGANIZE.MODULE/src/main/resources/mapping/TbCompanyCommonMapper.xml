@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCompanyCommonMapper">
+
+    <!-- 查询公海单位 不做条件-->
+    <select id="queryCompanyCommon" parameterType="java.util.Map">
+        SELECT
+            tcc.cid,
+            tcc.uid,
+            (select cname from tb_dept_user where uid=tcc.uid) sales,
+            tcc.status,
+            tcl.cname,
+            tcl.manager,
+            tcl.region,
+            tdu.cname username,
+            tdu.phone userphone,
+            ( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = '服务人员类型id' ) service,
+            ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = '业主等级类型id' ) companyLevel,
+            tcl.authid
+        FROM
+            tb_company_common tcc
+            INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+            LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+            AND tdu.uid = tcl.manager
+            LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        WHERE
+            tcc.status = '2'
+    </select>
+
+
+    <!-- 查询已分配的业主  带条件 -->
+    <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map">
+        SELECT
+        tcc.cid,
+        tcc.uid,
+        (select cname from tb_dept_user where uid=tcc.uid) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = '服务人员类型id' ) service,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = '业主等级类型id' ) companyLevel,
+        tcl.authid
+        FROM
+        tb_company_common tcc
+        INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+        AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        WHERE
+        tcc.status = '2'
+        <if test="region!=null and region !=''">
+            and tcl.region=#{region}
+        </if>
+        <if test="companyLevel!=null and companyLevel !=''">
+            and companyLevel=#{companyLevel}
+        </if>
+        <if test="keyword!=null and keyword !=''">
+            and (tcl.cname ~ #{keyword} or sales ~ #{keyword})
+        </if>
+    </select>
+
+</mapper>
