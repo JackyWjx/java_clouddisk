@@ -29,7 +29,7 @@ public class TbContractTemplateService {
      * @return
      */
     public int addContractTemplate(Map<String, Object> param){
-        param.put("typeid", JzbRandom.getRandomChar(5));
+        param.put("typeid", "T0000");
         return tbContractTemplateMapper.addContractTemplate(param);
     }
 
