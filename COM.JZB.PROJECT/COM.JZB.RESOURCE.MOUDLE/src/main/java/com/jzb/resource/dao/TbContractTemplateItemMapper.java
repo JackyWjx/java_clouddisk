@@ -19,6 +19,8 @@ public interface TbContractTemplateItemMapper {
     List<Map<String, Object>> quertContractTemplateItemByTempid(Map<String, Object> param);
 
 
+
+
     /**
      * 根据项id查询项
      * @param param
