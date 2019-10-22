@@ -23,6 +23,7 @@ import java.util.Map;
 @RequestMapping(value = "/policyType")
 public class TbPolicyTypeController {
 
+
     @Autowired
     private TbPolicyTypeService tbPolicyTypeService;
 

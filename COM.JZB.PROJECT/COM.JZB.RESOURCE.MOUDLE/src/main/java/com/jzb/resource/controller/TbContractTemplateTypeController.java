@@ -21,6 +21,7 @@ import java.util.Map;
 @RequestMapping(value = "/resource/contracttemptype")
 public class TbContractTemplateTypeController {
 
+
     @Autowired
     private TbContractTemplateTypeService tbContactTemplateTypeService;
 
