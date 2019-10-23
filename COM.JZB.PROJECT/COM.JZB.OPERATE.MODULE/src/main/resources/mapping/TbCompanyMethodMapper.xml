@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbCompanyMethodMapper">
+
+    <!-- 上传 导入方法论   已存在则只做修改 不存在则做添加 -->
+    <insert id="addCompanyMethod" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="method" separator=",">
+            insert into tb_company_method
+            (cid,projectid,methodid,plantime,days,score,remark,idx,adduid,addtime,upduid,updtime,status,summary)
+            values (
+            <choose>
+                <when test="method.cid!=null and method.cid!=''">
+                    #{method.cid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.projectid!=null and method.projectid!=''">
+                    #{method.projectid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.methodid!=null and method.methodid!=''">
+                    #{method.methodid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.plantime!=null and method.plantime!=''">
+                    #{method.plantime},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.days!=null and method.days!=''">
+                    #{method.days},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.score!=null and method.score!=''">
+                    #{method.score},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.remark!=null and method.remark!=''">
+                    #{method.remark},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.idx!=null and method.idx!=''">
+                    #{method.idx},
+                </when>
+                <otherwise>
+                    (select count(1)+#{index} from tb_company_method) ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.adduid!=null and method.adduid!=''">
+                    #{method.adduid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.addtime!=null and method.addtime!=''">
+                    #{method.addtime},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.upduid!=null and method.upduid!=''">
+                    #{method.upduid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.updtime!=null and method.updtime!=''">
+                    #{method.updtime},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.status!=null and method.status!=''">
+                    #{method.status},
+                </when>
+                <otherwise>
+                    1 ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.summary!=null and method.summary!=''">
+                    #{method.summary}
+                </when>
+                <otherwise>
+                    NULL
+                </otherwise>
+            </choose>
+            )
+            ON conflict(cid,projectid,methodid) do update
+            <trim prefix="set" suffixOverrides="," suffix="  where tb_company_method.cid=#{method.cid} and tb_company_method.projectid=#{method.projectid} and tb_company_method.methodid=#{method.methodid}  ">
+                <if test="method.plantime !=null">plantime=#{method.plantime},</if>
+                <if test="method.days !=null">days=#{method.days},</if>
+                <if test="method.score !=null">score=#{method.score},</if>
+                <if test="method.remark !=null">remark=#{method.remark},</if>
+                <if test="method.idx !=null">idx=#{method.idx},</if>
+                <if test="method.upduid !=null">upduid=#{method.upduid},</if>
+                <if test="method.updtime !=null">updtime=#{method.updtime},</if>
+            </trim>
+        </foreach>
+    </insert>
+
+
+    <select id="queryCompanyMethod" parameterType="java.util.Map">
+        WITH RECURSIVE modt AS (
+        SELECT
+        cid,
+        projectid,
+        methodid,
+        plantime,
+        days,
+        score,
+        remark,
+        idx,
+        adduid,
+        addtime,
+        upduid,
+        updtime,
+        status,
+        summary
+        FROM
+        tb_company_method
+        WHERE
+        parentid = '0000000'
+        <if test="projectid!=null">
+            and projectid = #{projectid}
+        </if>
+        AND status = '1'
+        UNION ALL
+        SELECT
+        tmt.typeid,
+        tmt.cname,
+        tmt.parentid,
+        tmt.score,
+        tmt.days,
+        tmt.typedesc,
+        tmt.addtime,
+        tmt.idx
+        FROM
+        tb_method_type tmt
+        JOIN modt ON tmt.parentid = modt.typeid
+        AND tmt.status = '1'
+        )
+        SELECT
+        modt.*
+        FROM
+        modt
+        ORDER BY
+        modt.idx ASC
+    </select>
+</mapper>
