@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCompanyProjectMapper">
+    <!--查询项目下的数据-->
+    <select id="getComProject" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        cid,
+        Projectid,
+        projectname,
+        region,
+        address,
+        plantime,
+        verifytime,
+        to_char(to_timestamp(tendertime / 1000), 'yyyy-MM-dd HH24:MI') as tendertime,
+        tenderuid,
+        tendername,
+        tenderphone,
+        wintime,
+        buildstime,
+        buildetime,
+        adduid,
+        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        upduid,
+        status,
+        summary
+        from
+        tb_company_project
+        where
+        status = '1'
+        <if test="keyword != null and keyword != ''">
+            and tendername ~ #{keyword} or tenderphone ~ {keyword}
+        </if>
+        <if test="region ! = null and region != ''">
+            and projectname = ~ {projectname}
+        </if>
+        order by idx asc
+        LIMIT #{pagesize} offset #{pageno}
+    </select>
+
+    <!--查询总数-->
+    <select id="getCount" resultType="int" parameterType="java.util.Map">
+        select
+        count(1)
+        from
+        tb_company_project
+        where
+        status = '1'
+        <if test="keyword != null and keyword != ''">
+            and tendername ~ #{keyword} or tenderphone ~ {keyword}
+        </if>
+    </select>
+
+    <insert id="saveComProject" parameterType="java.util.Map">
+        insert
+        into
+        tb_company_project
+        (
+        cid,
+        projectid,
+        projectname,
+        region,
+        address,
+        plantime,
+        verifytime,
+        tendertime,
+        tenderuid,
+        tendername,
+        tenderphone,
+        wintime,
+        buildstime,
+        buildetime,
+        adduid,
+        addtime,
+        upduid,
+        status,
+        summary
+        )values(
+        <choose>
+            <when test="cid != null">
+                #{cid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="projectid != null">
+                #{projectid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="projectname != null">
+                #{projectname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="region != null">
+                #{region},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="address != null">
+                #{address},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="plantime != null">
+                #{plantime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="verifytime != null">
+                #{verifytime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tendertime != null">
+            #{tendertime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tenderuid != null">
+                #{tenderuid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tendername != null">
+                #{tendername},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tenderphone != null">
+                #{tenderphone},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="wintime != null">
+                #{wintime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+           <choose>
+                  <when test="buildstime != null">
+                         #{buildstime},
+                  </when>
+                  <otherwise>
+                         null,
+                  </otherwise>
+           </choose>
+           <choose>
+                  <when test="buildetime != null">
+                         #{buildetime},
+                  </when>
+                  <otherwise>
+                         null,
+                  </otherwise>
+           </choose>
+           <choose>
+                  <when test="adduid != null">
+                         #{adduid},
+                  </when>
+                  <otherwise>
+                         null,
+                  </otherwise>
+           </choose>
+           <choose>
+                  <when test="addtime != null">
+                         #{addtime},
+                  </when>
+                  <otherwise>
+                         null,
+                  </otherwise>
+           </choose>
+           <choose>
+                  <when test="upduid != null">
+                         #{upduid},
+                  </when>
+                  <otherwise>
+                         null,
+                  </otherwise>
+           </choose>
+           <choose>
+                  <when test="status != null">
+                         #{status},
+                  </when>
+                  <otherwise>
+                         1,
+                  </otherwise>
+           </choose>
+           <choose>
+                  <when test="summary != null">
+                         #{summary}
+                  </when>
+                  <otherwise>
+                         null
+                  </otherwise>
+           </choose>
+           )
+    </insert>
+
+   <!--关联业主-->
+    <update id="updateComProject" parameterType="java.util.Map">
+        update
+        tb_company_project
+        set
+        <if test="cid != null and cid != ''">cid = #{cid},</if>
+        <if test="projectname != null and projectname != ''">projectname = #{projectname},</if>
+        <if test="region != null and region != ''">region = #{region},</if>
+        <if test="address != null and address != ''">address = #{address},</if>
+        <if test="plantime != null and plantime != ''">plantime = #{plantime},</if>
+        <if test="verifytime != null and verifytime != ''">verifytime = #{verifytime},</if>
+        <if test="tendertime != null and tendertime != ''">tendertime = #{tendertime},</if>
+        <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+        where
+        projectid = #{projectid}
+    </update>
+
+</mapper>
