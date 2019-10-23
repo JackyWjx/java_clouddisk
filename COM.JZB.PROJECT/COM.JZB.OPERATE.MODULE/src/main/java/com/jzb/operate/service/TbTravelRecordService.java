@@ -77,4 +77,13 @@ public class TbTravelRecordService {
     public List<Map<String, Object>> getTravelRecordByTravelid(List<Map<String, Object>> list){
         return tbTravelRecordMapper.queryTravelRecordByTravelid(list);
     }
+
+    /**
+     * 撤回
+     * @param param
+     * @return
+     */
+    public int updateTravelRecordStatus(Map<String, Object> param){
+        return tbTravelRecordMapper.updateTravelRecordStatus(param);
+    }
 }

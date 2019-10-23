@@ -368,9 +368,6 @@
     </update>
 
 
-
-
-
     <!-- 获取归我审批的出差记录-->
     <select id="queryMyVerifyTravel" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
@@ -415,8 +412,6 @@
         </if>
     </select>
 
-
-
     <!-- 根据出差id查询出差记录-->
     <select id="queryTravelRecordByTravelid" parameterType="java.util.List" resultType="java.util.Map">
         SELECT
@@ -455,4 +450,9 @@
             </choose>
         </foreach>
     </select>
+
+    <!-- 撤回出差记录 -->
+    <update id="updateTravelRecordStatus" parameterType="java.util.Map">
+        update tb_travel_record set status=#{status} where travelid=#{travelid} and (status=1 or status=2)
+    </update>
 </mapper>

@@ -59,4 +59,11 @@ public interface TbTravelRecordMapper {
      * @return
      */
     List<Map<String, Object>> queryTravelRecordByTravelid(List<Map<String, Object>> list);
+
+    /**
+     * 撤回
+     * @param param
+     * @return
+     */
+    int updateTravelRecordStatus(Map<String, Object> param);
 }

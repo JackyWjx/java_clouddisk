@@ -185,13 +185,40 @@ public class TbTravelRecordController {
         Response result;
         try {
 
-            result = tbTravelRecordService.updateTravelRecord(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
+            result = tbTravelRecordService.updateTravelRecord(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
         }
         return result;
     }
+
+    /**
+     * 撤回
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/setBackStatus", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response setBackStatus(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid"})) {
+                result = Response.getResponseError();
+            } else {
+                param.put("status",4);
+                result = tbTravelRecordService.updateTravelRecordStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 
     /**
      * 设置删除状态
@@ -209,7 +236,7 @@ public class TbTravelRecordController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"travelid"})) {
                 result = Response.getResponseError();
             } else {
-                result = tbTravelRecordService.setDeleteStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userInfo")) : Response.getResponseError();
+                result = tbTravelRecordService.setDeleteStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
             JzbTools.logError(ex);
