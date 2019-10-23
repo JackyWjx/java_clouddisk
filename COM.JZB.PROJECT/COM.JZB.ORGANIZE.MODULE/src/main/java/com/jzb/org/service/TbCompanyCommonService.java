@@ -35,4 +35,15 @@ public class TbCompanyCommonService {
     public List<Map<String, Object>> queryCompanyCommonByKeyWord(Map<String, Object> param){
         return tbCompanyCommonMapper.queryCompanyCommonByKeyWord(param);
     }
+
+
+    /**
+     * 修改单位信息
+     * @param param
+     * @return
+     */
+    public int updateCompany(Map<String, Object> param){
+        return tbCompanyCommonMapper.updateCompany(param);
+    }
+
 }

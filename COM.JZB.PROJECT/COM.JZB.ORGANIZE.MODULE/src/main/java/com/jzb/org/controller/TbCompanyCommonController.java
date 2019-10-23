@@ -32,6 +32,7 @@ public class TbCompanyCommonController {
 
     /**
      * 获取已分配的业主单位（不带条件查询）
+     *
      * @param param
      * @return
      */
@@ -86,6 +87,7 @@ public class TbCompanyCommonController {
 
     /**
      * 获取已分配的业主单位 (带条件查询)
+     *
      * @param param
      * @return
      */
@@ -136,6 +138,35 @@ public class TbCompanyCommonController {
             }
 
         } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+
+    /**
+     * 修改业主单位
+     *
+     * @return
+     */
+    @RequestMapping(value = "/updateCompanyByCid", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response updateCompanyByCid(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 如果指定参数为空则返回error
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "cname", "region", "phone", "username"})) {
+                result = Response.getResponseError();
+            } else {
+                // 如果返回结果大于0 就返回success
+                result = tbCompanyCommonService.updateCompany(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            // 打印错误信息
             JzbTools.logError(ex);
             result = Response.getResponseError();
         }

@@ -64,4 +64,10 @@
         </if>
     </select>
 
+
+    <!-- 修改单位信息 -->
+    <update id="updateCompany" parameterType="java.util.Map">
+        update tb_company_list set cname=#{cname} ,region=#{region} where cid=#{cid}
+    </update>
+
 </mapper>
