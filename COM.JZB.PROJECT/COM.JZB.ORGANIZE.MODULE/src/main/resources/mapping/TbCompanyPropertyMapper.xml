@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCompanyCommonMapper">
+
+    <!-- 添加单位动态属性 -->
+    <insert id="addCompanyProperty" parameterType="java.util.Map">
+        insert into tb_company_property (cid,typeid,dictid,dictvalue,idx,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="cid!=null and cid!=''">
+                #{cid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typeid!=null and typeid!=''">
+                #{typeid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="dictid!=null and dictid!=''">
+                #{dictid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="dictvalue!=null and dictvalue!=''">
+                #{dictvalue},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_company_property),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                1 ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+
+    <!-- 查询企业id 以及 类型id 是否存在，给设置业主等级提供 -->
+    <select id="queryexists" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_company_property where cid=#{cid} and typeid=#{typeid}
+    </select>
+
+    <!-- 修改属性默认值 -->
+    <update id="updatePropertyByCidAndTypeid" parameterType="java.util.Map">
+        update tb_company_property
+        <trim prefix="set" suffixOverrides="," suffix=" where cid=#{cid} and typeid=#{typeid} ">
+    　　　　<if test="dictvalue != null and dictvalue!=''"> dictvalue=#{dictvalue} ,</if>
+    　　　　<if test="upduid != null and upduid!=''"> upduid=#{upduid} ,</if>
+    　　　　<if test="updtime != null and updtime!=''"> updtime=#{updtime} ,</if>
+        </trim>
+    </update>
+</mapper>

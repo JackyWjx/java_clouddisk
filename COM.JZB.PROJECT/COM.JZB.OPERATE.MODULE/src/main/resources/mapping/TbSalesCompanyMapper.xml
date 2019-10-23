@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbSalesCompanyMapper">
+
+    <!-- 添加业主单位 -->
+    <insert id="addSalesCompany" parameterType="java.util.Map">
+        insert into tb_sales_company(cid,uid,idx,adduid,addtime,upduid,updtime,status,summary) values
+        (
+        <choose>
+            <when test="cid!=null and cid!=''">
+                #{cid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="uid!=null and uid!=''">
+                #{uid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                1 ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+
+</mapper>

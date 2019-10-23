@@ -28,5 +28,11 @@ public interface TbCompanyCommonMapper {
      */
     List<Map<String, Object>> queryCompanyCommonByKeyWord(Map<String, Object> param);
 
+    /**
+     * 修改单位信息
+     * @param param
+     * @return
+     */
+    int updateCompany(Map<String, Object> param);
 
 }
