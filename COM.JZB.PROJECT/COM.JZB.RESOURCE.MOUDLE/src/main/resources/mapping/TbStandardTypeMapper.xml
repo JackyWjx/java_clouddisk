@@ -7,7 +7,7 @@
     <!--标准中菜单分类的新建-->
     <insert id="saveStandardType" parameterType="java.util.Map">
         insert into
-        tb_standard_type(tpeycode,typeid,cname,parentid,typedesc,idx,adduid,addtime,upduid,updtime,status,summary)
+        tb_standard_type(typecode,typeid,cname,parentid,typedesc,idx,adduid,addtime,upduid,updtime,status,summary)
         values
         (
         <choose>
@@ -78,7 +78,7 @@
         update
         tb_standard_type
         set
-        <if test="tpeycode != null">tpeycode=#{tpeycode},</if>
+        <if test="tpeycode != null">typecode=#{tpeycode},</if>
         <if test="cname != null">cname=#{cname},</if>
         <if test="parentid != null">parentid=#{parentid},</if>
         <if test="typedesc != null">typedesc=#{typedesc},</if>
@@ -95,11 +95,16 @@
         update tb_standard_type set status=#{status} where typeid=#{typeid}
     </update>
 
+
+
+
     <!--查询运营管理中的菜单类别-->
     <select id="getStandardType" parameterType="java.util.Map" resultType="java.util.Map">
-        select ID,tpeycode,typeid,cname,typedesc,adduid,addtime,summary from tb_standard_type where status = #{status}
+        select ID,typecode,typeid,cname,typedesc,adduid,addtime,summary from tb_standard_type where status = #{status}
         <if test="typeid != null">
             and typeid = #{typeid}
         </if>
     </select>
+
+
 </mapper>
