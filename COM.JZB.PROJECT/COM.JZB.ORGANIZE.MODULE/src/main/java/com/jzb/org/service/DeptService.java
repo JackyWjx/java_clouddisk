@@ -218,7 +218,19 @@ public class DeptService {
      * @return
      */
     public List<Map<String, Object>> queryDeptUser(Map<String, Object> map) {
-        return deptMapper.queryDeptUser(map);
+        List<Map<String, Object>> deptList = deptMapper.queryDeptUser(map);
+        int size = deptList.size();
+        List<Map<String, Object>> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            Map<String, Object>  deptMap = deptList.get(i);
+            Response resp = userRedisServiceApi.getCacheUserInfo(deptMap);
+            if (JzbDataType.isMap(resp.getResponseEntity())) {
+                Map<Object, Object> userInfo = (Map<Object, Object>) resp.getResponseEntity();
+                deptMap.put("portrait",userInfo.get("portrait"));
+            }
+            result.add(deptMap);
+        }
+        return result;
     }
 
     /**
