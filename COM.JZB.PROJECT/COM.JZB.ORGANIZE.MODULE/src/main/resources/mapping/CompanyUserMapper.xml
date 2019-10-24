@@ -304,7 +304,14 @@
         </choose>
         #{tendername},
         #{tenderphone},
-        ${wintime},
+        <choose>
+            <when test=" wintime != null and wintime !=''">
+                ${wintime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test=" idx != null and idx !=''">
                 ${idx},
