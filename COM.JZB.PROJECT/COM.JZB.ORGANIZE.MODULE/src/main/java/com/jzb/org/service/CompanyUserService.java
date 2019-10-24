@@ -40,6 +40,7 @@ public class CompanyUserService {
 
     @Autowired
     private CompanyService companyService;
+
     /**
      * 设置分页数
      */
@@ -238,6 +239,7 @@ public class CompanyUserService {
     public int addCompanyProject(Map<String, Object> param) {
         param.put("status", "1");
         param.put("projectid", JzbRandom.getRandomCharCap(19));
+        param.put("addtime", System.currentTimeMillis());
         return companyUserMapper.insertCompanyProject(param);
     }
 
@@ -273,7 +275,7 @@ public class CompanyUserService {
     public int addCompanyDept(Map<String, Object> param) {
         param.put("status", "1");
         int count = companyUserMapper.insertCompanyDept(param);
-        if (count == 1){
+        if (count == 1) {
             param.put("groupid", "1014");
             param.put("msgtag", "addCompanyDept");
             param.put("senduid", "addCompanyDept");
