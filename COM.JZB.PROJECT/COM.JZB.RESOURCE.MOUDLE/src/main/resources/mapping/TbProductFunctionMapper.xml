@@ -51,7 +51,7 @@
         tb_product_res_list a
         on a.pid = b.pid
         where 1=1
-        <if test="status != null">
+        <if test="status != null and status != ''">
             and a.status = #{status}
         </if>
         <if test="cname != null">
@@ -64,9 +64,11 @@
     <select id="getProductFunction" parameterType="java.util.Map" resultType="java.util.Map">
         WITH RECURSIVE modt AS (
          select
+         id,
         pid,
         funtype,
         funsubtype,
+        introduce,
         funid,
         cname,
         parentid,
@@ -85,9 +87,11 @@
         and status = '1'
         UNION ALL
             SELECT
+        a.id,
         a.pid,
         a.funtype,
         a.funsubtype,
+        a.introduce,
         a.funid,
         a.cname,
         a.parentid,
@@ -114,7 +118,6 @@
         insert into
         tb_product_function
         (
-        funtype,
         parentid,
         pid,
         funtype,
@@ -131,149 +134,139 @@
         status,
         summary
         )values
-        <foreach collection="list" index="index" item="item" separator=",">
             (
             <choose>
-                <when test="item.funtype != null">
-                    #{item.funtype},
+                <when test="parentid != null">
+                    #{parentid},
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.parentid != null">
-                    #{item.parentid},
+                <when test="pid != null">
+                    #{pid},
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.pid != null">
-                    #{item.pid},
+                <when test="funtype != null">
+                    cast(#{funtype} as integer),
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.funtype != null">
-                    cast(#{item.funtype} as integer),
+                <when test="funsubtype != null">
+                    cast(#{funsubtype} as integer),
+                </when>
+                <otherwise>
+                    8,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="funid != null">
+                    #{funid},
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.funsubtype != null">
-                    cast(#{item.funsubtype} as integer),
+                <when test="cname != null">
+                    #{cname},
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.funid != null">
-                    #{item.funid},
+                <when test="price != null">
+                    cast(#{price} as integer),
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.cname != null">
-                    #{item.cname},
+                <when test="weight != null">
+                    cast(#{weight} as integer),
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.price != null">
-                    cast(#{item.price} as integer),
+                <when test="introduce != null">
+                    #{introduce},
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.weight != null">
-                    cast(#{item.weight} as integer),
+                <when test="fundesc != null">
+                    #{fundesc},
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.introduce != null">
-                    #{item.introduce},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.fundesc != null">
-                    #{item.fundesc},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.idx != null">
-                    #{item.idx},
+                <when test="idx != null">
+                    #{idx},
                 </when>
                 <otherwise>
                     (select count(1)+1 from tb_product_function),
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.addtime != null">
-                    #{item.addtime},
+                <when test="addtime != null">
+                    #{addtime},
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.updtime != null">
-                    #{item.updtime},
+                <when test="updtime != null">
+                    #{updtime},
                 </when>
                 <otherwise>
                     null,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.status != null">
-                    #{item.status},
+                <when test="status != null">
+                    #{status},
                 </when>
                 <otherwise>
                     1,
                 </otherwise>
             </choose>
             <choose>
-                <when test="item.summary != null">
-                    #{item.summary}
+                <when test="summary != null">
+                    #{summary}
                 </when>
                 <otherwise>
                     null
                 </otherwise>
             </choose>
-            ) on conflict(item.funid) do update
+            ) on conflict(funid) do update
             set
-            <if test="item.funtype != null">funtype=cast(#{item.funtype} as integer),</if>
-            <if test="item.funsubtype != null">funsubtype=cast(#{item.funsubtype} as integer),</if>
-            <if test="item.cname != null">cname=#{item.cname},</if>
-            <if test="item.price != null">price=cast(#{item.price} as integer),</if>
-            <if test="item.weight != null">weight= cast(#{item.weight} as integer),</if>
-            <if test="item.introduce != null">introduce=#{item.introduce},</if>
-            <if test="item.fundesc != null">fundesc=#{item.fundesc},</if>
-            <if test="item.summary != null">summary=#{item.summary},</if>
-            <if test="item.status != null">status=#{item.status},</if>
-            <if test="item.updtime != null">updtime=#{item.updtime}</if>
-        </foreach>
+            <if test="funtype != null">funtype=cast(#{funtype} as integer),</if>
+            <if test="funsubtype != null">funsubtype=cast(#{funsubtype} as integer),</if>
+            <if test="cname != null">cname=#{cname},</if>
+            <if test="price != null">price=cast(#{price} as integer),</if>
+            <if test="weight != null">weight= cast(#{weight} as integer),</if>
+            <if test="introduce != null">introduce=#{introduce},</if>
+            <if test="fundesc != null">fundesc=#{fundesc},</if>
+            <if test="summary != null">summary=#{summary},</if>
+            <if test="status != null">status=#{status},</if>
+            <if test="updtime != null">updtime=#{updtime}</if>
     </insert>
 
 
