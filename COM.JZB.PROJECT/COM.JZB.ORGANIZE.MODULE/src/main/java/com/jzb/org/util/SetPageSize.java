@@ -5,6 +5,7 @@ import com.jzb.base.data.JzbDataType;
 import java.util.Map;
 
 public class SetPageSize {
+    
     /**
      * 设置分页数
      */
