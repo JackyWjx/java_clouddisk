@@ -10,7 +10,7 @@
     <select id="getTbStandardDocument" parameterType="java.util.Map" resultType="java.util.Map">
         select
         Id,
-        tpeycode,
+        typecode,
         domid,
         typeid,
         cname,
@@ -37,7 +37,7 @@
     <!--新增-->
     <insert id="saveTbStandardDom" parameterType="java.util.Map">
         insert into
-        tb_standard_document(tpeycode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
+        tb_standard_document(typecode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
         updtime)
         values
         (
@@ -141,7 +141,7 @@
         update
         tb_standard_document
         set
-        <if test="tpeycode != null">tpeycode=#{tpeycode},</if>
+        <if test="tpeycode != null">typecode=#{tpeycode},</if>
         <if test="cname != null">cname=#{cname},</if>
         <if test="domcode != null">domcode=#{domcode},</if>
         <if test="price != null">price=cast(#{price} as integer),</if>
@@ -167,7 +167,7 @@
     <select id="getCname" parameterType="java.util.Map" resultType="java.util.Map">
        select
         Id,
-        tpeycode,
+        typecode,
         domid,
         typeid,
         cname,

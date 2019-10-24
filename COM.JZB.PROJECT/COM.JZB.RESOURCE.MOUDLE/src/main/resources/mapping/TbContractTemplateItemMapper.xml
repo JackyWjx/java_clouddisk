@@ -244,6 +244,7 @@
             </choose>
             )
     </insert>
+
     <!-- 根据模板查询项-->
     <select id="quertContractTemplateItemByItemid" parameterType="java.util.Map" resultType="java.util.Map">
         select tempid,itemid,cname,itemtype,controlid,datasize,defaultvalue,idx,ouid,addtime,updtime,status,summary

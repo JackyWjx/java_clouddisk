@@ -20,6 +20,7 @@
                 tb_method_type
             WHERE
                 parentid = '0000000'
+
                 <if test="keyword!=null">
                     and cname ~ #{keyword}
                 </if>
