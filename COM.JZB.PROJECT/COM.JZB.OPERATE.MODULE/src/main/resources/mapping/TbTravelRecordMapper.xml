@@ -10,6 +10,7 @@
             travelid,
             uid,
             typeid,
+            curcity,
             curcid,
             cname,
             travedesc,
@@ -58,9 +59,11 @@
 
     <!-- 添加出差记录-->
     <insert id="addTravelRecord" parameterType="java.util.List">
+        <foreach collection="list" item="travel" separator=",">
         insert into tb_travel_record
         (
             travelid,
+            curcity,
             curcid,
             cname,
             travedesc,
@@ -87,9 +90,16 @@
             summary
         )
         values
-        <foreach collection="list" item="travel" separator=",">
             (
             #{travel.travelid},
+            <choose>
+                <when test="travel.startcity != null and travel.startcity!=''">
+                    #{travel.startcity},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
             <choose>
                 <when test="travel.curcid != null and travel.curcid!=''">
                     #{travel.curcid},
@@ -282,84 +292,159 @@
                     null
                 </otherwise>
             </choose>
-            )
+            ) on conflict(travelid) do update
+            <trim prefix="set" suffixOverrides="," suffix=" where travelid=#{travelid} and (status = '1' or status = '4' or status='32')  ">
+                <if test="cname!='' and cname !=null">
+                    cname=#{cname},
+                </if>
+                <if test="travedesc!='' and travedesc !=null">
+                    travedesc=#{travedesc},
+                </if>
+                <if test="tarcity!='' and tarcity !=null">
+                    tarcity=#{tarcity},
+                </if>
+                <if test="tarcid!='' and tarcid !=null">
+                    tarcid=#{tarcid},
+                </if>
+                <if test="tarname!='' and tarname !=null">
+                    tarname=#{tarname},
+                </if>
+                <if test="relperson!='' and relperson !=null">
+                    relperson=#{relperson},
+                </if>
+                <if test="relphone!='' and relphone !=null">
+                    relphone=#{relphone},
+                </if>
+                <if test="projectid!='' and projectid !=null">
+                    projectid=#{projectid},
+                </if>
+                <if test="project!='' and project !=null">
+                    project=#{project},
+                </if>
+                <if test="starttime!='' and starttime !=null">
+                    starttime=#{starttime},
+                </if>
+                <if test="finishtime!='' and finishtime !=null">
+                    finishtime=#{finishtime},
+                </if>
+                <if test="method!='' and method !=null">
+                    method=#{method},
+                </if>
+                <if test="fare!='' and fare !=null">
+                    fare=#{fare},
+                </if>
+                <if test="expenses!='' and expenses !=null">
+                    expenses=#{expenses},
+                </if>
+                <if test="amount!='' and amount !=null">
+                    amount=#{amount},
+                </if>
+                <if test="speed!='' and speed !=null">
+                    speed=#{speed},
+                </if>
+                <if test="speeddesc!='' and speeddesc !=null">
+                    speeddesc=#{speeddesc},
+                </if>
+                <if test="payfare!='' and payfare !=null">
+                    payfare=#{payfare},
+                </if>
+                <if test="payexpenses!='' and payexpenses !=null">
+                    payexpenses=#{payexpenses},
+                </if>
+                <if test="times!='' and times !=null">
+                    times=#{times},
+                </if>
+                <if test="nexttime!='' and nexttime !=null">
+                    nexttime=#{nexttime},
+                </if>
+                <if test="status!='' and status !=null">
+                    status=#{status},
+                </if>
+                <if test="summary!='' and summary !=null">
+                    summary=#{summary},
+                </if>
+            </trim>
         </foreach>
 
     </insert>
 
     <!-- 修改出差记录-->
     <update id="updateTravelRecord" parameterType="java.util.Map">
-        update tb_travel_record set
-        <if test="cname!='' and cname !=null">
+        update tb_travel_record
+        <trim prefix="set" suffixOverrides="," suffix=" where travelid=#{travelid} and (status = '1' or status = '4' or status='32')  ">
+            <if test="cname!='' and cname !=null">
             cname=#{cname},
-        </if>
-        <if test="travedesc!='' and travedesc !=null">
-            travedesc=#{travedesc},
-        </if>
-        <if test="tarcity!='' and tarcity !=null">
-            tarcity=#{tarcity},
-        </if>
-        <if test="tarcid!='' and tarcid !=null">
-            tarcid=#{tarcid},
-        </if>
-        <if test="tarname!='' and tarname !=null">
-            tarname=#{tarname},
-        </if>
-        <if test="relperson!='' and relperson !=null">
-            relperson=#{relperson},
-        </if>
-        <if test="relphone!='' and relphone !=null">
-            relphone=#{relphone},
-        </if>
-        <if test="projectid!='' and projectid !=null">
-            projectid=#{projectid},
-        </if>
-        <if test="project!='' and project !=null">
-            project=#{project},
-        </if>
-        <if test="starttime!='' and starttime !=null">
-            starttime=#{starttime},
-        </if>
-        <if test="finishtime!='' and finishtime !=null">
-            finishtime=#{finishtime},
-        </if>
-        <if test="method!='' and method !=null">
-            method=#{method},
-        </if>
-        <if test="fare!='' and fare !=null">
-            fare=#{fare},
-        </if>
-        <if test="expenses!='' and expenses !=null">
-            expenses=#{expenses},
-        </if>
-        <if test="amount!='' and amount !=null">
-            amount=#{amount},
-        </if>
-        <if test="speed!='' and speed !=null">
-            speed=#{speed},
-        </if>
-        <if test="speeddesc!='' and speeddesc !=null">
-            speeddesc=#{speeddesc},
-        </if>
-        <if test="payfare!='' and payfare !=null">
-            payfare=#{payfare},
-        </if>
-        <if test="payexpenses!='' and payexpenses !=null">
-            payexpenses=#{payexpenses},
-        </if>
-        <if test="times!='' and times !=null">
-            times=#{times},
-        </if>
-        <if test="nexttime!='' and nexttime !=null">
-            nexttime=#{nexttime},
-        </if>
-        <if test="status!='' and status !=null">
-            status=#{status},
-        </if>
-        <if test="summary!='' and summary !=null">
-            summary=#{summary},
-        </if>
-        where travelid=#{travelid}
+            </if>
+            <if test="travedesc!='' and travedesc !=null">
+                travedesc=#{travedesc},
+            </if>
+            <if test="tarcity!='' and tarcity !=null">
+                tarcity=#{tarcity},
+            </if>
+            <if test="tarcid!='' and tarcid !=null">
+                tarcid=#{tarcid},
+            </if>
+            <if test="tarname!='' and tarname !=null">
+                tarname=#{tarname},
+            </if>
+            <if test="relperson!='' and relperson !=null">
+                relperson=#{relperson},
+            </if>
+            <if test="relphone!='' and relphone !=null">
+                relphone=#{relphone},
+            </if>
+            <if test="projectid!='' and projectid !=null">
+                projectid=#{projectid},
+            </if>
+            <if test="project!='' and project !=null">
+                project=#{project},
+            </if>
+            <if test="starttime!='' and starttime !=null">
+                starttime=#{starttime},
+            </if>
+            <if test="finishtime!='' and finishtime !=null">
+                finishtime=#{finishtime},
+            </if>
+            <if test="method!='' and method !=null">
+                method=#{method},
+            </if>
+            <if test="fare!='' and fare !=null">
+                fare=#{fare},
+            </if>
+            <if test="expenses!='' and expenses !=null">
+                expenses=#{expenses},
+            </if>
+            <if test="amount!='' and amount !=null">
+                amount=#{amount},
+            </if>
+            <if test="speed!='' and speed !=null">
+                speed=#{speed},
+            </if>
+            <if test="speeddesc!='' and speeddesc !=null">
+                speeddesc=#{speeddesc},
+            </if>
+            <if test="payfare!='' and payfare !=null">
+                payfare=#{payfare},
+            </if>
+            <if test="payexpenses!='' and payexpenses !=null">
+                payexpenses=#{payexpenses},
+            </if>
+            <if test="times!='' and times !=null">
+                times=#{times},
+            </if>
+            <if test="nexttime!='' and nexttime !=null">
+                nexttime=#{nexttime},
+            </if>
+            <if test="status!='' and status !=null">
+                status=#{status},
+            </if>
+            <if test="summary!='' and summary !=null">
+                summary=#{summary},
+            </if>
+        </trim>
+
+
+
     </update>
 
     <!-- 设置删除状态-->
@@ -454,5 +539,10 @@
     <!-- 撤回出差记录 -->
     <update id="updateTravelRecordStatus" parameterType="java.util.Map">
         update tb_travel_record set status=#{status} where travelid=#{travelid} and (status=1 or status=2)
+    </update>
+
+    <!--修改审核状态-->
+    <update id="updateStatus" parameterType="java.util.Map">
+        update tb_travel_record  set status=#{status} where travelid=#{travelid}
     </update>
 </mapper>

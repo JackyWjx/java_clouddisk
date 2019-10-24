@@ -16,5 +16,8 @@ public interface TbUserTravelMapper {
      * @return
      */
     int addUserTavel(List<Map<String, Object>> list);
+
+
+    List<Map<String, Object>> queryUserTravel(Map<String, Object> param);
 }
 

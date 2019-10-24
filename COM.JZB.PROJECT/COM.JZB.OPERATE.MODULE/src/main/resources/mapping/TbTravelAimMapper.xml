@@ -7,9 +7,9 @@
 
     <!-- 添加出差目标记录-->
     <insert id="addTravelAim" parameterType="java.util.List">
-        insert into tb_travel_aim(travelid,methodid,aimid,cname,status,summary)
-        values
         <foreach collection="list" item="travel" separator=",">
+        insert into tb_travel_aim(travelid,methodid,aimid,cname,score,status,summary)
+        values
         (
             #{travel.travelid},
             #{travel.methodid},
@@ -17,6 +17,14 @@
             <choose>
                 <when test="travel.cname!= '' and travel.cname!= null">
                     #{travel.cname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.score!= '' and travel.score!= null">
+                    #{travel.score},
                 </when>
                 <otherwise>
                     null,
@@ -39,8 +47,22 @@
                 </otherwise>
             </choose>
             )
+            on conflict(travelid,methodid,aimid) do update
+            <trim prefix="set" suffixOverrides="," suffix="  where tb_travel_aim.travelid=#{travel.travelid} and tb_travel_aim.methodid=#{travel.travelid} and tb_travel_aim.aimid=#{travel.aimid} ">
+                <if test="travel.cname !=null">cname=#{travel.cname},</if>
+                <if test="travel.score !=null">score=#{travel.score},</if>
+            </trim>
         </foreach>
     </insert>
 
+    <!--查询-->
+    <select id="queryTravelAim" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+            methodid,
+            aimid
+        from tb_travel_aim
+        where
+             travelid = #{travelid}
+    </select>
 
 </mapper>

@@ -23,4 +23,13 @@ public class TbTravelAimService {
     }
 
 
+    /**
+     *查询
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>>queryTravelAim(Map<String, Object> param){
+       return tbTravelAimMapper.queryTravelAim(param);
+    }
+
 }

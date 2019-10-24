@@ -82,6 +82,11 @@ public class TbTravelRecordController {
                     map.put("vehicleid", list.get(i).get("vehicle"));
                     // 查出name 后放入
                     list.get(i).put("vehicleName", tbTravelVehicleService.getTravelName(map));
+
+                    map.put("travelid", list.get(i).get("travelid"));
+                    list.get(i).put("travelAim",tbTravelAimService.queryTravelAim(map));
+
+                    list.get(i).put("userList",tbUserTravelService.queryUserTravel(map));
                 }
 
                 // 得到总数
@@ -130,8 +135,13 @@ public class TbTravelRecordController {
 
             // 循环生成出差id
             for (int i = 0, l = travelList.size(); i < l; i++) {
+                String travelid;
+                if(travelList.get(i).get("travelid")!=null){
+                    travelid=travelList.get(i).get("travelid").toString();
+                }else {
+                    travelid = JzbRandom.getRandomCharLow(19);
+                }
                 // 生成出差id
-                String travelid = JzbRandom.getRandomCharLow(19);
 
                 // 放入出差id
                 travelList.get(i).put("travelid", travelid);
@@ -186,6 +196,7 @@ public class TbTravelRecordController {
         try {
 
             result = tbTravelRecordService.updateTravelRecord(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();

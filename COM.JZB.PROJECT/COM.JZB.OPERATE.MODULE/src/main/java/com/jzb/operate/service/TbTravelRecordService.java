@@ -1,6 +1,7 @@
 package com.jzb.operate.service;
 
 import com.jzb.operate.dao.TbTravelRecordMapper;
+import com.sun.crypto.provider.BlowfishKeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,5 +86,12 @@ public class TbTravelRecordService {
      */
     public int updateTravelRecordStatus(Map<String, Object> param){
         return tbTravelRecordMapper.updateTravelRecordStatus(param);
+    }
+
+    /**
+     * 修改审核状态
+     */
+    public int updateStatus(Map<String, Object> param){
+        return tbTravelRecordMapper.updateStatus(param);
     }
 }

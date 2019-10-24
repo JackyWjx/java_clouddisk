@@ -6,9 +6,9 @@
 
     <!--添加用户出差记录-->
     <insert id="addUserTavel" parameterType="java.util.List">
-        insert into tb_user_travel(travelid,uid,startcity,starttime,backtime,vehicle,payfare,payexpenses,status,summary)
-        values
         <foreach collection="list" item="travel" separator=",">
+            insert into tb_user_travel(travelid,uid,startcity,starttime,backtime,vehicle,payfare,payexpenses,status,summary)
+            values
         (
             #{travel.travelid},
             <choose>
@@ -84,9 +84,28 @@
                 </otherwise>
             </choose>
         )
+            on conflict(travelid,uid) do update
+            <trim prefix="set" suffixOverrides="," suffix="  where tb_travel_aim.travelid=#{travel.travelid} and tb_travel_aim.methodid=#{travel.travelid} and tb_travel_aim.aimid=#{travel.aimid} ">
+                <if test="travel.startcity !=null">startcity=#{travel.startcity},</if>
+                <if test="travel.starttime !=null">starttime=#{travel.starttime},</if>
+                <if test="travel.backtime !=null">backtime=#{travel.backtime},</if>
+                <if test="travel.vehicle !=null">vehicle=#{travel.vehicle},</if>
+                <if test="travel.payfare !=null">payfare=#{travel.payfare},</if>
+                <if test="travel.payexpenses !=null">payexpenses=#{travel.payexpenses},</if>
+                <if test="travel.summary !=null">summary=#{travel.summary},</if>
+            </trim>
         </foreach>
     </insert>
 
-    
+    <select id="queryUserTravel" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+            uid,
+            startcity,
+            vehicle
+        from tb_user_travel
+        where
+             travelid = #{travelid}
+    </select>
+
 </mapper>
 
