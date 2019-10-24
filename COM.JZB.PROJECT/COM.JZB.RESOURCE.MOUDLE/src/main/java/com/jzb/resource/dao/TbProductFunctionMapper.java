@@ -20,10 +20,10 @@ public interface TbProductFunctionMapper {
 
     /**
      * 添加产品功能
-     * @param paramList
+     * @param param
      * @return
      */
-    int saveTbProductFunction(List<Map<String, Object>> paramList);
+    int saveTbProductFunction(Map<String, Object> param);
 
     /**
      * 添加产品功能
