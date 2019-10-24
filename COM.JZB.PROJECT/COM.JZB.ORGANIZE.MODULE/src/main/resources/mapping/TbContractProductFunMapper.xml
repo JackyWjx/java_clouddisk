@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbContractProductFunMapper">
+
+    <!-- 添加合同项 -->
+    <insert id="addContractProductFun" parameterType="java.util.Map">
+        insert into tb_contract_product_fun
+        (contid,pid,funtype,funsubtype,funid,cname,price,weight,introduce,fundesc,funroute,idx,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="contid!=null and contid!=''">
+                #{contid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pid!=null and pid!=''">
+                #{pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="funtype!=null and funtype!=''">
+                #{funtype},
+            </when>
+            <otherwise>pro
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="funsubtype!=null and funsubtype!=''">
+                #{funsubtype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="funid!=null and funid!=''">
+                #{funid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cname!=null and cname!=''">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price!=null and price!=''">
+                #{price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="weight!=null and weight!=''">
+                #{weight},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="introduce!=null and introduce!=''">
+                #{introduce},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="fundesc!=null and fundesc!=''">
+                #{fundesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="funroute!=null and funroute!=''">
+                #{funroute},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 修改合同项 -->
+    <update id="updateContractProductFun" parameterType="java.util.Map">
+        update tb_contract_product_fun
+        <trim prefix="set" suffixOverrides="," suffix=" where contid = #{contid} and pid=#{pid} ">
+            <if test="funtype != null and funtype!=''">funtype=#{funtype} ,</if>
+            <if test="funsubtype != null and funsubtype!=''">funsubtype=#{funsubtype} ,</if>
+            <if test="funid != null and funid!=''">funid=#{funid} ,</if>
+            <if test="cname != null and cname!=''">cname=#{cname} ,</if>
+            <if test="price != null and price!=''">price=#{price} ,</if>
+            <if test="weight != null and weight!=''">weight=#{weight} ,</if>
+            <if test="introduce != null and introduce!=''">introduce=#{introduce} ,</if>
+            <if test="fundesc != null and fundesc!=''">fundesc=#{fundesc} ,</if>
+            <if test="funroute != null and funroute!=''">funroute=#{funroute} ,</if>
+            <if test="upduid != null and upduid!=''">upduid=#{upduid} ,</if>
+            <if test="updtime != null and updtime!=''">updtime=#{updtime} ,</if>
+        </trim>
+    </update>
+
+    <!-- 查询合同项 -->
+    <select id="queryContractProductFun" parameterType="java.util.Map">
+        select contid,pid,funtype,funsubtype,funid,cname,price,weight,introduce,fundesc,funroute,idx,adduid,addtime,upduid,updtime,status,summary
+        from tb_contract_item where status='1' and contid=#{contid}
+    </select>
+
+
+
+</mapper>

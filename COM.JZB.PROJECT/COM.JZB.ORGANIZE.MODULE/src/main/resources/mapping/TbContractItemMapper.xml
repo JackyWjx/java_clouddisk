@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbContractItemMapper">
+
+    <!-- 添加企业合同条项 -->
+    <insert id="addContractItem" parameterType="java.util.Map">
+        insert into tb_contract_item (contid,itemid,itemname,itemvalue,idx,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="contid!=null and contid!=''">
+                #{contid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemid!=null and itemid!=''">
+                #{itemid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemname!=null and itemname!=''">
+                #{itemname},
+            </when>
+            <otherwise>pro
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemvalue!=null and itemvalue!=''">
+                #{itemvalue},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 修改企业合同条项 -->
+    <update id="updateContractItem" parameterType="java.util.Map">
+        update tb_contract_item
+        <trim prefix="set" suffixOverrides="," suffix=" where contid = #{contid} and itemid=#{itemid} ">
+            　　　　
+            <if test="itemname != null and itemname!=''">itemname=#{itemname} ,</if>
+            　　　　
+            <if test="itemvalue != null and itemvalue!=''">itemvalue=#{itemvalue} ,</if>
+            　　　　
+            <if test="upduid != null and upduid!=''">upduid=#{upduid} ,</if>
+            　　　　
+            <if test="updtime != null and updtime!=''">updtime=#{updtime} ,</if>
+        </trim>
+    </update>
+
+    <!-- 查询企业合同条项 -->
+    <select id="queryContractItem" parameterType="java.util.Map">
+        select contid,itemid,itemname,itemvalue,idx,adduid,addtime,upduid,updtime,status,summary
+        from tb_contract_item where status='1' and contid=#{contid}
+    </select>
+</mapper>

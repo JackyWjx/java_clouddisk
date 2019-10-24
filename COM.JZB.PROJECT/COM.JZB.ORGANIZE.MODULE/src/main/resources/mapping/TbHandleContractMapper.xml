@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbHandleContractMapper">
+
+    <!-- 添加合同动态属性 -->
+    <insert id="addHandleContract" parameterType="java.util.Map">
+        insert into tb_handle_contract (contid,typeid,dictid,dictvalue,fit,idx,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="contid!=null and contid!=''">
+                #{contid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typeid!=null and typeid!=''">
+                #{typeid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="dictid!=null and dictid!=''">
+                #{dictid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="dictvalue!=null and dictvalue!=''">
+                #{dictvalue},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="fit!=null and fit!=''">
+                #{fit},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 修改合同动态属性 -->
+    <update id="updateHandleContract" parameterType="java.util.Map">
+        update tb_handle_contract
+        <trim prefix="set" suffixOverrides="," suffix=" where dictid = #{dictid} ">
+            　　　　<if test="dictvalue != null and dictvalue!=''"> dictvalue=#{dictvalue} ,</if>
+            　　　　<if test="fit != null and fit!=''"> fit=#{fit} ,</if>
+            　　　　<if test="upduid != null and upduid!=''"> upduid=#{upduid} ,</if>
+            　　　　<if test="updtime != null and updtime!=''"> updtime=#{updtime} ,</if>
+        </trim>
+    </update>
+
+    <!-- 查询合同动态属性 -->
+    <select id="queryHandleContract" parameterType="java.util.Map">
+        select contid,typeid,dictid,dictvalue,fit,idx,adduid,addtime,upduid,updtime,status,summary
+        from tb_handle_contract where status='1' and contid=#{contid}
+    </select>
+
+
+</mapper>

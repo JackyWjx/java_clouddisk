@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbContractProductMapper">
+
+    <!-- 添加企业合同产品 -->
+    <insert id="addContractProduct" parameterType="java.util.Map">
+        insert into tb_contract_product
+        (contid,plid,pid,cname,prodesc,service,price,pricedesc,accept,paradesc,idx,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="contid!=null and contid!=''">
+                #{contid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="plid!=null and plid!=''">
+                #{plid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pid!=null and pid!=''">
+                #{pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cname!=null and cname!=''">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="prodesc!=null and prodesc!=''">
+                #{prodesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="service!=null and service!=''">
+                #{service},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price!=null and price!=''">
+                #{price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricedesc!=null and pricedesc!=''">
+                #{pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="accept!=null and accept!=''">
+                #{accept},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="paradesc!=null and paradesc!=''">
+                #{paradesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 修改企业合同产品 -->
+    <update id="updateContractProduct" parameterType="java.util.Map">
+        update tb_contract_product
+        <trim prefix="set" suffixOverrides="," suffix=" where dictid = #{dictid} ">
+            　　　　
+            <if test="cname != null and cname!=''">cname=#{cname} ,</if>
+            　　　　
+            <if test="prodesc != null and prodesc!=''">prodesc=#{prodesc} ,</if>
+            　　　　
+            <if test="service != null and service!=''">service=#{service} ,</if>
+            　　　　
+            <if test="price != null and price!=''">price=#{price} ,</if>
+            　　　　
+            <if test="pricedesc != null and pricedesc!=''">pricedesc=#{pricedesc} ,</if>
+            　　　　
+            <if test="accept != null and accept!=''">accept=#{accept} ,</if>
+            　　　　
+            <if test="paradesc != null and paradesc!=''">paradesc=#{paradesc} ,</if>
+            　　　　
+            <if test="upduid != null and upduid!=''">upduid=#{upduid} ,</if>
+            　　　　
+            <if test="updtime != null and updtime!=''">updtime=#{updtime} ,</if>
+        </trim>
+    </update>
+
+    <!-- 查询企业合同产品 -->
+    <select id="queryContractProduct" parameterType="java.util.Map">
+        select contid,plid,pid,cname,prodesc,service,price,pricedesc,accept,paradesc,idx,adduid,addtime,upduid,updtime,status,summary
+        from tb_contract_product where status='1' and contid=#{contid}
+    </select>
+
+</mapper>

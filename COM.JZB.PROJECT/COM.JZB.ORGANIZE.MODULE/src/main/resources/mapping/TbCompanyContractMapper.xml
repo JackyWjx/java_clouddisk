@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCompanyContractMapper">
+
+
+    <!-- 生成合同 -->
+    <insert id="addCompanyContract" parameterType="java.util.Map">
+        insert into tb_company_contract (contid,cname,cid,projectid,typeid,tempid,contamount,checkamount,paytype,paydesc,createtime,contstime,contetime,contparam,buildstime,buildetime,accountname,accountbank,accountno,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        #{contid},
+        <choose>
+            <when test="cname!=null and cname!=''">
+                #{cname},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cid!=null and cid!=''">
+                #{cid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="projectid!=null and projectid!=''">
+                #{projectid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typeid!=null and typeid!=''">
+                #{typeid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tempid!=null and tempid!=''">
+                #{tempid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="contamount!=null and contamount!=''">
+                #{contamount},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="checkamount!=null and checkamount!=''">
+                #{checkamount},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="paytype!=null and paytype!=''">
+                #{paytype},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="paydesc!=null and paydesc!=''">
+                #{paydesc},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="createtime!=null and createtime!=''">
+                #{createtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+
+        <choose>
+            <when test="contstime!=null and contstime!=''">
+                #{contstime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="contetime!=null and contetime!=''">
+                #{contetime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="contparam!=null and contparam!=''">
+                #{contparam},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="buildstime!=null and buildstime!=''">
+                #{buildstime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="buildetime!=null and buildetime!=''">
+                #{buildetime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="accountname!=null and accountname!=''">
+                #{accountname},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="accountbank!=null and accountbank!=''">
+                #{accountbank},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="accountno!=null and accountno!=''">
+                #{accountno},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 查询合同 -->
+    <select id="quertCompantContract" parameterType="java.util.Map">
+        select contid,cname,cid,projectid,typeid,tempid,contamount,checkamount,paytype,paydesc,createtime,contstime,contetime,contparam,buildstime,buildetime,accountname,accountbank,accountno,adduid,addtime,upduid,updtime,status,summary
+        from tb_company_contract where status='1' and cid=#{cid} limit #{pagesize} offset #{pageno}
+    </select>
+</mapper>

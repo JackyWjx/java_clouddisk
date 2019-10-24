@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbContractServiceMapper">
+
+    <!-- 添加企业合同服务 -->
+    <insert id="addContractService" parameterType="java.util.Map">
+        insert into tb_contract_service
+        (contid,pid,pricetype,typename,itemid,itemname,pricedesc,size,unit,price,weight,serviceroute,idx,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="contid!=null and contid!=''">
+                #{contid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pid!=null and pid!=''">
+                #{pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricetype!=null and pricetype!=''">
+                #{pricetype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemid!=null and itemid!=''">
+                #{itemid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemname!=null and itemname!=''">
+                #{itemname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricedesc!=null and pricedesc!=''">
+                #{pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="size!=null and size!=''">
+                #{size},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="unit!=null and unit!=''">
+                #{unit},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price!=null and price!=''">
+                #{price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="weight!=null and weight!=''">
+                #{weight},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="serviceroute!=null and serviceroute!=''">
+                #{serviceroute},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 修改企业合同服务 -->
+    <update id="updateContractService" parameterType="java.util.Map">
+        update tb_contract_service
+        <trim prefix="set" suffixOverrides="," suffix=" where itemid = #{itemid} ">
+            <if test="pricetype != null and pricetype!=''">pricetype=#{pricetype} ,</if>
+            <if test="typename != null and typename!=''">typename=#{typename} ,</if>
+            <if test="size != null and size!=''">size=#{size} ,</if>
+            <if test="unit != null and unit!=''">unit=#{unit} ,</if>
+            <if test="price != null and price!=''">price=#{price} ,</if>
+            <if test="weight != null and weight!=''">weight=#{weight} ,</if>
+            <if test="serviceroute != null and serviceroute!=''">serviceroute=#{serviceroute} ,</if>
+            <if test="upduid != null and upduid!=''">upduid=#{upduid} ,</if>
+            <if test="updtime != null and updtime!=''">updtime=#{updtime} ,</if>
+        </trim>
+    </update>
+
+    <!-- 查询企业合同服务 -->
+    <select id="queryContractService" parameterType="java.util.Map">
+        select contid,pid,pricetype,typename,itemid,itemname,pricedesc,size,unit,price,weight,serviceroute,idx,adduid,addtime,upduid,updtime,status,summary
+        from tb_contract_service where status='1' and contid=#{contid}
+    </select>
+
+
+</mapper>
