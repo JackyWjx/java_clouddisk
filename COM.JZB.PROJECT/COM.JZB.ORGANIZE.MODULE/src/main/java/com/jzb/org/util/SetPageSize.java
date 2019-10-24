@@ -5,11 +5,11 @@ import com.jzb.base.data.JzbDataType;
 import java.util.Map;
 
 public class SetPageSize {
-    
+
     /**
      * 设置分页数
      */
-    public Map<String, Object> setPagenoSize(Map<String, Object> param) {
+    public static Map<String, Object> setPagenoSize(Map<String, Object> param) {
         int pageno = JzbDataType.getInteger(param.get("pageno"));
         int pagesize = JzbDataType.getInteger(param.get("pagesize"));
         pagesize = pagesize <= 0 ? 15 : pagesize;
