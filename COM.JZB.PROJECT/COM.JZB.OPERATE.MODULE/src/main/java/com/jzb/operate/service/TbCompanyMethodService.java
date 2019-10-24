@@ -21,4 +21,23 @@ public class TbCompanyMethodService {
     public int addCompanyMethod(List<Map<String, Object>> list){
         return tbCompanyMethodMapper.addCompanyMethod(list);
     }
+
+
+    /**
+     * 查询单位方法论
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> queryCompanyMethod(Map<String, Object> param){
+        return tbCompanyMethodMapper.queryCompanyMethod(param);
+    }
+
+    /**
+     * 设置方法论状态
+     * @param param
+     * @return
+     */
+    public int updateCompanyMethodStatus(Map<String, Object> param){
+        return tbCompanyMethodMapper.updateCompanyMethodStatus(param);
+    }
 }

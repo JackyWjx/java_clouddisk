@@ -16,4 +16,18 @@ public interface TbCompanyMethodMapper {
      * @return
      */
     int addCompanyMethod(List<Map<String, Object>> list);
+
+    /**
+     * 查询单位方法论
+     * @param list
+     * @return
+     */
+    List<Map<String, Object>> queryCompanyMethod(Map<String, Object> list);
+
+    /**
+     * 设置方法论状态
+     * @param list
+     * @return
+     */
+    int updateCompanyMethodStatus(Map<String, Object> list);
 }

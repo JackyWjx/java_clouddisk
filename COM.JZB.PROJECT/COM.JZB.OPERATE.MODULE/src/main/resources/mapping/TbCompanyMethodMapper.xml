@@ -124,7 +124,7 @@
             </choose>
             )
             ON conflict(cid,projectid,methodid) do update
-            <trim prefix="set" suffixOverrides="," suffix="  where tb_company_method.cid=#{method.cid} and tb_company_method.projectid=#{method.projectid} and tb_company_method.methodid=#{method.methodid}  ">
+            <trim prefix="set" suffixOverrides="," suffix="  where tb_company_method.cid=#{method.cid} and tb_company_method.projectid=#{method.projectid} and tb_company_method.methodid=#{method.methodid} and tb_company_method.status='1' ">
                 <if test="method.plantime !=null">plantime=#{method.plantime},</if>
                 <if test="method.days !=null">days=#{method.days},</if>
                 <if test="method.score !=null">score=#{method.score},</if>
@@ -136,7 +136,7 @@
         </foreach>
     </insert>
 
-
+    <!-- 查询方法论 -->
     <select id="queryCompanyMethod" parameterType="java.util.Map">
         WITH RECURSIVE modt AS (
         SELECT
@@ -185,7 +185,10 @@
         modt.idx ASC
     </select>
 
-
+    <!-- 修改方法论状态 -->
+    <update id="updateCompanyMethodStatus" parameterType="java.util.Map">
+        update tb_company_method set status=#{status} where cid=#{cid} and projectid=#{projectid} and methodid=#{methodid}
+    </update>
 
 
 </mapper>
