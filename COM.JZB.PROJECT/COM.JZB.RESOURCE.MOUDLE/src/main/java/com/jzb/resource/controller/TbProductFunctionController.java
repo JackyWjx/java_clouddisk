@@ -77,7 +77,7 @@ public class TbProductFunctionController {
      */
     @RequestMapping(value = "/saveTbProductFunction",method = RequestMethod.POST)
     @CrossOrigin
-    public Response saveTbProductFunction(@RequestBody Map<String,Object> param) {
+    public Response saveTbProductFunction(@RequestBody(required = false) Map<String,Object> param) {
         Response result;
         try {
             //获取map中的list
@@ -87,15 +87,16 @@ public class TbProductFunctionController {
                 long time = System.currentTimeMillis();
                 paramList.get(i).put("addtime", time);
                 paramList.get(i).put("updtime", time);
-                paramList.get(i).put("funid", JzbRandom.getRandomCharCap(15));
+                //paramList.get(i).put("funid", JzbRandom.getRandomCharCap(15));
             }
+
               int count = tbProductFunctionService.saveTbProductFunction(paramList);
               //如果返回值大于0，表示添加成功,否则就是添加失败
                 if (count > 0) {
-                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                    result = Response.getResponseSuccess(userInfo);
+                   // Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    result = Response.getResponseSuccess();
                 } else {
-                    result = Response.getResponseError();
+                    result = Response.getResponseSuccess();
                 }
         } catch (Exception e) {
             //错误信息
@@ -181,6 +182,10 @@ public class TbProductFunctionController {
                 node.put("funid", map.get("funid").toString());
                 node.put("cname", map.get("cname").toString());
                 node.put("funtype", map.get("funtype").toString());
+                node.put("funsubtype", map.get("funsubtype").toString());
+                node.put("introduce", map.get("introduce").toString());
+                node.put("pid", map.get("pid").toString());
+                node.put("id", map.get("id").toString());
                 node.put("parentid", parentId);
                 node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(map.get("addtime")), JzbDateStr.yyyy_MM_dd));
                 node.put("summary", map.get("summary").toString());
