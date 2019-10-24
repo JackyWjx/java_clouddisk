@@ -12,6 +12,8 @@ import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.netflix.discovery.converters.jackson.EurekaXmlJacksonCodec;
 import org.bouncycastle.cert.ocsp.Req;
@@ -32,7 +34,7 @@ import java.util.Map;
  * @Date: 2019/8/7 9:07
  */
 @RestController
-@RequestMapping("/activity")
+@RequestMapping(value = "/activity")
 public class ActivityController {
 
     @Autowired
@@ -49,25 +51,20 @@ public class ActivityController {
      *
      * @return Response 返回json数据
      */
-    @RequestMapping("/queryActivityList")
+    @RequestMapping(value = "/queryActivityList",method = RequestMethod.POST)
+    @ResponseBody
     @CrossOrigin
     public Response queryActivityList(@RequestBody Map<String, Object> params) {
         Response response = null;
         try {
 
             // 验证参数为空返回error
-            if (params.get("pagesize") == null || params.get("pageno") == null) {
+            if (JzbCheckParam.haveEmpty(params,new String[]{"pageno","pagesize"})) {
 
                 response = Response.getResponseError();
 
             } else {
-                // 获取行数和页数
-                int rows = JzbDataType.getInteger(params.get("pagesize"));
-                int page = JzbDataType.getInteger(params.get("pageno"));
-
-                // 给param设置page and  rows
-                params.put("pageno", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
-                params.put("pagesize", rows);
+                JzbPageConvert.setPageRows(params);
 
                 // 获取结果集
                 List<Map<String, Object>> list = activityService.queryActivityList(params);

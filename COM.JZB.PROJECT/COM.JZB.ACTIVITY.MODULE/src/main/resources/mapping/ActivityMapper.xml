@@ -8,7 +8,7 @@
     <!--查询活动的数据-->
     <select id="queryActivityList" resultType="java.util.Map">
        select
-         cname, actid,uid ,cid ,cdid ,context   ,addtime ,votes ,comments ,
+         cname, actid,uid ,cid ,cdid ,context,addtime ,votes ,comments ,
 	    reads ,shares,acttheme,actlogo
 	    from
 	    tb_activity_list
@@ -30,10 +30,6 @@
         order by
         worths
         desc
-        limit
-	    #{pagesize}
-	    offset
-	    #{pageno}
     </select>
     <!-- 更新点击量 -->
     <select id="queryActivityVotesList" resultType="java.util.Map">

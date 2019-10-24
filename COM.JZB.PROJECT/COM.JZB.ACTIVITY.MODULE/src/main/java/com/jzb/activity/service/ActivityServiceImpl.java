@@ -5,6 +5,7 @@ import com.jzb.activity.vo.DataTimes;
 import com.jzb.activity.vo.JsonPageInfo;
 import com.jzb.base.data.JzbDataType;
 
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,50 +39,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public List<Map<String, Object>> queryActivityList(Map<String, Object> param) {
-
-        //创建ArrayList容器
-        ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
-        try {
-            //调用分页方法
-            JsonPageInfo.setPageSize(param);
-            //用list接受map集合的数据
-            List<Map<String, Object>> lists =  activityMapper.queryActivityList(param);
-
-
-            String actid = null;
-            //遍历数据
-            for (Map<String, Object> map : lists) {
-
-                //活动内容
-                String context = map.get("context").toString();
-                //截取100条数据
-                context = context.substring(0,  context.length() >= 100 ? 100 :context.length() - 1 );
-                map.put("context",context);
-
-                //发布时间
-                Long  addtime  = JzbDataType.getLong(map.get("addtime"));
-                String stampToDate = DataTimes.stampToDate(addtime);
-                map.put("addtime",stampToDate);
-
-                //获取活动Id
-                actid  = map.get("actid").toString();
-                Map<String, Object>  mapActid  =    activityMapper.queryActivityActid(actid);
-                if (!StringUtils.isEmpty(mapActid)) {
-                    map.put("photo", mapActid.get("photo"));
-                }
-                //添加到arrayList集合里
-                arrayList.add(map);
-
-            }
-
-
-
-        }catch (Exception e){
-            JzbTools.logError(e);
-            System.out.println("查询失败");
-        }
-        //返回数据
-        return arrayList;
+       return activityMapper.queryActivityList(param);
     }
 
     /**
@@ -92,16 +50,9 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public List<Map<String, Object>> queryActpictureList(Map<String, Object> params) {
-        List<Map<String, Object>> list = null;
-        try {
-            //调用分页方法
-             JsonPageInfo.setPageSize(params);
-             //查询推广图片
-             list = activityMapper.queryActpictureList(params);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return list;
+            JzbPageConvert.setPageRows(params);
+             return activityMapper.queryActpictureList(params);
+
     }
 
     /**
