@@ -66,4 +66,9 @@ public interface TbTravelRecordMapper {
      * @return
      */
     int updateTravelRecordStatus(Map<String, Object> param);
+
+    /**
+     * 修改审核状态
+     */
+    int updateStatus(Map<String, Object> param);
 }

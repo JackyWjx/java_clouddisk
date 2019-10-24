@@ -21,4 +21,9 @@ public class TbUserTravelService {
     public int addUserTravel(List<Map<String, Object>> list){
         return tbUserTravelMapper.addUserTavel(list);
     }
+
+
+    public List<Map<String, Object>> queryUserTravel(Map<String, Object> param){
+        return tbUserTravelMapper.queryUserTravel(param);
+    }
 }

@@ -22,7 +22,7 @@
     <!--新建单位加入系统名称-->
     <insert id="insertCompanySysConfig" parameterType="java.util.Map">
         INSERT INTO
-        tb_company_sysconfig (cid, curl, systemname, ouid, addtime, updtime, status, summary)
+        tb_company_sysconfig (cid, curl, systemname, adduid, addtime, updtime, status, summary)
         VALUES
         (
         #{cid},

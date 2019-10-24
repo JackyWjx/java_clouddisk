@@ -11,4 +11,7 @@ import java.util.Map;
 public interface TbTravelAimMapper {
 
     int addTravelAim(List<Map<String, Object>> list);
+
+    List<Map<String, Object>> queryTravelAim(Map<String, Object> param);
+
 }

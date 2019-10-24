@@ -3,6 +3,7 @@ package com.jzb.operate.controller;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.service.TbTravelRecordService;
 import com.jzb.operate.service.TbTravelVerifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,9 @@ public class TbTravelVerifyController {
     @Autowired
     private TbTravelVerifyService tbTravelVerifyService;
 
+    @Autowired
+    private TbTravelRecordService tbTravelRecordService;
+
     /**
      * 添加出差审核记录
      *
@@ -39,7 +43,14 @@ public class TbTravelVerifyController {
         try {
             // 获取参数的list
             List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("verifyList");
-            result = tbTravelVerifyService.addTravelVerify(list) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            int count = tbTravelVerifyService.addTravelVerify(list);
+            if (count > 0) {
+                param.put("status",2);
+                result = tbTravelRecordService.updateStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+
         } catch (Exception ex) {
             // 处理异常
             JzbTools.logError(ex);
