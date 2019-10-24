@@ -34,8 +34,13 @@ public class TbProductFunctionService {
      */
     public int saveTbProductFunction(List<Map<String, Object>> paramList) {
         long time = System.currentTimeMillis();
+
         for (int i = 0; i < paramList.size(); i++) {
+
             String funid = JzbRandom.getRandomChar(15);
+            if (paramList.get(i).get("funid") != null && paramList.get(i).get("funid") != "") {
+                funid = paramList.get(i).get("funid").toString();
+            }
             paramList.get(i).put("funid", funid);
             paramList.get(i).put("parentid", "000000000000000");
             paramList.get(i).put("addtime", time);
@@ -43,9 +48,12 @@ public class TbProductFunctionService {
             if (paramList.get(i).get("children") != null && paramList.get(i).get("children") != "") {
                 saveTbProductFunctionSon((List<Map<String, Object>>) paramList.get(i).get("children"), funid);
             }
-        }
 
-        return tbProductFunctionMapper.saveTbProductFunction(paramList);
+        }
+        for (int i = 0; i < paramList.size(); i++) {
+            tbProductFunctionMapper.saveTbProductFunction(paramList.get(i));
+        }
+        return 1;
     }
 
     /**
@@ -58,6 +66,9 @@ public class TbProductFunctionService {
         long time = System.currentTimeMillis();
         for (int i = 0; i < paramList.size(); i++) {
             String funid = JzbRandom.getRandomChar(15);
+            if (paramList.get(i).get("funid") != null && paramList.get(i).get("funid") != "") {
+                funid = paramList.get(i).get("funid").toString();
+            }
             paramList.get(i).put("funid", funid);
             paramList.get(i).put("parentid", paremtid);
             paramList.get(i).put("addtime", time);
@@ -66,7 +77,12 @@ public class TbProductFunctionService {
                 saveTbProductFunctionSon((List<Map<String, Object>>) paramList.get(i).get("children"), funid);
             }
         }
-        return tbProductFunctionMapper.saveTbProductFunction(paramList);
+
+        for (int i = 0; i < paramList.size(); i++) {
+
+            tbProductFunctionMapper.saveTbProductFunction(paramList.get(i));
+        }
+        return 1;
     }
 
     /**
