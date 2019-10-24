@@ -11,11 +11,13 @@
             SELECT
                 typeid,
                 cname,
+                typecode,
                 parentid,
                 typedesc,
                 idx,
-                ouid,
+                adduid,
                 addtime,
+                upduid,
                 updtime,
                 status
             FROM
@@ -26,11 +28,13 @@
             SELECT
                 tst.typeid,
                 tst.cname,
+                tst.typecode,
                 tst.parentid,
                 tst.typedesc,
                 tst.idx,
-                tst.ouid,
+                tst.adduid,
                 tst.addtime,
+                tst.upduid,
                 tst.updtime,
                 tst.status
             FROM
@@ -54,7 +58,7 @@
     <!--新增运营管理下的菜单类别LBQ-->
     <insert id="savePolicyType" parameterType="java.util.Map">
         insert into
-        tb_policy_type(adduid,tpeycode,typeid,cname,parentid,typedesc,idx,addtime,updtime,status,summary)
+        tb_policy_type(adduid,tpeycode,typeid,cname,parentid,typedesc,idx,addtime,updtime,upduid,status,summary)
         values
         (
         <choose>
@@ -101,6 +105,15 @@
         </choose>
         #{addtime},
         #{updtime},
+
+        <choose>
+            <when test="upduid != null">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
         <choose>
             <when test="status != null">
                 #{status},

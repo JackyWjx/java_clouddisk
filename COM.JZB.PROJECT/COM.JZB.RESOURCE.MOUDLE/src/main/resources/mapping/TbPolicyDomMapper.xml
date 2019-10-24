@@ -13,12 +13,16 @@
         domcode,
         cname,
         photo,
+        bigphoto,
         domtitle,
+        domfname,
+        domfpath,
+        domftype,
+        domdesc,
+        domurl,
         department,
         effective,
         stdrange,
-        domurl,
-        domdesc,
         policystatus,
         idx,
         uid,
@@ -44,7 +48,7 @@
             and cname ~ #{keyword}
         </if>
         order by addtime desc
-        limit #{rows} offset #{page}
+        limit #{pagesize} offset #{pageno}
     </select>
 
     <!--	标准文档总数-->

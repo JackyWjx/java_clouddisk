@@ -32,12 +32,14 @@ public class TbSolutionDomService {
         List<Map<String, Object>> list = tbSolutionDomMapper.querySolutionDom(param);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> advertMap = list.get(i);
+            if(advertMap.get("adduid")!=null){
             // 获取发布人用户信息
             String adduid = JzbDataType.getString(advertMap.get("adduid"));
             param.put("uid", adduid);
             // 从缓存中获取用户信息
             Response response = userRedisApi.getCacheUserInfo(param);
             advertMap.put("adduid", response.getResponseEntity());
+            }
         }
         return list;
     }
