@@ -876,7 +876,7 @@ public class ProductController {
 
     /**
      * CRM-销售业主-公海-业主
-     * 导出新增业主模板
+     * 导入新增业主模板
      *
      * @param
      * @author kuangbin
@@ -892,12 +892,15 @@ public class ProductController {
             Map<String, Object> param = new HashMap<>();
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             param.put("userinfo", userInfo);
-            String batchId = JzbRandom.getRandomCharCap(11);
-            // 获取上传文件名称
             long time = System.currentTimeMillis();
+            // 生成批次ID
+            String batchId = JzbRandom.getRandomCharCap(11);
+
+            // 获取上传文件名称
             String fileName = file.getOriginalFilename();
+
+            // 设置保存文件名路径和文件名
             String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
-            //生成批次ID
             param.put("batchid", batchId);
             param.put("address", filepath);
             param.put("status", "2");
@@ -909,11 +912,10 @@ public class ProductController {
                 String address = intoFile.getCanonicalPath();
                 file.transferTo(new File(address));
             } catch (Exception e) {
-                e.printStackTrace();
                 JzbTools.logError(e);
                 // 保存失败信息到批次表
-                param.put("status", "4");
                 param.put("summary", "保存文件到本地失败");
+                param.put("status", "4");
             }
             // 添加批次信息到用户导入批次表
             deptService.addExportBatch(param);
@@ -1023,7 +1025,7 @@ public class ProductController {
 
                 // 获取模板中的备注
                 String summary1 = JzbDataType.getString(map.get(5));
-                param.put("authid", "8");
+                param.put("authid", "0");
                 param.put("name", name);
                 param.put("cname", cname);
                 param.put("phone", phone);
