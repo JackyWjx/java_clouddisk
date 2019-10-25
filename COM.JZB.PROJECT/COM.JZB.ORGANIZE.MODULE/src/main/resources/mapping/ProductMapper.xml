@@ -21,7 +21,7 @@
         addtime, logo, photo, pdesc, saleid, saleser, salephone, mail FROM tb_product_package where status = '1'
         ) productlist
         <if test="cname != null">where name like '%${cname}%'</if>
-        order by addtime desc limit #{pagesize} offset #{start};
+        order by addtime desc limit #{pagesize} offset #{pageno};
     </select>
 
     <!--模板导入新建菜单或子级菜单-->

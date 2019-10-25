@@ -121,7 +121,7 @@
 
         ORDER BY
         ID
-        LIMIT #{rows} OFFSET #{page}
+        LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
     <!-- 查询总数-->

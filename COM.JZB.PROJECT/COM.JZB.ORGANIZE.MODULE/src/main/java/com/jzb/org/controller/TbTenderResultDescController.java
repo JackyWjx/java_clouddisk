@@ -40,7 +40,9 @@ public class TbTenderResultDescController {
                 Map<String, Object> map = tenderResultDescService.getTenderResultDesc(params);
                 map.put("opendate", JzbDateUtil.toDateString(JzbDataType.getLong(map.get("opendate")), JzbDateStr.yyyy_MM_dd));
                 map.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(map.get("addtime")),JzbDateStr.yyyy_MM_dd));
-                map.put("content",map.get("content").toString().replace("\\n",""));
+                if(map.get("content")!=null){
+                    map.put("content",map.get("content").toString().replace("\\n",""));
+                }
                 // 定义返回结果
                 result = Response.getResponseSuccess((Map<String, Object>) params.get("userinfo"));
                 result.setResponseEntity(map);

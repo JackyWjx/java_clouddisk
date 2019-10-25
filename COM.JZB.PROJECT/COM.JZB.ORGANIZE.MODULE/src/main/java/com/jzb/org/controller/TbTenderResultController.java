@@ -6,6 +6,7 @@ import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.service.TenderResultService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +35,13 @@ public class TbTenderResultController {
         Response result;
         try {
             // 判断指定参数为空返回error
-            if (JzbCheckParam.haveEmpty(param,new String[]{"page","rows"})) {
+            if (JzbCheckParam.haveEmpty(param,new String[]{"pageno","pagesize"})) {
 
                 result = Response.getResponseError();
 
             } else {
 
-                setPageRows(param);
+                JzbPageConvert.setPageRows(param);
                 // 结果集
                 List<Map<String, Object>> list = tenderResultService.getTenderResultList(param);
 
@@ -72,14 +73,4 @@ public class TbTenderResultController {
 
     }
 
-    /**
-     * 设置好分页参数
-     * @param params
-     */
-    public static void setPageRows(Map<String ,Object> params){
-        int rows = JzbDataType.getInteger(params.get("rows"));
-        int page = JzbDataType.getInteger(params.get("page"));
-        params.put("page", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
-        params.put("rows", rows);
-    }
 }
