@@ -106,7 +106,7 @@
         where
         menu.status = #{status}
         ORDER BY
-        menu.idx ASC
+        menu.idx
     </select>
 
     <!--电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的顶级菜单下的页面-->
