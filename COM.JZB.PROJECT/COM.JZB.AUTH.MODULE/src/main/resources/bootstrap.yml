@@ -2,7 +2,7 @@ spring:
   cloud:
     config:
       label: 'master'
-      uri: http://localhost:7506
+      uri: http://localhost:8506
       name: 'jzb-auth'
       profile: 'test'
       status: 1
