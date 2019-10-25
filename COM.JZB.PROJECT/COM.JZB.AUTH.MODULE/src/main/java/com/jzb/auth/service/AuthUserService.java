@@ -268,7 +268,8 @@ public class AuthUserService {
         param.put("uid", JzbDataType.getString(redisRes));
         if (JzbTools.isEmpty(redisRes)) {
             // 获取用户ID
-            param.put("uid", JzbRandom.getRandomCharCap(12));
+            String uid = JzbRandom.getRandomCharCap(12);
+            param.put("uid", uid);
             // 获取随机密码
             String passwd = "*jzb" + JzbRandom.getRandomNum(3);
             param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
@@ -286,6 +287,7 @@ public class AuthUserService {
             if (count >= 1){
                 // 将该用户加入单位资源池中
                 result = companyUserApi.addCompanyDept(param);
+                result.setResponseEntity(uid);
             }else {
                 result = Response.getResponseError();
             }
