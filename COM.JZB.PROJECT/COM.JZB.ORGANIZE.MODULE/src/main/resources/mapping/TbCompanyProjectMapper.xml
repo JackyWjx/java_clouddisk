@@ -30,10 +30,13 @@
         where
         status = '1'
         <if test="keyword != null and keyword != ''">
-            and tendername ~ #{keyword} or tenderphone ~ {keyword}
+            and tendername ~ #{keyword} or tenderphone ~ #{keyword}
         </if>
-        <if test="region ! = null and region != ''">
-            and projectname = ~ {projectname}
+        <if test="region != null and region != ''">
+            and region  = #{region}
+        </if>
+        <if test="projectname != null and projectname != ''">
+            and projectname  ~ #{projectname}
         </if>
         order by idx asc
         LIMIT #{pagesize} offset #{pageno}
@@ -48,7 +51,13 @@
         where
         status = '1'
         <if test="keyword != null and keyword != ''">
-            and tendername ~ #{keyword} or tenderphone ~ {keyword}
+            and tendername ~ #{keyword} or tenderphone ~ #{keyword}
+        </if>
+        <if test="region != null and region != ''">
+            and region = #{region}
+        </if>
+        <if test="projectname != null and projectname != ''">
+            and projectname  ~ #{projectname}
         </if>
     </select>
 
@@ -233,20 +242,42 @@
     </insert>
 
    <!--关联业主-->
-    <update id="updateComProject" parameterType="java.util.Map">
+    <update id="updateComProject" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
         update
         tb_company_project
         set
-        <if test="cid != null and cid != ''">cid = #{cid},</if>
-        <if test="projectname != null and projectname != ''">projectname = #{projectname},</if>
-        <if test="region != null and region != ''">region = #{region},</if>
-        <if test="address != null and address != ''">address = #{address},</if>
-        <if test="plantime != null and plantime != ''">plantime = #{plantime},</if>
-        <if test="verifytime != null and verifytime != ''">verifytime = #{verifytime},</if>
-        <if test="tendertime != null and tendertime != ''">tendertime = #{tendertime},</if>
-        <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+        <if test="item.cid != null and item.cid != ''">cid = #{item.cid},</if>
+        <if test="item.projectname != null and item.projectname != ''">projectname = #{item.projectname},</if>
+        <if test="item.region != null and item.region != ''">region = #{item.region},</if>
+        <if test="item.address != null and item.address != ''">address = #{item.address},</if>
+        <if test="item.plantime != null and item.plantime != ''">plantime = #{item.plantime},</if>
+        <if test="item.verifytime != null and item.verifytime != ''">verifytime = #{item.verifytime},</if>
+        <if test="item.tendertime != null and item.tendertime != ''">tendertime = #{item.tendertime},</if>
+        <if test="item.updtime != null and item.updtime != ''">updtime = #{item.updtime}</if>
         where
-        projectid = #{projectid}
+        projectid = #{item.projectid}
+        </foreach>
+    </update>
+
+    <!--取消业主的关联-->
+
+    <update id="ComProject" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+        update
+        tb_company_project
+        set
+        <if test="item.cid != null and item.cid != ''">cid = 321123,</if>
+        <if test="item.projectname != null and item.projectname != ''">projectname = #{item.projectname},</if>
+        <if test="item.region != null and item.region != ''">region = #{item.region},</if>
+        <if test="item.address != null and item.address != ''">address = #{item.address},</if>
+        <if test="item.plantime != null and item.plantime != ''">plantime = #{item.plantime},</if>
+        <if test="item.verifytime != null and item.verifytime != ''">verifytime = #{item.verifytime},</if>
+        <if test="item.tendertime != null and item.tendertime != ''">tendertime = #{item.tendertime},</if>
+        <if test="item.updtime != null and item.updtime != ''">updtime = #{item.updtime}</if>
+        where
+        projectid = #{item.projectid} and cid = #{item.cid}
+        </foreach>
     </update>
 
 </mapper>
