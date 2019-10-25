@@ -336,9 +336,9 @@ public class DeptUserController {
                         param.put("companyname", JzbDataType.getString(param.get("cname")));
                         param.put("manager", uid);
                         param.put("managername", JzbDataType.getString(param.get("managername")));
-                        // 公海单位默认初级认证
+                        // 公海单位默认未认证状态
                         param.put("type", "1");
-                        param.put("authid", "8");
+                        param.put("authid", "0");
                         Response comRes = companyService.addCompany(param);
                         String cid = "";
                         if (JzbDataType.isMap(comRes.getResponseEntity())) {
