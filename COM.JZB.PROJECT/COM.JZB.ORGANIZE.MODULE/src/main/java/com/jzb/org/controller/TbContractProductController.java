@@ -20,14 +20,19 @@ public class TbContractProductController {
     @Autowired
     private TbContractProductService tbContractProductService;
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    /**
+     * 添加企业合同产品功能
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/addContractProduct",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response a(@RequestBody Map<String, Object> param){
+    public Response addContractProduct(@RequestBody Map<String, Object> param){
         Response response;
         try {
-
+            tbContractProductService.addContractProduct(param);
             response= Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception ex){
             JzbTools.logError(ex);
@@ -36,14 +41,19 @@ public class TbContractProductController {
         return response;
     }
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    /**
+     * 修改企业合同产品功能
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updateContractProduct",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response wa(@RequestBody Map<String, Object> param){
+    public Response updateContractProduct(@RequestBody Map<String, Object> param){
         Response response;
         try {
-
+            tbContractProductService.updateContractProduct(param);
             response= Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception ex){
             JzbTools.logError(ex);
@@ -52,14 +62,19 @@ public class TbContractProductController {
         return response;
     }
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    /**
+     * 查询企业合同产品功能
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getContractProduct",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response ea(@RequestBody Map<String, Object> param){
+    public Response queryContractProduct(@RequestBody Map<String, Object> param){
         Response response;
         try {
-
+            tbContractProductService.queryContractProduct(param);
             response= Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception ex){
             JzbTools.logError(ex);

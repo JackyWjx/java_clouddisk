@@ -42,9 +42,9 @@ public class TbCompanyMethodController {
         Response result;
         try {
             // 如果指定参数为空则返回error
-            if(JzbCheckParam.haveEmpty(param,new String[]{"cid","projectid","methodid"})){
-                result=Response.getResponseError();
-            }else {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list"})) {
+                result = Response.getResponseError();
+            } else {
                 result = tbCompanyMethodService.addCompanyMethod((List<Map<String, Object>>) param.get("list")) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
@@ -66,98 +66,103 @@ public class TbCompanyMethodController {
     public Response getMethodType(@RequestBody Map<String, Object> param) {
         Response response;
         try {
-            //参照tbTempitemController
-            List<Map<String, Object>> records = tbCompanyMethodService.queryCompanyMethod(param);
+            if (JzbCheckParam.haveEmpty(param, new String[]{"projectid"})) {
+                response = Response.getResponseError();
+            } else {
 
-            // Result JSON
-            JSONArray result = new JSONArray();
+                //参照tbTempitemController
+                List<Map<String, Object>> records = tbCompanyMethodService.queryCompanyMethod(param);
 
-            // record temp json
-            JSONObject recordJson = new JSONObject();
+                // Result JSON
+                JSONArray result = new JSONArray();
 
-            // Unknown json
-            JSONObject unknownRecord = new JSONObject();
+                // record temp json
+                JSONObject recordJson = new JSONObject();
 
-            // root id
-            String firstParent = "0000000";
+                // Unknown json
+                JSONObject unknownRecord = new JSONObject();
 
-            for (int i = 0, l = records.size(); i < l; i++) {
-                Map<String, Object> record = records.get(i);
+                // root id
+                String firstParent = "0000000";
 
-                // if parentid is null.
-                String parentId;
-                if (record.get("parentid") == null) {
+                for (int i = 0, l = records.size(); i < l; i++) {
+                    Map<String, Object> record = records.get(i);
 
-                    parentId = "0000000";
-                } else {
-                    parentId = record.get("parentid").toString();
-                }
-                // set default JSON and childern node
-                JSONObject node = new JSONObject();
-                node.put("typeid", record.get("typeid").toString());
-                node.put("cname", record.get("cname").toString());
-                node.put("parentid", parentId);
-                node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
-                node.put("days", record.get("days").toString());
-                node.put("remark", record.get("remark").toString());
-                node.put("plantime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("plantime")), JzbDateStr.yyyy_MM_dd));
-                node.put("children", new JSONArray());
-                if (JzbTools.isEmpty(record.get("score"))) {
-                    node.put("score", null);
-                } else {
-                    node.put("score", record.get("score").toString());
-                }
-                node.put("days", record.get("days").toString());
+                    // if parentid is null.
+                    String parentId;
+                    if (record.get("parentid") == null) {
 
-                // if root node
-                if (parentId.equals(firstParent)) {
-                    result.add(node);
-                    recordJson.put(record.get("typeid").toString(), node);
-
-                    // if parent exist
-                } else if (recordJson.containsKey(parentId)) {
-                    // add children
-                    recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
-                    recordJson.put(record.get("typeid").toString(), node);
-                    // Unknown relation node
-                } else {
-                    String nodeId = record.get("typeid").toString();
-                    if (unknownRecord.containsKey(parentId)) {
-                        // add children
-                        unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
-                        recordJson.put(nodeId, node);
+                        parentId = "0000000";
                     } else {
-                        // find subnode
-                        for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
-                            JSONObject tempNode = (JSONObject) entry.getValue();
-                            if (tempNode.getString("parentid").equals(nodeId)) {
-                                node.getJSONArray("children").add(tempNode);
-                                recordJson.put(tempNode.get("typeid").toString(), tempNode);
-                                unknownRecord.remove(tempNode.get("typeid").toString());
-                                break;
+                        parentId = record.get("parentid").toString();
+                    }
+                    // set default JSON and childern node
+                    JSONObject node = new JSONObject();
+                    node.put("typeid", record.get("typeid").toString());
+                    node.put("cname", record.get("cname").toString());
+                    node.put("parentid", parentId);
+                    node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
+                    node.put("days", record.get("days").toString());
+                    node.put("remark", record.get("remark").toString());
+                    node.put("plantime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("plantime")), JzbDateStr.yyyy_MM_dd));
+                    node.put("children", new JSONArray());
+                    if (JzbTools.isEmpty(record.get("score"))) {
+                        node.put("score", null);
+                    } else {
+                        node.put("score", record.get("score").toString());
+                    }
+                    node.put("days", record.get("days").toString());
+
+                    // if root node
+                    if (parentId.equals(firstParent)) {
+                        result.add(node);
+                        recordJson.put(record.get("typeid").toString(), node);
+
+                        // if parent exist
+                    } else if (recordJson.containsKey(parentId)) {
+                        // add children
+                        recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
+                        recordJson.put(record.get("typeid").toString(), node);
+                        // Unknown relation node
+                    } else {
+                        String nodeId = record.get("typeid").toString();
+                        if (unknownRecord.containsKey(parentId)) {
+                            // add children
+                            unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
+                            recordJson.put(nodeId, node);
+                        } else {
+                            // find subnode
+                            for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                                JSONObject tempNode = (JSONObject) entry.getValue();
+                                if (tempNode.getString("parentid").equals(nodeId)) {
+                                    node.getJSONArray("children").add(tempNode);
+                                    recordJson.put(tempNode.get("typeid").toString(), tempNode);
+                                    unknownRecord.remove(tempNode.get("typeid").toString());
+                                    break;
+                                }
                             }
+                            unknownRecord.put(nodeId, node);
                         }
-                        unknownRecord.put(nodeId, node);
                     }
                 }
-            }
-            // unknownRecord add to result
-            // find subnode
-            for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
-                JSONObject tempNode = (JSONObject) entry.getValue();
-                String tempNodeId = tempNode.getString("parentid");
-                if (recordJson.containsKey(tempNodeId)) {
-                    // add children
-                    recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
-                } else {
-                    // Error node
-                    System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
+                // unknownRecord add to result
+                // find subnode
+                for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                    JSONObject tempNode = (JSONObject) entry.getValue();
+                    String tempNodeId = tempNode.getString("parentid");
+                    if (recordJson.containsKey(tempNodeId)) {
+                        // add children
+                        recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
+                    } else {
+                        // Error node
+                        System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
+                    }
                 }
+                // 定义返回结果
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                response = Response.getResponseSuccess(userInfo);
+                response.setResponseEntity(result);
             }
-            // 定义返回结果
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            response = Response.getResponseSuccess(userInfo);
-            response.setResponseEntity(result);
         } catch (Exception e) {
             // 打印异常信息
             e.printStackTrace();

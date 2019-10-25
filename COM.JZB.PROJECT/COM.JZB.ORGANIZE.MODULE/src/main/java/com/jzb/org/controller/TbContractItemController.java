@@ -19,6 +19,11 @@ public class TbContractItemController {
     @Autowired
     private   TbContractItemService tbContractItemService;
 
+    /**
+     * 添加合同项
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/addContractItem",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
@@ -35,6 +40,11 @@ public class TbContractItemController {
         return response;
     }
 
+    /**
+     * 修改
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/updateContractItem",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
@@ -51,6 +61,11 @@ public class TbContractItemController {
         return response;
     }
 
+    /**
+     * 获取
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/getContractItem",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin

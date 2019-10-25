@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * @author chenzhengduan
- *  企业动态属性表
+ * 企业动态属性表
  */
 @RestController
 @RequestMapping(value = "/org/companyProperty")
@@ -23,6 +23,7 @@ public class TbCompanyPropertyController {
 
     /**
      * 添加单位动态属性
+     *
      * @param param
      * @return
      */
@@ -47,21 +48,22 @@ public class TbCompanyPropertyController {
     }
 
     /**
-     *  修改企业动态属性
+     * 修改企业动态属性
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/updateCompanyProperty",method = RequestMethod.POST)
+    @RequestMapping(value = "/updateCompanyProperty", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response updateCompanyProperty(@RequestBody Map<String, Object> param){
+    public Response updateCompanyProperty(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            result=Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-        }catch (Exception ex){
+            result = tbCompanyPropertyService.updatePropertyByCidAndTypeid(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+        } catch (Exception ex) {
             JzbTools.logError(ex);
-            result=Response.getResponseError();
+            result = Response.getResponseError();
         }
         return result;
     }

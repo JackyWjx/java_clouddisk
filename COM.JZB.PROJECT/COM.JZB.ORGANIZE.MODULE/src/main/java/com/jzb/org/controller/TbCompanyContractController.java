@@ -41,6 +41,7 @@ public class TbCompanyContractController {
     public Response addCompanyContract(@RequestBody Map<String, Object> param) {
         Response response;
         try {
+
             response = tbCompanyContractService.addCompanyContract(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.logError(ex);

@@ -19,14 +19,21 @@ public class TbHandleContractController {
     @Autowired
     private TbHandleContractService tbHandleContractService;
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+
+    /**
+     * 添加合同动态属性
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/addHandleContract",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response a(@RequestBody Map<String, Object> param){
+    public Response addHandleContract(@RequestBody Map<String, Object> param){
         Response response;
         try {
-
+            tbHandleContractService.addHandleContract(param);
             response= Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception ex){
             JzbTools.logError(ex);
@@ -35,14 +42,20 @@ public class TbHandleContractController {
         return response;
     }
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    /**
+     * 修改合同动态属性
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updateHandleContract",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response v(@RequestBody Map<String, Object> param){
+    public Response updateHandleContract(@RequestBody Map<String, Object> param){
         Response response;
         try {
-
+            tbHandleContractService.updateHandleContract(param);
             response= Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception ex){
             JzbTools.logError(ex);
@@ -51,14 +64,20 @@ public class TbHandleContractController {
         return response;
     }
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    /**
+     * 查询合同动态属性
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getHandleContract",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response as(@RequestBody Map<String, Object> param){
+    public Response queryHandleContract(@RequestBody Map<String, Object> param){
         Response response;
         try {
-
+            tbHandleContractService.queryHandleContract(param);
             response= Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception ex){
             JzbTools.logError(ex);

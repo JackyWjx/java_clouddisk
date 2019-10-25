@@ -27,6 +27,7 @@
             LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
         WHERE
             tcc.status = '2'
+            and tcc.uid=#{uid}
     </select>
 
 

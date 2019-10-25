@@ -44,7 +44,7 @@ public class TbCompanyCommonController {
         Response result;
         try {
             // 如果指定参数为空的话返回error
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "count"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "count", "uid"})) {
                 result = Response.getResponseError();
             } else {
 
@@ -143,8 +143,6 @@ public class TbCompanyCommonController {
         }
         return result;
     }
-
-
 
     /**
      * 修改业主单位
