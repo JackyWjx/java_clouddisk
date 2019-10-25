@@ -54,10 +54,12 @@
             moth.idx asc
 
     </select>
+
 	<!--	标准文档总数-->
 	<select id="queryDocumentsCount" resultType="java.lang.Integer" parameterType="java.util.Map">
 	     select count(1) from tb_standard_document where typeid=#{typeid}
 	</select>
+
 	<!--	标准文档查询-->
 	<select id="queryDocumentsList" resultType="java.util.Map">
 		select
