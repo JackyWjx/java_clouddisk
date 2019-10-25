@@ -42,6 +42,10 @@
         cid=#{cid}
         <if test="projected!=null and projected!=''">and projected =#{projected}</if>
         <if test="uid!=null and uid!=''">and uid =#{uid}</if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
     </select>
 
     <!--CRM-销售业主-公海-业主下的人员14-点击业主/项目/跟进信息中点击添加跟进信息-->
@@ -71,14 +75,29 @@
         #{needres},
         #{invest},
         #{output},
-        ${planendtime},
+        <choose>
+            <when test=" planendtime != null and planendtime !=''">
+                ${planendtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{planoutput},
         #{attach},
         #{travelid},
-        ${nexttime},
+        <choose>
+            <when test=" nexttime != null and nexttime !=''">
+                ${nexttime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{adduid},
         #{addtime},
-        #{status};
+        #{status}
+        );
         INSERT INTO tb_handle_plan_person
         (cid, planid, uid, weight, dutydesc, ouid, addtime, status)
         VALUES
@@ -86,12 +105,19 @@
         #{cid},
         #{planid},
         #{uid},
-        ${weight},
+        <choose>
+            <when test=" weight != null and weight !=''">
+                ${weight},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{dutydesc},
         #{adduid},
         #{addtime},
-        #{status};
-        )
+        #{status}
+        );
     </insert>
 
     <!-- 点击业主/项目/跟进信息中点击修改跟进信息 -->
