@@ -7,45 +7,48 @@
     <!--获取我的出差申请-->
     <select id="queryTravelRecordByUid" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-            travelid,
-            uid,
-            typeid,
-            curcity,
-            curcid,
-            cname,
-            travedesc,
-            tarcity,
-            tarcid,
-            tarname,
-            relperson,
-            relphone,
-            projectid,
-            project,
-            starttime,
-            finishtime,
-            METHOD,
-            fare,
-            expenses,
-            amount,
-            speed,
-            speeddesc,
-            payfare,
-            payexpenses,
-            times,
-            nexttime,
-            status,
-            summary,
+        travelid,
+        uid,
+        typeid,
+        curcity,
+        curcid,
+        cname,
+        travedesc,
+        tarcity,
+        tarcid,
+        tarname,
+        relperson,
+        relphone,
+        projectid,
+        project,
+        starttime,
+        finishtime,
+        METHOD,
+        fare,
+        expenses,
+        amount,
+        speed,
+        speeddesc,
+        payfare,
+        payexpenses,
+        times,
+        nexttime,
+        status,
+        summary,
         (select vehicle from tb_user_travel where uid =#{ uid } and travelid=tt.travelid )
         FROM tb_travel_record tt
         WHERE
-            travelid  IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
-            and status != '8'
-            <if test="beginTime != null and beginTime != '' ">
-                and starttime &gt;= #{beginTime}
-            </if>
-            <if test="endTime != null and endTime != '' ">
-                and finishtime &lt;= #{endTime}
-            </if>
+        travelid IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
+        and status != '8'
+        <if test="beginTime != null and beginTime != '' ">
+            and starttime &gt;= #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != '' ">
+            and finishtime &lt;= #{endTime}
+        </if>
+        <if test="curcid !=null and curcid!=''">
+                and curcid=#{curcid}
+        </if>
         order by id asc
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
@@ -60,8 +63,8 @@
     <!-- 添加出差记录-->
     <insert id="addTravelRecord" parameterType="java.util.List">
         <foreach collection="list" item="travel" separator=",">
-        insert into tb_travel_record
-        (
+            insert into tb_travel_record
+            (
             travelid,
             curcity,
             curcid,
@@ -88,8 +91,8 @@
             nexttime,
             status,
             summary
-        )
-        values
+            )
+            values
             (
             #{travel.travelid},
             <choose>
@@ -109,12 +112,12 @@
                 </otherwise>
             </choose>
             <choose>
-              <when test="travel.cname != null and travel.cname!=''">
-                  #{travel.cname},
-              </when>
-              <otherwise>
-                  null ,
-              </otherwise>
+                <when test="travel.cname != null and travel.cname!=''">
+                    #{travel.cname},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
             </choose>
             <choose>
                 <when test="travel.travedesc != null and travel.travedesc!=''">
@@ -261,7 +264,7 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="travel.times != null and travel.times!=''" >
+                <when test="travel.times != null and travel.times!=''">
                     #{travel.times},
                 </when>
                 <otherwise>
@@ -293,7 +296,8 @@
                 </otherwise>
             </choose>
             ) on conflict(travelid) do update
-            <trim prefix="set" suffixOverrides="," suffix=" where travelid=#{travelid} and (status = '1' or status = '4' or status='32')  ">
+            <trim prefix="set" suffixOverrides=","
+                  suffix=" where travelid=#{travelid} and (status = '1' or status = '4' or status='32')  ">
                 <if test="cname!='' and cname !=null">
                     cname=#{cname},
                 </if>
@@ -371,9 +375,10 @@
     <!-- 修改出差记录-->
     <update id="updateTravelRecord" parameterType="java.util.Map">
         update tb_travel_record
-        <trim prefix="set" suffixOverrides="," suffix=" where travelid=#{travelid} and (status = '1' or status = '4' or status='32')  ">
+        <trim prefix="set" suffixOverrides=","
+              suffix=" where travelid=#{travelid} and (status = '1' or status = '4' or status='32')  ">
             <if test="cname!='' and cname !=null">
-            cname=#{cname},
+                cname=#{cname},
             </if>
             <if test="travedesc!='' and travedesc !=null">
                 travedesc=#{travedesc},
@@ -444,7 +449,6 @@
         </trim>
 
 
-
     </update>
 
     <!-- 设置删除状态-->
@@ -456,31 +460,31 @@
     <!-- 获取归我审批的出差记录-->
     <select id="queryMyVerifyTravel" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-            travelid,
-            curcid,
-            cname,
-            travedesc,
-            tarcity,
-            tarcid,
-            tarname,
-            relperson,
-            relphone,
-            projectid,
-            project,
-            starttime,
-            finishtime,
-            METHOD,
-            fare,
-            expenses,
-            amount,
-            speed,
-            speeddesc,
-            payfare,
-            payexpenses,
-            times,
-            nexttime,
-            status,
-            summary
+        travelid,
+        curcid,
+        cname,
+        travedesc,
+        tarcity,
+        tarcid,
+        tarname,
+        relperson,
+        relphone,
+        projectid,
+        project,
+        starttime,
+        finishtime,
+        METHOD,
+        fare,
+        expenses,
+        amount,
+        speed,
+        speeddesc,
+        payfare,
+        payexpenses,
+        times,
+        nexttime,
+        status,
+        summary
         FROM tb_travel_record
         where 1=1
         <if test="beginTime != '' and beginTime !=null ">
@@ -500,31 +504,31 @@
     <!-- 根据出差id查询出差记录-->
     <select id="queryTravelRecordByTravelid" parameterType="java.util.List" resultType="java.util.Map">
         SELECT
-            travelid,
-            curcid,
-            cname,
-            travedesc,
-            tarcity,
-            tarcid,
-            tarname,
-            relperson,
-            relphone,
-            projectid,
-            project,
-            starttime,
-            finishtime,
-            METHOD,
-            fare,
-            expenses,
-            amount,
-            speed,
-            speeddesc,
-            payfare,
-            payexpenses,
-            times,
-            nexttime,
-            status,
-            summary
+        travelid,
+        curcid,
+        cname,
+        travedesc,
+        tarcity,
+        tarcid,
+        tarname,
+        relperson,
+        relphone,
+        projectid,
+        project,
+        starttime,
+        finishtime,
+        METHOD,
+        fare,
+        expenses,
+        amount,
+        speed,
+        speeddesc,
+        payfare,
+        payexpenses,
+        times,
+        nexttime,
+        status,
+        summary
         FROM tb_travel_record
         where 1=1
         <foreach collection="list" item="travel" separator=",">
