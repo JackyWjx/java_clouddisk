@@ -46,6 +46,7 @@ public class TbHandleService {
      */
     public List<Map<String, Object>> getHandlecItem(Map<String, Object> param) {
         param.put("status", "1");
+        param = setPageSize(param);
         List<Map<String, Object>> list = tbHandleMapper.queryHandlecItem(param);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> companyMap = list.get(i);
@@ -82,5 +83,18 @@ public class TbHandleService {
     public int modifyHandlecItem(Map<String, Object> param) {
         param.put("updtime", System.currentTimeMillis());
         return tbHandleMapper.updateHandlecItem(param);
+    }
+
+    /**
+     * 设置分页数
+     */
+    public Map<String, Object> setPageSize(Map<String, Object> param) {
+        int pageno = JzbDataType.getInteger(param.get("pageno"));
+        int pagesize = JzbDataType.getInteger(param.get("pagesize"));
+        pagesize = pagesize <= 0 ? 15 : pagesize;
+        pageno = pageno <= 0 ? 1 : pageno;
+        param.put("pageno", (pageno - 1) * pagesize);
+        param.put("pagesize", pagesize);
+        return param;
     }
 }
