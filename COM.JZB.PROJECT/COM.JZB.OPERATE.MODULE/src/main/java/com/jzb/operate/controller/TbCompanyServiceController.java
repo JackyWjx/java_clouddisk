@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("operate/CompanyService")
+@RequestMapping("/operate/CompanyService")
 public class TbCompanyServiceController {
 
     @Autowired
@@ -29,7 +29,7 @@ public class TbCompanyServiceController {
         Response result;
         try {
             //如果参数为为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"projected"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"projectid"})) {
                 result = Response.getResponseError();
             } else {
                 int count = tbCompanyService.saveProject(param);
