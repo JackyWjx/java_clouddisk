@@ -7,6 +7,7 @@ import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.Response;
 import com.jzb.base.query.QueryPageConfig;
 import com.jzb.base.tree.JzbTree;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.AuthApi;
@@ -71,7 +72,8 @@ public class ProductService {
      */
     public List<Map<String, Object>> getProductList(Map<String, Object> param) {
         // 调用分页查询方法
-        QueryPageConfig.setPageSize(param);
+//        QueryPageConfig.setPageSize(param);
+        JzbPageConvert.setPageRows(param);
 
         // 查询数据
         return productMapper.queryProductList(param);
