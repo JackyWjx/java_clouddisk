@@ -12,7 +12,7 @@
         planid,
         typeid,
         cid,
-        projected,
+        projectid,
         uid,
         region,
         handletime,
@@ -60,8 +60,8 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="projected != null">
-                #{projected},
+            <when test="projectid != null">
+                #{projectid},
             </when>
             <otherwise>
                 null,
@@ -245,6 +245,6 @@
         from
         tb_company_service
         where
-        projected = #{projected}
+        projectid = #{projectid}
     </select>
 </mapper>
