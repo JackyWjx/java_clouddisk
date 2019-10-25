@@ -36,6 +36,12 @@ public interface TbCompanyProjectMapper {
      * @return
      * @param param
      */
-    int updateComProject(Map<String, Object> param);
+    int updateComProject(List<Map<String, Object>> param);
 
+    /**
+     * 取消业主关联
+     * @param param
+     * @return
+     */
+    int ComProject(List<Map<String, Object>> param);
 }
