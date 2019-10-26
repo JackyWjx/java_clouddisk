@@ -52,28 +52,12 @@ public class TbCompanyProjectService {
 
     /**
      * 关联业主  根据项目id进行项目表的修改
-     * @param paramList
-     * @return
-     */
-    public int updateComProject(List<Map<String, Object>> paramList) {
-        long time = System.currentTimeMillis();
-        for (int i = 0; i < paramList.size(); i++) {
-            paramList.get(i).put("updtime", time);
-        }
-
-        return  tbCompanyProjectMapper.updateComProject(paramList);
-    }
-
-    /**
-     * 取消业主关联 根据项目id进行修改
      * @param param
      * @return
      */
-    public int ComProject(List<Map<String, Object>> param) {
+    public int updateComProject(Map<String, Object> param) {
         long time = System.currentTimeMillis();
-        for (int i = 0; i < param.size(); i++) {
-            param.get(i).put("updtime", time);
-        }
-        return tbCompanyProjectMapper.ComProject(param);
+        param.put("updtime", time);
+        return  tbCompanyProjectMapper.updateComProject(param);
     }
 }
