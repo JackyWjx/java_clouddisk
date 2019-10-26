@@ -42,7 +42,7 @@ public class TbProductResListController {
     @Autowired
     private TbProductPriceService tbProductPriceService;
 
-    @Value("${ftConfig.path}")
+    @Value("${ftpConfig.path}")
     private String path;
 
     /**
