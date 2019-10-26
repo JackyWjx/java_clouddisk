@@ -84,6 +84,7 @@
         b.relphone,
         b.relperson,
         b.status,
+        b.region,
         c.dictvalue
         from
         tb_company_common a
