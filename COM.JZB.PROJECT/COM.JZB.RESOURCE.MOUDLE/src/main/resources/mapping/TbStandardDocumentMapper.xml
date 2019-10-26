@@ -16,7 +16,11 @@
         cname,
         price,
         department,
-        to_char(to_timestamp(effective / 1000), 'yyyy-MM-dd') as effective,
+        to_char(to_timestamp(effective ), 'yyyy-MM-dd') as effective,
+        domftype,
+        domtitle,
+        pagekey,
+        pagedesc,
         stdrange,
         status,
         domdesc
@@ -37,10 +41,12 @@
     <!--新增-->
     <insert id="saveTbStandardDom" parameterType="java.util.Map">
         insert into
-        tb_standard_document(typecode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
+        tb_standard_document(domtitle,domftype,typecode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
         updtime)
         values
         (
+        #{domtitle},
+        cast(#{domftype} as INTEGER),
         <choose>
             <when test="tpeycode != null">
                 #{tpeycode},
@@ -101,7 +107,7 @@
         </choose>
         <choose>
             <when test="status != null">
-                #{status},
+                cast(#{status}as integer) ,
             </when>
             <otherwise>
                 1,

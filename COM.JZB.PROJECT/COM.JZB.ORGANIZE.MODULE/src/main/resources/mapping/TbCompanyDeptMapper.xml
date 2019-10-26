@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCompanyDeptMapper">
+
+    <select id="getDeptUser" parameterType="java.util.Map" resultType="java.util.Map">
+         select
+         c.uid,
+         d.cname,
+         d.region,
+         d.relphone,
+         d.authid,
+         d.relperson,
+         e.dictvalue
+         from
+         tb_dept_user a
+         LEFT JOIN
+         tb_company_dept b
+         on a.cdid = b.cdid
+         left join
+         tb_company_common c
+         on a.uid = c.uid
+         left join
+         tb_company_list d
+         on c.cid = d.cid
+         left join
+         tb_company_property e
+         on c.cid = e.cid
+         where
+         b.duid = #{uid}
+         and e.typeid = 't111111'
+    </select>
+
+</mapper>

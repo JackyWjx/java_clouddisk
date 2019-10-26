@@ -5,7 +5,7 @@
 <mapper namespace="com.jzb.org.dao.TbCompanyCommonMapper">
 
     <!-- 查询公海单位 不做条件-->
-    <select id="queryCompanyCommon" parameterType="java.util.Map" resultType="java.util.List">
+    <select id="queryCompanyCommon" parameterType="java.util.Map">
         SELECT
             tcc.cid,
             tcc.uid,
@@ -32,8 +32,7 @@
 
 
     <!-- 查询已分配的业主  带条件 -->
-    <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map" resultType="java.util.List">
-        select * from (
+    <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map">
         SELECT
         tcc.cid,
         tcc.uid,
@@ -44,8 +43,8 @@
         tcl.region,
         tdu.cname username,
         tdu.phone userphone,
-        ( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = 't000000' ) service,
-        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' ) companyLevel,
+        ( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = '服务人员类型id' ) service,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = '业主等级类型id' ) companyLevel,
         tcl.authid
         FROM
         tb_company_common tcc
@@ -58,14 +57,11 @@
         <if test="region!=null and region !=''">
             and tcl.region=#{region}
         </if>
-
-        ) a
-        where 1=1
-        <if test="keyword!=null and keyword !=''">
-            and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
-        </if>
         <if test="companyLevel!=null and companyLevel !=''">
-            and a.companyLevel=#{companyLevel}
+            and companyLevel=#{companyLevel}
+        </if>
+        <if test="keyword!=null and keyword !=''">
+            and (tcl.cname ~ #{keyword} or sales ~ #{keyword})
         </if>
     </select>
 
@@ -75,4 +71,319 @@
         update tb_company_list set cname=#{cname} ,region=#{region} where cid=#{cid}
     </update>
 
+
+    <!--所有业主-业主列表查询-->
+    <select id="getCompanyCommon" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        a.uid,
+        b.cname,
+        b.nickname,
+        b.relmail,
+        b.manager,
+        b.authid,
+        b.relphone,
+        b.relperson,
+        b.status,
+        b.region,
+        c.dictvalue
+        from
+        tb_company_common a
+        LEFT JOIN
+        tb_company_list b
+        on a.cid = b.cid
+        LEFT JOIN
+        tb_company_property c
+        on b.cid = c.cid
+        where a.status != '4'
+        and c.typeid = 't111111'
+        <if test="status != null">
+           and a.status = #{status}
+        </if>
+        <if test="region != null">
+           and b.region = #{region}
+        </if>
+        <if test="dictvalue != null">
+            and c.dictvalue = #{dictvalue}
+        </if>
+        <if test="keyword != null">
+          and a.uid ~ #{keyword} or b.cname ~ #{keyword}
+        </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--所有业主-业主列表查询出来的总数-->
+    <select id="getCount" parameterType="java.util.Map" resultType="int">
+       select
+       count(1)
+       from
+       (
+       select
+        a.uid,
+        b.cname,
+        b.nickname,
+        b.relmail,
+        b.manager,
+        b.authid,
+        b.relphone,
+        b.relperson,
+        b.status
+        from
+        tb_company_common a
+        LEFT JOIN
+        tb_company_list b
+        on a.cid = b.cid
+        where a.status != '4'
+        <if test="status != null">
+           and a.status = #{status}
+        </if>
+        <if test="region != null">
+          and  b.region = #{region}
+        </if>
+        ) as num
+    </select>
+
+
+
+    <insert id="saveCompanyCommon" parameterType="java.util.Map">
+            insert into  tb_company_common
+            (cid,idx,uid,ouid,addtime,status,summary,updtime)
+            VALUES
+            (
+            <choose>
+                <when test="cid != null">
+                    #{cid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+        <choose>
+            <when test="idx != null">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_company_common),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="uid != null">
+                #{uid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid != null">
+                #{ouid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{updtime}
+        );
+        insert into tb_company_list
+        (cid,cname,nickname,region,uscc,idx,relperson,relphone,relmail,
+         reguid,manager,authid,ouid,modtime,status,summary,regtime)
+         VALUES
+         (
+        <choose>
+            <when test="cid != null">
+                #{cid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="cname != null">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="nickname != null">
+                #{nickname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="region != null">
+                #{region},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="uscc != null">
+                #{uscc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+
+         <choose>
+             <when test="idx != null">
+                 #{idx},
+             </when>
+             <otherwise>
+                 (select count(1)+1 from tb_company_list),
+             </otherwise>
+         </choose>
+        <choose>
+            <when test="relperson != null">
+                #{relperson},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="relphone != null">
+                #{relphone},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="relmail != null">
+                #{relmail},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="reguid != null">
+                #{reguid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="manager != null">
+                #{manager},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="authid != null">
+                #{authid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid != null">
+                #{ouid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="modtime != null">
+                #{modtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+         <choose>
+             <when test="status != null">
+                 #{status},
+             </when>
+             <otherwise>
+                 1,
+             </otherwise>
+         </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{regtime}
+         )
+    </insert>
+
+    <update id="updateCompanyCommon" parameterType="java.util.Map">
+        update
+        tb_company_list
+        set
+        <if test="cname != null and cname != ''">cname=#{cname},</if>
+        <if test="region != null and region != ''">region=#{region},</if>
+        <if test="relperson != null and relperson != ''">relperson=#{relperson},</if>
+        <if test="relphone != null and relphone != ''">relphone=#{relphone},</if>
+        <if test="modtime != null and modtime != ''">modtime=#{modtime}</if>
+        where
+        cid = #{cid}
+    </update>
+
+    <!--所有业主-业主列表-删除-->
+    <update id="deleteCompanyCommon" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+        update
+        tb_company_common
+        set
+        <if test="item.status != null and item.status != ''">status=#{item.status}</if>
+        where
+        cid = #{item.cid}
+        </foreach>
+    </update>
+
+    <update id="updateCompanys" parameterType="java.util.Map">
+        update
+        tb_company_common
+        set
+        <if test="status != null and status != ''">
+            status = #{status},
+        </if>
+        <if test="uid != null and uid != ''">
+            uid = #{uid}
+        </if>
+        where
+        cid = #{cid}
+    </update>
 </mapper>
