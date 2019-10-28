@@ -885,6 +885,10 @@ public class CompanyService {
                 sendRemind(send);
             }
         }
-        return companyMapper.insertCompanySupplier(param);
+        int count = companyMapper.insertCompanySupplier(param);
+        if (count == 1){
+            count = companyMapper.insertCompanyCommon(param);
+        }
+        return count;
     }
 }

@@ -123,4 +123,20 @@ public interface CompanyUserMapper {
      * @author kuangbin
      */
     int insertCompanyDept(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的人员9
+     * 查询业主下所有的人员信息总数
+     *
+     * @author kuangbin
+     */
+    int queryCompanyUserListCount(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的人员9
+     * 查询业主下所有的人员信息
+     *
+     * @author kuangbin
+     */
+    List<Map<String, Object>> queryCompanyUserList(Map<String, Object> param);
 } // End interface CompanyMapper

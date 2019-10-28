@@ -283,4 +283,40 @@ public class CompanyUserService {
         }
         return count;
     }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员9
+     * 查询业主下所有的人员信息总数
+     *
+     * @author kuangbin
+     */
+    public int getCompanyUserListCount(Map<String, Object> param) {
+        int count;
+        try {
+            param.put("status", "1");
+            count = companyUserMapper.queryCompanyUserListCount(param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的人员9
+     * 查询业主下所有的人员信息
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getCompanyUserList(Map<String, Object> param) {
+        param.put("status", "1");
+        param = setPageSize(param);
+        List<Map<String, Object>> list = companyUserMapper.queryCompanyUserList(param);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> uidMap = list.get(i);
+            Response region = userRedisServiceApi.getCacheUserInfo(uidMap);
+            uidMap.put("uid", region.getResponseEntity());
+        }
+        return list;
+    }
 }
