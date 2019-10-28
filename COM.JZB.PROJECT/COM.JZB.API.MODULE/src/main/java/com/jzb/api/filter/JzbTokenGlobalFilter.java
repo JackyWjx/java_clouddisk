@@ -3,6 +3,7 @@ package com.jzb.api.filter;
 import com.jzb.api.api.auth.UserAuthApi;
 import com.jzb.base.message.JzbReturnCode;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.UnpooledByteBufAllocator;
@@ -84,6 +85,9 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
                             Map<String, Object> userInfo = (Map<String, Object>) tokenRes.getResponseEntity();
                             userInfo.put("token", tokenRes.getToken() == null ? "" : tokenRes.getToken());
                             userInfo.put("session", tokenRes.getSession() == null ? "" : tokenRes.getSession());
+                            userInfo.put("msgTag", JzbRandom.getRandomCharCap(4));
+                            userInfo.put("ip", httpRequest.getURI().getHost());
+                            userInfo.put("tkn", token);
                             json.put("userinfo", userInfo);
                             byte[] newBody = json.toString().getBytes(Charset.forName("UTF-8"));
 
