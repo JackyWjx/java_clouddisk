@@ -107,7 +107,7 @@
         </choose>
         <choose>
             <when test="status != null">
-                cast(#{status}as integer) ,
+                cast(#{status} as integer),
             </when>
             <otherwise>
                 1,

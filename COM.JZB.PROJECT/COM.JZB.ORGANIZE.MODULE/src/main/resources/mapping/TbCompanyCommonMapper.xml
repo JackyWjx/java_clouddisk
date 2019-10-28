@@ -135,12 +135,22 @@
         LEFT JOIN
         tb_company_list b
         on a.cid = b.cid
+        LEFT JOIN
+        tb_company_property c
+        on b.cid = c.cid
         where a.status != '4'
+        and c.typeid = 't111111'
         <if test="status != null">
            and a.status = #{status}
         </if>
         <if test="region != null">
           and  b.region = #{region}
+        </if>
+        <if test="dictvalue != null">
+            and c.dictvalue = #{dictvalue}
+        </if>
+        <if test="keyword != null">
+            and a.uid ~ #{keyword} or b.cname ~ #{keyword}
         </if>
         ) as num
     </select>
