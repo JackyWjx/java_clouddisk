@@ -10,6 +10,7 @@ import com.jzb.activity.vo.PageConvert;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -17,6 +18,8 @@ import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.netflix.discovery.converters.jackson.EurekaXmlJacksonCodec;
 import org.bouncycastle.cert.ocsp.Req;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +54,7 @@ public class ActivityController {
      *
      * @return Response 返回json数据
      */
-    @RequestMapping(value = "/queryActivityList",method = RequestMethod.POST)
+    @RequestMapping(value = "/queryActivityList", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     public Response queryActivityList(@RequestBody Map<String, Object> params) {
@@ -59,7 +62,7 @@ public class ActivityController {
         try {
 
             // 验证参数为空返回error
-            if (JzbCheckParam.haveEmpty(params,new String[]{"pageno","pagesize"})) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"pageno", "pagesize"})) {
 
                 response = Response.getResponseError();
 
@@ -159,6 +162,11 @@ public class ActivityController {
     }
 
     /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(ActivityController.class);
+
+    /**
      * 根据活动Id查询详情信息,阅读数加一
      *
      * @param params 用map存储
@@ -168,7 +176,10 @@ public class ActivityController {
     @CrossOrigin
     public Response getDiscussById(@RequestBody Map<String, Object> params) {
         Response response;
+        Map<String, Object> userInfo = null;
+        boolean flag = true;
         try {
+//            userInfo = (Map<String, Object>) params.get("userinfo");
             if (params.get("actid") == null || JzbDataType.getString(params.get("actid")).equals("")) {
                 response = Response.getResponseError();
             } else {
@@ -180,9 +191,17 @@ public class ActivityController {
                 response = Response.getResponseSuccess();
                 response.setPageInfo(pi);
             }
-        } catch (Exception e) {
-            JzbTools.logError(e);
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger("1.0", "/operate/companyMethod/addCompanyMethod", "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger("1.0", "/operate/companyMethod/addCompanyMethod", "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }
@@ -199,7 +218,7 @@ public class ActivityController {
         Response response;
         try {
 
-            if (params.get("actid") == null) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"actid"})) {
 
                 response = Response.getResponseError();
             } else {
@@ -355,12 +374,12 @@ public class ActivityController {
                 params.put("uid", userInfo.get("uid"));
                 int count = newActivityService.addActivityDucess(params);
                 if (count > 0) {
+
                     // 更新评论数
                     newActivityService.updateComment(params);
 
                     // 定义返回结果
                     result = Response.getResponseSuccess(userInfo);
-
 
                 } else {
                     result = Response.getResponseError();
@@ -398,7 +417,6 @@ public class ActivityController {
         }
         return result;
     }
-
 
     /**
      * 无登录点赞
