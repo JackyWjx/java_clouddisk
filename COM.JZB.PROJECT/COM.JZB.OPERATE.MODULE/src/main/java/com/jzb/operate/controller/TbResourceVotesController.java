@@ -49,11 +49,11 @@ public class TbResourceVotesController {
                     // 添加结果
                     int count = tbResourceVotesService.addResourceVotes(params);
                     // 更新活动表数据
-                    int countVotes=tbResourceVotesService.updateActivityVotes(params);
+//                    int countVotes=tbResourceVotesService.updateActivityVotes(params);
                     if (count > 0) {
                         // 定义返回结果
                         Map<String, Object> userInfo = (Map<String, Object>) params.get("userinfo");
-                        result = Response.getResponseSuccess(userInfo);
+                        result = Response.getResponseSuccess();
                     } else {
                         result = Response.getResponseError();
                     }
