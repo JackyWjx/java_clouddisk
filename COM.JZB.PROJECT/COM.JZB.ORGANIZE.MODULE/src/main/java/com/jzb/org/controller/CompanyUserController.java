@@ -6,6 +6,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
@@ -54,6 +55,9 @@ public class CompanyUserController {
 
     @Autowired
     private OrgToken orgToken;
+
+    @Autowired
+    private AuthApi authApi;
     /**
      * 查询地区信息
      */
@@ -340,6 +344,39 @@ public class CompanyUserController {
     }
 
     /**
+     * CRM-销售业主-公海-业主下的人员9
+     * 查询业主下所有的人员信息
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getCompanyUserList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyUserList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取单位总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询单位总数
+                count = companyUserService.getCompanyUserListCount(param);
+            }
+            // 返回所有的企业列表
+            List<Map<String, Object>> companyList = companyUserService.getCompanyUserList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
      * CRM-销售业主-公海-项目1
      * 点击项目中的导入Excel表格上传模板
      *
@@ -370,8 +407,8 @@ public class CompanyUserController {
     }
 
     /**
-     * CRM-销售业主-公海-业主
-     * 导入新增业主模板
+     * CRM-销售业主-公海-项目1
+     * 点击项目中的导入Excel表格获取模板数据
      *
      * @param
      * @author kuangbin
@@ -511,7 +548,7 @@ public class CompanyUserController {
                 long tenderTime = 0;
                 try {
                     tenderTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time).getTime();
-                }catch (Exception e){
+                } catch (Exception e) {
                     JzbTools.logError(e);
                     summary += "招标日期格式不正确!";
                     exportMap.put("status", "2");
@@ -577,6 +614,12 @@ public class CompanyUserController {
         }
     }
 
+    /**
+     * 校验手机号
+     *
+     * @param obj
+     * @return
+     */
     private boolean toPhone(String obj) {
         boolean result = true;
         try {
@@ -586,5 +629,252 @@ public class CompanyUserController {
             JzbTools.logError(e);
         }
         return result;
+    }
+
+    /**
+     * CRM-销售业主-所有业主-业主下的人员1
+     * 点击项目中的导入Excel表格上传模板
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/createCompanyUser", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createCompanyUser(HttpServletResponse response) {
+        try {
+            String srcFilePath = "D:/v3/static/excel/ImportCompanyUser.xlsx";
+            FileInputStream in = new FileInputStream(srcFilePath);
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=ImportCompanyUser.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * CRM-销售业主-公海-项目1
+     * 点击项目中的导入Excel表格获取模板数据
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/importCompanyUser", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response importCompanyUser(@RequestBody MultipartFile file,
+                                      @RequestHeader(value = "token") String token,
+                                      @RequestParam(value = "cid") String cid,
+                                      @RequestParam(value = "companyname") String companyname) {
+        Response result = new Response();
+        try {
+            // 获取用户信息token
+            Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
+            Map<String, Object> param = new HashMap<>();
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("userinfo", userInfo);
+            // 生成批次ID
+            String batchId = JzbRandom.getRandomCharCap(11);
+
+            // 获取上传文件名称
+            String fileName = file.getOriginalFilename();
+            long time = System.currentTimeMillis();
+            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
+            param.put("batchid", batchId);
+            param.put("address", filepath);
+            param.put("cid", cid);
+            param.put("companyname", companyname);
+            param.put("status", "2");
+            param.put("cname", fileName);
+            try {
+                // 保存文件到本地
+                File intoFile = new File(filepath);
+                intoFile.getParentFile().mkdirs();
+                String address = intoFile.getCanonicalPath();
+                file.transferTo(new File(address));
+            } catch (Exception e) {
+                JzbTools.logError(e);
+                // 保存失败信息到批次表
+                param.put("status", "4");
+                param.put("summary", "保存文件到本地失败");
+            }
+            // 添加批次信息到用户导入批次表
+            deptService.addExportBatch(param);
+            // 创建一个线程池
+            ExecutorService pool = Executors.newFixedThreadPool(1);
+
+            // 创建一个有返回值的任务
+            Callable importCompanyUser = new ImportCompanyUser(filepath, param, result);
+            Future future = pool.submit(importCompanyUser);
+            // 获取返回值结果
+            result = (Response) future.get();
+            result.setResponseEntity(param);
+            // 关闭线程池
+            pool.shutdown();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /***
+     * 读取新建企业模板中的数据时启动线程
+     * @author kuangbin
+     */
+    public class ImportCompanyUser implements Callable {
+        // 保存文件的路径
+        private String filepath;
+
+        // 前台传来的参数
+        private Map<String, Object> param;
+
+        // 结果对象
+        Response result;
+
+        public ImportCompanyUser(String filepath, Map<String, Object> param, Response result) {
+            this.filepath = filepath;
+            this.param = param;
+            this.result = result;
+        }
+
+        @Override
+        public Response call() {
+            // 读取模板中的数据
+            List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
+
+            // 保存到用户导入信息表
+            List<Map<String, Object>> userInfoList = new ArrayList<>();
+            Map<String, Object> exportMap = new HashMap<>(param);
+            // 遍历结果行,菜单数据从第2行开始
+            for (int i = 1; i < list.size(); i++) {
+                // 设置行信息
+                exportMap.put("idx", i);
+                Map<Integer, String> map = list.get(i);
+                // 获取模板中的用户名称
+                String cname = JzbDataType.getString(map.get(0));
+
+                // 定义批次中的备注
+                String summary = "";
+                exportMap.put("cname", cname);
+                // 在参数中加入项目名称
+                param.put("cname", cname);
+                if (JzbDataType.isEmpty(cname)) {
+                    summary = "用户姓名不能为空!";
+                    exportMap.put("summary", summary);
+                    exportMap.put("status", "2");
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                // 获取模板中的用户联系方式
+                String relphone = JzbDataType.getString(map.get(1));
+                param.put("relphone", relphone);
+                if (JzbDataType.isEmpty(relphone)) {
+                    summary += "用户手机号不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                } else {
+                    if (!toPhone(relphone)) {
+                        exportMap.put("status", "2");
+                        summary += "用户手机号不合规范";
+                        exportMap.put("summary", summary);
+                        userInfoList.add(exportMap);
+                        continue;
+                    }
+                }
+                // 获取模板中的电子邮箱
+                String relmail = JzbDataType.getString(map.get(2));
+                param.put("relmail", relmail);
+                if (JzbDataType.isEmpty(relmail)) {
+                    summary += "电子邮箱不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                // 获取模板中的出生日期
+                String time = JzbDataType.getString(map.get(3));
+                long born = 0;
+                try {
+                    born = new SimpleDateFormat("yyyy-MM-dd").parse(time).getTime();
+                } catch (Exception e) {
+                    JzbTools.logError(e);
+                    summary += "出生日期格式不正确!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                }
+                param.put("born", born);
+                // 获取模板中的性别
+                String sex = JzbDataType.getString(map.get(4));
+                if (!JzbDataType.isEmpty(sex)) {
+                    if ("男".equals(sex)) {
+                        sex = "1";
+                    } else if ("女".equals(sex)) {
+                        sex = "2";
+                    } else {
+                        sex = "";
+                    }
+                }
+                param.put("sex", sex);
+                // 获取模板中的毕业院校
+                String college = JzbDataType.getString(map.get(5));
+                param.put("college", college);
+                // 获取模板中的学历
+                String education = JzbDataType.getString(map.get(6));
+                param.put("education", education);
+                // 获取模板中的婚姻状况
+                String marriage = JzbDataType.getString(map.get(7));
+                if (!JzbDataType.isEmpty(marriage)) {
+                    if ("已婚".equals(marriage)) {
+                        marriage = "1";
+                    } else if ("未婚".equals(marriage)) {
+                        marriage = "2";
+                    } else {
+                        marriage = "";
+                    }
+                }
+                param.put("marriage", marriage);
+                // 获取模板中的籍贯
+                String origin = JzbDataType.getString(map.get(8));
+                param.put("origin", origin);
+                // 获取模板中的爱好
+                String likes = JzbDataType.getString(map.get(9));
+                param.put("likes", likes);
+                // 调用接口
+                result = authApi.addCompanyEmployee(param);
+                if (!JzbDataType.isEmpty(result.getResponseEntity())) {
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", result.getResponseEntity());
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                exportMap.put("status", "1");
+                userInfoList.add(exportMap);
+            }
+            int export = 0;
+            //保存用户导入信息表
+            if (userInfoList.size() > 0) {
+                export = deptMapper.insertExportUserInfoList(userInfoList);
+            }
+            //导入完成后修改状态
+            if (export >= 1) {
+                exportMap.put("status", "8");
+            } else if (export == 0) {
+                exportMap.put("status", "4");
+            }
+            deptService.updateExportBatch(exportMap);
+            return result;
+        }
     }
 }
