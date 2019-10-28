@@ -409,7 +409,6 @@ public class DeptUserController {
                         date = simpleDateFormat.parse(birth);
                         // 将日期从毫秒转化为毫秒值
                         long birthday = date.getTime() / 1000;
-                        System.out.println(birthday+"!!!"+limitday);
                         param.put("birthday", birthday);
                         param.put("type", "1");
                         // 创建供应商单位
