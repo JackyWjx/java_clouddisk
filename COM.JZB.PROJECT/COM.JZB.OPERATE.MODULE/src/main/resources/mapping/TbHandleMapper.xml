@@ -59,7 +59,7 @@
         #{typeid},
         #{cid},
         #{projected},
-        #{uid},
+        #{adduid},
         #{region},
         <choose>
             <when test=" handletime != null and handletime !=''">
@@ -104,7 +104,7 @@
         (
         #{cid},
         #{planid},
-        #{uid},
+        #{adduid},
         <choose>
             <when test=" weight != null and weight !=''">
                 ${weight},
@@ -125,18 +125,15 @@
         UPDATE
         tb_handle_item
         SET
-        uid =#{uid},
-        region =#{region},
-        invest =#{invest},
         context =#{context},
-        needres =#{needres},
-        nexttime =${nexttime},
-        attach =#{attach},
+        <if test="attach!=null and attach!=''">attach =#{attach},</if>
         updtime = #{updtime},
         ouid = #{ouid}
         WHERE
         cid=#{cid}
         and
         projected = #{projected}
+        and
+        planid = #{planid}
     </update>
 </mapper>
