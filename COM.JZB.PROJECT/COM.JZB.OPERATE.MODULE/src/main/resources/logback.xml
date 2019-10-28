@@ -107,15 +107,15 @@
         </triggeringPolicy>
     </appender>
 
-    <logger name="com.jzb.api.controller" additivity="true">
+    <logger name="com.jzb.operate.controller" additivity="true">
         <appender-ref ref="API" />
     </logger>
 
-    <logger name="com.jzb.api" additivity="true">
+    <logger name="com.jzb.operate" additivity="true">
         <appender-ref ref="ERROR" />
     </logger>
 
-    <logger name="com.jzb.api.service" additivity="true">
+    <logger name="com.jzb.operate.service" additivity="true">
         <appender-ref ref="SQL" />
     </logger>
 
