@@ -24,4 +24,14 @@ public interface AuthApi {
     @PostMapping("/addRegistration")
     @CrossOrigin
     public Response addRegistration(@RequestBody Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-业主下的人员11
+     * 点击业主下的人员中的新增人员按钮进行加入员工
+     *
+     * @author kuangbin
+     */
+    @PostMapping("/addCompanyEmployee")
+    @CrossOrigin
+    public Response addCompanyEmployee(@RequestBody Map<String, Object> param);
 }
