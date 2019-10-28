@@ -278,7 +278,7 @@ public class TbProductResListController {
             desFile.getParentFile().mkdirs();
             //保存多媒体文件
             file.transferTo(desFile);
-            //filePath = filePath.replace("\\","/");
+            filePath = filePath.replace("\\","/");
             //返回成功的结果
             result = Response.getResponseSuccess();
             Map<String, String> stringObjectMap = new HashedMap();
