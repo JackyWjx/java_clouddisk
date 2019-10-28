@@ -87,6 +87,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
                             userInfo.put("session", tokenRes.getSession() == null ? "" : tokenRes.getSession());
                             userInfo.put("msgTag", JzbRandom.getRandomCharCap(4));
                             userInfo.put("ip", httpRequest.getURI().getHost());
+                            userInfo.put("tkn", token);
                             json.put("userinfo", userInfo);
                             byte[] newBody = json.toString().getBytes(Charset.forName("UTF-8"));
 
