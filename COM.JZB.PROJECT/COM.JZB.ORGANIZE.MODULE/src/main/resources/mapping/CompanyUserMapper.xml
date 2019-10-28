@@ -146,7 +146,7 @@
     <!--查询所有的企业列表-->
     <select id="queryCompanyCommonList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-        cl.cid,
+        cc.cid,
         cl.cname,
         cl.region,
         du.cname AS uname,
@@ -171,9 +171,9 @@
         </if>
         order by cc.id desc
         limit
-        #{pagesize}
+        ${pagesize}
         offset
-        #{pageno}
+        ${pageno}
     </select>
 
     <!--根据单位ID显示对应的供应商或全部供应商的总数-->
@@ -419,4 +419,39 @@
         </choose>
         )
     </insert>
+
+    <!--查询业主下所有的人员信息总数-->
+    <select id="queryCompanyUserListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        (
+        SELECT
+        distinct
+        uid
+        FROM
+        tb_dept_user
+        where
+        status = #{status}
+        and
+        cid = #{cid}
+        ) as u
+    </select>
+
+    <!--查询业主下所有的人员信息-->
+    <select id="queryCompanyUserList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        distinct
+        uid
+        FROM
+        tb_dept_user
+        where
+        status = #{status}
+        and
+        cid = #{cid}
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
 </mapper>
