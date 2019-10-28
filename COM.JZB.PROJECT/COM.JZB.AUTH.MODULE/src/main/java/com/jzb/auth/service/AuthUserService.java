@@ -2,6 +2,7 @@ package com.jzb.auth.service;
 
 import com.jzb.auth.api.organize.CompanyUserApi;
 import com.jzb.auth.api.redis.UserRedisApi;
+import com.jzb.auth.controller.AuthUserController;
 import com.jzb.auth.dao.AuthUserMapper;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.code.JzbDataCheck;
@@ -43,6 +44,8 @@ public class AuthUserService {
     @Autowired
     private CompanyUserApi companyUserApi;
 
+    @Autowired
+    private AuthUserController authUserController;
     /**
      * 认证修改用户数据
      *
@@ -287,7 +290,7 @@ public class AuthUserService {
             if (count >= 1){
                 // 将该用户加入单位资源池中
                 result = companyUserApi.addCompanyDept(param);
-                result.setResponseEntity(uid);
+                authUserController.getUserInfo(param);
             }else {
                 result = Response.getResponseError();
             }
