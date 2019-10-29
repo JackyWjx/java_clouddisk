@@ -49,4 +49,18 @@ public interface TbStandardDocumentMapper {
      * @return
      */
     List<Map<String, Object>> getCname(Map<String, Object> param);
+
+    /**
+     * 查询总数
+     * @param param
+     * @return
+     */
+    int getCount(Map<String, Object> param);
+
+    /**
+     * 模糊查询中总数
+     * @param param
+     * @return
+     */
+    int getCounts(Map<String, Object> param);
 }
