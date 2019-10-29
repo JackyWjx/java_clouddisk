@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbHandleItemMapper">
+
+    <select id="getHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        uid,
+        to_char(to_timestamp(handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
+        context,
+        needres,
+        invest,
+        output,
+        attach,
+        summary
+        from
+        tb_handle_item
+        where
+        cid = #{ac}
+    </select>
+
+</mapper>
