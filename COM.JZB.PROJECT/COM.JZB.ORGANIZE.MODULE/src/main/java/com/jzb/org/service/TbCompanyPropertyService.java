@@ -48,4 +48,32 @@ public class TbCompanyPropertyService {
         param.put("updtime",time);
         return tbCompanyPropertyMapper.updatePropertyByCidAndTypeid(param);
     }
+
+    /**
+     * 所有业主-业主列表-分配售后人员
+     * @param param
+     * @return
+     */
+    public int saveCompanyProperty(Map<String, Object> param) {
+        param.put("typeid", "t000000");
+        param.put("dictid", JzbRandom.getRandomChar(11));
+        long time = System.currentTimeMillis();
+        param.put("addtime",time);
+        param.put("updtime",time);
+        return tbCompanyPropertyMapper.saveCompanyProperty(param);
+    }
+
+    /**
+     * 所有业主-业主列表-设置等级
+     * @param param
+     * @return
+     */
+    public int saveCompanyPropertys(Map<String, Object> param) {
+        param.put("typeid", "t111111");
+        param.put("dictid", JzbRandom.getRandomChar(11));
+        long time = System.currentTimeMillis();
+        param.put("addtime",time);
+        param.put("updtime",time);
+        return tbCompanyPropertyMapper.saveCompanyPropertys(param);
+    }
 }
