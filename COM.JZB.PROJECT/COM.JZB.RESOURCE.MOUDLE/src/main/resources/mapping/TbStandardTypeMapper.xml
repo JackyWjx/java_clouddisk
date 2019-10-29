@@ -96,15 +96,28 @@
     </update>
 
 
+    <!--运营管理标准查询-->
 
-
-    <!--查询运营管理中的菜单类别-->
     <select id="getStandardType" parameterType="java.util.Map" resultType="java.util.Map">
-        select ID,typecode,typeid,cname,typedesc,adduid,addtime,summary from tb_standard_type where status = #{status}
-        <if test="typeid != null">
-            and typeid = #{typeid}
-        </if>
+        WITH RECURSIVE modt AS (
+        select
+        typecode,typeid,cname,typedesc,adduid,addtime,summary,parentid
+        from
+        tb_standard_type
+        where parentid = '0000000'
+        and status = '1'
+        UNION ALL
+        SELECT
+        a.typecode,a.typeid,a.cname,a.typedesc,a.adduid,a.addtime,a.summary,a.parentid
+        from
+        tb_standard_type a
+        join modt on a.parentid = modt.typeid
+        and a.status = '1'
+        )
+        select
+        modt.*
+        from
+        modt
     </select>
-
 
 </mapper>
