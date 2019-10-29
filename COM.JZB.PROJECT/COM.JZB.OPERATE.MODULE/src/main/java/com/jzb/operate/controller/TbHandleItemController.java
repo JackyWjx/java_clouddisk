@@ -7,7 +7,6 @@ import com.jzb.operate.service.TbHandleItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,6 +16,11 @@ public class TbHandleItemController {
     @Autowired
     private TbHandleItemService tbHandleItemService;
 
+    /**
+     * 销售统计分析跟进人详情查询
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/getHandleItem",method = RequestMethod.POST)
     @CrossOrigin
     public Response getHandleItem(@RequestBody Map<String, Object> param) {
