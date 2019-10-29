@@ -93,4 +93,13 @@ public class TbPolicyDomService {
         param.put("status", "4");
         return tbPolicyDomMapper.updateDelete(param);
     }
+
+    /**
+     * 查询总数
+     * @param param
+     * @return
+     */
+    public int getCount(Map<String, Object> param) {
+        return tbPolicyDomMapper.getCount(param);
+    }
 }

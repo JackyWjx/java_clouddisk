@@ -34,9 +34,30 @@
         <if test="domid != null">
             and domid = #{domid}
         </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
     </select>
 
-
+    <select id="getCount" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from
+        tb_standard_document
+        where
+        status != '4'
+        <if test="typeid != null">
+            and typeid = #{typeid}
+        </if>
+        <if test="domid != null">
+            and domid = #{domid}
+        </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
 
     <!--新增-->
     <insert id="saveTbStandardDom" parameterType="java.util.Map">
@@ -107,7 +128,7 @@
         </choose>
         <choose>
             <when test="status != null">
-                cast(#{status}as integer) ,
+                cast(#{status} as integer),
             </when>
             <otherwise>
                 1,
@@ -182,6 +203,26 @@
         effective,
         stdrange,
         status
+        from
+        tb_standard_document
+        where
+        status != '4'
+        <if test="cname != null">
+            and
+            cname
+            like
+            concat('%',#{cname},'%')
+        </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+<!--模糊查询总数-->
+    <select id="getCounts" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
         from
         tb_standard_document
         where

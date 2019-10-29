@@ -63,4 +63,11 @@ public interface TbPolicyDomMapper {
      * @return
      */
     int updateDelete(Map<String, Object> param);
+
+    /**
+     * 查询总数
+     * @param param
+     * @return
+     */
+    int getCount(Map<String, Object> param);
 }

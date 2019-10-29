@@ -2,26 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="730c9628-ff81-4db3-b036-dff344069f90" name="Default Changelist" comment="增加企业ID，获取企业名称接口">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.AUTH.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.AUTH.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.CONFIG.MODULE/COM.JZB.CONFIG.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.CONFIG.MODULE/COM.JZB.CONFIG.MODULE.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE/COM.JZB.ACTIVITY.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ACTIVITY.MODULE/COM.JZB.ACTIVITY.MODULE.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/COM.JZB.CONFIG.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.CONFIG.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.LOGGER.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.LOGGER.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.MEDIA.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.MEDIA.MODULE/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE/COM.JZB.MESSAGE.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE/COM.JZB.MESSAGE.MODULE.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.MESSAGE.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OPEN.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OPEN.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/java/com/jzb/resource/controller/TbProductResListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/java/com/jzb/resource/controller/TbProductResListController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/mapping/TbContractTemplateMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/mapping/TbContractTemplateMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/mapping/TbProductResListMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/mapping/TbProductResListMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/COM.JZB.OAUTH.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OAUTH.MODULE/COM.JZB.OAUTH.MODULE.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.OPEN.MODULE/COM.JZB.OPEN.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OPEN.MODULE/COM.JZB.OPEN.MODULE.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/COM.JZB.OPERATE.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/COM.JZB.OPERATE.MODULE.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/java/com/jzb/org/controller/TbCompanyProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/java/com/jzb/org/controller/TbCompanyProjectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/resources/mapping/TbCompanyCommonMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/resources/mapping/TbCompanyCommonMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/COM.JZB.REDIS.MODULE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.REDIS.MODULE/COM.JZB.REDIS.MODULE.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/COM.JZB.RESOURCE.MOUDLE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/COM.JZB.RESOURCE.MOUDLE.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/mapping/TbStandardDocumentMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/COM.JZB.RESOURCE.MOUDLE/src/main/resources/mapping/TbStandardDocumentMapper.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -83,11 +75,11 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1571058105172" />
-    <property name="last_opened_file_path" value="D:/VUE/vue/JZB-V3" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/COM.JZB.OPERATE.MODULE/src/main/resources/mapping" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
@@ -97,11 +89,11 @@
       <recent name="com.jzb.base.mail" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Project\GIT\JZB-V003R001C01\java\COM.JZB.PROJECT\COM.JZB.CONFIG.BASE.MODULE\src\main\java\com\jzb\config\base" />
-      <recent name="E:\Project\GIT\JZB-V003R001C01\java\COM.JZB.PROJECT\COM.JZB.CONFIG.BASE.MODULE\src\main\resources" />
-      <recent name="E:\Project\GIT\JZB-V003R001C01\java\COM.JZB.PROJECT\COM.JZB.CONFIG.MODULE\src\main\resources\config" />
-      <recent name="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.API.MODULE\src\main\java\com\jzb\api\filter" />
-      <recent name="E:\JAVA\workspace\idea\jzb\COM.JZB.PROJECT\COM.JZB.AUTH.MODULE\src\main\java\com\jzb\auth\config" />
+      <recent name="D:\project\java\COM.JZB.PROJECT\COM.JZB.OPERATE.MODULE\src\main\resources\mapping" />
+      <recent name="D:\project\java\COM.JZB.PROJECT\COM.JZB.ORGANIZE.MODULE\src\main\resources\mapping" />
+      <recent name="D:\project\java\COM.JZB.PROJECT\COM.JZB.ORGANIZE.MODULE\src\main\java\com\jzb\org\dao" />
+      <recent name="D:\project\java\COM.JZB.PROJECT\COM.JZB.ORGANIZE.MODULE\src\main\java\com\jzb\org\service" />
+      <recent name="D:\project\java\COM.JZB.PROJECT\COM.JZB.ORGANIZE.MODULE\src\main\java\com\jzb\org\controller" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -116,7 +108,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.JzbResourceServiceApplication">
+  <component name="RunManager" selected="Spring Boot.JzbRedisServiceApplication">
     <configuration name="JzbDataCheck" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.jzb.base.data.code.JzbDataCheck" />
       <module name="COM.JZB.BASE.MODULE" />
@@ -405,6 +397,8 @@
       <workItem from="1571396865698" duration="694000" />
       <workItem from="1571445883258" duration="29165000" />
       <workItem from="1571704077059" duration="693000" />
+      <workItem from="1572079220152" duration="4142000" />
+      <workItem from="1572222155456" duration="19981000" />
     </task>
     <servers />
   </component>
@@ -427,6 +421,11 @@
           <url>jar://D:/JAVA/Maven/repo/org/springframework/security/spring-security-crypto/5.1.5.RELEASE/spring-security-crypto-5.1.5.RELEASE-sources.jar!/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.java</url>
           <line>67</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/COM.JZB.ORGANIZE.MODULE/src/main/java/com/jzb/org/controller/TbCompanyListController.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
