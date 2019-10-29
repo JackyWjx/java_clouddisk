@@ -19,7 +19,7 @@
         planid,
         typeid,
         cid,
-        projected,
+        projectid,
         uid,
         region,
         handletime,
@@ -40,7 +40,7 @@
         tb_handle_item
         where
         cid=#{cid}
-        <if test="projected!=null and projected!=''">and projected =#{projected}</if>
+        <if test="projected!=null and projected!=''">and projectid =#{projected}</if>
         <if test="uid!=null and uid!=''">and uid =#{uid}</if>
         limit
         #{pagesize}
@@ -51,7 +51,7 @@
     <!--CRM-销售业主-公海-业主下的人员14-点击业主/项目/跟进信息中点击添加跟进信息-->
     <insert id="insertHandlecItem" parameterType="java.util.Map">
         INSERT INTO tb_handle_item
-        (planid, typeid, cid, projected, uid, region, handletime, personid, person, context, needres,
+        (planid, typeid, cid, projectid, uid, region, handletime, personid, person, context, needres,
         invest, output, planendtime, planoutput, attach, travelid, nexttime, ouid, addtime, status)
         VALUES
         (
@@ -132,7 +132,7 @@
         WHERE
         cid=#{cid}
         and
-        projected = #{projected}
+        projectid = #{projected}
         and
         planid = #{planid}
     </update>

@@ -54,5 +54,11 @@ public interface AdvertMapper {
      */
     int insertAdvertData(Map<String, Object> param);
 
-
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击删除后修改推广信息的状态
+     *
+     * @author kuangbin
+     */
+    int deleteAdvertData(Map<String, Object> param);
 }

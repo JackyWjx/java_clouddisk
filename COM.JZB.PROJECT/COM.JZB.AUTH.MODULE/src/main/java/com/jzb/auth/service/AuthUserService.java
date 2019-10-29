@@ -2,6 +2,7 @@ package com.jzb.auth.service;
 
 import com.jzb.auth.api.organize.CompanyUserApi;
 import com.jzb.auth.api.redis.UserRedisApi;
+import com.jzb.auth.config.AuthConfigProperties;
 import com.jzb.auth.controller.AuthUserController;
 import com.jzb.auth.dao.AuthUserMapper;
 import com.jzb.base.data.JzbDataType;
@@ -46,6 +47,7 @@ public class AuthUserService {
 
     @Autowired
     private AuthUserController authUserController;
+
     /**
      * 认证修改用户数据
      *
@@ -263,7 +265,7 @@ public class AuthUserService {
      *
      * @author kuangbin
      */
-    public Response addCompanyEmployee(Map<String, Object> param) throws Exception{
+    public Response addCompanyEmployee(Map<String, Object> param) throws Exception {
         Response result;
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
         param.put("adduid", userInfo.get("uid"));
@@ -287,19 +289,19 @@ public class AuthUserService {
             // 创建用户
             int count = userMapper.insertCompanyEmployee(param);
             userRedisApi.cachePhoneUid(param);
-            if (count >= 1){
+            if (count >= 1) {
                 // 将该用户加入单位资源池中
                 result = companyUserApi.addCompanyDept(param);
                 authUserController.getUserInfo(param);
-            }else {
+            } else {
                 result = Response.getResponseError();
             }
         } else {
             // 查询企业部门中是否有该员工
             result = companyUserApi.getDeptCount(param);
-            if (JzbDataType.getInteger(result.getResponseEntity())==1){
+            if (JzbDataType.getInteger(result.getResponseEntity()) == 1) {
                 result.setResponseEntity("此用户在单位中已存在!");
-            }else {
+            } else {
                 // 将该用户加入单位资源池中
                 result = companyUserApi.addCompanyDept(param);
             }

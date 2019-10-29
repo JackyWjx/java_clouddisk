@@ -20,7 +20,6 @@ import org.springframework.context.annotation.ComponentScan;
 public class JzbMediaServiceApplication {
     /**
      * 主入口
-     *
      * @param args
      */
     public static void main(String[] args) {

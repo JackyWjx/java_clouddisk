@@ -231,6 +231,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
 
         //---- begin media
         GATEWAY_WHITE_LIST.put("/JZB-MEDIA/media/upToCache", "");
+        GATEWAY_WHITE_LIST.put("/JZB-MEDIA/media/upToUeditor", "");
         GATEWAY_WHITE_LIST.put("/JZB-MEDIA/media/upDownload", "");
         //---- end media
 

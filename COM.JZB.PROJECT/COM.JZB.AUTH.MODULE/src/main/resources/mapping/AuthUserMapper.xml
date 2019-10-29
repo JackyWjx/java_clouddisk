@@ -311,7 +311,16 @@
 	    INSERT INTO
 	    tb_user_info ( uid, origin, college, education, likes, marriage, born, adduid, addtime, status)
         VALUES
-	    (#{uid},#{origin},#{college},#{education},#{likes},#{marriage},#{born},#{adduid},#{addtime},#{status});
+	    (#{uid},#{origin},#{college},#{education},#{likes},#{marriage},
+        <choose>
+            <when test=" born != null and born !=''">
+                ${born},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+	    #{adduid},#{addtime},#{status});
         INSERT INTO
         tb_user_key ( uid, keyid, ktid, addtime, status )
         VALUES

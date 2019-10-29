@@ -5,11 +5,14 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.base.RegionBaseApi;
+import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.TbCompanyProjectService;
 import com.jzb.org.util.SetPageSize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +23,8 @@ public class TbCompanyProjectController {
     @Autowired
     private TbCompanyProjectService tbCompanyProjectService;
 
+    @Autowired
+    private RegionBaseApi RegionBaseApi;
     /**
      *销售业主-公海-项目-数据查询 LBQ
      * @param param
@@ -48,6 +53,11 @@ public class TbCompanyProjectController {
                 //查询项目模块下的数据
                 List<Map<String, Object>> list = tbCompanyProjectService.getComProject(param);
                 //获取用户信息
+                for (int i = 0; i < list.size(); i++) {
+                    Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
+
+                    list.get(i).put("region",cityList.getResponseEntity());
+                }
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(list);
@@ -109,10 +119,9 @@ public class TbCompanyProjectController {
     public Response updateComProject(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"projectid"})) {
-                result = Response.getResponseError();
-            } else {
-              int count = tbCompanyProjectService.updateComProject(param);
+              List<Map<String, Object>> paramList = (List) param.get("list");
+
+              int count = tbCompanyProjectService.updateComProject(paramList);
                 if (count > 0) {
                     //存入用户信息
                     Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
@@ -122,7 +131,7 @@ public class TbCompanyProjectController {
                 } else {
                     result = Response.getResponseError();
                 }
-            }
+
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -130,4 +139,33 @@ public class TbCompanyProjectController {
         return result;
     }
 
+    /**
+     * 取消关联  根据项目id对项目表做修改
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/ComProject",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response ComProject(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            List<Map<String, Object>> paramList = (List) param.get("list");
+
+                int count = tbCompanyProjectService.ComProject(paramList);
+                if (count > 0) {
+                    //存入用户信息
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    PageInfo pageInfo = new PageInfo();
+                    //返回成功的响应消息
+                    result = Response.getResponseSuccess(userInfo);
+                } else {
+                    result = Response.getResponseError();
+                }
+
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }

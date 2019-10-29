@@ -117,6 +117,8 @@ public class CompanyController {
             if (code == JzbReturnCode.HTTP_404) {
                 // 缓存中没有就从数据库中查询
                 Map<String, Object> record = companyService.getEnterpriseData(param);
+                Response region = regionBaseApi.getRegionInfo(record);
+                record.put("region", region.getResponseEntity());
                 if (!JzbTools.isEmpty(record)) {
                     // 将查询出来的数据加入缓存
                     orgRedisServiceApi.cacheIdCompanyData(record);

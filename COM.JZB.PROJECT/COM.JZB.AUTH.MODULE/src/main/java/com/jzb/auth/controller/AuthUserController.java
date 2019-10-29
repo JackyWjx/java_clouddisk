@@ -69,10 +69,18 @@ public class AuthUserController {
         try {
             // 获取用户资料
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            if (JzbDataType.isEmpty(JzbDataType.getString(param.get("uid")))){
+                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            }
             Map<String, Object> resuMap = userService.getUserInfo(param);
             if (!JzbTools.isEmpty(resuMap)) {
-                comHasUserKey(resuMap);
+                if (!comHasUserKey(resuMap)){
+                    // 添加增加缓存必要的参数
+                    resuMap.put("token", "token");
+                    resuMap.put("timeout", "1800000");
+                    resuMap.put("phone",JzbDataType.getString(param.get("phone")));
+                    userRedisApi.cacheUserInfo(resuMap);
+                }
             }
             response = Response.getResponseSuccess(userInfo);
             response.setResponseEntity(userInfo);
