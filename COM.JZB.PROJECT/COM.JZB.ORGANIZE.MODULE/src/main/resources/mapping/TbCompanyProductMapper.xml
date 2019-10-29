@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCompanyProductMapper">
+
+
+    <!-- 添加企业产品 -->
+    <insert id="addCompanyProduct" parameterType="java.util.Map">
+
+        insert into tb_company_product
+        (cid,plid,ptype,pid,idx,weburl,manurl,ouid,limitday,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="cid!=null and cid!=''">
+                #{cid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="plid!=null and plid!=''">
+                #{plid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ptype!=null and ptype!=''">
+                #{ptype},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pid!=null and pid!=''">
+                #{pid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="weburl!=null and weburl!=''">
+                #{weburl},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="manurl!=null and manurl!=''">
+                #{manurl},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ouid!=null and ouid!=''">
+                #{ouid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="limitday!=null and limitday!=''">
+                #{limitday},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+</mapper>
