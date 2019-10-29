@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author
+ * @author chenzhengduan
  * 活动点赞（无登录）
  */
 @RestController
