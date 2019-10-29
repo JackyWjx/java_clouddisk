@@ -124,5 +124,16 @@ public class AdvertService {
         return advertMapper.insertAdvertData(param);
     }
 
-
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击删除后修改推广信息的状态
+     *
+     * @author kuangbin
+     */
+    public int removeAdvertData(Map<String, Object> param) {
+        // 加入修改时间
+        param.put("updtime", System.currentTimeMillis());
+        param.put("status", "4");
+        return advertMapper.deleteAdvertData(param);
+    }
 }
