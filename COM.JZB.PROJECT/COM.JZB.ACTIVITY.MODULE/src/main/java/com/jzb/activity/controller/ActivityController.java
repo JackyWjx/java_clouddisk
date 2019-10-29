@@ -179,8 +179,14 @@ public class ActivityController {
         Map<String, Object> userInfo = null;
         boolean flag = true;
         try {
-//            userInfo = (Map<String, Object>) params.get("userinfo");
-            if (params.get("actid") == null || JzbDataType.getString(params.get("actid")).equals("")) {
+            if (params.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) params.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger("1.0", "/activity/getDiscuss", "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger("1.0", "/activity/getDiscuss", "2", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if (JzbCheckParam.haveEmpty(params,new String[]{"actid"})) {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> list = newActivityService.getActivityDesc(params);
@@ -199,9 +205,10 @@ public class ActivityController {
             logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
         }
         if (userInfo != null) {
-            logger.info(JzbLoggerUtil.getApiLogger("1.0", "/operate/companyMethod/addCompanyMethod", "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            logger.info(JzbLoggerUtil.getApiLogger("1.0", "/activity/getDiscuss", "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
         } else {
-            logger.info(JzbLoggerUtil.getApiLogger("1.0", "/operate/companyMethod/addCompanyMethod", "2", "ERROR", "", "", "", "", "User Login Message"));
+            logger.info(JzbLoggerUtil.getApiLogger("1.0", "/activity/getDiscuss", "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }
