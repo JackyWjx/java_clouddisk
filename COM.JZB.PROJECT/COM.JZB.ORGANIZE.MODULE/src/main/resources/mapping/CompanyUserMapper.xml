@@ -165,7 +165,12 @@
         tb_company_info ci on ci.cid = cl.cid
         where
         cc.status = #{status}
-        <if test="region != null and region != ''">and cl.region = #{region}</if>
+        <if test="region != null and region != ''">
+            cl.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{region}
+            </foreach>
+        </if>
         <if test="cname != null and cname != ''">
             and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
         </if>
