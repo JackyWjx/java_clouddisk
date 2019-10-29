@@ -324,19 +324,13 @@ public class ActivityController {
         try {
 
             // 验证参数为空返回error
-            if (params.get("pagesize") == null || params.get("pageno") == null || params.get("keyword") == null) {
+            if (JzbCheckParam.haveEmpty(params,new String[]{"pageno","pagesize","keyword"})) {
 
                 response = Response.getResponseError();
 
             } else {
 
-                // 获取行数和页数
-                int rows = JzbDataType.getInteger(params.get("pagesize"));
-                int page = JzbDataType.getInteger(params.get("pageno"));
-
-                // 给param设置page and  rows
-                params.put("pageno", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
-                params.put("pagesize", rows);
+                JzbPageConvert.setPageRows(params);
 
                 // 模糊查询zongshu
                 int count = activityService.likeActivityCount(params);
