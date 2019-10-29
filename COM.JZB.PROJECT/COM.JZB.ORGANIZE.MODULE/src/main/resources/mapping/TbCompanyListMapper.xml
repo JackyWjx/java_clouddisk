@@ -11,7 +11,8 @@
               num.dictvalue,
               num.projectname,
               num.contamount,
-              num.ac
+              num.ac,
+              num.checkamount
               from
               (select
               a.cname,
@@ -22,7 +23,8 @@
               a.relperson,   /*联系人*/
               b.dictvalue,   /*客户等级*/
               c.projectname,    /*项目名称*/
-              d.contamount      /*预计合同金额*/
+              d.contamount,
+              d.checkamount              /*预计合同金额*/
               from
               tb_company_list a
               Inner JOIN
@@ -56,7 +58,8 @@
               num.dictvalue,
               num.projectname,
               num.contamount,
-              num.ac
+              num.ac,
+              num.checkamount
               from
               (select
               a.cname,
@@ -67,7 +70,8 @@
               a.relperson,   /*联系人*/
               b.dictvalue,   /*客户等级*/
               c.projectname,    /*项目名称*/
-              d.contamount      /*预计合同金额*/
+              d.contamount,      /*预计合同金额*/
+              d.checkamount
               from
               tb_company_list a
               Inner JOIN
