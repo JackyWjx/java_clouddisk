@@ -80,9 +80,40 @@ public class MediaController {
             response = !JzbTools.isEmpty(map) ? Response.getResponseSuccess() : Response.getResponseError();
             response.setResponseEntity(map);
         }catch (Exception e){
-            e.printStackTrace();
+            JzbTools.logError(e);
             response =  Response.getResponseError();
         }
         return response;
     }
+
+
+    /**
+     *
+     * @param
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/upToUeditor" ,method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Map< String , Object > upToUeditor(@RequestBody MultipartFile upfile){
+        Map< String , Object > result =  new HashMap<>();
+        try{
+            Map< String , Object >  map=   mediaService.saveMedia(upfile,"udetoir");
+            result.put("url","http://192.168.0.251:8030"+map.get("filepath").toString());
+            result.put("state","SUCCESS");
+            result.put("code",0);
+            result.put("type",map.get("fileFormat"));
+            result.put("title",map.get("filename"));
+            result.put("size",map.get("filesize"));
+            result.put("original",map.get("filename"));
+        }catch (Exception e){
+            result.put("state","ERROR");
+            result.put("code",1);
+            e.printStackTrace();
+            result =  null;
+        }
+        return result;
+    }
 }
+

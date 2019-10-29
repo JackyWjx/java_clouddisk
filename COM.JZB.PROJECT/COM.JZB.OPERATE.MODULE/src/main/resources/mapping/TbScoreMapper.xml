@@ -14,7 +14,7 @@
         <choose><when test="utype != null">and utype = #{utype}</when></choose>
         <choose><when test="addtime != null">and addtime = #{addtime}</when></choose>
         <choose><when test="updtime != null">and updtime = #{updtime}</when></choose>
-        limit #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--  查询积分日志   -->
@@ -26,7 +26,7 @@
         <choose><when test="optid != null">and optid = #{optid}</when></choose>
         <choose><when test="opttime != null">and opttime = #{opttime}</when></choose>
         <choose><when test="score != null">and score = #{score}</when></choose>
-        limit #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--  查询积分规则总数   -->
@@ -58,7 +58,7 @@
         or ruleid like CONCAT('%',#{keys},'%')
         or cname like CONCAT('%',#{keys},'%')
         or optid like CONCAT('%',#{keys},'%')
-        limit #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--  模糊查询积分日志   -->
@@ -67,7 +67,7 @@
         or cid like CONCAT('%',#{keys},'%')
         or pid like CONCAT('%',#{keys},'%')
         or uid like CONCAT('%',#{keys},'%')
-        limit #{rows}  offset #{page}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--  模糊查询积分规则总数   -->
