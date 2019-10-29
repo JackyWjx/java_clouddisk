@@ -207,7 +207,7 @@
     </insert>
 
     <!-- 查询合同 -->
-    <select id="quertCompantContract" parameterType="java.util.Map">
+    <select id="quertCompantContract" parameterType="java.util.Map" resultType="java.util.List">
         select contid,cname,cid,projectid,typeid,tempid,contamount,checkamount,paytype,paydesc,createtime,contstime,contetime,contparam,buildstime,buildetime,accountname,accountbank,accountno,adduid,addtime,upduid,updtime,status,summary
         from tb_company_contract where status='1' and cid=#{cid} limit #{pagesize} offset #{pageno}
     </select>
