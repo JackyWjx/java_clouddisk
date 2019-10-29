@@ -44,7 +44,7 @@ public class TbTenderResultDescController {
                     map.put("content",map.get("content").toString().replace("\\n",""));
                 }
                 // 定义返回结果
-                result = Response.getResponseSuccess((Map<String, Object>) params.get("userinfo"));
+                result = Response.getResponseSuccess();
                 result.setResponseEntity(map);
             }
 

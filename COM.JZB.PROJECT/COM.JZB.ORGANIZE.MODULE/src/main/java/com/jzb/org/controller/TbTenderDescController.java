@@ -38,8 +38,7 @@ public class TbTenderDescController {
                 result = Response.getResponseError();
             } else {
                 // 定义返回结果
-
-                result = Response.getResponseSuccess((Map<String, Object>) params.get("userinfo"));
+                result = Response.getResponseSuccess();
                 Map<String, Object> map = tenderDescService.getTenderDesc(params);
                 map.put("opendate", JzbDateUtil.toDateString(JzbDataType.getLong(map.get("opendate")),JzbDateStr.yyyy_MM_dd));
                 map.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(map.get("addtime")),JzbDateStr.yyyy_MM_dd));

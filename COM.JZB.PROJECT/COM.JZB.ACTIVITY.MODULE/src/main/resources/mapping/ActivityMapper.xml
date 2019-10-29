@@ -141,7 +141,7 @@
     <!--查询评论详情3条信息 -->
     <select id="findParticularsList" resultType="java.util.Map">
        select
-       id,actid,uid,disid,context,addtime,reacted
+       id,actid,uid,disid,context,addtime,reactid
        from
        tb_activity_discuss
        where
@@ -272,11 +272,11 @@
          id = #{id}
     </update>
     <!-- 更新评论次数 -->
-    <update id="updateComments" parameterType="java.util.Map">
+    <update id="updateComment" parameterType="java.util.Map">
         update
         tb_activity_list
         set
-        comments = #{comments}
+        comments = comments+1
         where
         actid = #{actid}
     </update>
@@ -321,7 +321,7 @@
 
     <!-- 添加评论-->
     <insert id="addActivityDiscuss" parameterType="java.util.Map">
-        insert into tb_activity_discuss(actid,disid,uid,context,reacted,addtime,status,summany) values
+        insert into tb_activity_discuss(actid,disid,uid,context,reactid,addtime,status,summary) values
         (
         #{actid},
         #{disid},
@@ -335,8 +335,8 @@
         </choose>
         #{context},
         <choose>
-            <when test="reacted!=null and reacted!=''">
-                #{reacted},
+            <when test="reactid!=null and reactid!=''">
+                #{reactid},
             </when>
             <otherwise>
                 '0',
@@ -345,8 +345,8 @@
         #{addtime},
         #{status},
         <choose>
-            <when test="summany!=null and summany!=''">
-                #{summany}
+            <when test="summary!=null and summary!=''">
+                #{summary}
             </when>
             <otherwise>
                 NULL
