@@ -30,7 +30,7 @@
         l.photo,
         l.authid,
         l.ouid,
-        l.modtime,
+        l.updtime,
         l.cname,
         l.logo,
         i.curl,
@@ -127,7 +127,7 @@
         <if test="cname!= null ">cname = #{cname} ,</if>
         <if test="uscc!= null ">uscc = #{uscc} ,</if>
         <if test="region!= null ">region = #{region} ,</if>
-        modtime = #{modtime},
+        updtime = #{modtime},
         authid = ${authid}
         WHERE
         cid=#{cid}
@@ -294,8 +294,8 @@
     <!--新增企业和企业信息表-->
     <insert id="insertCompany">
         INSERT into tb_company_list
-        (cid,cname,reguid,regtime,manager,logo,relphone,relmail,region,status,authid,summary) VALUES
-        (#{cid},#{cname},#{uid},#{regtime},#{manager},#{logo},#{phone},#{relmail},#{region},'1',#{authid},#{summary});
+        (cid,cname,reguid,regtime,manager,logo,relphone,relmail,region,uscc,status,authid,summary) VALUES
+        (#{cid},#{cname},#{uid},#{regtime},#{manager},#{logo},#{phone},#{relmail},#{region},#{uscc},'1',#{authid},#{summary});
         INSERT into
         tb_company_info(cid,limitday,range,ctype,legaler,capital,birthday,license,address,ouid,updtime)VALUES
         (#{cid},
