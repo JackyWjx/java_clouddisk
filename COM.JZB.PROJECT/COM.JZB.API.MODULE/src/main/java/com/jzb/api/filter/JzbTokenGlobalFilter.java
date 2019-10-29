@@ -198,6 +198,8 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/projectType/getProjectMethodList", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/tender/getTenderList", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/tenderResult/getTenderResultList", "");
+        GATEWAY_WHITE_LIST.put("/JZB-ORG/org/tenderResultDesc/getTenderResultDesc", "");
+        GATEWAY_WHITE_LIST.put("/JZB-ORG/org/tenderDesc/getTenderDesc", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/company/importCompanyProject", "");
 
         //---- end org
