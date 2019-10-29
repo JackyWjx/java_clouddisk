@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCompanyListMapper">
+
+    <select id="getCompanyList" parameterType="java.util.Map" resultType="java.util.Map">
+              select
+              num.cname,
+              num.relperson,
+              num.dictvalue,
+              num.projectname,
+              num.contamount,
+              num.ac
+              from
+              (select
+              a.cname,
+                a.cid as ac,
+                b.cid as bc,  /*业主名称*/
+                c.cid as cc,  /*业主名称*/
+                d.cid as dc,   /*业主名称*/
+              a.relperson,   /*联系人*/
+              b.dictvalue,   /*客户等级*/
+              c.projectname,    /*项目名称*/
+              d.contamount      /*预计合同金额*/
+              from
+              tb_company_list a
+              Inner JOIN
+              tb_company_property b
+              on
+              a.cid = b.cid
+              LEFT JOIN
+              tb_company_project c
+              on
+              c.cid = a.cid and c.cid = b.cid
+              LEFT JOIN
+              tb_company_contract d
+              on
+              d.cid = a.cid and d.cid = c.cid
+              where b.typeid = 't111111' ) as num where ac is not null and bc is not null and cc is not null and dc is not null
+              limit
+              #{pagesize}
+              offset
+              #{pageno}
+    </select>
+
+
+         <select id="getCount" parameterType="java.util.Map" resultType="int">
+
+             select
+             count(1)
+             from
+             (select
+              num.cname,
+              num.relperson,
+              num.dictvalue,
+              num.projectname,
+              num.contamount,
+              num.ac
+              from
+              (select
+              a.cname,
+                a.cid as ac,
+                b.cid as bc,  /*业主名称*/
+                c.cid as cc,  /*业主名称*/
+                d.cid as dc,   /*业主名称*/
+              a.relperson,   /*联系人*/
+              b.dictvalue,   /*客户等级*/
+              c.projectname,    /*项目名称*/
+              d.contamount      /*预计合同金额*/
+              from
+              tb_company_list a
+              Inner JOIN
+              tb_company_property b
+              on
+              a.cid = b.cid
+              LEFT JOIN
+              tb_company_project c
+              on
+              c.cid = a.cid and c.cid = b.cid
+              LEFT JOIN
+              tb_company_contract d
+              on
+              d.cid = a.cid and d.cid = c.cid
+              where b.typeid = 't111111' ) as num where ac is not null and bc is not null and cc is not null and dc is not null) as num
+         </select>
+</mapper>
