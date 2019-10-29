@@ -88,4 +88,5 @@
               d.cid = a.cid and d.cid = c.cid
               where b.typeid = 't111111' ) as num where ac is not null and bc is not null and cc is not null and dc is not null) as num
          </select>
+    
 </mapper>
