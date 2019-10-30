@@ -34,7 +34,7 @@ public interface ActivityMapper {
      * @param param
      * @return List<Map < String, Object>> 返回数组
      */
-    Map<String, Object> queryActivityPhoto(Map<String, Object> param);
+    List<Map<String, Object>> queryActivityPhoto(Map<String, Object> param);
 
     /**
      * 查询图片推广信息

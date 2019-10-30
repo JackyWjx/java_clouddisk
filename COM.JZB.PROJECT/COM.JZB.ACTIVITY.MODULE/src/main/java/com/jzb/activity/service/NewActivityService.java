@@ -43,7 +43,7 @@ public class NewActivityService {
      * @param param
      * @return
      */
-    public Map<String, Object> queryActivityPhoto(Map<String, Object> param) {
+    public List<Map<String, Object>> queryActivityPhoto(Map<String, Object> param) {
         return activityMapper.queryActivityPhoto(param);
     }
 
