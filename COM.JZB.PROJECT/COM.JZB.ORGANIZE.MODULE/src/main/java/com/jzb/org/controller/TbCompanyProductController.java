@@ -28,6 +28,11 @@ public class TbCompanyProductController {
      */
     private final static Logger logger = LoggerFactory.getLogger(TbCompanyProductController.class);
 
+    /**
+     * 添加企业产品
+     * @param params
+     * @return
+     */
     @RequestMapping(value = "/addCompanyProduct", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
@@ -45,7 +50,7 @@ public class TbCompanyProductController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(params, new String[]{"cid", "plid", "pid"})) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"list"})) {
                 logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", "参数为空"));
                 response = Response.getResponseError();
             } else {

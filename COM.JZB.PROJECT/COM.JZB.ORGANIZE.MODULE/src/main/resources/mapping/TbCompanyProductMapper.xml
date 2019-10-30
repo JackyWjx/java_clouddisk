@@ -6,123 +6,124 @@
 
 
     <!-- 添加企业产品 -->
-    <insert id="addCompanyProduct" parameterType="java.util.Map">
-
+    <insert id="addCompanyProduct" parameterType="java.util.List">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
         insert into tb_company_product
         (cid,plid,ptype,pid,idx,weburl,manurl,ouid,limitday,addtime,upduid,updtime,status,summary)
         values (
         <choose>
-            <when test="cid!=null and cid!=''">
-                #{cid},
+            <when test="item.cid!=null and item.cid!=''">
+                #{item.cid},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="plid!=null and plid!=''">
-                #{plid},
+            <when test="item.plid!=null and item.plid!=''">
+                #{item.plid},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="ptype!=null and ptype!=''">
-                #{ptype},
+            <when test="item.ptype!=null and item.ptype!=''">
+                #{item.ptype},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="pid!=null and pid!=''">
-                #{pid},
+            <when test="item.pid!=null and item.pid!=''">
+                #{item.pid},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="idx!=null and idx!=''">
-                #{idx},
+            <when test="item.idx!=null and item.idx!=''">
+                #{item.idx},
+            </when>
+            <otherwise>
+                (select count(1)+#{index} from tb_company_product),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.weburl!=null and item.weburl!=''">
+                #{item.weburl},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="weburl!=null and weburl!=''">
-                #{weburl},
+            <when test="item.manurl!=null and item.manurl!=''">
+                #{item.manurl},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="manurl!=null and manurl!=''">
-                #{manurl},
+            <when test="item.ouid!=null and item.ouid!=''">
+                #{item.ouid},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="ouid!=null and ouid!=''">
-                #{ouid},
+            <when test="item.limitday!=null and item.limitday!=''">
+                #{item.limitday},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="limitday!=null and limitday!=''">
-                #{limitday},
+            <when test="item.addtime!=null and item.addtime!=''">
+                #{item.addtime},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="addtime!=null and addtime!=''">
-                #{addtime},
+            <when test="item.upduid!=null and item.upduid!=''">
+                #{item.upduid},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="upduid!=null and upduid!=''">
-                #{upduid},
+            <when test="item.updtime!=null and item.updtime!=''">
+                #{item.updtime},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="updtime!=null and updtime!=''">
-                #{updtime},
+            <when test="item.status!=null and item.status!=''">
+                #{item.status},
             </when>
             <otherwise>
                 NULL,
             </otherwise>
         </choose>
         <choose>
-            <when test="status!=null and status!=''">
-                #{status},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="summary!=null and summary!=''">
-                #{summary}
+            <when test="item.summary!=null and item.summary!=''">
+                #{item.summary}
             </when>
             <otherwise>
                 NULL
             </otherwise>
         </choose>
-        )
+        );
+        </foreach>
     </insert>
 </mapper>

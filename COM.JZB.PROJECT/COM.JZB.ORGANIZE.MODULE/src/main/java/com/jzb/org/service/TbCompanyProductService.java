@@ -19,6 +19,6 @@ public class TbCompanyProductService {
      * @return
      */
     public int addCompanyProduct(Map<String, Object> param){
-        return tbCompanyProductMapper.addCompanyProduct(param);
+        return tbCompanyProductMapper.addCompanyProduct(param.get("list"));
     }
 }

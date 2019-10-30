@@ -3,6 +3,7 @@ package com.jzb.org.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -14,5 +15,5 @@ public interface TbCompanyProductMapper {
      * @param param
      * @return
      */
-    int addCompanyProduct(Map<String, Object> param);
+    int addCompanyProduct(List<Map<String, Object>> param);
 }
