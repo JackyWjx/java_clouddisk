@@ -17,6 +17,7 @@
         domdesc,
         department,
         effective,
+        context,
         domurl,
         idx,
         uid,
@@ -40,6 +41,7 @@
         <if test="typeid!=null and typeid!=''">
             and typeid=#{typeid}
         </if>
+        order by id desc
         limit #{pagesize} offset #{pageno}
     </select>
 
@@ -60,6 +62,7 @@
         idx,
         uid,
         uname,
+        context,
         createtime,
         pagekey,
         pagedesc,
@@ -82,6 +85,7 @@
         <if test="typeid!=null and typeid!=''">
             and typeid = #{typeid}
         </if>
+        order by id desc
     </select>
 
 
@@ -140,7 +144,7 @@
     <insert id="insertSolutionDom" parameterType="java.util.Map">
         INSERT INTO
         tb_solution_document
-        (domid, typeid, domcode, cname, photo, bigphoto, context, idx, uid, uname, createtime, keys,
+        (domid, typeid, domcode, domdesc, cname, photo, bigphoto, context, idx, uid, uname, createtime, keys,
         visits, forwards, downloads, price, adduid, addtime, status, summary)
         VALUES
         (
@@ -161,6 +165,7 @@
                 null,
             </otherwise>
         </choose>
+        #{domdesc},
         #{cname},
         #{photo},
         <choose>
@@ -283,6 +288,7 @@
         where
         status = ${status}
         <if test="starttime != null and starttime != ''">and addtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and addtime &lt;= #{endtime}</if>
         <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
     </select>
 
@@ -319,6 +325,7 @@
         WHERE
         status = ${status}
         <if test="starttime != null and starttime != ''">and addtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and addtime &lt;= #{endtime}</if>
         <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
     </select>
 
