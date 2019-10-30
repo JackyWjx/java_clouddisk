@@ -5,7 +5,9 @@ import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.message.message.MessageQueue;
+import com.jzb.message.service.SendMessageSercver;
 import com.jzb.message.service.ShortMessageService;
+import com.jzb.message.config.MqttGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,15 @@ public class ShortSessageController {
     @Autowired
     private ShortMessageService smsService;
 
-    /**
-     * 消息中心 发送接口
+    @Autowired
+    private SendMessageSercver sendMessageSercver;
+
+
+    /***
+     * 信息平台消息转发
+     *
+     * checkcode  = appId + secret + groupId + title + userType + receiver + checkCode
+     * param  用户参数
      */
     @RequestMapping(value = "/sendShortMsg", method = RequestMethod.POST)
     @ResponseBody
@@ -51,11 +60,10 @@ public class ShortSessageController {
             Map<String , Object>  checkCode = smsService.queryMsgOrganizeCheckcode(appId);
             logger.info("秘钥appId and secret===================>>"+appId+"==============>>"+ secret);
             param.put("cid",checkCode.get("cid"));
-
             String md5 = JzbDataCheck.Md5(appId + secret + groupId + title + userType + receiver + checkCode.get("checkcode").toString());
             logger.info("MD5 ===========>>" + md5 );
             if (md5.equals(param.get("checkcode"))) {
-                Map<String , Object> msgMap = smsService.sendShortMsg(param,checkCode);
+                Map<String , Object> msgMap = sendMessageSercver.SendMessage(param,checkCode);
                 result = JzbDataType.getInteger(msgMap.get("sendstatus")) == 1 ? Response.getResponseSuccess() : Response.getResponseError();
                 if(msgMap.containsKey("status")){
                     msgMap.remove("receiver");
@@ -78,6 +86,9 @@ public class ShortSessageController {
 
     /**
      * 根据业务id删除待发送消息队列
+     *
+     * checkCode = appId + secret + msgtag + userType + checkCode
+     * param  用户参数
      */
     @RequestMapping(value = "/cancelSend", method = RequestMethod.POST)
     @ResponseBody

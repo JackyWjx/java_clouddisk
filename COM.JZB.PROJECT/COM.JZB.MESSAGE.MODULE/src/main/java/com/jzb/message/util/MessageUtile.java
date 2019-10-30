@@ -30,6 +30,10 @@ public class MessageUtile {
 
     /**
      *  微信 添加至发送队列
+     *
+     *  receive 接受者
+     *  map 合并配置  temp 模板  config  配置
+     *  dataMap 基本数据
      */
     public static boolean saveWeChatInfo(String receive,Map<String , Object> map,Map<String , Object> dataMap){
 
@@ -38,13 +42,37 @@ public class MessageUtile {
 
     /**
      *  平台 添加至发送队列
+     *
+     *  receive 接受者
+     *  map 合并配置  temp 模板  config  配置
+     *  dataMap 基本数据
      */
     public static boolean saveSystemInfo(String receive,Map<String , Object> map,Map<String , Object> dataMap){
-        return true;
+        boolean result ;
+        try{
+            logger.info("平台接收人=======>>"+receive);
+            logger.info("平台模板  =======>>"+map.get("temp").toString());
+            logger.info("平台推送服务器  =======>>"+map.get("config").toString());
+            map.put("receive",receive);
+            map.put("para",dataMap);
+            // 添加至发送队列
+            MssageInfo info = new ShortMessage(map);
+            MessageQueue.setWaitSendQueue(info);
+            logger.info("添加至发送队列");
+            result = true;
+        }catch (Exception e){
+            result =  false;
+            JzbTools.logError(e);
+        }
+        return result;
     }
 
     /**
      *  邮件 添加至发送队列
+     *
+     *  receive 接受者
+     *  map 合并配置  temp 模板  config  配置
+     *  dataMap 基本数据
      */
     public static boolean saveMeilInfo(String receive,Map<String , Object> map,Map<String , Object> dataMap){
         boolean result ;
@@ -68,6 +96,10 @@ public class MessageUtile {
 
     /**
      *  短信 添加至发送队列
+     *
+     *  receive 接受者
+     *  map 合并配置  temp 模板  config  配置
+     *  dataMap 基本数据
      */
     public static boolean saveMessageInfo(String receive,Map<String , Object> map,Map<String , Object> dataMap){
         boolean result ;
@@ -89,8 +121,36 @@ public class MessageUtile {
         return result;
     }
 
+    /**
+     * 找到指定消息类型  的模板参数
+     *
+     * list  模板
+     * @return
+     */
+    public  static Map<String , Object> templeMap(List<Map<String , Object>>  list){
+        Map<String , Object> map  = new HashMap<>();
+        for(int i= 0 ; i< list.size() ;i++){
+            if(list.get(i).get("msgtype").toString().equals("1")){
+                map.put("1",list.get(i).get("context"));
+            }else if(list.get(i).get("msgtype").toString().equals("2")){
+                map.put("2",list.get(i).get("context"));
+            }else if(list.get(i).get("msgtype").toString().equals("4")){
+                map.put("4",list.get(i).get("context"));
+            }else if(list.get(i).get("msgtype").toString().equals("8")){
+                map.put("8",list.get(i).get("context"));
+            }
+        }
+        return  map;
+    }
+
+
+
+
     /***
-     *  分类
+     *  将模板 和配置 按照消息类型 分类使用
+     *
+     *  configList 配置
+     *  tempList 以分类模板
      */
     public static Map<String , Object> msgTypeGroup(List<Map<String , Object>> configList ,Map<String , Object> tempList){
         Map<String , Object> map  = new HashMap<>();
@@ -122,9 +182,14 @@ public class MessageUtile {
     }
 
     /**
-     *  替换发送参数  用户
+     *  替换发送参数
+     *
+     *  {"code":"123"} 形式替换
+     *  para 模板参数
+     *  sendPara  用户发送参数
+     *  msgtype 消息类型
      */
-    public static Map<String , Object> setUpParaByUser(String para , String sendPara,Map<String , Object> sendMap){
+    public static Map<String , Object> setUpParaByUser(String para , String sendPara,String msgtype){
         Map<String , Object> map = new HashMap<>();
         try{
             if(!JzbTools.isEmpty(para)){
@@ -139,9 +204,9 @@ public class MessageUtile {
                     smsParaJson.remove(code);
                     smsParaJson.accumulate(code,smsJson.getString(code));
                 }
-                map.put("1",smsParaJson);
+                map.put(msgtype,smsParaJson);
             }else{
-                map.put("1",sendPara);
+                map.put(msgtype,sendPara);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -151,7 +216,41 @@ public class MessageUtile {
 
 
     /**
+     *  替换发送参数
+     *
+     *  张三{{name}}  正则替换
+     *  para 模板参数
+     *  sendPara  用户发送参数
+     *  msgtype 消息类型
+     */
+    public static Map<String , Object> setUpParaByMeil(String para , String sendPara,String msgtype){
+        Map<String , Object> map = new HashMap<>();
+        try{
+            if(!JzbTools.isEmpty(para)){
+                JSONObject paraJson =  JSONObject.fromObject(sendPara);
+                String regex = "\\{\\{([^}])*\\}\\}";
+                Pattern compile = Pattern.compile(regex);
+                Matcher matcher = compile.matcher(para);
+                while(matcher.find()){
+                    String group = matcher.group();
+                    para = para.replace(group,paraJson.getString(group.replace("{","").replace("}","")));
+                }
+                map.put(msgtype,para);
+            }else{
+                map.put(msgtype,para);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  map;
+    }
+
+    /**
      *  替换发送参数  用户组
+     *
+     *  list 模板类型
+     *  sendPara  用户参数
+     *  sendMap 用户常用参数配置 如username 张三 sex 男
      */
     public static Map<String , Object> setUpParaByGroupid(List<Map<String , Object>> list , String sendPara,Map<String , Object> sendMap){
         Map<String , Object> map = new HashMap<>();
@@ -198,7 +297,6 @@ public class MessageUtile {
                         }
                         map.put("2",context);
                     }else {
-                        // 添加输出队列
                         map.put("2",context);
                     }
                 } else if(JzbDataType.getInteger(list.get(i).get("msgtype")) == 4){
@@ -213,6 +311,8 @@ public class MessageUtile {
 
     /**
      *  获取权限
+     *
+     *  msgType 权限
      */
     public static int encryptionMsgType(String msgType){
         int msgtype = 0;
@@ -234,6 +334,8 @@ public class MessageUtile {
 
     /**
      * 解析权限
+     *
+     * msgType 权限
      */
     public static String decryptMsgType(int msgType){
         String result ="";
@@ -256,125 +358,5 @@ public class MessageUtile {
             result = null;
         }
         return result;
-    }
-
-    /**
-     *  获取邮件发送人
-     */
-    public static List<String> sendMailList(List<Map<String , Object>> list){
-        List<String> resultlist =  new ArrayList<>();
-        try{
-            for(int i =0 ;i< list.size();i++){
-                String[] str = list.get(i).get("tarobj").toString().split(",");
-                for(int k = 0 ;k <str.length ;k++){
-                    resultlist.add(str[k]);
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            list = null;
-        }
-        return  resultlist;
-    }
-
-    /**
-     * 发送的电话号码一次不能超过一千个 分割
-     */
-    public static List<String> sendPhoneLengthString(String phone){
-        List<String> list =  new ArrayList<>();
-        try{
-            int count  = 999;
-            String strPhone = "";
-            String[] str = phone.split(",");
-            if(str.length > 999){
-                for(int i=0;i<str.length;i++){
-                    if(i == count-1){
-                        strPhone = strPhone +","+ str[i];
-                        count = count + 999;
-                        if(strPhone.indexOf(",") == 0){
-                            strPhone = strPhone.substring(1,strPhone.length());
-                        }
-                        list.add(strPhone);
-                        strPhone = "";
-                    }else{
-                        strPhone =  strPhone +","+ str[i];
-                    }
-                }
-            }else{
-                list.add(phone);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            list = null;
-        }
-        return  list;
-    }
-
-    /***
-     * 发送的电话号码一次不能超过一千个 分割
-     */
-    public static List<String> sendPhoneLengthMap(Map<String , Object> list){
-        List<String> resultList =  new ArrayList<>();
-        try{
-            int count  = 999;
-            String strPhone = "";
-            String[] str = list.get("tarobj").toString().split(",");
-            for(int k = 0; k<str.length;k++){
-                if(k == count-1){
-                    strPhone = strPhone +","+ str[k];
-                    count = count + 999;
-                    if(strPhone.indexOf(",") == 0){
-                        strPhone = strPhone.substring(1,strPhone.length());
-                    }
-                    strPhone = "";
-                }else{
-                    strPhone =  strPhone +","+ str[k];
-                    if(k == str.length - 1){
-                        strPhone =  strPhone.substring(1,strPhone.length());
-                        resultList.add(strPhone);
-                        strPhone = "";
-                    }
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            resultList = null;
-        }
-        return  resultList;
-    }
-
-    /**
-     * 发送的电话号码一次不能超过一千个 分割
-     */
-    public static List<String> sendPhoneLengthList(List<Map<String , Object>> list){
-        List<String> resultList =  new ArrayList<>();
-        try{
-            int count  = 999;
-            String strPhone = "";
-            for(int i=0;i<list.size();i++){
-                String[] str = list.get(i).get("tarobj").toString().split(",");
-                for(int k = 0; k<str.length;k++){
-                    if(k == count-1){
-                        strPhone = strPhone +","+ str[k];
-                        count = count + 999;
-                        if(strPhone.indexOf(",") == 0){
-                            strPhone = strPhone.substring(1,strPhone.length());
-                        }
-                        strPhone = "";
-                    }else{
-                        strPhone =  strPhone +","+ str[k];
-                        if(i == list.size() - 1){
-                            strPhone =  strPhone.substring(1,strPhone.length());
-                            resultList.add(strPhone);
-                            strPhone = "";
-                        }
-                    }
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            resultList = null;
-        }
-        return  resultList;
     }
 }

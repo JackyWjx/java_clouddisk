@@ -52,8 +52,8 @@
         #{status},
         <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>,
         #{isp},
-        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>,
-        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>,
+        <choose><when test="adduid != null">#{adduid}</when><otherwise>null</otherwise></choose>,
+        <choose><when test="upduid != null">#{upduid}</when><otherwise>null</otherwise></choose>,
         #{addtime},
         #{updtime});
     </insert>
