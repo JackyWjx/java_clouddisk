@@ -76,6 +76,7 @@ public class ActivityController {
                     Response region = userRedisApi.getCacheUserInfo(params);
                     list.get(i).put("photoList",newActivityService.queryActivityPhoto(params));
                     list.get(i).put("userInfo",region.getResponseEntity());
+                    list.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
                 }
                 // 获取总数
                 int count = activityService.queryActivityCount();
