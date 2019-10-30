@@ -481,25 +481,13 @@ public class ActivityController {
     public Response getActivityList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            // 加入查询状态
-            param.put("status", "1");
-            String startTime = JzbDataType.getString(param.get("starttime"));
-            // 判断是否有开始时间的查询条件
-            if (!JzbDataType.isEmpty(startTime)) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = simpleDateFormat.parse(startTime);
-                long time = date.getTime();
-                // 将时间转化为时间戳存入参数中
-                param.put("starttime", time);
+            if (!JzbDataType.isEmpty(JzbDataType.getLong(param.get("starttime")))){
+                long startTime = JzbDataType.getLong(param.get("starttime"));
+                param.put("starttime", startTime);
             }
-            String endTime = JzbDataType.getString(param.get("endtime"));
-            // 判断是否有结束时间的查询条件
-            if (!JzbDataType.isEmpty(endTime)) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = simpleDateFormat.parse(endTime);
-                long time = date.getTime();
-                // 将时间转化为时间戳存入参数中
-                param.put("endtime", time);
+            if (!JzbDataType.isEmpty(JzbDataType.getLong(param.get("endtime")))){
+                long endTime = JzbDataType.getLong(param.get("endtime"));
+                param.put("endtime", endTime);
             }
             // 获取前端传来的总数
             int count = JzbDataType.getInteger(param.get("count"));
