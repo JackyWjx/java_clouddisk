@@ -46,7 +46,7 @@ public class TbCompanyCommonController {
         Response result;
         try {
             // 如果指定参数为空的话返回error
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "count", "uid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "count"})) {
                 result = Response.getResponseError();
             } else {
 
