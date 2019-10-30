@@ -83,14 +83,15 @@ public class TbCityController {
 //
 
     /**
-     * 获取省市县
+     * 获取省市县   (淘汰)
+     *
      * @param params
      * @return
      */
-    @RequestMapping(value = "/getCityList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getCityListJon", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public Response getCityList(@RequestBody(required = false) Map<String, Object> params) {
+    public Response getCityListJon(@RequestBody(required = false) Map<String, Object> params) {
         Response result;
         try {
             // 结果集
@@ -201,7 +202,12 @@ public class TbCityController {
             // 定义返回结果
             result = Response.getResponseSuccess();
             map11.put(cid, resultMap.get(cid));
-            map11.put("list", resultMap.get("list").get(0).get("list"));
+            if (resultMap.get("list") != null) {
+                map11.put("list", resultMap.get("list").get(0).get("list"));
+            } else {
+                map11.put("list", resultMap.get("list"));
+            }
+
             result.setResponseEntity(map11);
 
         } catch (Exception e) {
@@ -214,7 +220,86 @@ public class TbCityController {
     }
 
     /**
+     * 获取省市县
+     *
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/getCityList", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Response getCityJson(@RequestBody(required = false) Map<String, Object> params) {
+        Response response;
+        try {
+
+            // 结果集
+            List<Map<String, Object>> list = tbCityService.getCityList(params);
+            // 省List
+            List<Map<String, Object>> provinceList = new ArrayList<>();
+            // 返回格式map
+            Map<String, Object> provinceCodeMap = new HashMap<>();
+            // 用来做唯一储存
+            Map<String, Object> listMap = new HashMap<>();
+            // 获取所有省
+            for (int i = 0, l = list.size(); i < l; i++) {
+                // 省的记录判断
+                if (listMap.get(list.get(i).get("pcode").toString()) == null && list.get(i).get("spell") != null && list.get(i).get("city") == null) {
+                    // 存入map
+                    listMap.put(list.get(i).get("pcode").toString(), list.get(i));
+                    provinceList.add((Map<String, Object>) listMap.get(list.get(i).get("pcode").toString()));
+                }
+            }
+
+            for (int i = 0, l = provinceList.size(); i < l; i++) {
+//            建Citylist
+                List<Map<String, Object>> cityList = new ArrayList<>();
+                // 储存City
+                List<Map<String, Object>> cityListNew = new ArrayList<>();
+
+                Map<String, Object> cityMap = new HashMap<>();
+
+                // 存储唯一city
+                Map<String, Object> cityMapNew = new HashMap<>();
+
+                provinceCodeMap.put(provinceList.get(i).get("creaid").toString(), cityListNew);
+                for (int k = 0, j = list.size(); k < j; k++) {
+                    if (list.get(k).get("spell") != null && list.get(k).get("city") != null && !cityMapNew.containsKey(list.get(k).get("pcode").toString() + list.get(k).get("ccode")) && list.get(k).get("pcode").toString().equals(provinceList.get(i).get("pcode").toString())) {
+                        cityMapNew.put(list.get(k).get("pcode").toString() + list.get(k).get("ccode"), "1");
+                        if (!cityList.contains(list.get(k)) && list.get(k).get("spell") != null) {
+                            cityList.add(list.get(k));
+
+                            Map<String, Object> countyMap = new HashMap<>();
+                            List<Map<String, Object>> countyList = new ArrayList<>();
+                            for (int q = 0, w = list.size(); q < w; q++) {
+                                if (list.get(q).get("tcode") != null && list.get(q).get("pcode").equals(cityList.get(cityList.size() - 1).get("pcode")) && list.get(q).get("ccode").equals(cityList.get(cityList.size() - 1).get("ccode"))) {
+                                    countyList.add(list.get(q));
+                                    countyMap.put("list", countyList);
+                                }
+                            }
+                            List<Map<String, Object>> countyList1 = new ArrayList<>();
+                            countyList1.add(countyMap);
+                            cityMap.put(cityList.get(cityList.size() - 1).get("creaid").toString(), countyList1);
+                            cityMap.put("list", cityList);
+                        }
+                    }
+                }
+                cityListNew.add(cityMap);
+            }
+            provinceCodeMap.put("list", provinceList);
+            response = Response.getResponseSuccess();
+            response.setResponseEntity(provinceCodeMap);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+
+
+    /**
      * 存redis用
+     *
      * @param param
      * @return
      */
@@ -228,13 +313,13 @@ public class TbCityController {
             Map<String, Object> map = new HashMap<>();
             for (int i = 0, l = cityList.size(); i < l; i++) {
                 String value = JSONObject.fromObject(cityList.get(i)).toString();
-                map.put(cityList.get(i).get("creaid").toString(),value);
+                map.put(cityList.get(i).get("creaid").toString(), value);
             }
-            result=Response.getResponseSuccess();
+            result = Response.getResponseSuccess();
             result.setResponseEntity(map);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             JzbTools.logError(ex);
-            result=Response.getResponseError();
+            result = Response.getResponseError();
         }
         return result;
     }
