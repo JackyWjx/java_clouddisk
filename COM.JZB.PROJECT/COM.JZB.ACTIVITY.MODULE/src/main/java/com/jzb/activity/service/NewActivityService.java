@@ -36,6 +36,17 @@ public class NewActivityService {
         return activityMapper.getDiscussById(param);
     }
 
+
+    /**
+     * 获取详情
+     *
+     * @param param
+     * @return
+     */
+    public Map<String, Object> queryActivityPhoto(Map<String, Object> param) {
+        return activityMapper.queryActivityPhoto(param);
+    }
+
     /**
      * 分页查询 支显示3条信息
      *

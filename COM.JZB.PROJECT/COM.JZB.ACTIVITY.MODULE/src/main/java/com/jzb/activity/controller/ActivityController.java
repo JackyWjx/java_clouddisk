@@ -68,10 +68,15 @@ public class ActivityController {
 
             } else {
                 JzbPageConvert.setPageRows(params);
-
                 // 获取结果集
                 List<Map<String, Object>> list = activityService.queryActivityList(params);
-
+                for(int i=0;i<list.size();i++){
+                    params.put("actid",list.get(i).get("actid"));
+                    params.put("uid",list.get(i).get("adduid"));
+                    Response region = userRedisApi.getCacheUserInfo(params);
+                    list.get(i).put("photoList",newActivityService.queryActivityPhoto(params));
+                    list.get(i).put("userInfo",region.getResponseEntity());
+                }
                 // 获取总数
                 int count = activityService.queryActivityCount();
 

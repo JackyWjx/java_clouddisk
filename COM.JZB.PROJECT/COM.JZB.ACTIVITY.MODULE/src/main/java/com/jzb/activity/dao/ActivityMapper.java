@@ -27,6 +27,15 @@ public interface ActivityMapper {
      */
     List<Map<String, Object>> queryActivityList(Map<String, Object> param);
 
+
+    /**
+     * 查询photo
+     *
+     * @param param
+     * @return List<Map < String, Object>> 返回数组
+     */
+    Map<String, Object> queryActivityPhoto(Map<String, Object> param);
+
     /**
      * 查询图片推广信息
      *

@@ -7,19 +7,41 @@
 
     <!--查询活动的数据-->
     <select id="queryActivityList" resultType="java.util.Map">
-       select
-         cname, actid,uid ,cid ,cdid ,context,addtime ,votes ,comments ,
-	    reads ,shares,acttheme,actlogo
-	    from
-	    tb_activity_list
-	    order by
-       addtime
-	    desc
+        SELECT
+            cname,
+            actid,
+            uid,
+            adduid,
+            cid,
+            cdid,
+            context,
+            addtime,
+            votes,
+            comments,
+            actkey,
+            actdesc,
+            READS,
+            shares,
+            acttheme,
+            actlogo
+        FROM
+            tb_activity_list
+        WHERE
+            status = '1'
+        ORDER BY
+            addtime DESC
 	    limit
 	    #{pagesize}
 	    offset
 	    #{pageno}
     </select>
+
+
+    <!-- 查询图片 -->
+    <select id="queryActivityPhoto" parameterType="java.util.Map"  resultType="java.util.Map">
+        select id,photo from tb_activity_photo where actid=#{actid} and status='1'
+    </select>
+
 
     <!--查询图片推广信息-->
     <select id="queryActpictureList" resultType="java.util.Map">
