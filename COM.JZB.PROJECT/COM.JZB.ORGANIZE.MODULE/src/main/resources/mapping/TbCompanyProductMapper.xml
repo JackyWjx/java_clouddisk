@@ -126,4 +126,5 @@
         );
         </foreach>
     </insert>
+
 </mapper>
