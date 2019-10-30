@@ -381,7 +381,7 @@
         status = #{status}
         <if test="cid != null and cid != ''">and cid = #{cid}</if>
         <if test="starttime != null and starttime != ''">and starttime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime}</if>
+        <if test="endtime != null and endtime != ''">and starttime &lt;= #{endtime}</if>
         <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
     </select>
 
@@ -411,7 +411,7 @@
         status = #{status}
         <if test="cid != null and cid != ''">and cid = #{cid}</if>
         <if test="starttime != null and starttime != ''">and starttime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime}</if>
+        <if test="endtime != null and endtime != ''">and starttime &lt;= #{endtime}</if>
         <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
         order by
         addtime desc
