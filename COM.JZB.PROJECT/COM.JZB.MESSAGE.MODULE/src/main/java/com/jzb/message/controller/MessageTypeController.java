@@ -37,8 +37,9 @@ public class MessageTypeController {
 
     /**
      * 查询
+     *
+     * map 用户参数
      */
-
     @RequestMapping(value = "/queryMsgType", method = RequestMethod.POST)
     @ResponseBody
     public Response queryMsgType(@RequestBody Map<String, Object> map) {
@@ -76,6 +77,9 @@ public class MessageTypeController {
 
     /**
      * 添加
+     *
+     *  checkcode  = appid + secret + msgtype + typename + checkcode
+     *  map 用户参数
      */
     @RequestMapping(value = "/saveMsgType", method = RequestMethod.POST)
     @ResponseBody
@@ -90,7 +94,7 @@ public class MessageTypeController {
             String typename = map.get("typename").toString();
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
-            String md5 = JzbDataCheck.Md5(appid + secret + msgtype + typename + checkcode);
+            String md5 = JzbDataCheck.Md5(appid + secret + msgtype + typename + checkcode.get("checkcode"));
             logger.info("---------MD5="+md5+"--------------");
             if (md5.equals(map.get("checkcode"))) {
                 response = service.saveMsgType(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
@@ -106,6 +110,9 @@ public class MessageTypeController {
 
     /**
      * 修改
+     *
+     *  checkcode  = appid + secret + msgtype + typename + checkcode
+     *  map 用户参数
      */
     @RequestMapping(value = "/upMsgType", method = RequestMethod.POST)
     @ResponseBody
@@ -137,6 +144,9 @@ public class MessageTypeController {
 
     /**
      * 禁用
+     *
+     *  checkcode  = appid + secret + msgtype + typename + checkcode
+     *  map 用户参数
      */
     @RequestMapping(value = "/removeMsgType", method = RequestMethod.POST)
     @ResponseBody

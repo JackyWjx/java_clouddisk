@@ -31,6 +31,8 @@ public final class JzbSendMail {
 
     /***
      *  发送邮件
+     *
+     *  info   邮件消息体
      */
     public static boolean sendMime(MssageInfo info)throws Exception{
         boolean result;
@@ -69,6 +71,9 @@ public final class JzbSendMail {
 
     /***
      *  创建一封邮件
+     *
+     *  session 邮件配置
+     *  info  邮件消息体
      */
     private static MimeMessage getMimeMessage(Session session,MssageInfo info) throws Exception{
         MimeMessage msg = new MimeMessage(session);

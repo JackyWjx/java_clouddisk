@@ -21,6 +21,12 @@ public class JzbSendSys {
      */
     private final static Logger logger = LoggerFactory.getLogger(JzbSendSys.class);
 
+    /***
+     *  使用mqtt发布消息
+     * @param msg  平台消息体
+     * @param mqttGateway 推送服务
+     * @return
+     */
     public static boolean sendSysMq(MssageInfo msg, MqttGateway mqttGateway){
         boolean result ;
         try{

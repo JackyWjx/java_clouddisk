@@ -45,6 +45,9 @@ public class MessageGroupController {
 
     /**
      * 查询企业消息组
+     *
+     *
+     * map 用户参数
      */
     @RequestMapping("/queryMessageGroup")
     @ResponseBody
@@ -78,6 +81,8 @@ public class MessageGroupController {
 
     /**
      * 查询企业消息组用户
+     *
+     * map 用户参数
      */
     @RequestMapping("/queryMessageUserGroup")
     @ResponseBody
@@ -111,6 +116,8 @@ public class MessageGroupController {
 
     /**
      * 查询企业消息组配置
+     *
+     * map 用户参数
      */
     @RequestMapping("/queryMsgGroupConfigure")
     @ResponseBody
@@ -144,6 +151,9 @@ public class MessageGroupController {
 
     /**
      * 添加企业消息组
+     *
+     * checkcode = appId + secret +  msgtype  + cid + groupname + checkCode
+     * map 用户参数
      */
     @RequestMapping("/saveMessageGroup")
     @ResponseBody
@@ -176,6 +186,9 @@ public class MessageGroupController {
 
     /**
      * 添加企业消息组用户
+     *
+     * checkcode = appId + secret  + uid   + cid + groupname + checkCode
+     * map 用户参数
      */
     @RequestMapping("/saveMessageUserGroup")
     @ResponseBody
@@ -208,6 +221,9 @@ public class MessageGroupController {
 
     /**
      * 添加企业消息组配置
+     *
+     * checkcode = appId + secret  + isp   + cid + groupname + checkCode
+     * map 用户参数
      */
     @RequestMapping("/saveMsgGroupConfigure")
     @ResponseBody
@@ -240,6 +256,9 @@ public class MessageGroupController {
 
     /**
      * 修改企业消息组
+     *
+     * checkcode = appId + secret  + cid + groupid + checkCode
+     * map 用户参数
      */
     @RequestMapping("/upMessageGroup")
     @ResponseBody
@@ -271,6 +290,9 @@ public class MessageGroupController {
 
     /**
      * 修改企业消息组用户
+     *
+     * checkcode = appId + secret  + uid   + cid + groupname + checkCode
+     * map 用户参数
      */
     @RequestMapping("/upMessageUserGroup")
     @ResponseBody
@@ -303,6 +325,9 @@ public class MessageGroupController {
 
     /**
      * 修改企业消息组配置
+     *
+     * checkcode = appId + secret  + uid   + cid + groupname + checkCode
+     * map 用户参数
      */
     @RequestMapping("/upMsgGroupConfigure")
     @ResponseBody
@@ -335,6 +360,9 @@ public class MessageGroupController {
 
     /**
      * 禁用企业消息组
+     *
+     * checkcode = appId + secret  + cid + groupid + checkCode
+     * map 用户参数
      */
     @RequestMapping("/removerMessageGroup")
     @ResponseBody
@@ -366,6 +394,9 @@ public class MessageGroupController {
 
     /**
      * 禁用企业消息组用户
+     *
+     * checkcode = appId + secret  + uid   + cid + groupname + checkCode
+     * map 用户参数
      */
     @RequestMapping("/removerMessageUserGroup")
     @ResponseBody
@@ -398,6 +429,9 @@ public class MessageGroupController {
 
     /**
      * 禁用企业消息组配置
+     *
+     * checkcode = appId + secret  + uid   + cid + groupname + checkCode
+     * map 用户参数
      */
     @RequestMapping("/removerMsgGroupConfigure")
     @ResponseBody

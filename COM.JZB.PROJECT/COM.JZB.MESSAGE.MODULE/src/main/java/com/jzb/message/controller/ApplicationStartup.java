@@ -30,13 +30,15 @@ public class ApplicationStartup implements ApplicationRunner {
      */
     private final static Map<String, List<SendMessageThread>> SEND_MESSAGE_POOL = new ConcurrentHashMap<>();
 
-
     /**
      * 消息业务
      */
     @Autowired
     private  ShortMessageService ssmService;
 
+    /**
+     * mqtt 服务
+     */
     @Autowired
     private MqttGateway mqttGateway;
 

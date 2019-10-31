@@ -31,6 +31,8 @@ public class SendUserMessageController {
     private SendUserMessageService service;
     /**
      * 查询
+     *
+     *  map 用户参数
      */
     @RequestMapping(value = "/querySendUserMessage", method = RequestMethod.POST)
     @ResponseBody

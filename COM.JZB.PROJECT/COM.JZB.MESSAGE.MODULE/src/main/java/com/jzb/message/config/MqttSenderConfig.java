@@ -26,10 +26,21 @@ import org.springframework.messaging.MessageHandler;
 @Configuration
 public class MqttSenderConfig {
 
+    /**
+     * 用户名
+     */
     @Value("${spring.mqtt.username}")
     private String username;
+
+    /**
+     * 密码
+     */
     @Value("${spring.mqtt.password}")
     private String password;
+
+    /**
+     * 连接地址
+     */
     @Value("${spring.mqtt.url}")
     private String hostUrl;
 
@@ -42,9 +53,9 @@ public class MqttSenderConfig {
         mqttConnectOptions.setKeepAliveInterval(20);
         return mqttConnectOptions;
     }
+
     /**
      * client 工厂
-     *
      */
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
