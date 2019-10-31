@@ -76,7 +76,7 @@ public class TbCompanyMethodController {
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger( userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -136,7 +136,6 @@ public class TbCompanyMethodController {
                     node.put("parentid", parentId);
                     node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
                     node.put("days", record.get("days").toString());
-                    node.put("remark", record.get("remark").toString());
                     node.put("plantime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("plantime")), JzbDateStr.yyyy_MM_dd));
                     node.put("children", new JSONArray());
                     if (JzbTools.isEmpty(record.get("score"))) {
