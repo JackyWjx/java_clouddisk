@@ -1,5 +1,6 @@
 package com.jzb.org.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -58,16 +59,22 @@ public class TbCompanyCommonController {
 
                 for (int i = 0, l = list.size(); i < l; i++) {
 
+                    // 遍历查询地区名字
                     Map<String, Object> map = new HashMap<>();
                     map.put("key", list.get(i).get("region"));
-                    Response cityList = tbCityRedisApi.getCityList(param);
-
+                    Response cityList = tbCityRedisApi.getCityList(map);
                     // 获取地区map
-                    Map<String, Object> resultParam = (Map<String, Object>) cityList.getResponseEntity();
-                    list.get(i).put("city", resultParam.get("city"));
-                    list.get(i).put("province", resultParam.get("province"));
-                    list.get(i).put("county", resultParam.get("county"));
-                    list.get(i).put("creaid", resultParam.get("creaid"));
+                    Map<String,Object> resultParam=null;
+                    if(cityList.getResponseEntity()!=null){
+                        resultParam= (Map<String,Object>)JSON.parse(cityList.getResponseEntity().toString());
+                    }
+                    // 转map
+                    if(resultParam!=null){
+                        list.get(i).put("city", resultParam.get("city"));
+                        list.get(i).put("province", resultParam.get("province"));
+                        list.get(i).put("county", resultParam.get("county"));
+                        list.get(i).put("creaid", resultParam.get("creaid"));
+                    }
                 }
                 // 分页对象
                 PageInfo pageInfo = new PageInfo();
@@ -114,20 +121,23 @@ public class TbCompanyCommonController {
                 // 遍历获取地区调用redis返回
                 for (int i = 0, l = list.size(); i < l; i++) {
 
+                    // 遍历查询地区名字
                     Map<String, Object> map = new HashMap<>();
-                    // 获取地区id
                     map.put("key", list.get(i).get("region"));
-                    Response cityList = tbCityRedisApi.getCityList(param);
-
+                    Response cityList = tbCityRedisApi.getCityList(map);
                     // 获取地区map
-                    Map<String, Object> resultParam = (Map<String, Object>) cityList.getResponseEntity();
-                    list.get(i).put("city", resultParam.get("city"));
-                    list.get(i).put("province", resultParam.get("province"));
-                    list.get(i).put("county", resultParam.get("county"));
-                    list.get(i).put("creaid", resultParam.get("creaid"));
-
+                    Map<String,Object> resultParam=null;
+                    if(cityList.getResponseEntity()!=null){
+                        resultParam= (Map<String,Object>)JSON.parse(cityList.getResponseEntity().toString());
+                    }
+                    // 转map
+                    if(resultParam!=null){
+                        list.get(i).put("city", resultParam.get("city"));
+                        list.get(i).put("province", resultParam.get("province"));
+                        list.get(i).put("county", resultParam.get("county"));
+                        list.get(i).put("creaid", resultParam.get("creaid"));
+                    }
                 }
-
                 // 分页对象
                 PageInfo pageInfo = new PageInfo();
 
