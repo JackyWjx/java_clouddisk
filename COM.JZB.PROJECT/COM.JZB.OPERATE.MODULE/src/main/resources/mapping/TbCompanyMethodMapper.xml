@@ -137,7 +137,7 @@
     </insert>
 
     <!-- 查询方法论 -->
-    <select id="queryCompanyMethod" parameterType="java.util.Map">
+    <select id="queryCompanyMethod" parameterType="java.util.Map" resultType="java.util.Map">
         WITH RECURSIVE modt AS (
         SELECT
         cid,
@@ -158,23 +158,32 @@
         tb_company_method
         WHERE
         parentid = '0000000'
+        <if test="cid!=null">
+            and cid = #{cid}
+        </if>
         <if test="projectid!=null">
             and projectid = #{projectid}
         </if>
         AND status = '1'
         UNION ALL
         SELECT
-        tmt.typeid,
-        tmt.cname,
-        tmt.parentid,
-        tmt.score,
+        tmt.cid,
+        tmt.projectid,
+        tmt.methodid,
+        tmt.plantime,
         tmt.days,
-        tmt.typedesc,
+        tmt.score,
+        tmt.remark,
+        tmt.idx,
+        tmt.adduid,
         tmt.addtime,
-        tmt.idx
+        tmt.upduid,
+        tmt.updtime,
+        tmt.status,
+        tmt.summary
         FROM
-        tb_method_type tmt
-        JOIN modt ON tmt.parentid = modt.typeid
+        tb_company_method tmt
+        JOIN modt ON tmt.parentid = modt.methodid
         AND tmt.status = '1'
         )
         SELECT
