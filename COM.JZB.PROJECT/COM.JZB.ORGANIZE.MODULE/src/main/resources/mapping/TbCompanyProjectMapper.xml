@@ -283,6 +283,7 @@
     <!--根据服务的项目ID获取项目信息-->
     <select id="queryServiceProjectList" parameterType="java.util.List" resultType="java.util.Map">
         select
+        cl.cid,
         cl.cname,
         cl.region,
         cp.projectid,
