@@ -23,7 +23,7 @@ public class JzbTimeConvert {
      * @param times
      * @return
      */
-    public static String ToStringyyyy_MM_dd_HH_mm_ss(Object times){
+    public static String ToStringy_M_d_H_m_s(Object times){
        return JzbDateUtil.toDateString(JzbDataType.getLong(times),JzbDateStr.yyyy_MM_dd_HH_mm_ss);
     }
 
@@ -32,7 +32,7 @@ public class JzbTimeConvert {
      * @param times
      * @return
      */
-    public static String ToStringyyyy_MM_dd(Object times){
+    public static String ToStringy_M_d(Object times){
         return JzbDateUtil.toDateString(JzbDataType.getLong(times),JzbDateStr.yyyy_MM_dd);
     }
 }
