@@ -59,6 +59,7 @@ public class TbPolicyTypeService {
             JSONObject node = new JSONObject();
             node.put("typeid", record.get("typeid").toString());
             node.put("cname", record.get("cname").toString());
+            node.put("adduid", record.get("adduid").toString());
             if(JzbTools.isEmpty(record.get("idx"))){
                 node.put("idx", 0);
             }else {
