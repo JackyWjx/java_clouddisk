@@ -39,9 +39,11 @@
         from
         tb_advert_list
         where
-        status = #{status}
+        (status = '1' or status = '2')
         <if test="cid != null and cid != ''">and cid = #{cid}</if>
         <if test="pageid != null and pageid != ''">and pageid = #{pageid}</if>
+        order by
+        id desc
     </select>
 
     <!-- CRM推广图片中点击保存后修改对应的推广信息 -->
@@ -131,5 +133,17 @@
         )
     </insert>
 
-
+    <!-- CRM推广图片中点击修改对推广信息的状态做修改 -->
+    <update id="deleteAdvertData" parameterType="java.util.Map">
+        UPDATE
+        tb_advert_list
+        SET
+        status = #{status},
+        ouid = #{uid},
+        updtime = #{updtime}
+        WHERE
+        advid = #{advid}
+        and
+        pageid = #{pageid}
+    </update>
 </mapper>

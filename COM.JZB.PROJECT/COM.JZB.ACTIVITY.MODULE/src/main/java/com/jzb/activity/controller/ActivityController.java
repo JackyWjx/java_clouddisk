@@ -10,6 +10,7 @@ import com.jzb.activity.vo.PageConvert;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -17,6 +18,8 @@ import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.netflix.discovery.converters.jackson.EurekaXmlJacksonCodec;
 import org.bouncycastle.cert.ocsp.Req;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +54,7 @@ public class ActivityController {
      *
      * @return Response 返回json数据
      */
-    @RequestMapping(value = "/queryActivityList",method = RequestMethod.POST)
+    @RequestMapping(value = "/queryActivityList", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     public Response queryActivityList(@RequestBody Map<String, Object> params) {
@@ -59,16 +62,22 @@ public class ActivityController {
         try {
 
             // 验证参数为空返回error
-            if (JzbCheckParam.haveEmpty(params,new String[]{"pageno","pagesize"})) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"pageno", "pagesize"})) {
 
                 response = Response.getResponseError();
 
             } else {
                 JzbPageConvert.setPageRows(params);
-
                 // 获取结果集
                 List<Map<String, Object>> list = activityService.queryActivityList(params);
-
+                for(int i=0;i<list.size();i++){
+                    params.put("actid",list.get(i).get("actid"));
+                    params.put("uid",list.get(i).get("adduid"));
+                    Response region = userRedisApi.getCacheUserInfo(params);
+                    list.get(i).put("photoList",newActivityService.queryActivityPhoto(params));
+                    list.get(i).put("userInfo",region.getResponseEntity());
+                    list.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                }
                 // 获取总数
                 int count = activityService.queryActivityCount();
 
@@ -159,6 +168,11 @@ public class ActivityController {
     }
 
     /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(ActivityController.class);
+
+    /**
      * 根据活动Id查询详情信息,阅读数加一
      *
      * @param params 用map存储
@@ -166,10 +180,20 @@ public class ActivityController {
      */
     @RequestMapping(value = "/getDiscuss", method = RequestMethod.POST)
     @CrossOrigin
-    public Response getDiscussById(@RequestBody Map<String, Object> params) {
+    public Response getDiscuss(@RequestBody Map<String, Object> params) {
         Response response;
+        Map<String, Object> userInfo = null;
+        String  api="/activity/getDiscuss";
+        boolean flag = true;
         try {
-            if (params.get("actid") == null || JzbDataType.getString(params.get("actid")).equals("")) {
+            if (params.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) params.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if (JzbCheckParam.haveEmpty(params,new String[]{"actid"})) {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> list = newActivityService.getActivityDesc(params);
@@ -180,9 +204,18 @@ public class ActivityController {
                 response = Response.getResponseSuccess();
                 response.setPageInfo(pi);
             }
-        } catch (Exception e) {
-            JzbTools.logError(e);
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger( api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }
@@ -199,7 +232,7 @@ public class ActivityController {
         Response response;
         try {
 
-            if (params.get("actid") == null) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"actid"})) {
 
                 response = Response.getResponseError();
             } else {
@@ -298,19 +331,13 @@ public class ActivityController {
         try {
 
             // 验证参数为空返回error
-            if (params.get("pagesize") == null || params.get("pageno") == null || params.get("keyword") == null) {
+            if (JzbCheckParam.haveEmpty(params,new String[]{"pageno","pagesize","keyword"})) {
 
                 response = Response.getResponseError();
 
             } else {
 
-                // 获取行数和页数
-                int rows = JzbDataType.getInteger(params.get("pagesize"));
-                int page = JzbDataType.getInteger(params.get("pageno"));
-
-                // 给param设置page and  rows
-                params.put("pageno", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
-                params.put("pagesize", rows);
+                JzbPageConvert.setPageRows(params);
 
                 // 模糊查询zongshu
                 int count = activityService.likeActivityCount(params);
@@ -355,12 +382,12 @@ public class ActivityController {
                 params.put("uid", userInfo.get("uid"));
                 int count = newActivityService.addActivityDucess(params);
                 if (count > 0) {
+
                     // 更新评论数
                     newActivityService.updateComment(params);
 
                     // 定义返回结果
                     result = Response.getResponseSuccess(userInfo);
-
 
                 } else {
                     result = Response.getResponseError();
@@ -398,7 +425,6 @@ public class ActivityController {
         }
         return result;
     }
-
 
     /**
      * 无登录点赞
@@ -461,25 +487,13 @@ public class ActivityController {
     public Response getActivityList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            // 加入查询状态
-            param.put("status", "1");
-            String startTime = JzbDataType.getString(param.get("starttime"));
-            // 判断是否有开始时间的查询条件
-            if (!JzbDataType.isEmpty(startTime)) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = simpleDateFormat.parse(startTime);
-                long time = date.getTime();
-                // 将时间转化为时间戳存入参数中
-                param.put("starttime", time);
+            if (!JzbDataType.isEmpty(JzbDataType.getLong(param.get("starttime")))){
+                long startTime = JzbDataType.getLong(param.get("starttime"));
+                param.put("starttime", startTime);
             }
-            String endTime = JzbDataType.getString(param.get("endtime"));
-            // 判断是否有结束时间的查询条件
-            if (!JzbDataType.isEmpty(endTime)) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = simpleDateFormat.parse(endTime);
-                long time = date.getTime();
-                // 将时间转化为时间戳存入参数中
-                param.put("endtime", time);
+            if (!JzbDataType.isEmpty(JzbDataType.getLong(param.get("endtime")))){
+                long endTime = JzbDataType.getLong(param.get("endtime"));
+                param.put("endtime", endTime);
             }
             // 获取前端传来的总数
             int count = JzbDataType.getInteger(param.get("count"));

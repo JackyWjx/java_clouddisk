@@ -877,4 +877,82 @@ public class CompanyUserController {
             return result;
         }
     }
+
+    /**
+     * CRM-销售业主-所有业主-销售统计分析1
+     * 点击导出Excel表格,将查询出的数据导出
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/createSellStatisticsExcel", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createSellStatisticsExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            String srcFilePath = "D:/v3/static/excel/ImportSellStatistics.xlsx";
+            FileInputStream in = new FileInputStream(srcFilePath);
+            Object object = param.get("list");
+            List<Map<String, Object>> list = new ArrayList<>();
+            if (JzbDataType.isCollection(object)) {
+                list = (List<Map<String, Object>>) object;
+            }
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> page = list.get(i);
+                Map<String, Object> kkk = new HashMap<>();
+                if (!JzbDataType.isEmpty(page.get("kkk"))){
+                    kkk = (Map<String, Object>)page.get("kkk");
+                }
+                // 获取跟进人
+                String uname = JzbDataType.getString(kkk.get("cname"));
+                sheet.createRow(i + 1).createCell(0).setCellValue(uname);
+                // 获取产品名称
+                String cname = JzbDataType.getString(page.get("cname"));
+                sheet.getRow(i + 1).createCell(1).setCellValue(cname);
+                // 获取项目名称
+                String projectname = JzbDataType.getString(page.get("projectname"));
+                sheet.getRow(i + 1).createCell(2).setCellValue(projectname);
+                // 获取联系人
+                String relperson = JzbDataType.getString(page.get("relperson"));
+                sheet.getRow(i + 1).createCell(3).setCellValue(relperson);
+                // 获取预计合同金额
+                String contamount = JzbDataType.getString(page.get("contamount"));
+                sheet.getRow(i + 1).createCell(4).setCellValue(contamount);
+                // 获取客户等级
+                String dictvalue = JzbDataType.getString(page.get("dictvalue"));
+                sheet.getRow(i + 1).createCell(5).setCellValue(dictvalue);
+                // 获取跟进日期
+                String handletime = JzbDataType.getString(kkk.get("handletime"));
+                sheet.getRow(i + 1).createCell(6).setCellValue(handletime);
+                // 获取跟进说明
+                String context = JzbDataType.getString(kkk.get("context"));
+                sheet.getRow(i + 1).createCell(7).setCellValue(context);
+                // 获取需要提供资源
+                String needres = JzbDataType.getString(kkk.get("needres"));
+                sheet.getRow(i + 1).createCell(8).setCellValue(needres);
+                // 获取投入金额
+                String checkamount = JzbDataType.getString(page.get("checkamount"));
+                sheet.getRow(i + 1).createCell(9).setCellValue(checkamount);
+                // 获取产出时间
+                String planendtime = JzbDataType.getString(kkk.get("planendtime"));
+                sheet.getRow(i + 1).createCell(10).setCellValue(planendtime);
+                // 获取操作
+                String summary = JzbDataType.getString(kkk.get("summary"));
+                sheet.getRow(i + 1).createCell(11).setCellValue(summary);
+            }
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=ImportSellStatistics.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
 }

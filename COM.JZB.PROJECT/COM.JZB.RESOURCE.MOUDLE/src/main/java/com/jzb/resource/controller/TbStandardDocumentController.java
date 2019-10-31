@@ -40,7 +40,7 @@ public class TbStandardDocumentController {
         Response result;
         try {
             //判断分页参数是否为空
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
+               if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
             } else {
                 // 设置分页参数
@@ -52,7 +52,7 @@ public class TbStandardDocumentController {
                 pageInfo.setList(list);
 
                 //总数
-                int count = list.size();
+                int count = tbStandardDocumentService.getCount(param);
                 pageInfo.setTotal(count);
                 // 定义返回结果
                 result = Response.getResponseSuccess();
@@ -200,7 +200,7 @@ public class TbStandardDocumentController {
                 pageInfo.setList(list);
 
                 //总数
-                int count = list.size();
+                int count = tbStandardDocumentService.getCounts(param);
                 pageInfo.setTotal(count);
 
                 // 定义返回结果

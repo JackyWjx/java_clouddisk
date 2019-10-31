@@ -84,4 +84,22 @@ public class TbStandardDocumentService {
     public List<Map<String, Object>> getCname(Map<String, Object> param) {
         return tbStandardDocumentMapper.getCname(param);
     }
+
+    /**
+     * 查询总数
+     * @param param
+     * @return
+     */
+    public int getCount(Map<String, Object> param) {
+        return tbStandardDocumentMapper.getCount(param);
+    }
+
+    /**
+     * 模糊查询的总数
+     * @param param
+     * @return
+     */
+    public int getCounts(Map<String, Object> param) {
+        return tbStandardDocumentMapper.getCounts(param);
+    }
 }

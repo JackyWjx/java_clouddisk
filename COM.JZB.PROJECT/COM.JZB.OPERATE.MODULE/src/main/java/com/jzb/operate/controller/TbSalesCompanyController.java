@@ -1,6 +1,7 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.service.TbSalesCompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +22,26 @@ public class TbSalesCompanyController {
     private TbSalesCompanyService tbSalesCompanyServicel;
 
     /**
-     * 添加业主单位
+     * 添加业主单位(暂未用到)
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/addSalesCompany",method = RequestMethod.POST)
+    @RequestMapping(value = "/addSalesCompany", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response addSalesCompany(@RequestBody Map<String, Object> param){
+    public Response addSalesCompany(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            result=Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-        }catch (Exception ex){
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                result = Response.getResponseError();
+            } else {
+                result = tbSalesCompanyServicel.addSalesCompany(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            }
+        } catch (Exception ex) {
             JzbTools.logError(ex);
-            result=Response.getResponseError();
+            result = Response.getResponseError();
         }
         return result;
     }

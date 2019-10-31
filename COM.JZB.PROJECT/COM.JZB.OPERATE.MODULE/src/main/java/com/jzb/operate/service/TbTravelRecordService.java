@@ -25,6 +25,15 @@ public class TbTravelRecordService {
     }
 
     /**
+     * 获取个人出差记录
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> queryTravelRecordByCid(Map<String, Object> param) {
+        return tbTravelRecordMapper.queryTravelRecordByCid(param);
+    }
+
+    /**
      * 根据uid 获取 出差记录总数
      * @param param
      * @return

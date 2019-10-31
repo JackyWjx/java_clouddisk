@@ -105,7 +105,7 @@
     <!--根据文档类别进行查询，文档名称进行模糊查询 LBQ-->
     <select id="getTbPolicyDocument" parameterType="java.util.Map" resultType="java.util.Map">
         select
-        tpeycode,
+        typecode,
         Id,
         domid,
         typeid,
@@ -115,6 +115,31 @@
         to_char(to_timestamp(effective / 1000), 'yyyy-MM-dd') as effective,
         stdrange,
         status from
+        tb_policy_document
+        where
+        status != '4'
+        <if test="typeid != null">
+            and typeid = #{typeid}
+        </if>
+        <if test="domid != null">
+            and domid = #{domain}
+        </if>
+        <if test="cname != null">
+            and
+            cname
+            like
+            concat('%',#{cname},'%')
+        </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <select id="getCount" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from
         tb_policy_document
         where
         status != '4'

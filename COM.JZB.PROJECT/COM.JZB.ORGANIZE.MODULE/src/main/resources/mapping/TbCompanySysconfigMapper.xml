@@ -6,7 +6,7 @@
 
     <!-- 添加系统属性配置 二级域名 -->
     <insert id="addCompanySysconfig" parameterType="java.util.Map">
-        insert into tb_company_stsconfig
+        insert into tb_company_sysconfig
         (cid,curl,systemname,tempid,tempname,logo,compname,favicon,background,keys,website,power,adduid,addtime,upduid,updtime,status,summary)
         values (
         <choose>

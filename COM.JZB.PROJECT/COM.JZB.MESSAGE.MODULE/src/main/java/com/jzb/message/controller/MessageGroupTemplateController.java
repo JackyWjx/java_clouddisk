@@ -37,8 +37,9 @@ public class MessageGroupTemplateController {
 
     /**
      * 查询
+     *
+     * map 用户参数
      */
-
     @RequestMapping(value = "/queryMsgGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
     public Response queryMsgGroupTemplate(@RequestBody Map<String, Object> map) {
@@ -74,6 +75,8 @@ public class MessageGroupTemplateController {
 
     /**
      * 添加
+     *
+     * map 用户参数
      */
     @RequestMapping(value = "/saveMsgGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
@@ -104,6 +107,9 @@ public class MessageGroupTemplateController {
 
     /**
      * 修改
+     *
+     *  checkcode  =  appid + secret + tempid + cid + checkcode
+     *  map 用户参数
      */
     @RequestMapping(value = "/upMsgGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
@@ -118,7 +124,7 @@ public class MessageGroupTemplateController {
             String cid = map.get("cid").toString();
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
-            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
+            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode.get("checkcode"));
             logger.info("==============>>md5"+md5);
             if (md5.equals(map.get("checkcode"))) {
                 response = messageGroupTemplateService.upMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
@@ -135,6 +141,9 @@ public class MessageGroupTemplateController {
 
     /**
      * 禁用
+     *
+     *  checkcode  =  appid + secret + tempid + cid + checkcode
+     *  map 用户参数
      */
     @RequestMapping(value = "/removeMsgGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
@@ -149,7 +158,7 @@ public class MessageGroupTemplateController {
             String cid = map.get("cid").toString();
             // get appid => checkcode
             Map<String, Object> checkcode = smsService.queryMsgOrganizeCheckcode(appid);
-            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode);
+            String md5 = JzbDataCheck.Md5(appid + secret + tempid + cid + checkcode.get("checkcode"));
             logger.info("==============>>md5="+md5);
             if (md5.equals(map.get("checkcode"))) {
                 response = messageGroupTemplateService.removeMsgGroupTemplate(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();

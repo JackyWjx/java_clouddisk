@@ -34,11 +34,14 @@ public class TbCompanySysconfigController {
     @Transactional
     public Response addCompanySysconfig(@RequestBody Map<String, Object> param) {
         Response response;
+        Map<String, Object> userInfo = null;
         try {
             // 验证指定参数为空则返回error
-            if (JzbCheckParam.haveEmpty(param, new String[]{"curl", "logo", "compname", "background", "systemname", "adduid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"curl", "logo", "compname", "background", "systemname"})) {
                 response = Response.getResponseError();
             } else {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("adduid",userInfo.get("uid").toString());
                 response = tbCompanySysconfigService.addCompanySysconfig(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {

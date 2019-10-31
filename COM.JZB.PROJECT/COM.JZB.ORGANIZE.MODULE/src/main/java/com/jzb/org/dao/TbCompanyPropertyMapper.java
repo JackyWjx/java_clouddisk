@@ -34,6 +34,17 @@ public interface TbCompanyPropertyMapper {
     int updatePropertyByCidAndTypeid(Map<String, Object> param);
 
 
+    /**
+     *  所有业主-业主列表-分配售后人员
+     * @param param
+     * @return
+     */
+    int saveCompanyProperty(Map<String, Object> param);
 
-
+    /**
+     *  所有业主-业主列表-分配售后人员
+     * @param param
+     * @return
+     */
+    int saveCompanyPropertys(Map<String, Object> param);
 }

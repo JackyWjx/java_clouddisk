@@ -22,9 +22,9 @@ public class TbUserScoreService {
      *   查询积分
      */
     public List<Map<String , Object>> qureyUserScore(Map<String, Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return mapper.qureyUserScore(map);
     }
 
@@ -32,9 +32,9 @@ public class TbUserScoreService {
      *   查询积分月报
      */
     public List<Map<String , Object>> qureyUserMonthScore(Map<String, Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return mapper.qureyUserMonthScore(map);
     }
 
@@ -56,9 +56,9 @@ public class TbUserScoreService {
      *   模糊查询积分
      */
     public List<Map<String , Object>> seachUserScore(Map<String, Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return mapper.seachUserScore(map);
     }
 
@@ -66,9 +66,9 @@ public class TbUserScoreService {
      *   模糊查询积分月报
      */
     public List<Map<String , Object>> seachUserMonthScore(Map<String, Object> map){
-        int page  = JzbDataType.getInteger(map.get("page"))  == 0  ? 0 : JzbDataType.getInteger(map.get("page"))- 1;
-        map.put("page",page * JzbDataType.getInteger(map.get("rows")));
-        map.put("rows", JzbDataType.getInteger(map.get("rows")));
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return mapper.seachUserMonthScore(map);
     }
 

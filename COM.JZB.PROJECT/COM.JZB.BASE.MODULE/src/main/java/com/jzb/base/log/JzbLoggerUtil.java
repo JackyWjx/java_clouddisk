@@ -15,10 +15,10 @@ public final class JzbLoggerUtil {
 
     /**
      * 获取API日志记录
-     * @param vsn
+     * @param
      * @param api
      * @param reqTag
-     * @param msgType
+     * @param
      * @param ip
      * @param uid
      * @param token
@@ -26,9 +26,9 @@ public final class JzbLoggerUtil {
      * @param msg
      * @return
      */
-    public static String getApiLogger(String vsn, String api, String reqTag, String msgLevel, String ip, String uid, String token, String msgTag, String msg) {
+    public static String getApiLogger( String api, String reqTag, String msgLevel, String ip, String uid, String token, String msgTag, String msg) {
         StringBuilder result = new StringBuilder();
-        result.append("[").append(vsn).append("]");
+        result.append("[1.0]");
         result.append("[").append(JzbDateUtil.toDateString(System.currentTimeMillis(), JzbDateStr.yyyy_MM_dd_HH_mm_ss_SSS)).append("]");
         result.append("[").append(api).append("]");
         result.append("[").append(reqTag).append("]");

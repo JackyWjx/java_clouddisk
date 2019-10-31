@@ -1,6 +1,8 @@
 package com.jzb.resource.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
@@ -12,6 +14,7 @@ import com.jzb.resource.service.TbStandardTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -141,33 +144,103 @@ public class TbStandardTypeController {
      */
     @RequestMapping(value = "/getStandardType",method = RequestMethod.POST)
     @CrossOrigin
-    public Response getStandardType(@RequestBody Map<String,Object> param) {
-        Response result;
+    public Response getStandardType(@RequestBody(required = false) Map<String,Object> param) {
+        Response response;
         try {
             //查询运营管理中的菜单类别
-            List<Map<String, Object>> list = tbStandardTypeService.getStandardType(param);
+            List<Map<String, Object>> records = tbStandardTypeService.getStandardType(param);
 
-            // 遍历转格式
-            for (int i = 0, l = list.size(); i < l; i++) {
-                list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
+            // Result JSON
+            JSONArray result = new JSONArray();
+
+            // record temp json
+            JSONObject recordJson = new JSONObject();
+
+            // Unknown json
+            JSONObject unknownRecord = new JSONObject();
+
+            // root id
+            String firstParent = "0000000";
+
+            for (int i = 0; i < records.size(); i++) {
+                Map<String, Object> map = records.get(i);
+
+                // if parentid is null.
+                String parentId;
+                if (map.get("parentid") == null) {
+
+                    parentId = "0000000";
+                } else {
+                    parentId = map.get("parentid").toString();
+                }
+                // set default JSON and childern node
+                JSONObject node = new JSONObject();
+                node.put("typeid", map.get("typeid").toString());
+                node.put("typecode", map.get("typecode").toString());
+                node.put("cname", map.get("cname").toString());
+                node.put("typedesc", map.get("typedesc").toString());
+                node.put("adduid", map.get("adduid").toString());
+                node.put("summary", map.get("summary").toString());
+                node.put("parentid", parentId);
+                node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(map.get("addtime")), JzbDateStr.yyyy_MM_dd));
+                node.put("children", new JSONArray());
+                // if root node
+                if (parentId.equals(firstParent)) {
+                    result.add(node);
+                    recordJson.put(map.get("typeid").toString(), node);
+
+                }else if (recordJson.containsKey(parentId)) {
+                    // add children
+                    recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
+                    recordJson.put(map.get("typeid").toString(), node);
+                    // Unknown relation node
+                }else {
+                    String nodeId = map.get("typeid").toString();
+                    if (unknownRecord.containsKey(parentId)) {
+                        // add children
+                        unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
+                        recordJson.put(nodeId, node);
+                    }else {
+                        // find subnode
+                        for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                            JSONObject tempNode = (JSONObject) entry.getValue();
+                            if (tempNode.getString("parentid").equals(nodeId)) {
+                                node.getJSONArray("children").add(tempNode);
+                                recordJson.put(tempNode.get("typeid").toString(), tempNode);
+                                unknownRecord.remove(tempNode.get("typeid").toString());
+                                break;
+                            }
+                        }
+                        unknownRecord.put(nodeId, node);
+                    }
+                }
+            }
+            // unknownRecord add to result
+            // find subnode
+            for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                JSONObject tempNode = (JSONObject) entry.getValue();
+                String tempNodeId = tempNode.getString("parentid");
+                if (recordJson.containsKey(tempNodeId)) {
+                    // add children
+                    recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
+                } else {
+                    // Error node
+                    System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
+                }
             }
 
-            // 定义返回pageinfo
-            PageInfo pageInfo = new PageInfo<>();
-            pageInfo.setList(list);
-
-            // 定义返回结果
+            // 设置返回响应结果
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            result = Response.getResponseSuccess(userInfo);
+            response = Response.getResponseSuccess(userInfo);
 
             // 设置返回pageinfo
-            result.setPageInfo(pageInfo);
+            response.setResponseEntity(result);
         } catch (Exception ex) {
             //错误信息
             JzbTools.logError(ex);
-            result = Response.getResponseError();
+            response = Response.getResponseError();
         }
-        return result;
+        return response;
 
     }
 }

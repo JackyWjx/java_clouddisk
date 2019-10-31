@@ -19,6 +19,13 @@ public interface TbTravelRecordMapper {
     List<Map<String, Object>> queryTravelRecordByUid(Map<String, Object> param);
 
     /**
+     * 获取我的出差记录
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> queryTravelRecordByCid(Map<String, Object> param);
+
+    /**
      * 获取总数
      * @param param
      * @return

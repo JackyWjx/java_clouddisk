@@ -1,20 +1,17 @@
 package com.jzb.message.controller;
 
-import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbTools;
 import com.jzb.message.message.MessageQueue;
 import com.jzb.message.message.MssageInfo;
 import com.jzb.message.message.SendMessage;
+import com.jzb.message.config.MqttGateway;
 import com.jzb.message.service.ShortMessageService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,19 +24,23 @@ import java.util.concurrent.ConcurrentHashMap;
 @Order(value = 1)
 public class ApplicationStartup implements ApplicationRunner {
 
-    private final static Logger logger = LoggerFactory.getLogger(SendMsgController.class);
 
     /**
      * 线程池
      */
     private final static Map<String, List<SendMessageThread>> SEND_MESSAGE_POOL = new ConcurrentHashMap<>();
 
-
     /**
      * 消息业务
      */
     @Autowired
     private  ShortMessageService ssmService;
+
+    /**
+     * mqtt 服务
+     */
+    @Autowired
+    private MqttGateway mqttGateway;
 
     /**
      * 消息队列发送线程
@@ -57,6 +58,7 @@ public class ApplicationStartup implements ApplicationRunner {
                     MssageInfo msg;
                     switch (type) {
                         case 1:
+                            // 短信发送队列
                             msg = MessageQueue.getMessageInfo(type);
                             if(!JzbTools.isEmpty(msg)){
                                 SendMessage  message = new SendMessage();
@@ -67,6 +69,7 @@ public class ApplicationStartup implements ApplicationRunner {
                             }
                             break;
                         case 2:
+                            // 邮件发送队列
                             msg = MessageQueue.getMessageInfo(type);
                             if(!JzbTools.isEmpty(msg)){
                                 SendMessage  message = new SendMessage();
@@ -77,52 +80,30 @@ public class ApplicationStartup implements ApplicationRunner {
                             }
                             break;
                         case 3:
+                            // 待发送队列
                             Map<String , Map<String , Map<String , MssageInfo>>> map = MessageQueue.getWaitSendQueue();
                             if(!JzbTools.isEmpty(map)){
-                                // 业务id层
-                                for (Map.Entry<String , Map<String , Map<String , MssageInfo>>> mgtentry:map.entrySet()) {
-                                    Map<String , Map<String , MssageInfo>> cidMap = map.get(mgtentry.getKey());
-                                    // 企业id层
-                                    for (Map.Entry<String , Map<String , MssageInfo>> cidentry:cidMap.entrySet()) {
-                                        Map<String , MssageInfo> typeMap = cidMap.get(cidentry.getKey());
-                                        // 消息类型
-                                        for(Map.Entry <String , MssageInfo> typetry:typeMap.entrySet()){
-                                            MssageInfo info = typeMap.get(typetry.getKey());
-                                            Map<String , Object> parajson = (Map)info.getItem("para").getObject();
-                                            // 是否是定时任务
-                                            if(!JzbTools.isEmpty(parajson.get("sendtime"))){
-                                                if(JzbDataType.getLong(parajson.get("sendtime")) >= System.currentTimeMillis()){
-                                                    if(typetry.getKey().equals("1")){
-                                                        MessageQueue.addShortMessage(info);
-                                                        map.remove(mgtentry.getKey());
-                                                        logger.info("=================>>添加至短信" );
-                                                    }else if(typetry.getKey().equals("2")){
-                                                        MessageQueue.addShortMail(info);
-                                                        map.remove(mgtentry.getKey());
-                                                        logger.info("=================>>添加至邮件" );
-                                                    }
-                                                }
-                                            }else{
-                                                // 添加发送队列
-                                                if(typetry.getKey().equals("1")){
-                                                    MessageQueue.addShortMessage(info);
-                                                    map.remove(mgtentry.getKey());
-                                                    logger.info("=================>>添加至短信" );
-                                                }else if(typetry.getKey().equals("2")){
-                                                    MessageQueue.addShortMail(info);
-                                                    map.remove(mgtentry.getKey());
-                                                    logger.info("=================>>添加至邮件" );
-                                                }
-                                            }
-                                            Thread.sleep(1000);
-                                        }
-                                    }
-                                }
+                                SendMessage  message = new SendMessage();
+                                message.waitMessage(map);
+                                Thread.sleep(1000);
                             }else{
                                 Thread.sleep(5000);
                             }
                             break;
                         case 4:
+                            // 平台发送队列
+                            msg = MessageQueue.getMessageInfo(type);
+                            if(!JzbTools.isEmpty(msg)){
+                                SendMessage  message = new SendMessage();
+                                message.sendSys(msg,ssmService,mqttGateway);
+                                Thread.sleep(1000);
+                            }else{
+                                Thread.sleep(5000);
+                            }
+                            break;
+                        case 8:
+                            // 微信发送队列
+
                             break;
                     }
 
@@ -148,6 +129,13 @@ public class ApplicationStartup implements ApplicationRunner {
         smsList.add(smsThread);
         SEND_MESSAGE_POOL.put("SMS", smsList);
 
+        // 加入邮件发送线程
+        SendMessageThread meilThread = new SendMessageThread(2);
+        meilThread.start();
+        List<SendMessageThread> meilList = new ArrayList<>();
+        meilList.add(meilThread);
+        SEND_MESSAGE_POOL.put("MAIL", meilList);
+
         // 短信消息 待发送队列
         SendMessageThread waitSmsThread = new SendMessageThread(3);
         waitSmsThread.start();
@@ -155,12 +143,12 @@ public class ApplicationStartup implements ApplicationRunner {
         waitSmsList.add(waitSmsThread);
         SEND_MESSAGE_POOL.put("WAITSMS", waitSmsList);
 
-        // 加入邮件发送线程
-        SendMessageThread mailThread = new SendMessageThread(2);
-        mailThread.start();
-        List<SendMessageThread> mailList = new ArrayList<>();
-        mailList.add(mailThread);
-        SEND_MESSAGE_POOL.put("MAIL", mailList);
+        // 加入平台发送线程
+        SendMessageThread sysThread = new SendMessageThread(4);
+        sysThread.start();
+        List<SendMessageThread> sysList = new ArrayList<>();
+        sysList.add(sysThread);
+        SEND_MESSAGE_POOL.put("sys", sysList);
 
     }
 }

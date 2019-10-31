@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Description:  系统广告控制台与前台对接
+ * @Description: 系统广告控制台与前台对接
  * @Author duanfeiyu
  * @Version v1.0
  * @Since 1.0
@@ -30,10 +30,11 @@ public class AdvertController {
 
     /**
      * 返回结果集
+     *
      * @param records  list集合
      * @param response 用json存储h
      */
-    public  static  void setPageInfoList(List<Map<String,Object>> records,Response response){
+    public static void setPageInfoList(List<Map<String, Object>> records, Response response) {
         PageInfo pageInfo = new PageInfo();
         pageInfo.setList(records);
         response.setPageInfo(pageInfo);
@@ -42,20 +43,21 @@ public class AdvertController {
 
     /**
      * 广告系统查询
+     *
      * @return Response 返回json
      */
     @RequestMapping("/queryAdvertisingList")
-    public Response queryAdvertisingList(@RequestBody Map<String, Object> param){
-         Response response = null;
-         try {
-           List<Map<String,Object>> list =  advertService.queryAdvertisingList();
-             // 定义返回结果
-             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-             response = Response.getResponseSuccess(userInfo);
-           setPageInfoList(list,response);
-         }catch (Exception e){
-             JzbTools.logError(e);
-         }
+    public Response queryAdvertisingList(@RequestBody Map<String, Object> param) {
+        Response response = null;
+        try {
+            List<Map<String, Object>> list = advertService.queryAdvertisingList();
+            // 定义返回结果
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            response = Response.getResponseSuccess(userInfo);
+            setPageInfoList(list, response);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
         return response;
     }
 
@@ -114,7 +116,7 @@ public class AdvertController {
                 // 获取修改成功值
                 count = advertService.modifyAdvertData(param);
             }
-            result = count==1? Response.getResponseSuccess(userInfo):Response.getResponseError();
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -154,4 +156,27 @@ public class AdvertController {
         return result;
     } // End getAdvertList
 
+    /**
+     * CRM-运营管理-活动-推广图片
+     * 点击删除后修改推广信息的状态
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/removeAdvertData", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response removeAdvertData(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 获取修改成功值
+            int count = advertService.removeAdvertData(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifyAdvertData
 }

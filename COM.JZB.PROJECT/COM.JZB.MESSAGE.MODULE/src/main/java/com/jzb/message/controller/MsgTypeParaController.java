@@ -41,6 +41,8 @@ public class MsgTypeParaController {
 
     /**
      * 查询消息参数
+     *
+     *  map 用户参数
      */
     @RequestMapping(value = "/queryMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -50,7 +52,7 @@ public class MsgTypeParaController {
             logger.info("===================>>queryMsgTypePara");
             List<Map<String , Object>> list ;
             PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             if(map.containsKey("paraname") && !JzbTools.isEmpty(map.get("paraname"))){
                 list = service.searchMsgTypePara(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
@@ -74,6 +76,8 @@ public class MsgTypeParaController {
 
     /**
      * 查询用户参数
+     *
+     *  map 用户参数
      */
     @RequestMapping(value = "/queryUserPara",method = RequestMethod.POST)
     @ResponseBody
@@ -83,7 +87,7 @@ public class MsgTypeParaController {
             logger.info("===================>>queryUserPara");
             List<Map<String , Object>> list ;
             PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             if(map.containsKey("param") && !JzbTools.isEmpty(map.get("param"))){
                 list =  service.searchUserPara(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
@@ -108,6 +112,8 @@ public class MsgTypeParaController {
 
     /**
      * 查询服务商
+     *
+     *  map 用户参数
      */
     @RequestMapping(value = "/queryServiceProviders",method = RequestMethod.POST)
     @ResponseBody
@@ -117,7 +123,7 @@ public class MsgTypeParaController {
             logger.info("===================>>queryUserPara");
             List<Map<String , Object>> list ;
             PageInfo info = new PageInfo();
-            info.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             if(map.containsKey("ispname") && !JzbTools.isEmpty(map.get("ispname"))){
                 list =  service.searchServiceProviders(map);
                 if(JzbDataType.getInteger(map.get("count")) == 0){
@@ -141,6 +147,9 @@ public class MsgTypeParaController {
 
     /**
      * 添加消息参数
+     *
+     *  checkcode = appId + secret  + paraname + paracode + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/saveMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -172,6 +181,9 @@ public class MsgTypeParaController {
 
     /**
      * 添加用户参数
+     *
+     *  checkcode = appId + secret  + uid + cid + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/saveUserPara",method = RequestMethod.POST)
     @ResponseBody
@@ -203,6 +215,9 @@ public class MsgTypeParaController {
 
     /**
      * 添加服务商
+     *
+     *  checkcode = appId + secret  + msgtype + isp + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/saveServiceProviders",method = RequestMethod.POST)
     @ResponseBody
@@ -234,6 +249,9 @@ public class MsgTypeParaController {
 
     /**
      * 修改消息参数
+     *
+     *  checkcode = appId + secret  + paraname + paracode + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/upMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -265,6 +283,9 @@ public class MsgTypeParaController {
 
     /**
      * 修改用户参数
+     *
+     *  checkcode = appId + secret  + uid + cid + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/upUserPara",method = RequestMethod.POST)
     @ResponseBody
@@ -296,6 +317,9 @@ public class MsgTypeParaController {
 
     /**
      * 修改服务商
+     *
+     *  checkcode = appId + secret  + msgtype + isp + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/upServiceProviders",method = RequestMethod.POST)
     @ResponseBody
@@ -327,6 +351,9 @@ public class MsgTypeParaController {
 
     /**
      * 禁用消息参数
+     *
+     *  checkcode =  appId + secret  + paraname + paracode + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/removeMsgTypePara",method = RequestMethod.POST)
     @ResponseBody
@@ -358,6 +385,9 @@ public class MsgTypeParaController {
 
     /**
      * 禁用用户参数
+     *
+     *  checkcode =  appId + secret  + uid + cid + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/removeUserPara",method = RequestMethod.POST)
     @ResponseBody
@@ -389,6 +419,9 @@ public class MsgTypeParaController {
 
     /**
      * 禁用服务商
+     *
+     *  checkcode =  appId + secret  + msgtype + isp + checkCode
+     *  map 用户参数
      */
     @RequestMapping(value = "/removeServiceProviders",method = RequestMethod.POST)
     @ResponseBody

@@ -84,9 +84,9 @@ public class TbTravelRecordController {
                     list.get(i).put("vehicleName", tbTravelVehicleService.getTravelName(map));
 
                     map.put("travelid", list.get(i).get("travelid"));
-                    list.get(i).put("travelAim",tbTravelAimService.queryTravelAim(map));
+                    list.get(i).put("travelAim", tbTravelAimService.queryTravelAim(map));
 
-                    list.get(i).put("userList",tbUserTravelService.queryUserTravel(map));
+                    list.get(i).put("userList", tbUserTravelService.queryUserTravel(map));
                 }
 
                 // 得到总数
@@ -96,6 +96,66 @@ public class TbTravelRecordController {
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
                 pi.setTotal(count);
+
+                // 设置userinfo
+                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+
+                result.setPageInfo(pi);
+
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            // 返回错误
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 根据uid 获取出差申请记录
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getTravelRecordListByCid", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response getTravelRecordListByCid(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            if (JzbCheckParam.allNotEmpty(param, new String[]{"count", "curcid", "pagesize", "pageno"})) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                // 设置分页
+                PageConvert.setPageRows(param);
+                // 如果起始时间参数不为空则转为时间戳
+                // 得到结果集
+                List<Map<String, Object>> list = tbTravelRecordService.queryTravelRecordByCid(param);
+
+                for (int i = 0, l = list.size(); i < l; i++) {
+                    Map<String, Object> map = new HashMap<>();
+
+                    // 取出每一行记录的出差工具id
+                    map.put("vehicleid", list.get(i).get("vehicle"));
+                    // 查出name 后放入
+                    list.get(i).put("vehicleName", tbTravelVehicleService.getTravelName(map));
+
+                    map.put("travelid", list.get(i).get("travelid"));
+                    list.get(i).put("travelAim", tbTravelAimService.queryTravelAim(map));
+
+                    list.get(i).put("userList", tbUserTravelService.queryUserTravel(map));
+                }
+
+                // 得到总数
+                int count = tbTravelRecordService.getTravelRecordCountByUid(param);
+
+                // 定义分页  pageinfo
+                PageInfo pi = new PageInfo();
+                pi.setList(list);
+
+                pi.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
 
                 // 设置userinfo
                 result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
@@ -136,9 +196,9 @@ public class TbTravelRecordController {
             // 循环生成出差id
             for (int i = 0, l = travelList.size(); i < l; i++) {
                 String travelid;
-                if(travelList.get(i).get("travelid")!=null){
-                    travelid=travelList.get(i).get("travelid").toString();
-                }else {
+                if (travelList.get(i).get("travelid") != null) {
+                    travelid = travelList.get(i).get("travelid").toString();
+                } else {
                     travelid = JzbRandom.getRandomCharLow(19);
                 }
                 // 生成出差id
@@ -220,7 +280,7 @@ public class TbTravelRecordController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"travelid"})) {
                 result = Response.getResponseError();
             } else {
-                param.put("status",4);
+                param.put("status", 4);
                 result = tbTravelRecordService.updateTravelRecordStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
@@ -229,7 +289,6 @@ public class TbTravelRecordController {
         }
         return result;
     }
-
 
     /**
      * 设置删除状态

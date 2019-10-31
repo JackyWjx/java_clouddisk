@@ -34,8 +34,9 @@ public class MessageListController {
 
     /**
      * 查询
+     *
+     * map 用户参数
      */
-
     @RequestMapping(value = "/queryMsgList", method = RequestMethod.POST)
     @ResponseBody
     public Response queryMsgList(@RequestBody Map<String, Object> map) {

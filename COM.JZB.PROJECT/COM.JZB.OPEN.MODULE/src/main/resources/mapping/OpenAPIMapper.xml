@@ -427,9 +427,9 @@
         order by
         id
         limit
-        ${pagesize}
+        #{pagesize}
         offset
-        ${pageno}
+        #{pageno}
     </select>
 
     <!--获取开发者列表-->

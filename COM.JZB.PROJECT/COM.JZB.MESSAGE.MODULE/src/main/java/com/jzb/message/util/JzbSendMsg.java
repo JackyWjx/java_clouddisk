@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -28,6 +29,8 @@ public class JzbSendMsg {
 
     /**
      *  发送短息
+     *
+     *  info 短信消息体
      */
     public static String sendShortMessage(MssageInfo info){
         String result = "error";
@@ -54,11 +57,11 @@ public class JzbSendMsg {
                 logger.info("发送状态result    =====>"+result);
             }catch (Exception e){
                 e.printStackTrace();
-                logger.info(" 发送错误  =====>");
+                logger.info(" 发送错误  =====> "+  new Date());
             }
         }catch (Exception e){
             e.printStackTrace();
-            logger.info(" 短信参数错误    =====>");
+            logger.info(" 短信参数错误    =====>"+  new Date());
         }
         return result;
     }

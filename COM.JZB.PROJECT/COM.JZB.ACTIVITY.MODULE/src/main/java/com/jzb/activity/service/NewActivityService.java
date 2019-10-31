@@ -36,6 +36,17 @@ public class NewActivityService {
         return activityMapper.getDiscussById(param);
     }
 
+
+    /**
+     * 获取详情
+     *
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> queryActivityPhoto(Map<String, Object> param) {
+        return activityMapper.queryActivityPhoto(param);
+    }
+
     /**
      * 分页查询 支显示3条信息
      *
@@ -127,6 +138,8 @@ public class NewActivityService {
      * @author kuangbin
      */
     public int getActivityListCount(Map<String, Object> param) {
+        // 加入查询状态
+        param.put("status", "1");
         return activityMapper.queryActivityListCount(param);
     }
 
@@ -136,7 +149,10 @@ public class NewActivityService {
      *
      * @author kuangbin
      */
-    public List<Map<String, Object>> getActivityList(Map<String, Object> param) throws ParseException {
+    public List<Map<String, Object>> getActivityList(Map<String, Object> param) {
+        // 加入查询状态
+        param.put("status", "1");
+
         // 设置分页参数
         param = setPageSize(param);
         List<Map<String, Object>> list = activityMapper.queryActivityListData(param);
@@ -180,22 +196,24 @@ public class NewActivityService {
         // 加入文章信息
         int count = activityMapper.insertActivityList(param);
         if (count > 0) {
-            Object photo = param.get("photolist");
-            if (JzbDataType.isCollection(photo)) {
-                List<Map<String, Object>> photoList = (List<Map<String, Object>>) photo;
-                for (int i = 0; i < photoList.size(); i++) {
-                    Map<String, Object> photoMap = photoList.get(i);
-                    // 加入默认状态
-                    photoMap.put("status", "1");
-                    photoMap.put("addtime", addtime);
-                    photoMap.put("actid", actid);
-                    photoMap.put("uid", param.get("uid"));
-                    photoMap.put("summary", param.get("summary"));
+            if (!JzbDataType.isEmpty(param.get("photolist"))) {
+                Object photo = param.get("photolist");
+                if (JzbDataType.isCollection(photo)) {
+                    List<Map<String, Object>> photoList = (List<Map<String, Object>>) photo;
+                    for (int i = 0; i < photoList.size(); i++) {
+                        Map<String, Object> photoMap = photoList.get(i);
+                        // 加入默认状态
+                        photoMap.put("status", "1");
+                        photoMap.put("addtime", addtime);
+                        photoMap.put("actid", actid);
+                        photoMap.put("uid", param.get("uid"));
+                        photoMap.put("summary", param.get("summary"));
+                    }
+                    // 加入活动图片
+                    count = activityMapper.insertActivityPhoto(photoList);
+                } else {
+                    count = 0;
                 }
-                // 加入活动图片
-                count = activityMapper.insertActivityPhoto(photoList);
-            } else {
-                count = 0;
             }
         }
         return count;
@@ -222,21 +240,23 @@ public class NewActivityService {
         param.put("updtime", updtime);
         int count = activityMapper.updateActivityData(param);
         if (count == 1) {
-            Object photo = param.get("photolist");
-            if (JzbDataType.isCollection(photo)) {
-                List<Map<String, Object>> list = (List<Map<String, Object>>) photo;
-                for (int i = 0; i < list.size(); i++) {
-                    Map<String, Object> photoMap = list.get(i);
-                    // 加入默认状态
-                    photoMap.put("updtime", updtime);
-                    photoMap.put("actid", JzbDataType.getString(param.get("actid")));
-                    photoMap.put("uid", JzbDataType.getString(param.get("uid")));
-                    // 加入插入状态
-                    photoMap.put("status", "1");
+            if (!JzbDataType.isEmpty(param.get("photolist"))) {
+                Object photo = param.get("photolist");
+                if (JzbDataType.isCollection(photo)) {
+                    List<Map<String, Object>> list = (List<Map<String, Object>>) photo;
+                    for (int i = 0; i < list.size(); i++) {
+                        Map<String, Object> photoMap = list.get(i);
+                        // 加入默认状态
+                        photoMap.put("updtime", updtime);
+                        photoMap.put("actid", JzbDataType.getString(param.get("actid")));
+                        photoMap.put("uid", JzbDataType.getString(param.get("uid")));
+                        // 加入插入状态
+                        photoMap.put("status", "1");
+                    }
+                    count = activityMapper.updateActivityPhoto(list);
+                } else {
+                    count = 0;
                 }
-                count = activityMapper.updateActivityPhoto(list);
-            } else {
-                count = 0;
             }
         }
         return count;
