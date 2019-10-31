@@ -1,6 +1,7 @@
 package com.jzb.operate.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,5 +22,19 @@ public interface TbCompanyServiceMapper {
      * @param param
      * @return
      */
-        List<Map<String, Object>> getProject(Map<String, Object> param);
+    List<Map<String, Object>> getProject(Map<String, Object> param);
+
+    /**
+     * 修改跟进记录
+     * @param map
+     * @return
+     */
+    int upComanyService(Map<String , Object>  map);
+
+    /**
+     * 修改跟进记录
+     * @param map
+     * @return
+     */
+    int saveComanyService(Map<String , Object>  map);
 }

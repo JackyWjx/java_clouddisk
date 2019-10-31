@@ -23,8 +23,8 @@ public class TbCompanyService {
      */
     public int saveProject(Map<String, Object> param) {
         long time = System.currentTimeMillis();
-        param.put("addtime", time);
         param.put("planid", JzbRandom.getRandomChar(11));
+        param.put("addtime", time);
         param.put("updtime", time);
         Date handletime = JzbDataType.getDateTime(param.get("handletime"));
         Date nexttime = JzbDataType.getDateTime(JzbDataType.getInteger(param.get("nexttime"))/1000);
@@ -40,5 +40,31 @@ public class TbCompanyService {
      */
     public List<Map<String, Object>> getProject(Map<String, Object> param) {
         return tbCompanyServiceMapper.getProject(param);
+    }
+
+    /**
+     * 修改跟进记录
+     * @return
+     */
+    public boolean upComanyService(Map<String, Object> param){
+        param.put("updtime",System.currentTimeMillis());
+        if(param.containsKey("ouid")){
+            param.put("upduid",param.get("ouid"));
+        }
+        return tbCompanyServiceMapper.upComanyService(param) > 0 ? true : false;
+    }
+
+    /**
+     * 修改跟进记录
+     * @return
+     */
+    public boolean saveComanyService(Map<String, Object> param){
+        param.put("addtime", System.currentTimeMillis());
+        param.put("updtime", System.currentTimeMillis());
+        if(param.containsKey("ouid")){
+            param.put("upduid",param.get("ouid"));
+            param.put("adduid",param.get("ouid"));
+        }
+        return tbCompanyServiceMapper.saveComanyService(param) > 0 ? true : false;
     }
 }
