@@ -1,5 +1,6 @@
 package com.jzb.operate.controller;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -84,4 +85,66 @@ public class TbCompanyServiceController {
         return result;
     }
 
+    /**
+     * CRM-销售业主-我服务的业主-1
+     * 获取所有的我服务的业主
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    @RequestMapping(value = "/getCompanyServiceList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyServiceList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            // 获取前台的总数
+            int count = JzbDataType.getInteger(param.get("count"));
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询所有我服务的业主总数
+                count = tbCompanyService.getCompanyServiceCount(param);
+            }
+            // 返回所有的企业列表
+            List<Map<String, Object>> companyList = tbCompanyService.getCompanyServiceList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-我服务的业主-2
+     * 根据模糊搜索条件获取所有的我服务的业主
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    @RequestMapping(value = "/searchCompanyServiceList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchCompanyServiceList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回所有的企业列表
+            List<Map<String, Object>> companyList = tbCompanyService.searchCompanyServiceList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            pageInfo.setTotal(0);
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
