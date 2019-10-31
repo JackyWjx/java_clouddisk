@@ -63,4 +63,22 @@ public interface TbCompanyServiceMapper {
      * @return
      */
     int saveComanyService(Map<String , Object>  map);
+
+    /**
+     * CRM-销售业主-我服务的业主-服务记录1
+     * 显示我服务的所有记录的总数
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    int queryServiceListCount(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-我服务的业主-1
+     * 获取所有的我服务的业主
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    List<Map<String, Object>> queryServiceList(Map<String, Object> param);
 }
