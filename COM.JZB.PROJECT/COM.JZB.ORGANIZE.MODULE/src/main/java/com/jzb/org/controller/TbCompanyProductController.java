@@ -51,7 +51,7 @@ public class TbCompanyProductController {
                 logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             if (JzbCheckParam.haveEmpty(params, new String[]{"list"})) {
-                logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", "参数为空"));
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", "参数为空"));
                 response = Response.getResponseError();
             } else {
                 response = tbCompanyProductService.addCompanyProduct(params) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
@@ -59,7 +59,7 @@ public class TbCompanyProductController {
         } catch (Exception ex) {
             JzbTools.logError(ex);
             response=Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger( api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
