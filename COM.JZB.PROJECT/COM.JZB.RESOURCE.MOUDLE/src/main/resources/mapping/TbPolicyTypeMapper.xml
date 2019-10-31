@@ -9,7 +9,6 @@
     <select id="queryPolicyType" parameterType="java.util.Map" resultType="java.util.Map">
         WITH RECURSIVE moth AS (
             SELECT
-                adduid,
                 typeid,
                 cname,
                 typecode,
@@ -27,7 +26,6 @@
                 parentid = '0000000'
                 AND status = '1' UNION ALL
             SELECT
-                tst.adduid,
                 tst.typeid,
                 tst.cname,
                 tst.typecode,
@@ -60,7 +58,7 @@
     <!--新增运营管理下的菜单类别LBQ-->
     <insert id="savePolicyType" parameterType="java.util.Map">
         insert into
-        tb_policy_type(adduid,typecode,typeid,cname,parentid,typedesc,idx,addtime,updtime,upduid,status,summary)
+        tb_policy_type(adduid,tpeycode,typeid,cname,parentid,typedesc,idx,addtime,updtime,upduid,status,summary)
         values
         (
         <choose>

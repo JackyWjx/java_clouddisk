@@ -66,7 +66,7 @@ public class TbCompanyMethodController {
     public Response getMethodType(@RequestBody Map<String, Object> param) {
         Response response;
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"projectid"})) {
                 response = Response.getResponseError();
             } else {
 
@@ -98,7 +98,7 @@ public class TbCompanyMethodController {
                     }
                     // set default JSON and childern node
                     JSONObject node = new JSONObject();
-                    node.put("methodid", record.get("methodid").toString());
+                    node.put("typeid", record.get("typeid").toString());
                     node.put("cname", record.get("cname").toString());
                     node.put("parentid", parentId);
                     node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
@@ -116,16 +116,16 @@ public class TbCompanyMethodController {
                     // if root node
                     if (parentId.equals(firstParent)) {
                         result.add(node);
-                        recordJson.put(record.get("methodid").toString(), node);
+                        recordJson.put(record.get("typeid").toString(), node);
 
                         // if parent exist
                     } else if (recordJson.containsKey(parentId)) {
                         // add children
                         recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
-                        recordJson.put(record.get("methodid").toString(), node);
+                        recordJson.put(record.get("typeid").toString(), node);
                         // Unknown relation node
                     } else {
-                        String nodeId = record.get("methodid").toString();
+                        String nodeId = record.get("typeid").toString();
                         if (unknownRecord.containsKey(parentId)) {
                             // add children
                             unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
@@ -136,8 +136,8 @@ public class TbCompanyMethodController {
                                 JSONObject tempNode = (JSONObject) entry.getValue();
                                 if (tempNode.getString("parentid").equals(nodeId)) {
                                     node.getJSONArray("children").add(tempNode);
-                                    recordJson.put(tempNode.get("methodid").toString(), tempNode);
-                                    unknownRecord.remove(tempNode.get("methodid").toString());
+                                    recordJson.put(tempNode.get("typeid").toString(), tempNode);
+                                    unknownRecord.remove(tempNode.get("typeid").toString());
                                     break;
                                 }
                             }

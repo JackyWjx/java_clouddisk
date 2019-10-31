@@ -105,7 +105,6 @@
     <!--根据文档类别进行查询，文档名称进行模糊查询 LBQ-->
     <select id="getTbPolicyDocument" parameterType="java.util.Map" resultType="java.util.Map">
         select
-        adduid,
         typecode,
         Id,
         domid,
@@ -161,13 +160,13 @@
     <!--新增-->
     <insert id="saveTbPolicyDom" parameterType="java.util.Map">
         insert into
-        tb_policy_document(adduid,domid,typeid,domcode,cname,price,department,effective,stdrange,status,pagekey,pagedesc,addtime,
+        tb_policy_document(tpeycode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,pagekey,pagedesc,addtime,
         updtime,idx)
         values
         (
         <choose>
-            <when test="adduid != null">
-                #{adduid},
+            <when test="tpeycode != null">
+                #{tpeycode},
             </when>
             <otherwise>
                 null,

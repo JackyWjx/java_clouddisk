@@ -171,9 +171,7 @@ public class UserCacheController {
             int timeout = JzbDataType.getInteger(param.get("timeout"));
             Map<String, Object> cacheInfo = new HashMap<>(param.size());
             for (Map.Entry<String, Object> entry : param.entrySet()) {
-                if (entry != null && entry.getValue() != null) {
-                    cacheInfo.put(entry.getKey(), JzbDataType.getString(entry.getValue()));
-                }
+                cacheInfo.put(entry.getKey(), JzbDataType.getString(entry.getValue()));
             }
             cacheInfo.put("tokentime", System.currentTimeMillis() + "");
 

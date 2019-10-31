@@ -109,16 +109,15 @@ public class ActivityController {
         Response response = null;
         try {
             //获取前台传的值
-            int count= activityService.EnquiryCount();
-            List<Map<String, Object>> arr = activityService.queryActpictureList(params);
-            for(int i=0;i<arr.size();i++){
-                params.put("actid",arr.get(i).get("actid"));
-                params.put("uid",arr.get(i).get("adduid"));
-                Response region = userRedisApi.getCacheUserInfo(params);
-                arr.get(i).put("actpicture",newActivityService.queryActivityPhoto(params).get(0).get("photo"));
-                arr.get(i).put("userInfo",region.getResponseEntity());
-                arr.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(arr.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+            int count = JzbDataType.getInteger(params.get("count"));
+            //判断总数是不是等于-1
+            count = count <= 0 ? 0 : count;
+
+            if (count == 0) {
+
+                count = activityService.EnquiryCount();
             }
+            List<Map<String, Object>> arr = activityService.queryActpictureList(params);
             // 定义返回
 //            Map<String, Object> userInfo = (Map<String, Object>) params.get("userinfo");
             response = Response.getResponseSuccess();
@@ -198,14 +197,6 @@ public class ActivityController {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> list = newActivityService.getActivityDesc(params);
-                for(int i=0;i<list.size();i++){
-                    params.put("actid",list.get(i).get("actid"));
-                    params.put("uid",list.get(i).get("adduid"));
-                    Response region = userRedisApi.getCacheUserInfo(params);
-                    list.get(i).put("actpicture",newActivityService.queryActivityPhoto(params).get(0).get("photo"));
-                    list.get(i).put("userInfo",region.getResponseEntity());
-                    list.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
-                }
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
                 pi.setTotal(list.size());
@@ -218,7 +209,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(ex);
             response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),

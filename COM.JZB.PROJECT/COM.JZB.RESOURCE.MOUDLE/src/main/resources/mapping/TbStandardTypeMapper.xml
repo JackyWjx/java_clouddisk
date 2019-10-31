@@ -83,9 +83,9 @@
         <if test="parentid != null">parentid=#{parentid},</if>
         <if test="typedesc != null">typedesc=#{typedesc},</if>
         <if test="upduid != null">upduid=#{upduid},</if>
+        <if test="updtime != null">updtime=#{updtime},</if>
         <if test="status != null">status=#{status},</if>
-        <if test="summary != null">summary=#{summary},</if>
-        <if test="updtime != null">updtime=#{updtime}</if>
+        <if test="summary != null">summary=#{summary}</if>
         where
         typeid=#{typeid}
     </update>

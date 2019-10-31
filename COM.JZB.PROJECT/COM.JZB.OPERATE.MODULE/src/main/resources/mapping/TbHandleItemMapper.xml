@@ -6,77 +6,18 @@
 
     <select id="getHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
         select
-        a.uid,
-        to_char(to_timestamp(a.handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
-        a.context,
-        a.needres,
-        a.invest,
-        a.invest,
-        a.attach,
-        a.summary
+        uid,
+        to_char(to_timestamp(handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
+        context,
+        needres,
+        invest,
+        output,
+        attach,
+        summary
         from
-        tb_handle_item a
+        tb_handle_item
         where
-        a.cid = #{ac}
-        <if test="beginTime != null and beginTime != ''">
-            and handletime &gt;= #(beginTime)
-        </if>
-        <if test="endTime != null and endTime != ''">
-            and handletime &lt;= #(endTime)
-        </if>
+        cid = #{ac}
     </select>
-
-    
-    <select id="getService" parameterType="java.util.Map" resultType="java.util.Map">
-            select
-            a.uid,
-            to_char(to_timestamp(a.handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
-            b.context,
-            b.needres,
-            b.invest,
-            b.invest,
-            b.attach,
-            b.summary,
-            a.projectid
-            from
-            tb_handle_item b
-            left join
-            tb_company_service a
-            on a.cid = b.cid
-            where
-            a.cid = #{ac}
-            <if test="beginTime != null and beginTime != ''">
-                and handletime &gt;= #(beginTime)
-            </if>
-            <if test="endTime != null and endTime != ''">
-                and handletime &lt;= #(endTime)
-            </if>
-    </select>
-
-
-
-    <select id="getItem" parameterType="java.util.Map" resultType="java.util.Map">
-        select
-        a.uid,
-        to_char(to_timestamp(a.handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
-        a.context,
-        a.needres,
-        a.invest,
-        a.invest,
-        a.attach,
-        a.summary,
-        a.projectid
-        from
-        tb_handle_item a
-        where
-        a.cid = #{ac}
-        <if test="beginTime != null and beginTime != ''">
-            and handletime &gt;= #(beginTime)
-        </if>
-        <if test="endTime != null and endTime != ''">
-            and handletime &lt;= #(endTime)
-        </if>
-    </select>
-
 
 </mapper>

@@ -6,7 +6,6 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.message.service.MessageGroupTemplateService;
-import com.jzb.message.service.MessageTypeService;
 import com.jzb.message.service.ShortMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

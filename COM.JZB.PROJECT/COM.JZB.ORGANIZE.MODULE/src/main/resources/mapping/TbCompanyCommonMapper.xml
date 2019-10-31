@@ -373,7 +373,6 @@
         </foreach>
     </update>
 
-    <!--分配业务员-->
     <update id="updateCompanys" parameterType="java.util.Map">
         update
         tb_company_common

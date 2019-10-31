@@ -42,7 +42,7 @@ public interface TbCompanyPropertyMapper {
     int saveCompanyProperty(Map<String, Object> param);
 
     /**
-     *  所有业主-业主列表-设置等级
+     *  所有业主-业主列表-分配售后人员
      * @param param
      * @return
      */

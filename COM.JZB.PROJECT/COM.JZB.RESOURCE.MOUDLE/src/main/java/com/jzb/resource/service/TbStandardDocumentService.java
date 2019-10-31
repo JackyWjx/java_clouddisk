@@ -59,7 +59,8 @@ public class TbStandardDocumentService {
         long time = System.currentTimeMillis();
         Date date = JzbDataType.getDateTime(JzbDataType.getInteger(param.get("effective"))/1000);
         param.put("effective", date.getTime());
-       param.put("updtime", time);
+		
+//        param.put("updtime", time);
         return tbStandardDocumentMapper.updateTbStandardDom(param);
     }
 
