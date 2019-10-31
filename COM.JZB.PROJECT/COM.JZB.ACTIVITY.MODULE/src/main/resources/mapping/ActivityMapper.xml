@@ -131,7 +131,8 @@
         tal.READS,
         tal.shares,
         tal.acttheme,
-        tal.actlogo
+        tal.actlogo,
+        tal.adduid
         FROM
         tb_activity_list tal
         LEFT JOIN tb_activity_photo tap ON tap.actid = tal.actid

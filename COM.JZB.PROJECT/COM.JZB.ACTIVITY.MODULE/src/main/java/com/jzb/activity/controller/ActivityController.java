@@ -198,6 +198,14 @@ public class ActivityController {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> list = newActivityService.getActivityDesc(params);
+                for(int i=0;i<list.size();i++){
+                    params.put("actid",list.get(i).get("actid"));
+                    params.put("uid",list.get(i).get("adduid"));
+                    Response region = userRedisApi.getCacheUserInfo(params);
+                    list.get(i).put("actpicture",newActivityService.queryActivityPhoto(params).get(0).get("photo"));
+                    list.get(i).put("userInfo",region.getResponseEntity());
+                    list.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                }
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
                 pi.setTotal(list.size());
