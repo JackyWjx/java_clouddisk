@@ -71,18 +71,26 @@ public class TbCompanyService {
      */
     public List<Map<String, Object>> getCompanyServiceList(Map<String, Object> param) {
         param.put("status", "1");
+        // 设置分页参数
         param = setPageSize(param);
+
+        // 获取所有的服务记录
         List<Map<String, Object>> projectList = tbCompanyServiceMapper.queryCompanyServiceList(param);
         if (!JzbDataType.isEmpty(projectList)) {
+            // 根据服务的项目ID获取项目信息
             Response response = tbCompanyProjectApi.getServiceProjectList(projectList);
+
+            // 获取查询到的返回值
             List<Map<String, Object>> list = response.getPageInfo().getList();
             for (int i = 0; i < projectList.size(); i++) {
                 Map<String, Object> projectMap = projectList.get(i);
                 projectMap.put("uid", JzbDataType.getString(param.get("uid")));
+                // 查询人员对每个项目服务的次数
                 int count = tbCompanyServiceMapper.queryServiceCount(projectMap);
                 projectMap.put("service", count);
                 for (int k = 0; k < list.size(); k++) {
                     Map<String, Object> map = list.get(i);
+                    // 如果项目ID相同则将结果全部加入返回值中
                     if (JzbDataType.getString(projectMap.get("projectid")).equals(JzbDataType.getString(map.get("projectid")))) {
                         projectMap.putAll(map);
                         break;
@@ -115,27 +123,71 @@ public class TbCompanyService {
      */
     public List<Map<String, Object>> searchCompanyServiceList(Map<String, Object> param) {
         param.put("status", "1");
+        // 设置分页参数
         param = setPageSize(param);
+
+        // 获取所有的服务记录
         List<Map<String, Object>> projectList = tbCompanyServiceMapper.queryCompanyServiceList(param);
         if (!JzbDataType.isEmpty(projectList)) {
+            // 加入查询条件项目ID
             param.put("list", projectList);
+
+            // 根据服务的项目ID获取模糊搜索项目信息
             Response response = tbCompanyProjectApi.searchCompanyServiceList(param);
             List<Map<String, Object>> list = response.getPageInfo().getList();
-            for (int i = projectList.size()-1; i >=0; i--) {
+            for (int i = projectList.size() - 1; i >= 0; i--) {
+                // 设置初始开关
+                boolean bl = false;
                 Map<String, Object> projectMap = projectList.get(i);
                 projectMap.put("uid", JzbDataType.getString(param.get("uid")));
+                // 查询人员对每个项目服务的次数
                 int count = tbCompanyServiceMapper.queryServiceCount(projectMap);
                 projectMap.put("service", count);
                 for (int k = 0; k < list.size(); k++) {
                     Map<String, Object> map = list.get(i);
+                    // 如果项目ID相同则将结果全部加入返回值中
                     if (JzbDataType.getString(projectMap.get("projectid")).equals(JzbDataType.getString(map.get("projectid")))) {
                         projectMap.putAll(map);
+                        // 获取模糊查询中的总数,加入结果中
+                        projectMap.put("count", response.getPageInfo().getTotal());
+
+                        // 如果有相等的则将开关设置为true
+                        bl = true;
                         break;
                     }
+                }
+                // 如果开关为false则说明此次循环没有结果,将本次循环的值删除
+                if (!bl){
                     projectList.remove(i);
                 }
             }
         }
         return projectList;
+    }
+
+    /**
+     * 修改跟进记录
+     * @return
+     */
+    public boolean upComanyService(Map<String, Object> param){
+        param.put("updtime",System.currentTimeMillis());
+        if(param.containsKey("ouid")){
+            param.put("upduid",param.get("ouid"));
+        }
+        return tbCompanyServiceMapper.upComanyService(param) > 0 ? true : false;
+    }
+
+    /**
+     * 添加跟进记录
+     * @return
+     */
+    public boolean saveComanyService(Map<String, Object> param) {
+        param.put("addtime", System.currentTimeMillis());
+        param.put("updtime", System.currentTimeMillis());
+        if (param.containsKey("ouid")) {
+            param.put("upduid", param.get("ouid"));
+            param.put("adduid", param.get("ouid"));
+        }
+        return tbCompanyServiceMapper.saveComanyService(param) > 0 ? true : false;
     }
 }
