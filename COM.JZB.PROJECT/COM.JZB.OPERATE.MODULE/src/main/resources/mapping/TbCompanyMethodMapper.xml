@@ -6,7 +6,7 @@
 
     <!-- 上传 导入方法论   已存在则只做修改 不存在则做添加 -->
     <insert id="addCompanyMethod" parameterType="java.util.List">
-        <foreach collection="list" index="index" item="method" separator=",">
+        <foreach collection="list" index="index" item="method" separator=";">
             insert into tb_company_method
             (cid,projectid,methodid,plantime,days,score,remark,idx,adduid,addtime,upduid,updtime,status,summary)
             values (

@@ -85,240 +85,6 @@
         </choose>
         <choose>
             <when test="handletime != null">
-            #{handletime},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="servicetype != null">
-                #{servicetype},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="personid != null">
-                #{personid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="person != null">
-                #{person},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="telphone != null">
-                #{telphone},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-           <choose>
-                  <when test="context != null">
-                         #{context},
-                  </when>
-                  <otherwise>
-                         null,
-                  </otherwise>
-           </choose>
-           <choose>
-                  <when test="servicecontent != null">
-                         #{servicecontent},
-                  </when>
-                  <otherwise>
-                         null,
-                  </otherwise>
-           </choose>
-           <choose>
-                  <when test="needres != null">
-                         #{needres},
-                  </when>
-                  <otherwise>
-                         null,
-                  </otherwise>
-           </choose>
-           <choose>
-                  <when test="attach != null">
-                         #{attach},
-                  </when>
-                  <otherwise>
-                         null,
-                  </otherwise>
-           </choose>
-           <choose>
-                  <when test="remark != null">
-                         #{remark},
-                  </when>
-                  <otherwise>
-                         null,
-                  </otherwise>
-           </choose>
-           <choose>
-                  <when test="times != null">
-                         #{times},
-                  </when>
-                  <otherwise>
-                         null ,
-                  </otherwise>
-           </choose>
-           <choose>
-                  <when test="result != null">
-                         #{result},
-                  </when>
-                  <otherwise>
-                         null,
-                  </otherwise>
-           </choose>
-        <choose>
-            <when test="nexttime != null">
-                #{nexttime},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="adduid != null">
-                #{adduid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="addtime != null">
-                #{addtime},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="upduid != null">
-                #{upduid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-        <when test="updtime != null">
-            #{updtime},
-        </when>
-        <otherwise>
-            null,
-        </otherwise>
-         </choose>
-        <choose>
-            <when test="status != null">
-                #{status},
-            </when>
-            <otherwise>
-                1,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="summary != null">
-                #{summary}
-            </when>
-            <otherwise>
-                null
-            </otherwise>
-        </choose>
-           )
-    </insert>
-
-    <insert id="saveComanyService" parameterType="java.util.Map">
-        insert
-        into
-        tb_company_service
-        (
-        planid,
-        typeid,
-        cid,
-        projectid,
-        uid,
-        region,
-        handletime,
-        servicetype,
-        personid,
-        person,
-        telphone,
-        context,
-        servicecontent,
-        needres,
-        attach,
-        remark,
-        times,
-        result,
-        nexttime,
-        adduid,
-        addtime,
-        upduid,
-        updtime,
-        status,
-        summary
-        )values(
-        <choose>
-            <when test="planid != null">
-                #{planid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="typeid != null">
-                #{typeid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="cid != null">
-                #{cid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="projected != null">
-                #{projectid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="uid != null">
-                #{uid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="region != null">
-                #{region},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="handletime != null">
                 #{handletime},
             </when>
             <otherwise>
@@ -472,33 +238,87 @@
         )
     </insert>
 
-    <!--  修改服务跟进   -->
-    <update id="upComanyService" parameterType="java.util.Map" >
-        update tb_company_service set updtime = #{updtime}
-        <choose><when test="upduid != null">,upduid  = #{upduid}</when></choose>
-        <choose><when test="uid != null">,uid  = #{uid}</when></choose>
-        <choose><when test="region != null">,region  = #{region}</when></choose>
-        <choose><when test="servicetype != null">,servicetype  = #{servicetype}</when></choose>
-        <choose><when test="personid != null">,personid  = #{personid}</when></choose>
-        <choose><when test="person != null">,person  = #{person}</when></choose>
-        <choose><when test="telphone != null">,telphone  = #{telphone}</when></choose>
-        <choose><when test="context != null">,context  = #{context}</when></choose>
-        <choose><when test="servicecontent != null">,servicecontent  = #{servicecontent}</when></choose>
-        <choose><when test="needres != null">,needres  = #{needres}</when></choose>
-        <choose><when test="attach != null">,attach  = #{attach}</when></choose>
-        <choose><when test="remark != null">,remark  = #{remark}</when></choose>
-        <choose><when test="times != null">,times  = #{times}</when></choose>
-        <choose><when test="result != null">,result  = #{result}</when></choose>
-        <choose><when test="nexttime != null">,nexttime  = #{nexttime}</when></choose>
-        where  cid = #{cid}  and projectid = #{projectid}
-    </update>
 
     <select id="getProject" parameterType="java.util.Map" resultType="java.util.Map">
         select
-        *
+        planid,
+        typeid,
+        cid,
+        projectid,
+        uid,
+        region,
+        handletime,
+        servicetype,
+        personid,
+        person,
+        telphone,
+        context,
+        servicecontent,
+        needres,
+        attach,
+        remark,
+        times,
+        result,
+        nexttime,
+        adduid,
+        addtime,
+        upduid,
+        updtime,
+        status,
+        summary
+        from
+        tb_company_service
+        where status='1'
+        <if test="cid!=null and cid!=''">
+            and cid=#{cid}
+        </if>
+        <if test="projectid!=null and projectid!=''">
+            and projectid=#{projectid}
+        </if>
+        LIMIT #{pagesize}
+        OFFSET #{pageno}
+    </select>
+
+    <!--获取所有的我服务的业主的总数-->
+    <select id="queryCompanyServiceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        (
+        select
+        distinct
+        projectid
         from
         tb_company_service
         where
-        projected = #{projected}
+        uid =#{uid}
+        ) as sercive
+    </select>
+
+    <!--获取所有的我服务的业主-->
+    <select id="queryCompanyServiceList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        distinct
+        projectid
+        from
+        tb_company_service
+        where
+        uid =#{uid}
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--获取所有的我服务的业主项目的次数-->
+    <select id="queryServiceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        tb_company_service
+        where
+        uid =#{uid}
+        and
+        projectid = #{projectid}
     </select>
 </mapper>
