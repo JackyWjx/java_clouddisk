@@ -109,15 +109,16 @@ public class ActivityController {
         Response response = null;
         try {
             //获取前台传的值
-            int count = JzbDataType.getInteger(params.get("count"));
-            //判断总数是不是等于-1
-            count = count <= 0 ? 0 : count;
-
-            if (count == 0) {
-
-                count = activityService.EnquiryCount();
-            }
+            int count= activityService.EnquiryCount();
             List<Map<String, Object>> arr = activityService.queryActpictureList(params);
+            for(int i=0;i<arr.size();i++){
+                params.put("actid",arr.get(i).get("actid"));
+                params.put("uid",arr.get(i).get("adduid"));
+                Response region = userRedisApi.getCacheUserInfo(params);
+                arr.get(i).put("actpicture",newActivityService.queryActivityPhoto(params).get(0).get("photo"));
+                arr.get(i).put("userInfo",region.getResponseEntity());
+                arr.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(arr.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+            }
             // 定义返回
 //            Map<String, Object> userInfo = (Map<String, Object>) params.get("userinfo");
             response = Response.getResponseSuccess();

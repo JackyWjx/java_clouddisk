@@ -38,7 +38,7 @@
 
 
     <!-- 查询图片 -->
-    <select id="queryActivityPhoto" parameterType="java.util.Map"  resultType="java.util.Map">
+    <select id="queryActivityPhoto" parameterType="java.util.Map" resultType="java.util.Map">
         select id,photo from tb_activity_photo where actid=#{actid} and status='1'
     </select>
 
@@ -46,9 +46,10 @@
     <!--查询图片推广信息-->
     <select id="queryActpictureList" resultType="java.util.Map">
         select
-        id,actid,cname,actpicture,votes,reads
+        id,actid,cname,actpicture,votes,reads,addtime,adduid
         from
         tb_activity_list
+                where status='1'
         order by
         worths
         desc
@@ -266,7 +267,11 @@
 
     <!-- 推广图片-->
     <select id="EnquiryCount" resultType="java.lang.Integer">
-        select  count(*)   tb_activity_list
+        select
+        count(1)
+        from
+        tb_activity_list
+        where status='1'
     </select>
 
     <!-- 查询活动图片-->
