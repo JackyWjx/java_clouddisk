@@ -160,10 +160,48 @@ public class TbCompanyServiceController {
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
-            pageInfo.setTotal(0);
+            pageInfo.setTotal(companyList.size() == 0 ? 0: JzbDataType.getInteger(companyList.get(0).get("count")));
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 修改 服务记录
+     * @auth  han bin
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/upComanyService", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response upComanyService(@RequestBody Map<String, Object> param){
+        Response result;
+        try {
+            result = tbCompanyService.upComanyService(param) ?  Response.getResponseSuccess((Map)param.get("userinfo")) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 修改 服务记录
+     * @auth  han bin
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/saveComanyService", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response saveComanyService(@RequestBody Map<String, Object> param){
+        Response result;
+        try {
+            result = tbCompanyService.saveComanyService(param) ?  Response.getResponseSuccess((Map)param.get("userinfo")) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
             result = Response.getResponseError();
         }
         return result;
