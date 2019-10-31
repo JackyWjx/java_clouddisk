@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbCompanyMethodTargetMapper">
+
+    <!-- 添加方法论目标 -->
+    <insert id="addMethodTarget" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="method" separator=";">
+            insert into tb_company_method_target
+            (cid,projectid,methodid,tarkey,tarname,tarvalue,score,idx,adduid,addtime,upduid,updtime,status,summary)
+            values (
+            <choose>
+                <when test="method.cid!=null and method.cid!=''">
+                    #{method.cid},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.projectid!=null and method.projectid!=''">
+                    #{method.projectid},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.methodid!=null and method.methodid!=''">
+                    #{method.methodid},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.tarkey!=null and method.tarkey!=''">
+                    #{method.tarkey},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.tarname!=null and method.tarname!=''">
+                    #{method.tarname},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.tarvalue!=null and method.tarvalue!=''">
+                    #{method.tarvalue},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.score!=null and method.score!=''">
+                    #{method.score},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.idx!=null and method.idx!=''">
+                    #{method.idx},
+                </when>
+                <otherwise>
+                    (select count(1)+#{index} from tb_company_method_target),
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.adduid!=null and method.adduid!=''">
+                    #{method.adduid},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.addtime!=null and method.addtime!=''">
+                    #{method.addtime},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.upduid!=null and method.upduid!=''">
+                    #{method.upduid},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.updtime!=null and method.updtime!=''">
+                    #{method.updtime},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.status!=null and method.status!=''">
+                    #{method.status},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.summary!=null and method.summary!=''">
+                    #{method.summary}
+                </when>
+                <otherwise>
+                    NULL
+                </otherwise>
+            </choose>
+            );
+        </foreach>
+    </insert>
+
+    <!-- 查询方法论目标 -->
+    <select id="queryMethodTarget" parameterType="java.util.Map" resultType="java.util.Map">
+        select cid,projectid,methodid,tarkey,tarname,tarvalue,score,idx,adduid,addtime,upduid,updtime,status,summary
+        from tb_company_method_target
+        where status='1'
+        <if test="cid!=null and cid!=''">
+            and cid=#{cid}
+        </if>
+        <if test="projectid!=null and projectid!=''">
+            and projectid=#{projectid}
+        </if>
+        <if test="methodid!=null and methodid!=''">
+            and methodid=#{methodid}
+        </if>
+    </select>
+
+    <!-- 点击达成目标 -->
+    <update id="updateMethodTarget" parameterType="java.util.Map">
+        <foreach collection="list" index="index" item="method" separator=";">
+            update tb_company_method_target set tarvalue=#{method.tarvalue} where cid=#{method.cid} and
+            projectid=#{method.projectid} and methodid=#{method.methodid}
+        </foreach>
+    </update>
+</mapper>

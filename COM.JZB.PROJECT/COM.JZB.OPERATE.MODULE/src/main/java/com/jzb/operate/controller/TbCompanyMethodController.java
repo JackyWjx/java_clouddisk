@@ -9,7 +9,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.dao.TbCompanyMethodTargetMapper;
 import com.jzb.operate.service.TbCompanyMethodService;
+import com.jzb.operate.service.TbCompanyMethodTargetService;
 import com.netflix.discovery.converters.jackson.EurekaXmlJacksonCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,9 @@ public class TbCompanyMethodController {
     @Autowired
     private TbCompanyMethodService tbCompanyMethodService;
 
+    @Autowired
+    private TbCompanyMethodTargetService tbCompanyMethodTargetService;
+
     /**
      * 日志记录对象
      */
@@ -49,40 +54,41 @@ public class TbCompanyMethodController {
     public Response addCompanyMethod(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String  api="/operate/companyMethod/addCompanyMethod";
+        String api = "/operate/companyMethod/addCompanyMethod";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 如果指定参数为空则返回error
             if (JzbCheckParam.haveEmpty(param, new String[]{"list"})) {
                 result = Response.getResponseError();
             } else {
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
-                long time=System.currentTimeMillis();
+                long time = System.currentTimeMillis();
                 for (int i = 0; i < list.size(); i++) {
-                    list.get(i).put("plantime",JzbDateUtil.getDate(list.get(i).get("plantime").toString(),JzbDateStr.yyyy_MM_dd).getTime());
-                    list.get(i).put("adduid",userInfo.get("uid").toString());
-                    list.get(i).put("addtime",time);
-                    list.get(i).put("updtime",time);
+                    list.get(i).put("plantime", JzbDateUtil.getDate(list.get(i).get("plantime").toString(), JzbDateStr.yyyy_MM_dd).getTime());
+                    list.get(i).put("adduid", userInfo.get("uid").toString());
+                    list.get(i).put("addtime", time);
+                    list.get(i).put("updtime", time);
                 }
-                result = tbCompanyMethodService.addCompanyMethod(list) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+                List<Map<String, Object>> targetList = (List<Map<String, Object>>) param.get("targetList");
+                result = tbCompanyMethodService.addCompanyMethod(list) * tbCompanyMethodTargetService.addMethodTarget(targetList) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger( userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
                     userInfo.get("msgTag").toString(), "User Login Message"));
         } else {
-            logger.info(JzbLoggerUtil.getApiLogger( api, "2", "ERROR", "", "", "", "", "User Login Message"));
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
