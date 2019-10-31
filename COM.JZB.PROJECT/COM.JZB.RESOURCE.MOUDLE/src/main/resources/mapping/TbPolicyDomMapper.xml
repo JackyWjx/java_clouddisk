@@ -53,7 +53,8 @@
 
     <!--	标准文档总数-->
     <select id="queryDocumentsCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-	     select count(1) from tb_policy_document where typeid=#{typeid} <if test="keyword!=null and keyword!=''">
+	     select count(1) from tb_policy_document where typeid=#{typeid} and status='1'
+        <if test="keyword!=null and keyword!=''">
         and cname ~ #{keyword}
     </if>
 	</select>
