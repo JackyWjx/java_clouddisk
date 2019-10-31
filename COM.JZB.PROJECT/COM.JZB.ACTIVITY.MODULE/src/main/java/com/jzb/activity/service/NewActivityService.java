@@ -200,14 +200,19 @@ public class NewActivityService {
                 Object photo = param.get("photolist");
                 if (JzbDataType.isCollection(photo)) {
                     List<Map<String, Object>> photoList = (List<Map<String, Object>>) photo;
-                    for (int i = 0; i < photoList.size(); i++) {
+                    for (int i = photoList.size()-1; i >= 0; i--) {
                         Map<String, Object> photoMap = photoList.get(i);
-                        // 加入默认状态
-                        photoMap.put("status", "1");
-                        photoMap.put("addtime", addtime);
-                        photoMap.put("actid", actid);
-                        photoMap.put("uid", param.get("uid"));
-                        photoMap.put("summary", param.get("summary"));
+                        if (!JzbDataType.isEmpty(photoMap.get("photo"))){
+                            // 加入默认状态
+                            photoMap.put("status", "1");
+                            photoMap.put("addtime", addtime);
+                            photoMap.put("actid", actid);
+                            photoMap.put("uid", param.get("uid"));
+                            photoMap.put("summary", param.get("summary"));
+                            photoMap.put("fileid", JzbRandom.getRandomCharCap(15));
+                        }else {
+                            photoList.remove(i);
+                        }
                     }
                     // 加入活动图片
                     count = activityMapper.insertActivityPhoto(photoList);
@@ -246,12 +251,15 @@ public class NewActivityService {
                     List<Map<String, Object>> list = (List<Map<String, Object>>) photo;
                     for (int i = 0; i < list.size(); i++) {
                         Map<String, Object> photoMap = list.get(i);
+                        if (!JzbDataType.isEmpty(photoMap.get("photo"))){
                         // 加入默认状态
                         photoMap.put("updtime", updtime);
                         photoMap.put("actid", JzbDataType.getString(param.get("actid")));
                         photoMap.put("uid", JzbDataType.getString(param.get("uid")));
-                        // 加入插入状态
-                        photoMap.put("status", "1");
+                        photoMap.put("newFileId", JzbRandom.getRandomCharCap(15));
+                        }else {
+                            list.remove(i);
+                        }
                     }
                     count = activityMapper.updateActivityPhoto(list);
                 } else {
