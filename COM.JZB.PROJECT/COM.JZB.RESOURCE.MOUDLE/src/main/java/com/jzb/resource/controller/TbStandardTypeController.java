@@ -43,7 +43,7 @@ public class TbStandardTypeController {
         Response result;
         try {
             //如果有空值，返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{ "cname", "adduid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{ "cname"})) {
                 result = Response.getResponseError();
             } else {
                 //添加一条记录
@@ -78,7 +78,7 @@ public class TbStandardTypeController {
         Response result;
         try {
             //如果有空值，返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"typeid", "cname", "upduid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"typeid"})) {
                 result = Response.getResponseError();
             } else {
                 //修改一条记录
@@ -176,10 +176,10 @@ public class TbStandardTypeController {
                 // set default JSON and childern node
                 JSONObject node = new JSONObject();
                 node.put("typeid", map.get("typeid").toString());
-                node.put("typecode", map.get("typecode").toString());
+                //node.put("typecode", map.get("typecode").toString());
                 node.put("cname", map.get("cname").toString());
-                node.put("typedesc", map.get("typedesc").toString());
-                node.put("adduid", map.get("adduid").toString());
+               // node.put("typedesc", map.get("typedesc").toString());
+               // node.put("adduid", map.get("adduid").toString());
                 node.put("summary", map.get("summary").toString());
                 node.put("parentid", parentId);
                 node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(map.get("addtime")), JzbDateStr.yyyy_MM_dd));
