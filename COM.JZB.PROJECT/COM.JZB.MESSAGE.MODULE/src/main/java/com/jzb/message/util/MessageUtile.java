@@ -192,13 +192,13 @@ public class MessageUtile {
     public static Map<String , Object> setUpParaByUser(String para , String sendPara,String msgtype){
         Map<String , Object> map = new HashMap<>();
         try{
-            if(!JzbTools.isEmpty(para)){
-                JSONObject smsJson = JSONObject.fromObject(para);
+            if(!JzbTools.isEmpty(sendPara)){
+                JSONObject smsJson = JSONObject.fromObject(sendPara);
                 // 获取所有需要修改参数的key
                 Set smsSet =  smsJson.keySet();
                 // 循环替换
                 Iterator<String> iterator =smsSet.iterator();
-                JSONObject smsParaJson = JSONObject .fromObject(sendPara);
+                JSONObject smsParaJson = JSONObject .fromObject(para);
                 while (iterator.hasNext()){
                     String code =  iterator.next();
                     smsParaJson.remove(code);
@@ -206,7 +206,7 @@ public class MessageUtile {
                 }
                 map.put(msgtype,smsParaJson);
             }else{
-                map.put(msgtype,sendPara);
+                map.put(msgtype,para);
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -77,9 +77,9 @@ public class SendMessageSercver {
                             dataMap.put("senduid",smsUserMap.get("uid"));
                             smsUserMap.remove("uid");
                         }else{
-                            dataMap.put("senduid",smsUserMap.get("phone"));
+                            dataMap.put("senduid",smsUserMap.get("photo"));
                         }
-                        dataMap.put("receiver", smsUserMap.get("phone"));
+                        dataMap.put("receiver", smsUserMap.get("photo"));
                         dataMap.put("msgtype",'1');
                         smsUserMap.remove("phone");
                         // 参数替换

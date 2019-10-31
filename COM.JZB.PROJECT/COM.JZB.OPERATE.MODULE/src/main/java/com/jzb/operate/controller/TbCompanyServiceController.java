@@ -1,11 +1,16 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.date.JzbDateStr;
+import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbPageConvert;
+import com.jzb.base.util.JzbTimeConvert;
 import com.jzb.base.util.JzbTools;
 
+import com.jzb.operate.api.redis.UserRedisServiceApi;
 import com.jzb.operate.service.TbCompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +24,13 @@ public class TbCompanyServiceController {
 
     @Autowired
     private TbCompanyService tbCompanyService;
+
+
+    @Autowired
+    private UserRedisServiceApi userRedisServiceApi;
     /**
      * 项目跟进
+     *
      * @param param
      * @return
      */
@@ -30,7 +40,7 @@ public class TbCompanyServiceController {
         Response result;
         try {
             //如果参数为为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"projected"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"projectid"})) {
                 result = Response.getResponseError();
             } else {
                 int count = tbCompanyService.saveProject(param);
@@ -65,14 +75,25 @@ public class TbCompanyServiceController {
     public Response getProject(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"projected"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "pagesize", "pageno", "count"})) {
                 result = Response.getResponseError();
             } else {
+                JzbPageConvert.setPageRows(param);
                 List<Map<String, Object>> list = tbCompanyService.getProject(param);
+                for (int i = 0; i < list.size(); i++) {
+                    param.put("uid",list.get(i).get("uid"));
+                    Response region = userRedisServiceApi.getCacheUserInfo(param);
+                    list.get(i).put("userInfo",region.getResponseEntity());
+                    list.get(i).put("handletime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("handletime")));
+                    list.get(i).put("nexttime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("nexttime")));
+                    list.get(i).put("addtime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("addtime")));
+                    list.get(i).put("updtime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("updtime")));
+                }
                 //获取用户信息
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(list);
+                pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
                 result = Response.getResponseSuccess(userInfo);
                 result.setPageInfo(pageInfo);
 
@@ -139,10 +160,48 @@ public class TbCompanyServiceController {
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
-            pageInfo.setTotal(0);
+            pageInfo.setTotal(companyList.size() == 0 ? 0: JzbDataType.getInteger(companyList.get(0).get("count")));
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 修改 服务记录
+     * @auth  han bin
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/upComanyService", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response upComanyService(@RequestBody Map<String, Object> param){
+        Response result;
+        try {
+            result = tbCompanyService.upComanyService(param) ?  Response.getResponseSuccess((Map)param.get("userinfo")) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 修改 服务记录
+     * @auth  han bin
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/saveComanyService", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response saveComanyService(@RequestBody Map<String, Object> param){
+        Response result;
+        try {
+            result = tbCompanyService.saveComanyService(param) ?  Response.getResponseSuccess((Map)param.get("userinfo")) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
             result = Response.getResponseError();
         }
         return result;

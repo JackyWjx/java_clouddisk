@@ -6,9 +6,9 @@
 
     <!-- 上传 导入方法论   已存在则只做修改 不存在则做添加 -->
     <insert id="addCompanyMethod" parameterType="java.util.List">
-        <foreach collection="list" index="index" item="method" separator=",">
+        <foreach collection="list" index="index" item="method" separator=";">
             insert into tb_company_method
-            (cid,projectid,methodid,plantime,days,score,remark,idx,adduid,addtime,upduid,updtime,status,summary)
+            (cid,projectid,methodid,cname,parentid,plantime,days,score,remark,idx,adduid,addtime,upduid,updtime,status,summary)
             values (
             <choose>
                 <when test="method.cid!=null and method.cid!=''">
@@ -29,6 +29,22 @@
             <choose>
                 <when test="method.methodid!=null and method.methodid!=''">
                     #{method.methodid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.cname!=null and method.cname!=''">
+                    #{method.cname},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.parentid!=null and method.parentid!=''">
+                    #{method.parentid},
                 </when>
                 <otherwise>
                     NULL ,
@@ -125,24 +141,26 @@
             )
             ON conflict(cid,projectid,methodid) do update
             <trim prefix="set" suffixOverrides="," suffix="  where tb_company_method.cid=#{method.cid} and tb_company_method.projectid=#{method.projectid} and tb_company_method.methodid=#{method.methodid} and tb_company_method.status='1' ">
-                <if test="method.plantime !=null">plantime=#{method.plantime},</if>
-                <if test="method.days !=null">days=#{method.days},</if>
-                <if test="method.score !=null">score=#{method.score},</if>
-                <if test="method.remark !=null">remark=#{method.remark},</if>
-                <if test="method.idx !=null">idx=#{method.idx},</if>
-                <if test="method.upduid !=null">upduid=#{method.upduid},</if>
-                <if test="method.updtime !=null">updtime=#{method.updtime},</if>
+                <if test="method.plantime !=null and method.plantime !=''">plantime=#{method.plantime},</if>
+                <if test="method.days !=null and method.days !=''">days=#{method.days},</if>
+                <if test="method.score !=null and method.score !=''">score=#{method.score},</if>
+                <if test="method.remark !=null and method.remark !=''">remark=#{method.remark},</if>
+                <if test="method.idx !=null and method.idx !=''">idx=#{method.idx},</if>
+                <if test="method.upduid !=null and method.upduid !=''">upduid=#{method.upduid},</if>
+                <if test="method.updtime !=null and method.updtime !=''">updtime=#{method.updtime},</if>
             </trim>
         </foreach>
     </insert>
 
     <!-- 查询方法论 -->
-    <select id="queryCompanyMethod" parameterType="java.util.Map">
+    <select id="queryCompanyMethod" parameterType="java.util.Map" resultType="java.util.Map">
         WITH RECURSIVE modt AS (
         SELECT
         cid,
         projectid,
         methodid,
+        parentid,
+        cname,
         plantime,
         days,
         score,
@@ -164,17 +182,25 @@
         AND status = '1'
         UNION ALL
         SELECT
-        tmt.typeid,
-        tmt.cname,
+        tmt.cid,
+        tmt.projectid,
+        tmt.methodid,
         tmt.parentid,
-        tmt.score,
+        tmt.cname,
+        tmt.plantime,
         tmt.days,
-        tmt.typedesc,
+        tmt.score,
+        tmt.remark,
+        tmt.idx,
+        tmt.adduid,
         tmt.addtime,
-        tmt.idx
+        tmt.upduid,
+        tmt.updtime,
+        tmt.status,
+        tmt.summary
         FROM
-        tb_method_type tmt
-        JOIN modt ON tmt.parentid = modt.typeid
+        tb_company_method tmt
+        JOIN modt ON tmt.parentid = modt.methodid
         AND tmt.status = '1'
         )
         SELECT

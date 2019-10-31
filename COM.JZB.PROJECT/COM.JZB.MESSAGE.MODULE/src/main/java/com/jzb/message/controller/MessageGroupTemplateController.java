@@ -6,7 +6,6 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.message.service.MessageGroupTemplateService;
-import com.jzb.message.service.MessageTypeService;
 import com.jzb.message.service.ShortMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/message/group/template")
 public class MessageGroupTemplateController {
-    private final static Logger logger= LoggerFactory.getLogger(MessageTypeController.class);
+
+    private final static Logger logger= LoggerFactory.getLogger(MessageGroupTemplateController.class);
 
     @Autowired
     private MessageGroupTemplateService messageGroupTemplateService;
@@ -40,12 +40,12 @@ public class MessageGroupTemplateController {
      *
      * map 用户参数
      */
-    @RequestMapping(value = "/queryMsgGroupTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/queryMessageGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
-    public Response queryMsgGroupTemplate(@RequestBody Map<String, Object> map) {
+    public Response queryMessageGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-            logger.info("==============>>queryMsgGroupTemplate");
+            logger.info("==============>>queryMessageGroupTemplate");
             List<Map<String, Object>> list;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
@@ -78,12 +78,12 @@ public class MessageGroupTemplateController {
      *
      * map 用户参数
      */
-    @RequestMapping(value = "/saveMsgGroupTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveMessageGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
-    public Response saveMsgGroupTemplate(@RequestBody Map<String, Object> map) {
+    public Response saveMessageGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-            logger.info("==============>>saveMsgGroupTemplate");
+            logger.info("==============>>saveMessageGroupTemplate");
             // check request param
             String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();
@@ -111,12 +111,12 @@ public class MessageGroupTemplateController {
      *  checkcode  =  appid + secret + tempid + cid + checkcode
      *  map 用户参数
      */
-    @RequestMapping(value = "/upMsgGroupTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/upMessageGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
-    public Response upMsgGroupTemplate(@RequestBody Map<String, Object> map) {
+    public Response upMessageGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-            logger.info("==============>>upMsgGroupTemplate");
+            logger.info("==============>>upMessageGroupTemplate");
             // check request param
             String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();
@@ -145,12 +145,12 @@ public class MessageGroupTemplateController {
      *  checkcode  =  appid + secret + tempid + cid + checkcode
      *  map 用户参数
      */
-    @RequestMapping(value = "/removeMsgGroupTemplate", method = RequestMethod.POST)
+    @RequestMapping(value = "/removeMessageGroupTemplate", method = RequestMethod.POST)
     @ResponseBody
-    public Response removeMsgGroupTemplate(@RequestBody Map<String, Object> map) {
+    public Response removeMessageGroupTemplate(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-            logger.info("==============>>removeMsgGroupTemplate");
+            logger.info("==============>>removeMessageGroupTemplate");
             // check request param
             String appid = map.get("appid").toString();
             String secret = map.get("secret").toString();

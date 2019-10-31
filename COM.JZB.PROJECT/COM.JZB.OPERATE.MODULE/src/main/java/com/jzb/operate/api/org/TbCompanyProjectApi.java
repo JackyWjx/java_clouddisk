@@ -2,6 +2,7 @@ package com.jzb.operate.api.org;
 
 import com.jzb.base.message.Response;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  */
 @FeignClient(name = "jzb-org")
 @RequestMapping(value = "/org/CompanyProject")
+@Repository
 public interface TbCompanyProjectApi {
     /**
      * CRM-销售业主-我服务的业主-1

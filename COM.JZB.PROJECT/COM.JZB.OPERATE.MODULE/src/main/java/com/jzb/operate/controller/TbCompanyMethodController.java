@@ -3,6 +3,7 @@ package com.jzb.operate.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.Response;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -10,6 +11,8 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.service.TbCompanyMethodService;
 import com.netflix.discovery.converters.jackson.EurekaXmlJacksonCodec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,11 @@ public class TbCompanyMethodController {
     private TbCompanyMethodService tbCompanyMethodService;
 
     /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbCompanyMethodController.class);
+
+    /**
      * 导入方法论
      *
      * @param param
@@ -40,16 +48,41 @@ public class TbCompanyMethodController {
     @Transactional
     public Response addCompanyMethod(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String  api="/operate/companyMethod/addCompanyMethod";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             // 如果指定参数为空则返回error
             if (JzbCheckParam.haveEmpty(param, new String[]{"list"})) {
                 result = Response.getResponseError();
             } else {
-                result = tbCompanyMethodService.addCompanyMethod((List<Map<String, Object>>) param.get("list")) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+                List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+                long time=System.currentTimeMillis();
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).put("plantime",JzbDateUtil.getDate(list.get(i).get("plantime").toString(),JzbDateStr.yyyy_MM_dd).getTime());
+                    list.get(i).put("adduid",userInfo.get("uid").toString());
+                    list.get(i).put("addtime",time);
+                    list.get(i).put("updtime",time);
+                }
+                result = tbCompanyMethodService.addCompanyMethod(list) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger("1.0", userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger( api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -66,7 +99,7 @@ public class TbCompanyMethodController {
     public Response getMethodType(@RequestBody Map<String, Object> param) {
         Response response;
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"projectid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
                 response = Response.getResponseError();
             } else {
 
@@ -98,7 +131,7 @@ public class TbCompanyMethodController {
                     }
                     // set default JSON and childern node
                     JSONObject node = new JSONObject();
-                    node.put("typeid", record.get("typeid").toString());
+                    node.put("methodid", record.get("methodid").toString());
                     node.put("cname", record.get("cname").toString());
                     node.put("parentid", parentId);
                     node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
@@ -116,16 +149,16 @@ public class TbCompanyMethodController {
                     // if root node
                     if (parentId.equals(firstParent)) {
                         result.add(node);
-                        recordJson.put(record.get("typeid").toString(), node);
+                        recordJson.put(record.get("methodid").toString(), node);
 
                         // if parent exist
                     } else if (recordJson.containsKey(parentId)) {
                         // add children
                         recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
-                        recordJson.put(record.get("typeid").toString(), node);
+                        recordJson.put(record.get("methodid").toString(), node);
                         // Unknown relation node
                     } else {
-                        String nodeId = record.get("typeid").toString();
+                        String nodeId = record.get("methodid").toString();
                         if (unknownRecord.containsKey(parentId)) {
                             // add children
                             unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
@@ -136,8 +169,8 @@ public class TbCompanyMethodController {
                                 JSONObject tempNode = (JSONObject) entry.getValue();
                                 if (tempNode.getString("parentid").equals(nodeId)) {
                                     node.getJSONArray("children").add(tempNode);
-                                    recordJson.put(tempNode.get("typeid").toString(), tempNode);
-                                    unknownRecord.remove(tempNode.get("typeid").toString());
+                                    recordJson.put(tempNode.get("methodid").toString(), tempNode);
+                                    unknownRecord.remove(tempNode.get("methodid").toString());
                                     break;
                                 }
                             }

@@ -165,19 +165,12 @@ public class CompanyUserController {
         Response result;
         try {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            int count = JzbDataType.getInteger(param.get("count"));
-            // 获取单位总数
-            count = count < 0 ? 0 : count;
-            if (count == 0) {
-                // 查询单位总数
-                count = companyUserService.getCommonListCount(param);
-            }
             // 返回所有的企业列表
             List<Map<String, Object>> companyList = companyUserService.getCompanyCommonList(param);
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
-            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            pageInfo.setTotal(companyList.size() == 0 ? 0: JzbDataType.getInteger(companyList.get(0).get("count")));
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);

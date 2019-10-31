@@ -49,4 +49,18 @@ public interface TbCompanyServiceMapper {
      * @DateTime: 2019/10/19
      */
     int queryServiceCount(Map<String, Object> param);
+
+    /**
+     * 修改跟进记录
+     * @param map
+     * @return
+     */
+    int upComanyService(Map<String , Object>  map);
+
+    /**
+     * 添加跟进记录
+     * @param map
+     * @return
+     */
+    int saveComanyService(Map<String , Object>  map);
 }

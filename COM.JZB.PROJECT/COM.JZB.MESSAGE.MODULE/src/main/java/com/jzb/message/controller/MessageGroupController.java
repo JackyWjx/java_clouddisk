@@ -119,12 +119,12 @@ public class MessageGroupController {
      *
      * map 用户参数
      */
-    @RequestMapping("/queryMsgGroupConfigure")
+    @RequestMapping("/queryMessageGroupConfigure")
     @ResponseBody
-    public Response queryMsgGroupConfigure(@RequestBody  Map<String , Object> map){
+    public Response queryMessageGroupConfigure(@RequestBody  Map<String , Object> map){
         Response response;
         try{
-            logger.info("===================>>queryMsgGroupConfigure");
+            logger.info("===================>>queryMessageGroupConfigure");
             List<Map<String , Object>> list ;
             PageInfo pageInfo = new PageInfo();
             pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
@@ -225,12 +225,12 @@ public class MessageGroupController {
      * checkcode = appId + secret  + isp   + cid + groupname + checkCode
      * map 用户参数
      */
-    @RequestMapping("/saveMsgGroupConfigure")
+    @RequestMapping("/saveMessageGroupConfigure")
     @ResponseBody
-    public  Response saveMsgGroupConfigure(@RequestBody Map<String , Object> map){
+    public  Response saveMessageGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            logger.info("===================>>saveMsgGroupConfigure");
+            logger.info("===================>>saveMessageGroupConfigure");
             String appId = map.get("appid").toString();
             String secret = map.get("secret").toString();
             String cid = map.get("cid").toString();
@@ -329,12 +329,12 @@ public class MessageGroupController {
      * checkcode = appId + secret  + uid   + cid + groupname + checkCode
      * map 用户参数
      */
-    @RequestMapping("/upMsgGroupConfigure")
+    @RequestMapping("/upMessageGroupConfigure")
     @ResponseBody
-    public  Response upMsgGroupConfigure(@RequestBody Map<String , Object> map){
+    public  Response upMessageGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
-            logger.info("===================>>upMsgGroupConfigure");
+            logger.info("===================>>upMessageGroupConfigure");
             String appId = map.get("appid").toString();
             String secret = map.get("secret").toString();
             String cid = map.get("cid").toString();
@@ -433,9 +433,9 @@ public class MessageGroupController {
      * checkcode = appId + secret  + uid   + cid + groupname + checkCode
      * map 用户参数
      */
-    @RequestMapping("/removerMsgGroupConfigure")
+    @RequestMapping("/removerMessageGroupConfigure")
     @ResponseBody
-    public Response removerMsgGroupConfigure(@RequestBody Map<String , Object> map){
+    public Response removerMessageGroupConfigure(@RequestBody Map<String , Object> map){
         Response response;
         try{
             logger.info("===================>>removerMsgGroupConfigure");

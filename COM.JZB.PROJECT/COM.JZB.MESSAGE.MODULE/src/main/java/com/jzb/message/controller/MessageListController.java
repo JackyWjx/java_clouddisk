@@ -6,6 +6,7 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.message.service.MessageListService;
+import com.jzb.message.service.MessageTypeService;
 import com.jzb.message.service.ShortMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,16 +31,53 @@ public class MessageListController {
     private MessageListService messageListService;
 
     @Autowired
-    private ShortMessageService smsService;
+    private MessageTypeService service;
 
     /**
      * 查询
      *
      * map 用户参数
      */
-    @RequestMapping(value = "/queryMsgList", method = RequestMethod.POST)
+    @RequestMapping(value = "/queryMessageType", method = RequestMethod.POST)
     @ResponseBody
-    public Response queryMsgList(@RequestBody Map<String, Object> map) {
+    public Response queryMessageType(@RequestBody Map<String, Object> map) {
+        Response response;
+        try {
+            List<Map<String, Object>> list;
+            PageInfo info = new PageInfo();
+            info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
+            response = Response.getResponseSuccess();
+            if (map.containsKey("typename") && !JzbTools.isEmpty(map.get("typename"))) {
+                list = service.searchMsgType(map);
+                if (JzbDataType.getInteger(map.get("count")) == 0) {
+                    int count = service.searchMsgTypeCount(map);
+                    info.setTotal(count);
+                }
+            } else {
+                list = service.queryMsgType(map);
+                if (JzbDataType.getInteger(map.get("count")) == 0) {
+                    int count = service.queryMsgTypeCount(map);
+                    info.setTotal(count);
+                }
+            }
+            info.setList(list);
+            response.setPageInfo(info);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+
+    /**
+     * 查询
+     *
+     * map 用户参数
+     */
+    @RequestMapping(value = "/queryMessageList", method = RequestMethod.POST)
+    @ResponseBody
+    public Response queryMessageList(@RequestBody Map<String, Object> map) {
         Response response;
         try {
             List<Map<String, Object>> list;

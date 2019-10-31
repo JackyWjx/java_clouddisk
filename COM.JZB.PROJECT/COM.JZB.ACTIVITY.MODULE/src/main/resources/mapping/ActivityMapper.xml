@@ -38,7 +38,7 @@
 
 
     <!-- 查询图片 -->
-    <select id="queryActivityPhoto" parameterType="java.util.Map" resultType="java.util.Map">
+    <select id="queryActivityPhoto" parameterType="java.util.Map"  resultType="java.util.Map">
         select id,photo from tb_activity_photo where actid=#{actid} and status='1'
     </select>
 
@@ -46,10 +46,9 @@
     <!--查询图片推广信息-->
     <select id="queryActpictureList" resultType="java.util.Map">
         select
-        id,actid,cname,actpicture,votes,reads,addtime,adduid
+        id,actid,cname,actpicture,votes,reads
         from
         tb_activity_list
-                where status='1'
         order by
         worths
         desc
@@ -131,8 +130,7 @@
         tal.READS,
         tal.shares,
         tal.acttheme,
-        tal.actlogo,
-        tal.adduid
+        tal.actlogo
         FROM
         tb_activity_list tal
         LEFT JOIN tb_activity_photo tap ON tap.actid = tal.actid
@@ -268,11 +266,7 @@
 
     <!-- 推广图片-->
     <select id="EnquiryCount" resultType="java.lang.Integer">
-        select
-        count(1)
-        from
-        tb_activity_list
-        where status='1'
+        select  count(*)   tb_activity_list
     </select>
 
     <!-- 查询活动图片-->
@@ -442,7 +436,7 @@
         <if test="endtime != null and endtime != ''">and starttime &lt;= #{endtime}</if>
         <if test="cname != null and cname != ''">and cname LIKE CONCAT( '%',#{cname},'%')</if>
         order by
-        id desc
+        addtime desc
         limit
         #{pagesize}
         offset
@@ -646,10 +640,7 @@
     <!-- 点击修改时返回需要修改的信息 -->
     <select id="queryActivityData" parameterType="java.util.Map"
             resultType="java.util.Map">
-        select
-        *
-        from
-        (SELECT
+        SELECT
         al.actid,
         al.cname,
         al.actkey,
@@ -662,8 +653,7 @@
         al.summary,
         ap.fileid,
         ap.photo,
-        ap.summary as photosummary,
-        ap.status
+        ap.summary as photosummary
         from
         tb_activity_list al
         left join
@@ -671,9 +661,11 @@
         on
         al.actid = ap.actid
         where
-        al.status = '1' and ap.status = '1'
+        al.status = '1'
+        AND
+        ap.status = '1'
         and
-        al.actid = #{actid})as al
+        al.actid = #{actid}
     </select>
 
     <!-- 点击修改后对活动文章进行修改 -->
@@ -702,12 +694,12 @@
             values
             (
             #{item.actid},
-            #{item.newFileId},
+            #{item.fileid},
             #{item.photo},
             (select count(1)+1 from tb_activity_photo),
             #{item.uid},
             #{item.updtime},
-            '1',
+            #{item.status},
             <choose>
                 <when test="item.summary!=null and item.summary!=''">
                     #{item.summany}
