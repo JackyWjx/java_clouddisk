@@ -4,6 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
+import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.TbCompanyProjectApi;
 import com.jzb.operate.dao.TbCompanyServiceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,11 @@ public class TbCompanyService {
     @Autowired
     private TbCompanyProjectApi tbCompanyProjectApi;
 
+    /**
+     * 查询地区信息
+     */
+    @Autowired
+    private RegionBaseApi regionBaseApi;
     /**
      * 项目跟进
      *
@@ -93,6 +99,8 @@ public class TbCompanyService {
                     // 如果项目ID相同则将结果全部加入返回值中
                     if (JzbDataType.getString(projectMap.get("projectid")).equals(JzbDataType.getString(map.get("projectid")))) {
                         projectMap.putAll(map);
+                        Response region = regionBaseApi.getRegionInfo(projectMap);
+                        projectMap.put("region", region.getResponseEntity());
                         break;
                     }
                 }
@@ -188,6 +196,54 @@ public class TbCompanyService {
             param.put("upduid", param.get("ouid"));
             param.put("adduid", param.get("ouid"));
         }
+        param.put("planid", JzbRandom.getRandomChar(11));
         return tbCompanyServiceMapper.saveComanyService(param) > 0 ? true : false;
+    }
+
+    /**
+     * CRM-销售业主-我服务的业主-服务记录1
+     * 显示我服务的所有记录的总数
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    public int getServiceListCount(Map<String, Object> param) {
+        param.put("status", "1");
+        return tbCompanyServiceMapper.queryServiceListCount(param);
+    }
+
+    /**
+     * CRM-销售业主-我服务的业主-1
+     * 获取所有的我服务的业主
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    public List<Map<String, Object>> getServiceList(Map<String, Object> param) {
+        // 设置分页参数
+        param = setPageSize(param);
+        param.put("status", "1");
+        // 获取所有的服务记录
+        List<Map<String, Object>> projectList = tbCompanyServiceMapper.queryServiceList(param);
+        if (!JzbDataType.isEmpty(projectList)) {
+            // 根据服务的项目ID获取项目信息
+            Response response = tbCompanyProjectApi.getServiceProjectList(projectList);
+
+            // 获取查询到的返回值
+            List<Map<String, Object>> list = response.getPageInfo().getList();
+            for (int i = 0; i < projectList.size(); i++) {
+                Map<String, Object> projectMap = projectList.get(i);
+                for (int k = 0; k < list.size(); k++) {
+                    Map<String, Object> map = list.get(i);
+                    // 如果项目ID相同则将结果全部加入返回值中
+                    if (JzbDataType.getString(projectMap.get("projectid")).equals(JzbDataType.getString(map.get("projectid")))
+                    && JzbDataType.getString(projectMap.get("cid")).equals(JzbDataType.getString(map.get("cid")))) {
+                        projectMap.putAll(map);
+                        break;
+                    }
+                }
+            }
+        }
+        return projectList;
     }
 }
