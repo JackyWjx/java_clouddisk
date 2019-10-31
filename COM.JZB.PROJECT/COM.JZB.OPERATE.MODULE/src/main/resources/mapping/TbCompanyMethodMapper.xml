@@ -138,17 +138,7 @@
                     NULL
                 </otherwise>
             </choose>
-            )
-            ON conflict(cid,projectid,methodid) do update
-            <trim prefix="set" suffixOverrides="," suffix="  where tb_company_method.cid=#{method.cid} and tb_company_method.projectid=#{method.projectid} and tb_company_method.methodid=#{method.methodid} and tb_company_method.status='1' ">
-                <if test="method.plantime !=null and method.plantime !=''">plantime=#{method.plantime},</if>
-                <if test="method.days !=null and method.days !=''">days=#{method.days},</if>
-                <if test="method.score !=null and method.score !=''">score=#{method.score},</if>
-                <if test="method.remark !=null and method.remark !=''">remark=#{method.remark},</if>
-                <if test="method.idx !=null and method.idx !=''">idx=#{method.idx},</if>
-                <if test="method.upduid !=null and method.upduid !=''">upduid=#{method.upduid},</if>
-                <if test="method.updtime !=null and method.updtime !=''">updtime=#{method.updtime},</if>
-            </trim>
+            );
         </foreach>
     </insert>
 
@@ -176,6 +166,10 @@
         tb_company_method
         WHERE
         parentid = '0000000'
+
+        <if test="cid!=null">
+            and cid = #{cid}
+        </if>
         <if test="projectid!=null">
             and projectid = #{projectid}
         </if>
