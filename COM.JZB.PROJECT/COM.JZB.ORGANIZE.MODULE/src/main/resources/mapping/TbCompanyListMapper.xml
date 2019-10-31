@@ -15,11 +15,12 @@
               num.checkamount
               from
               (select
-              a.cname,
+              a.cname as cname,
                 a.cid as ac,
                 b.cid as bc,  /*业主名称*/
                 c.cid as cc,  /*业主名称*/
                 d.cid as dc,   /*业主名称*/
+                e.cid as ec,
               a.relperson,   /*联系人*/
               b.dictvalue,   /*客户等级*/
               c.projectname,    /*项目名称*/
@@ -39,7 +40,17 @@
               tb_company_contract d
               on
               d.cid = a.cid and d.cid = c.cid
-              where b.typeid = 't111111' ) as num where ac is not null and bc is not null and cc is not null and dc is not null
+              left join
+              tb_company_common e
+              on e.cid = d.cid and e.cid = c.cid
+              where b.typeid = 't111111'
+              <if test="keyword != null and keyword != ''">
+                  and a.cname ~ #{keyword} or e.uid ~ #{keyword}
+              </if>
+              <if test="dictvalue != null and dictvalue != ''">
+                  and b.dictvalue = #{dictvalue}
+              </if>
+              ) as num where ac is not null and bc is not null and cc is not null and dc is not null and ec is not null
               limit
               #{pagesize}
               offset
@@ -67,6 +78,7 @@
                 b.cid as bc,  /*业主名称*/
                 c.cid as cc,  /*业主名称*/
                 d.cid as dc,   /*业主名称*/
+                e.cid as ec,
               a.relperson,   /*联系人*/
               b.dictvalue,   /*客户等级*/
               c.projectname,    /*项目名称*/
@@ -86,6 +98,17 @@
               tb_company_contract d
               on
               d.cid = a.cid and d.cid = c.cid
-              where b.typeid = 't111111' ) as num where ac is not null and bc is not null and cc is not null and dc is not null) as num
+              left join
+              tb_company_common e
+              on e.cid = d.cid and e.cid = c.cid
+              where b.typeid = 't111111'
+              <if test="keyword != null and keyword != ''">
+                  and a.cname ~ #{keyword} or e.uid ~ #{keyword}
+              </if>
+              <if test="dictvalue != null and dictvalue != ''">
+                  and b.dictvalue = #{dictvalue}
+              </if>
+              ) as num where ac is not null and bc is not null and cc is not null and dc is not null and ec is not null
+              ) as num
          </select>
 </mapper>

@@ -24,7 +24,7 @@ public class TbStandardTypeService {
         param.put("addtime", time);
         param.put("updtime", time);
         param.put("typeid", JzbRandom.getRandomCharLow(7));
-        param.put("parentid", param.get("parentid") == null ? "0000000" : param.get("parentid"));
+        param.put("parentid", param.get("parentid") == null || param.get("parentid") == ""? "0000000" : param.get("parentid"));
         return tbStandardTypeMapper.saveStandardType(param);
     }
 

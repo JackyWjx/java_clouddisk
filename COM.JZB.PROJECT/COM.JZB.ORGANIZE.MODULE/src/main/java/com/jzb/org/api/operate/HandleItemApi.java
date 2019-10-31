@@ -12,8 +12,22 @@ import java.util.Map;
 @FeignClient(name = "jzb-operate")
 @RequestMapping("/opt/HandleItem")
 public interface HandleItemApi {
-
+    /**
+     * 查询跟进人详情和服务跟踪记录
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/getHandleItem", method = RequestMethod.POST)
     @CrossOrigin
      Response getHandleItem(@RequestBody Map<String, Object> param);
+
+
+    /**
+     * 查询总数
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCount", method = RequestMethod.POST)
+    @CrossOrigin
+    Response getCount(@RequestBody Map<String, Object> param);
 }

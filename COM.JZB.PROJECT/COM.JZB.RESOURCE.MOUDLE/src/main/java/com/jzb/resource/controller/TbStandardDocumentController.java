@@ -78,16 +78,19 @@ public class TbStandardDocumentController {
         Response result;
         try {
             //判断如果指定参数有为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cname", "price", "department", "effective", "stdrange", "pagekey", "pagedesc"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cname"})) {
                 result = Response.getResponseError();
             } else {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("adduid",userInfo.get("cname"));
+
                 //添加一条模板记录
                 int count = tbStandardDocumentService.saveTbStandardDom(param);
 
                 //如果返回值大于0表示添加成功
                 if (count > 0) {
                     //定义返回的结果
-                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+
                     result = Response.getResponseSuccess(userInfo);
                 } else {
                     //如果返回值小于等于0.添加失败
@@ -113,7 +116,7 @@ public class TbStandardDocumentController {
         Response result;
         try {
             //判断如果指定参数有为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cname", "price", "department", "effective", "stdrange", "pagekey", "pagedesc"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cname"})) {
                 result = Response.getResponseError();
             } else {
                 //修改一条模板记录
