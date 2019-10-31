@@ -9,12 +9,12 @@ import com.jzb.base.data.date.JzbDateUtil;
  *  * @author chenzhengduan
  *  * @date 2019/10/31
  */
-public class JzbTimeToString {
+public class JzbTimeConvert {
 
     /**
      * 私有构造方法，不允许实例化
      */
-    private JzbTimeToString(){
+    private JzbTimeConvert(){
 
     }
 
@@ -23,7 +23,7 @@ public class JzbTimeToString {
      * @param times
      * @return
      */
-    public static String TimeToStringyyyy_MM_dd_HH_mm_ss(Object times){
+    public static String ToStringy_M_d_H_m_s(Object times){
        return JzbDateUtil.toDateString(JzbDataType.getLong(times),JzbDateStr.yyyy_MM_dd_HH_mm_ss);
     }
 
@@ -32,7 +32,7 @@ public class JzbTimeToString {
      * @param times
      * @return
      */
-    public static String TimeToStringyyyy_MM_dd(Object times){
+    public static String ToStringy_M_d(Object times){
         return JzbDateUtil.toDateString(JzbDataType.getLong(times),JzbDateStr.yyyy_MM_dd);
     }
 }
