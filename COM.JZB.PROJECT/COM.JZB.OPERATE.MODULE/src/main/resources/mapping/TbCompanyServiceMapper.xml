@@ -247,4 +247,47 @@
         where
         projected = #{projected}
     </select>
+
+    <!--获取所有的我服务的业主的总数-->
+    <select id="queryCompanyServiceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        (
+        select
+        distinct
+        projectid
+        from
+        tb_company_service
+        where
+        uid =#{uid}
+        ) as sercive
+    </select>
+
+    <!--获取所有的我服务的业主-->
+    <select id="queryCompanyServiceList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        distinct
+        projectid
+        from
+        tb_company_service
+        where
+        uid =#{uid}
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--获取所有的我服务的业主项目的次数-->
+    <select id="queryServiceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        tb_company_service
+        where
+        uid =#{uid}
+        and
+        projectid = #{projectid}
+    </select>
 </mapper>
