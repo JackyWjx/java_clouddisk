@@ -1,7 +1,6 @@
 package com.jzb.operate.dao;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,19 +21,32 @@ public interface TbCompanyServiceMapper {
      * @param param
      * @return
      */
-    List<Map<String, Object>> getProject(Map<String, Object> param);
+        List<Map<String, Object>> getProject(Map<String, Object> param);
 
     /**
-     * 修改跟进记录
-     * @param map
-     * @return
+     * CRM-销售业主-我服务的业主-1
+     * 获取所有的我服务的业主的总数
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
      */
-    int upComanyService(Map<String , Object>  map);
+    int queryCompanyServiceCount(Map<String, Object> param);
 
     /**
-     * 修改跟进记录
-     * @param map
-     * @return
+     * CRM-销售业主-我服务的业主-1
+     * 获取所有的我服务的业主
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
      */
-    int saveComanyService(Map<String , Object>  map);
+    List<Map<String, Object>> queryCompanyServiceList(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-我服务的业主-1
+     * 获取所有的我服务的业主项目的次数
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    int queryServiceCount(Map<String, Object> param);
 }
