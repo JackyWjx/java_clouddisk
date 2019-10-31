@@ -26,9 +26,9 @@ public final class JzbLoggerUtil {
      * @param msg
      * @return
      */
-    public static String getApiLogger( String api, String reqTag, String msgLevel, String ip, String uid, String token, String msgTag, String msg) {
+    public static String getApiLogger(String api, String reqTag, String msgLevel, String ip, String uid, String token, String msgTag, String msg) {
         StringBuilder result = new StringBuilder();
-        result.append("[1.0]");
+        result.append("[1.0][JZB0001][CRM00000000]");
         result.append("[").append(JzbDateUtil.toDateString(System.currentTimeMillis(), JzbDateStr.yyyy_MM_dd_HH_mm_ss_SSS)).append("]");
         result.append("[").append(api).append("]");
         result.append("[").append(reqTag).append("]");
@@ -53,9 +53,9 @@ public final class JzbLoggerUtil {
      * @param msg
      * @return
      */
-    public static String getSqlLogger(String vsn, long startTime, String msgLevel, String msgTag, String table, String mid, String msg) {
+    public static String getSqlLogger(long startTime, String msgLevel, String msgTag, String table, String mid, String msg) {
         StringBuilder result = new StringBuilder();
-        result.append("[").append(vsn).append("]");
+        result.append("[1.0][JZB0001][CRM00000000]");
         result.append("[").append(JzbDateUtil.toDateString(startTime, JzbDateStr.yyyy_MM_dd_HH_mm_ss_SSS)).append("]");
         result.append("[").append(JzbDateUtil.toDateString(System.currentTimeMillis(), JzbDateStr.yyyy_MM_dd_HH_mm_ss_SSS)).append("]");
         result.append("[").append(msgLevel).append("]");
@@ -84,9 +84,9 @@ public final class JzbLoggerUtil {
      * @param msg
      * @return
      */
-    public static String getErrorLogger(String vsn, String msgTag, String title, String msg) {
+    public static String getErrorLogger(String msgTag, String title, String msg) {
         StringBuilder result = new StringBuilder();
-        result.append("[").append(vsn).append("]");
+        result.append("[1.0][JZB0001][CRM00000000]");
         result.append("[").append(JzbDateUtil.toDateString(System.currentTimeMillis(), JzbDateStr.yyyy_MM_dd_HH_mm_ss_SSS)).append("]");
         result.append("[ERROR]");
 
