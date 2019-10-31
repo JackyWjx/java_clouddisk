@@ -745,7 +745,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         tb_company_list
         SET
         ouid = #{uid},
-        modtime = #{modtime},
+        updtime = #{modtime},
         cname = #{cname},
         region = #{region},
         relperson = #{relperson},

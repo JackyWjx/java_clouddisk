@@ -616,7 +616,7 @@ public class AuthUserController {
      * @return
      */
     private String getValue(Map<String, Object> userInfo, String key) {
-        return userInfo.containsKey(key) ? userInfo.get(key).toString() : "";
+        return userInfo.containsKey(key) ? JzbDataType.getString(userInfo.get(key)) : "";
     } // End getValue
 
     /**
