@@ -28,7 +28,7 @@ public class TbCompanyListController {
      */
     @RequestMapping(value = "/getCompanyList",method = RequestMethod.POST)
     @CrossOrigin
-    public Response getCompanyList(@RequestBody(required = false) Map<String,Object> param) {
+    public Response getCompanyList(@RequestBody Map<String,Object> param) {
         Response result;
         try {
                  if (JzbCheckParam.haveEmpty(param, new String[]{"pageno", "pagesize"})) {
@@ -38,22 +38,23 @@ public class TbCompanyListController {
                 SetPageSize setPageSize = new SetPageSize();
                param = setPageSize.setPagenoSize(param);
                 //获取前端传过来的分页参数
-                int count = JzbDataType.getInteger(param.get("count"));
+                //int count = JzbDataType.getInteger(param.get("count"));
                 //获取总数
-                count = count < 0 ? 0 : count;
+                /*count = count < 0 ? 0 : count;
                 if (count == 0) {
                     count = tbCompanyListService.getCount(param);
-                }
+                }*/
                 //查询数据
-              List<Map<String,Object>> list = tbCompanyListService.getCompanyList(param);
+                     List<Map<String, Object>> list = tbCompanyListService.getCompanyList(param);
+
                 //获取用户信息
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
 
-                PageInfo pageInfo = new PageInfo();
+                     PageInfo pageInfo = new PageInfo();
 
                 pageInfo.setList(list);
                 //设置分页总数
-                pageInfo.setTotal(count > 0 ? count : list.size());
+                //pageInfo.setTotal(count > 0 ? count : list.size());
                 result = Response.getResponseSuccess(userInfo);
                 result.setPageInfo(pageInfo);
             }
