@@ -545,4 +545,44 @@
         <choose><when test="nexttime != null">,nexttime  = #{nexttime}</when></choose>
         where  cid = #{cid}  and projectid = #{projectid}
     </update>
+
+    <!--获取所有的我服务的业主的总数-->
+    <select id="queryServiceListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_company_service
+        where
+        uid =#{uid}
+    </select>
+
+    <!--获取所有的我服务的业主-->
+    <select id="queryServiceList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        planid,
+        cid,
+        projectid,
+        uid,
+        handletime,
+        servicetype,
+        personid,
+        person,
+        telphone,
+        context,
+        servicecontent,
+        needres,
+        attach,
+        times,
+        result,
+        nexttime,
+        addtime
+        from
+        tb_company_service
+        where
+        uid =#{uid}
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
 </mapper>
