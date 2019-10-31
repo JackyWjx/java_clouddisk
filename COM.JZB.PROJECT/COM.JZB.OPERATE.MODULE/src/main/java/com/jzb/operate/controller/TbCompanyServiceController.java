@@ -206,4 +206,39 @@ public class TbCompanyServiceController {
         }
         return result;
     }
+
+    /**
+     * CRM-销售业主-我服务的业主-服务记录1
+     * 显示我服务的所有记录
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    @RequestMapping(value = "/getServiceList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getServiceList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            // 获取前台的总数
+            int count = JzbDataType.getInteger(param.get("count"));
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询所有我服务的业主总数
+                count = tbCompanyService.getServiceListCount(param);
+            }
+            // 返回所有的企业列表
+            List<Map<String, Object>> companyList = tbCompanyService.getServiceList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
