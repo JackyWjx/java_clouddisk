@@ -167,10 +167,10 @@
         WHERE
         parentid = '0000000'
 
-        <if test="cid!=null">
+        <if test="cid!=null and cid!=''">
             and cid = #{cid}
         </if>
-        <if test="projectid!=null">
+        <if test="projectid!=null and projectid!=''">
             and projectid = #{projectid}
         </if>
         AND status = '1'
