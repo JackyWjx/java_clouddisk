@@ -58,7 +58,7 @@
         <if test="region!=null and region !=''">
             and a.region=#{region}
         </if>
-        <if test="companyLevel!=null and companyLevel !=''">
+        <if test="companyLevel!=null and companyLevel !='' and companyLevel!='全部'">
             and a.companyLevel=#{companyLevel}
         </if>
         <if test="keyword!=null and keyword !=''">
