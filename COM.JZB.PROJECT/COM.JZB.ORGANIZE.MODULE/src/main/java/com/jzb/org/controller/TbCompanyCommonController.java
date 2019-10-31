@@ -35,7 +35,7 @@ public class TbCompanyCommonController {
 
     /**
      * 获取已分配的业主单位（不带条件查询）
-     *
+     * chenzhengduan
      * @param param
      * @return
      */
@@ -70,10 +70,7 @@ public class TbCompanyCommonController {
                     }
                     // 转map
                     if(resultParam!=null){
-                        list.get(i).put("city", resultParam.get("city"));
-                        list.get(i).put("province", resultParam.get("province"));
-                        list.get(i).put("county", resultParam.get("county"));
-                        list.get(i).put("creaid", resultParam.get("creaid"));
+                        list.get(i).put("region",resultParam);
                     }
                 }
                 // 分页对象
@@ -130,12 +127,16 @@ public class TbCompanyCommonController {
                     if(cityList.getResponseEntity()!=null){
                         resultParam= (Map<String,Object>)JSON.parse(cityList.getResponseEntity().toString());
                     }
+//                    // 转map
+////                    if(resultParam!=null){
+////                        list.get(i).put("city", resultParam.get("city"));
+////                        list.get(i).put("province", resultParam.get("province"));
+////                        list.get(i).put("county", resultParam.get("county"));
+////                        list.get(i).put("creaid", resultParam.get("creaid"));
+////                    }
                     // 转map
                     if(resultParam!=null){
-                        list.get(i).put("city", resultParam.get("city"));
-                        list.get(i).put("province", resultParam.get("province"));
-                        list.get(i).put("county", resultParam.get("county"));
-                        list.get(i).put("creaid", resultParam.get("creaid"));
+                        list.get(i).put("region",resultParam);
                     }
                 }
                 // 分页对象
