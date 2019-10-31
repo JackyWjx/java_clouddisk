@@ -66,6 +66,7 @@ public class TbCompanyMethodController {
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
                 long time=System.currentTimeMillis();
                 for (int i = 0; i < list.size(); i++) {
+                    list.get(i).put("plantime",JzbDateUtil.getDate(list.get(i).get("plantime").toString(),JzbDateStr.yyyy_MM_dd).getTime());
                     list.get(i).put("adduid",userInfo.get("uid").toString());
                     list.get(i).put("addtime",time);
                     list.get(i).put("updtime",time);
