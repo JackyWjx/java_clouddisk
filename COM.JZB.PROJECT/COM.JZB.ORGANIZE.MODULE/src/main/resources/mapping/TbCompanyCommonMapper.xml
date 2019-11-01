@@ -9,7 +9,7 @@
 SELECT
 	tcc.cid,
 	tcc.uid,
-	( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid ) sales,
+	( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid limit 1) sales,
 	tcc.status,
 	tcl.cname,
 	tcl.manager,
@@ -32,10 +32,11 @@ WHERE
 
     <!-- 查询已分配的业主  带条件 -->
     <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map">
+        select * from (
         SELECT
         tcc.cid,
         tcc.uid,
-        (select cname from tb_dept_user where uid=tcc.uid) sales,
+        (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
@@ -53,14 +54,15 @@ WHERE
         LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
         WHERE
         tcc.status = '2'
+        ) a where 1=1
         <if test="region!=null and region !=''">
-            and tcl.region=#{region}
+            and a.region=#{region}
         </if>
-        <if test="companyLevel!=null and companyLevel !=''">
-            and companyLevel=#{companyLevel}
+        <if test="companyLevel!=null and companyLevel !='' and companyLevel!='全部'">
+            and a.companyLevel=#{companyLevel}
         </if>
         <if test="keyword!=null and keyword !=''">
-            and (tcl.cname ~ #{keyword} or sales ~ #{keyword})
+            and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
         </if>
     </select>
 
