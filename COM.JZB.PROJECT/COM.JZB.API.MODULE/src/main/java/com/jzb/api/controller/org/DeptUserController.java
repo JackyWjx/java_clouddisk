@@ -72,7 +72,7 @@ public class DeptUserController {
     public Response getDeptUser(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
         Response result;
         try {
-            String[] str = {"cid"};
+            String[] str = {};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 int rows = JzbDataType.getInteger(param.get("pagesize"));
                 int page = JzbDataType.getInteger(param.get("pageno"));
