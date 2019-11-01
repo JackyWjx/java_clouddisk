@@ -241,11 +241,42 @@
 
     <select id="getProject" parameterType="java.util.Map" resultType="java.util.Map">
         select
-        *
+        planid,
+        typeid,
+        cid,
+        projectid,
+        uid,
+        region,
+        handletime,
+        servicetype,
+        personid,
+        person,
+        telphone,
+        context,
+        servicecontent,
+        needres,
+        attach,
+        remark,
+        times,
+        result,
+        nexttime,
+        adduid,
+        addtime,
+        upduid,
+        updtime,
+        status,
+        summary
         from
         tb_company_service
-        where
-        projected = #{projected}
+        where status='1'
+        <if test="cid!=null and cid!=''">
+            and cid=#{cid}
+        </if>
+        <if test="projectid!=null and projectid!=''">
+            and projectid=#{projectid}
+        </if>
+        LIMIT #{pagesize}
+        OFFSET #{pageno}
     </select>
 
     <!--获取所有的我服务的业主的总数-->
