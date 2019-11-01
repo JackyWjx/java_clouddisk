@@ -27,8 +27,8 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="method.typeid!=null and method.typeid!=''">
-                    #{method.typeid},
+                <when test="method.methodid!=null and method.methodid!=''">
+                    #{method.methodid},
                 </when>
                 <otherwise>
                     NULL,
@@ -145,8 +145,12 @@
     <!-- 点击达成目标 -->
     <update id="updateMethodTarget" parameterType="java.util.Map">
         <foreach collection="list" index="index" item="method" separator=";">
-            update tb_company_method_target set tarvalue=#{method.tarvalue} where cid=#{method.cid} and
-            projectid=#{method.projectid} and methodid=#{method.methodid}
+            update tb_company_method_target set tarvalue=#{method.tarvalue} where
+            cid=#{method.cid}
+            <if test="method.projectid!=null and method.projectid!=''">
+                and projectid=#{method.projectid}
+            </if>
+             and methodid=#{method.methodid}
         </foreach>
     </update>
 </mapper>
