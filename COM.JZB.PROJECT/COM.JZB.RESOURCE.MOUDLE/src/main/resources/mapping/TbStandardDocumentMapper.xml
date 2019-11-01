@@ -9,6 +9,9 @@
     <!--根据文档类别进行查询-->
     <select id="getTbStandardDocument" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        domcode,
+        context,
+        adduid,
         Id,
         typecode,
         domid,
@@ -16,7 +19,7 @@
         cname,
         price,
         department,
-        to_char(to_timestamp(effective ), 'yyyy-MM-dd') as effective,
+        effective,
         domftype,
         domtitle,
         pagekey,
@@ -33,6 +36,12 @@
         </if>
         <if test="domid != null">
             and domid = #{domid}
+        </if>
+        <if test="startTime != null and startTime != ''">
+           and effective &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and effective &lt;= #{endTime}
         </if>
         limit
         #{pagesize}
@@ -53,6 +62,12 @@
         <if test="domid != null">
             and domid = #{domid}
         </if>
+        <if test="startTime != null and startTime != ''">
+            and effective &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and effective &lt;= #{endTime}
+        </if>
         limit
         #{pagesize}
         offset
@@ -62,10 +77,26 @@
     <!--新增-->
     <insert id="saveTbStandardDom" parameterType="java.util.Map">
         insert into
-        tb_standard_document(domtitle,domftype,typecode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
+        tb_standard_document(adduid,context,domtitle,domftype,typecode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
         updtime)
         values
         (
+        <choose>
+            <when test="adduid != null">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="context != null">
+                #{context},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{domtitle},
         cast(#{domftype} as INTEGER),
         <choose>
@@ -112,7 +143,7 @@
         </choose>
         <choose>
             <when test="effective != null">
-                cast(#{effective} as integer),
+                #{effective},
             </when>
             <otherwise>
                 null,
@@ -169,16 +200,18 @@
         tb_standard_document
         set
         <if test="tpeycode != null">typecode=#{tpeycode},</if>
+        <if test="context != null">context=#{context},</if>
+        <if test="domcode != null">domcode=#{domcode},</if>
         <if test="cname != null">cname=#{cname},</if>
         <if test="domcode != null">domcode=#{domcode},</if>
         <if test="price != null">price=cast(#{price} as integer),</if>
         <if test="department != null">department=#{department},</if>
-        <if test="updtime != null">updtime=#{updtime},</if>
         <if test="effective != null">effective=cast(#{effective} as integer),</if>
         <if test="stdrange != null">stdrange=cast(#{stdrange} as integer),</if>
-        <if test="status != null">status=#{status},</if>
+        <if test="status != null">status=cast(#{status} as integer),</if>
         <if test="pagekey != null">pagekey=#{pagekey},</if>
-        <if test="pagedesc != null">pagedesc=#{pagedesc}</if>
+        <if test="pagedesc != null">pagedesc=#{pagedesc},</if>
+        <if test="updtime != null">updtime=#{updtime}</if>
         where
         domid = #{domid}
     </update>
@@ -193,6 +226,7 @@
     <!--根据名称进行模糊查询-->
     <select id="getCname" parameterType="java.util.Map" resultType="java.util.Map">
        select
+       adduid,
         Id,
         typecode,
         domid,
@@ -213,6 +247,12 @@
             like
             concat('%',#{cname},'%')
         </if>
+        <if test="startTime != null and startTime != ''">
+            and effective &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and effective &lt;= #{endTime}
+        </if>
         limit
         #{pagesize}
         offset
@@ -232,6 +272,12 @@
             cname
             like
             concat('%',#{cname},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and effective &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and effective &lt;= #{endTime}
         </if>
     </select>
 </mapper>

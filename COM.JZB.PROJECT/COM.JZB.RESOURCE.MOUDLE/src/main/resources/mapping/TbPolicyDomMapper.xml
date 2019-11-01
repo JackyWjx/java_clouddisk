@@ -8,6 +8,7 @@
     <!--  查询政策文档列表(模糊查询)-->
     <select id="queryPolicyDomList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
+        context,
         domid,
         typeid,
         domcode,
@@ -42,10 +43,16 @@
         FROM
         tb_policy_document
         WHERE
-        status = '1'
+        status != '4'
         AND typeid =#{ typeid}
         <if test="keyword!=null and keyword!=''">
             and cname ~ #{keyword}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and effective &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and effective &lt;= #{endTime}
         </if>
         order by addtime desc
         limit #{pagesize} offset #{pageno}
@@ -53,8 +60,7 @@
 
     <!--	标准文档总数-->
     <select id="queryDocumentsCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-	     select count(1) from tb_policy_document where typeid=#{typeid} and status='1'
-        <if test="keyword!=null and keyword!=''">
+	     select count(1) from tb_policy_document where typeid=#{typeid} <if test="keyword!=null and keyword!=''">
         and cname ~ #{keyword}
     </if>
 	</select>
@@ -106,6 +112,9 @@
     <!--根据文档类别进行查询，文档名称进行模糊查询 LBQ-->
     <select id="getTbPolicyDocument" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        context,
+        domcode,
+        adduid,
         typecode,
         Id,
         domid,
@@ -113,7 +122,7 @@
         cname,
         price,
         department,
-        to_char(to_timestamp(effective / 1000), 'yyyy-MM-dd') as effective,
+        effective,
         stdrange,
         status from
         tb_policy_document
@@ -161,13 +170,21 @@
     <!--新增-->
     <insert id="saveTbPolicyDom" parameterType="java.util.Map">
         insert into
-        tb_policy_document(tpeycode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,pagekey,pagedesc,addtime,
+        tb_policy_document(domtitle,adduid,domid,typeid,domcode,cname,price,department,effective,stdrange,status,pagekey,pagedesc,addtime,
         updtime,idx)
         values
         (
         <choose>
-            <when test="tpeycode != null">
-                #{tpeycode},
+            <when test="domtitle != null">
+                #{domtitle},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid != null">
+                #{adduid},
             </when>
             <otherwise>
                 null,
@@ -209,7 +226,7 @@
         </choose>
         <choose>
             <when test="effective != null">
-                cast(#{effective} as integer),
+               #{effective},
             </when>
             <otherwise>
                 null,
@@ -225,7 +242,7 @@
         </choose>
         <choose>
             <when test="status != null">
-                #{status},
+                cast(#{status} as integer),
             </when>
             <otherwise>
                 1,
@@ -266,13 +283,15 @@
         tb_policy_document
         set
         <if test="tpeycode != null">tpeycode=#{tpeycode},</if>
+        <if test="context != null">context=#{context},</if>
+        <if test="domcode != null">domcode=#{domcode},</if>
         <if test="cname != null">cname=#{cname},</if>
         <if test="domcode != null">domcode=#{domcode},</if>
         <if test="price != null">price=cast(#{price} as integer),</if>
         <if test="department != null">department=#{department},</if>
-        <if test="effective != null">effective=cast(#{effective} as integer),</if>
+        <if test="effective != null">effective=#{effective},</if>
         <if test="stdrange != null">stdrange=cast(#{stdrange} as integer),</if>
-        <if test="status != null">status=#{status},</if>
+        <if test="status != null">status=cast(#{status} as integer),</if>
         <if test="pagekey != null">pagekey=#{pagekey},</if>
         <if test="pagedesc != null">pagedesc=#{pagedesc},</if>
         <if test="updtime != null">updtime=#{updtime}</if>
