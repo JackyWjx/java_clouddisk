@@ -31,6 +31,14 @@ public interface CompanyMapper {
     Map<String, Object> queryEnterpriseData(Map<String, Object> param);
 
     /**
+     * 主页获取单位信息
+     *
+     * @param param
+     * @return
+     */
+    Map<String, Object> queryCompanyProject(Map<String, Object> param);
+
+    /**
      * 获取当前用户下的所以企业
      *
      * @param param

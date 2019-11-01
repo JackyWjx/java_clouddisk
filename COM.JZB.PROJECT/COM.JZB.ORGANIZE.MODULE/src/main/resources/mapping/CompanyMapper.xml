@@ -13,6 +13,10 @@
         cid=#{cid}
     </update>
 
+    <select id="queryCompanyProject" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_company_project where projectid =  #{projectid}
+    </select>
+
     <!-- 主页获取单位信息 -->
     <select id="queryEnterpriseData" parameterType="java.util.Map"
             resultType="java.util.Map">

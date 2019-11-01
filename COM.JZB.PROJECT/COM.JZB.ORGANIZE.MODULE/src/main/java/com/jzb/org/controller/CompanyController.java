@@ -97,6 +97,28 @@ public class CompanyController {
         return result;
     }
 
+
+    /**
+     * 根据项目id获取项信息
+     *
+     * @author hanbin+
+     */
+    @RequestMapping(value = "/getCompanyProjct", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyProjct(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> cidList = companyService.queryComapnyProjct(param);
+            result = Response.getResponseSuccess((Map)param.get("userinfo"));
+            result.setResponseEntity(cidList);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
     /**
      * 主页获取单位信息
      *

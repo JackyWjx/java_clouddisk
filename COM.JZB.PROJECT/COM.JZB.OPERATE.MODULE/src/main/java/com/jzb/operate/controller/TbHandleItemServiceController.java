@@ -4,6 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.org.OrgCompanyApi;
 import com.jzb.operate.api.org.OrgDeptApi;
 import com.jzb.operate.service.TbHandItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Description: 服务统计分析
@@ -30,6 +32,9 @@ public class TbHandleItemServiceController {
     @Autowired
     private OrgDeptApi api;
 
+    @Autowired
+    private OrgCompanyApi companyApi;
+
     /**
      * 获取所有部门
      *
@@ -37,7 +42,7 @@ public class TbHandleItemServiceController {
      */
     @RequestMapping("/getDept")
     @ResponseBody
-    public  Response getDept(Map<String , Object> map){
+    public  Response getDept(@RequestBody Map<String , Object> map){
         Response result;
         try{
             result = api.getDeptList(map);
@@ -63,28 +68,32 @@ public class TbHandleItemServiceController {
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             // 判断是否存选择部门
             if(map.containsKey("cdid")){
-                Map<String , Object> companUid  =  (Map)api.getDeptUserChildList(map);
-                List<String> uid = new ArrayList<>();
-                // 获取部门下的用户
-                if(companUid.containsKey("list") && !JzbTools.isEmpty(companUid.get("list"))){
-                    List  list  = (List) companUid.get("list");
-                    for(int i = 0 ; i < list.size() ;i++){
-                       Map<String , Object> uidMap =  (Map)list.get(i);
-                       uid.add(uidMap.get("uid").toString());
+                //  用户 数组
+                List<String> list =  new ArrayList<>();
+                Response dept  =  api.getDeptUserChildList(map);
+                Map<String , Object> deMap  =  (Map<String, Object>) dept.getResponseEntity();
+                for(Map.Entry <String , Object> typetry:deMap.entrySet()) {
+                    Map<String , Object> typetryMap = (Map<String, Object>) deMap.get(typetry.getKey());
+                    if(typetryMap.containsKey("list") && !JzbTools.isEmpty(typetryMap.get("list"))){
+                        List<Map<String , Object>>  uidList  = (List<Map<String, Object>>) typetryMap.get("list");
+                        for(int i = 0 ; i < uidList.size() ;i++){
+                            list.add(uidList.get(i).get("uid").toString());
+                        }
                     }
                 }
-                // 获取子部门的用户
-                if(companUid.containsKey("children") && !JzbTools.isEmpty(companUid.get("children"))){
-                    Map<String , Object>  childrenMap  = (Map) companUid.get("children");
-                    List  list  = (List) childrenMap.get("list");
-                    for(int i = 0 ; i < list.size() ;i++){
-                        Map<String , Object> uidMap =  (Map)list.get(i);
-                        uid.add(uidMap.get("uid").toString());
-                    }
-                }
-                map.put("uid",uid.toString().replace("[","").replace("]",""));
+                map.put("uid",list.toString().replace("[","").replace("]",""));
             }
             List<Map<String , Object>> list = service.queryTbCompanyService(map);
+            for(int i =  0 ; i< list.size() ;i++){
+                Map<String , Object> para = list.get(i);
+                Response cpm  = companyApi.getCompanyProjct(para);
+                Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
+                list.get(i).put("projectname",cpmMap.get("projectname"));
+                Response pro  = companyApi.getEnterpriseData(para);
+                Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
+                list.get(i).put("cname",proMap.get("cname"));
+
+            }
             int count  =  service.queryTbCompanyServiceCount(map);
             result =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
@@ -100,7 +109,7 @@ public class TbHandleItemServiceController {
     /**
      * 获取跟进详情列表
      *
-     * @param map
+     * @param
      * @return
      */
     @RequestMapping("/queryHandItem")
@@ -109,8 +118,17 @@ public class TbHandleItemServiceController {
         Response result ;
         try{
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             List<Map<String , Object>> list = service.queryTbHandleItem(map);
+            for(int i =  0 ; i< list.size() ;i++){
+                Map<String , Object> para = list.get(i);
+                Response cpm  = companyApi.getCompanyProjct(para);
+                Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
+                list.get(i).put("projectname",cpmMap.get("projectname"));
+                Response pro  = companyApi.getEnterpriseData(para);
+                Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
+                list.get(i).put("cname",proMap.get("cname"));
+            }
             int count  =  service.queryTbHandleItemCount(map);
             result =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);

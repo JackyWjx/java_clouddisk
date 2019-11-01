@@ -66,6 +66,17 @@ public class CompanyService {
      * @return
      * @author kuangbin
      */
+    public Map<String ,Object> queryComapnyProjct(Map<String, Object> param) {
+        return companyMapper.queryCompanyProject(param);
+    }
+
+    /**
+     * 开放平台调用接口修改企业地址,地区信息
+     *
+     * @param param
+     * @return
+     * @author kuangbin
+     */
     public int addOrgInfo(Map<String, Object> param) {
         return companyMapper.updateOrgInfo(param);
     }
