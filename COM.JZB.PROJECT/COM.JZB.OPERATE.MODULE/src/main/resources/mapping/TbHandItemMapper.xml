@@ -8,6 +8,8 @@
     <select id="queryTbHandleItem" resultType="java.util.Map" parameterType="java.util.Map">
         select * from tb_hendle_item where status = '1'
         <choose><when test="projectid != null">and projected = #{projected}</when></choose>
+        <choose><when test="uid != null">and uid = #{uid}</when></choose>
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
         limit #{pagesize}  offset #{pageno}
     </select>
 
@@ -16,7 +18,7 @@
         select count(1) from tb_hendle_item where status = '1'
         <choose><when test="projectid != null">and projected = #{projected}</when></choose>
         <choose><when test="uid != null">and uid = #{uid}</when></choose>
-        <choose><when test="projectid != null">and projected = #{projected}</when></choose>
+        <choose><when test="cid != null">and cid = #{cid}</when></choose>
     </select>
 
     <!--  查询服务记录   -->
