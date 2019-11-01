@@ -185,4 +185,9 @@
         ID
     </select>
 
+    <!-- 获取该单位是否设置了模板 -->
+    <select id="queryCompanyIsAuth" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_template_type where cid=#{cid} and status='1'
+    </select>
+
 </mapper>

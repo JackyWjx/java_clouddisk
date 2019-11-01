@@ -42,4 +42,11 @@ public interface TbTempTypeMapper {
      * 6.修改状态  1正常  2不正常  4 删除
      * */
     int updateStatus(Map<String, Object> param);
+
+    /**
+     * 获取该单位是否设置了模板
+     * @param param
+     * @return
+     */
+    int queryCompanyIsAuth(Map<String, Object> param);
 }

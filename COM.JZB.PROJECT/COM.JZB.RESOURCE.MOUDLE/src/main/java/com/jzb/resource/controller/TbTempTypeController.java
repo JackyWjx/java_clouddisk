@@ -19,7 +19,7 @@ import java.util.Map;
  * 模板类型
  */
 @RestController
-@RequestMapping(value = "/tempType")
+@RequestMapping(value = "/resource/tempType")
 public class TbTempTypeController {
 
     @Autowired
@@ -187,6 +187,34 @@ public class TbTempTypeController {
                 } else {
                     result = Response.getResponseError();
                 }
+            }
+        } catch (Exception e) {
+            // 打印异常信息
+            e.printStackTrace();
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 获取该单位是否设置了模板
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCompanyIsAuth", method = RequestMethod.POST)
+    @ResponseBody
+    public Response queryCompanyIsAuth(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            //判断如果参数为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                result = Response.getResponseError();
+            } else {
+                //设置删除模板
+                int count = tbTempTypeService.queryCompanyIsAuth(param);
+                result = Response.getResponseSuccess();
+                result.setResponseEntity(count);
             }
         } catch (Exception e) {
             // 打印异常信息

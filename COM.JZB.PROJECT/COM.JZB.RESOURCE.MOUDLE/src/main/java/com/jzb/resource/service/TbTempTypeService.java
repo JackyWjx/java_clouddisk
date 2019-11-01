@@ -153,4 +153,13 @@ public class TbTempTypeService {
         param.put("status", "4");
         return tbTempTypeMapper.updateStatus(param);
     }
+
+    /**
+     * 获取该单位是否设置了模板
+     * @param param
+     * @return
+     */
+    public int queryCompanyIsAuth(Map<String, Object> param){
+        return tbTempTypeMapper.queryCompanyIsAuth(param);
+    }
 }
