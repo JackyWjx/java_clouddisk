@@ -27,8 +27,8 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="method.methodid!=null and method.methodid!=''">
-                    #{method.methodid},
+                <when test="method.typeid!=null and method.typeid!=''">
+                    #{method.typeid},
                 </when>
                 <otherwise>
                     NULL,
@@ -43,8 +43,8 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="method.tarname!=null and method.tarname!=''">
-                    #{method.tarname},
+                <when test="method.cname!=null and method.cname!=''">
+                    #{method.cname},
                 </when>
                 <otherwise>
                     NULL,
