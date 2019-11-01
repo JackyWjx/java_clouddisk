@@ -5,34 +5,33 @@
 <mapper namespace="com.jzb.org.dao.TbCompanyCommonMapper">
 
     <!-- 查询公海单位 不做条件-->
-    <select id="queryCompanyCommon" resultType="java.util.Map">
-        SELECT
-            tcc.cid,
-            tcc.uid,
-            ( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid ) sales,
-            tcc.status,
-            tcl.cname,
-            tcl.manager,
-            tcl.region,
-            tdu.cname AS username,
-            tdu.phone AS userphone,
-            ( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = 't000000' ) AS service,
-            ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' ) AS companyLevel,
-            tcl.authid
-        FROM
-            tb_company_common tcc
-            INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
-            LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
-            AND tdu.uid = tcl.manager
-            LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
-        WHERE
-            tcc.status = '2'
+    <select id="queryCompanyCommon"  resultType="java.util.Map">
+SELECT
+	tcc.cid,
+	tcc.uid,
+	( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid ) sales,
+	tcc.status,
+	tcl.cname,
+	tcl.manager,
+	tcl.region,
+	tdu.cname AS username,
+	tdu.phone AS userphone,
+	( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = 't000000' ) AS service,
+	( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' ) AS companyLevel,
+	tcl.authid
+FROM
+	tb_company_common tcc
+	INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+	LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+	AND tdu.uid = tcl.manager
+	LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+WHERE
+	tcc.status = '2'
     </select>
 
 
     <!-- 查询已分配的业主  带条件 -->
-    <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map" resultType="java.util.Map">
-        select * from (
+    <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map">
         SELECT
         tcc.cid,
         tcc.uid,
@@ -54,15 +53,14 @@
         LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
         WHERE
         tcc.status = '2'
-        ) a where 1=1
         <if test="region!=null and region !=''">
-            and a.region=#{region}
+            and tcl.region=#{region}
         </if>
-        <if test="companyLevel!=null and companyLevel !='' and companyLevel!='全部'">
-            and a.companyLevel=#{companyLevel}
+        <if test="companyLevel!=null and companyLevel !=''">
+            and companyLevel=#{companyLevel}
         </if>
         <if test="keyword!=null and keyword !=''">
-            and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
+            and (tcl.cname ~ #{keyword} or sales ~ #{keyword})
         </if>
     </select>
 
@@ -76,6 +74,61 @@
     <!--所有业主-业主列表查询-->
     <select id="getCompanyCommon" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        a.cid,
+        b.manager,
+        a.uid,
+        b.cname,
+        b.nickname,
+        b.relmail,
+        b.manager,
+        b.authid,
+        b.relphone,
+        b.relperson,
+        b.status,
+        b.region,
+        c.dictvalue
+        from
+        tb_company_common a
+        LEFT JOIN
+        tb_company_list b
+        on a.cid = b.cid
+        LEFT JOIN
+        tb_company_property c
+        on b.cid = c.cid
+        where a.status != '4'
+        and c.typeid = 't111111'
+        <if test="status != null">
+           and a.status = #{status}
+        </if>
+        <if test="region != null">
+           and b.region = #{region}
+        </if>
+        <if test="dictvalue != null">
+            and c.dictvalue = #{dictvalue}
+        </if>
+        <if test="keyword != null">
+          and a.uid ~ #{keyword} or b.cname ~ #{keyword}
+        </if>
+        <if test="province != null and province != ''">
+            and cl.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--所有业主-业主列表查询出来的总数-->
+    <select id="getCount" parameterType="java.util.Map" resultType="int">
+       select
+       count(1)
+       from
+       (
+        select
+        b.manager,
         a.uid,
         b.cname,
         b.nickname,
@@ -109,57 +162,30 @@
         <if test="keyword != null">
             and a.uid ~ #{keyword} or b.cname ~ #{keyword}
         </if>
-        limit
-        #{pagesize}
-        offset
-        #{pageno}
-    </select>
-
-    <!--所有业主-业主列表查询出来的总数-->
-    <select id="getCount" parameterType="java.util.Map" resultType="int">
-        select
-        count(1)
-        from
-        (
-        select
-        a.uid,
-        b.cname,
-        b.nickname,
-        b.relmail,
-        b.manager,
-        b.authid,
-        b.relphone,
-        b.relperson,
-        b.status
-        from
-        tb_company_common a
-        LEFT JOIN
-        tb_company_list b
-        on a.cid = b.cid
-        where a.status != '4'
-        <if test="status != null">
-            and a.status = #{status}
-        </if>
-        <if test="region != null">
-            and b.region = #{region}
+        <if test="province != null and province != ''">
+            and cl.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
         </if>
         ) as num
     </select>
 
 
+
     <insert id="saveCompanyCommon" parameterType="java.util.Map">
-        insert into tb_company_common
-        (cid,idx,uid,ouid,addtime,status,summary,updtime)
-        VALUES
-        (
-        <choose>
-            <when test="cid != null">
-                #{cid},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
+            insert into  tb_company_common
+            (cid,idx,uid,ouid,addtime,status,summary,updtime)
+            VALUES
+            (
+            <choose>
+                <when test="cid != null">
+                    #{cid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
         <choose>
             <when test="idx != null">
                 #{idx},
@@ -212,9 +238,9 @@
         );
         insert into tb_company_list
         (cid,cname,nickname,region,uscc,idx,relperson,relphone,relmail,
-        reguid,manager,authid,ouid,modtime,status,summary,regtime)
-        VALUES
-        (
+         reguid,manager,authid,ouid,modtime,status,summary,regtime)
+         VALUES
+         (
         <choose>
             <when test="cid != null">
                 #{cid},
@@ -256,14 +282,14 @@
             </otherwise>
         </choose>
 
-        <choose>
-            <when test="idx != null">
-                #{idx},
-            </when>
-            <otherwise>
-                (select count(1)+1 from tb_company_list),
-            </otherwise>
-        </choose>
+         <choose>
+             <when test="idx != null">
+                 #{idx},
+             </when>
+             <otherwise>
+                 (select count(1)+1 from tb_company_list),
+             </otherwise>
+         </choose>
         <choose>
             <when test="relperson != null">
                 #{relperson},
@@ -328,14 +354,14 @@
                 null,
             </otherwise>
         </choose>
-        <choose>
-            <when test="status != null">
-                #{status},
-            </when>
-            <otherwise>
-                1,
-            </otherwise>
-        </choose>
+         <choose>
+             <when test="status != null">
+                 #{status},
+             </when>
+             <otherwise>
+                 1,
+             </otherwise>
+         </choose>
         <choose>
             <when test="summary != null">
                 #{summary},
@@ -345,7 +371,7 @@
             </otherwise>
         </choose>
         #{regtime}
-        )
+         )
     </insert>
 
     <update id="updateCompanyCommon" parameterType="java.util.Map">
@@ -355,8 +381,7 @@
         <if test="cname != null and cname != ''">cname=#{cname},</if>
         <if test="region != null and region != ''">region=#{region},</if>
         <if test="relperson != null and relperson != ''">relperson=#{relperson},</if>
-        <if test="relphone != null and relphone != ''">relphone=#{relphone},</if>
-        <if test="modtime != null and modtime != ''">modtime=#{modtime}</if>
+        <if test="relphone != null and relphone != ''">relphone=#{relphone}</if>
         where
         cid = #{cid}
     </update>
@@ -364,15 +389,16 @@
     <!--所有业主-业主列表-删除-->
     <update id="deleteCompanyCommon" parameterType="java.util.List">
         <foreach collection="list" item="item" separator=";">
-            update
-            tb_company_common
-            set
-            <if test="item.status != null and item.status != ''">status=#{item.status}</if>
-            where
-            cid = #{item.cid}
+        update
+        tb_company_common
+        set
+        <if test="item.status != null and item.status != ''">status=#{item.status}</if>
+        where
+        cid = #{item.cid}
         </foreach>
     </update>
 
+    <!--分配业务员-->
     <update id="updateCompanys" parameterType="java.util.Map">
         update
         tb_company_common

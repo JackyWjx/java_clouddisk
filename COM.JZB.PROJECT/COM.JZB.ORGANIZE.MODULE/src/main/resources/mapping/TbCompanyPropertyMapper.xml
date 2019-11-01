@@ -313,8 +313,4 @@
         )
     </insert>
 
-
-    <select id="queryLevelCount" resultType="java.util.Map">
-      select dictvalue, count(dictvalue) FROM tb_company_property where typeid='t111111' group by dictvalue
-    </select>
 </mapper>
