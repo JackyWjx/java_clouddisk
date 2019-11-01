@@ -1,6 +1,7 @@
 package com.jzb.resource.service;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.resource.dao.TbStandardDocumentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,12 @@ public class TbStandardDocumentService {
      */
     public List<Map<String, Object>> getTbStandardDocument(Map<String, Object> param) {
 
-        return tbStandardDocumentMapper.getTbStandardDocument(param);
+        List<Map<String, Object>> tbStandardDocument = tbStandardDocumentMapper.getTbStandardDocument(param);
+       /* for (int i = 0; i < tbStandardDocument.size(); i++) {
+            int effective = JzbDataType.getInteger(tbStandardDocument.get(i).get("effective"));
+            tbStandardDocument.get(i).put("effective", effective * 1000);
+        }*/
+        return tbStandardDocument;
 
     }
 
@@ -47,6 +53,7 @@ public class TbStandardDocumentService {
         param.put("domid", JzbRandom.getRandomCharLow(11));
         Long effective = (Long) param.get("effective");
         param.put("effective",effective / 1000);
+        param.put("status", JzbDataType.getInteger(param.get("status")));
         return tbStandardDocumentMapper.saveTbStandardDom(param);
     }
 
@@ -59,8 +66,7 @@ public class TbStandardDocumentService {
         long time = System.currentTimeMillis();
         Date date = JzbDataType.getDateTime(JzbDataType.getInteger(param.get("effective"))/1000);
         param.put("effective", date.getTime());
-		
-//        param.put("updtime", time);
+       param.put("updtime", time);
         return tbStandardDocumentMapper.updateTbStandardDom(param);
     }
 

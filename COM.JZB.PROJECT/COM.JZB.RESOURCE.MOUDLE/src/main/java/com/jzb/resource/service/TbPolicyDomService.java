@@ -1,5 +1,6 @@
 package com.jzb.resource.service;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.resource.dao.TbPolicyDomMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,13 @@ public class TbPolicyDomService {
      * 查询政策文档列表(模糊查询)
      */
     public List<Map<String, Object>> queryPolicyDomList(Map<String, Object> param) {
-        return tbPolicyDomMapper.queryPolicyDomList(param);
+
+        List<Map<String, Object>> list = tbPolicyDomMapper.queryPolicyDomList(param);
+        /*for (int i = 0; i < list.size(); i++) {
+            int effective = JzbDataType.getInteger(list.get(i).get("effective"));
+            list.get(i).put("effective", effective * 1000);
+        }*/
+        return list;
     }
 
 
