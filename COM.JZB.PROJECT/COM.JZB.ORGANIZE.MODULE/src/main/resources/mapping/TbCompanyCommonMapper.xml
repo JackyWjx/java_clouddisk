@@ -9,15 +9,15 @@
 SELECT
 	tcc.cid,
 	tcc.uid,
-	( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid limit 1) sales,
+	( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid LIMIT 1 ) sales,
 	tcc.status,
 	tcl.cname,
 	tcl.manager,
 	tcl.region,
 	tdu.cname AS username,
 	tdu.phone AS userphone,
-	( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = 't000000' ) AS service,
-	( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' ) AS companyLevel,
+	( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = 't000000' limit 1 ) AS service,
+	( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1 ) AS companyLevel,
 	tcl.authid
 FROM
 	tb_company_common tcc
@@ -43,8 +43,8 @@ WHERE
         tcl.region,
         tdu.cname username,
         tdu.phone userphone,
-        ( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = 't000000' ) service,
-        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' ) companyLevel,
+        ( SELECT cname FROM tb_dept_user WHERE uid = tcp.dictvalue AND tcp.typeid = 't000000' limit 1 ) service,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) companyLevel,
         tcl.authid
         FROM
         tb_company_common tcc
