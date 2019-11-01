@@ -78,6 +78,7 @@ public class TbCompanyContractController {
                 pageInfo.setList(list);
                 // 如果count>0 就返回list 大小
                 pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
+                response.setPageInfo(pageInfo);
             }
         } catch (Exception ex) {
             JzbTools.logError(ex);
