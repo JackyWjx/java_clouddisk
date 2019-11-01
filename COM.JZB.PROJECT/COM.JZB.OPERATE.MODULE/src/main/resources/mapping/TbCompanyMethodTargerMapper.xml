@@ -111,7 +111,7 @@
                     #{method.status},
                 </when>
                 <otherwise>
-                    NULL,
+                    1,
                 </otherwise>
             </choose>
             <choose>

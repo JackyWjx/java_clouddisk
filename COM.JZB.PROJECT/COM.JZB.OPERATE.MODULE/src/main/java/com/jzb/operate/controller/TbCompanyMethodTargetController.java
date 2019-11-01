@@ -50,7 +50,7 @@ public class TbCompanyMethodTargetController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "projectid", "methodid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "methodid"})) {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> list = tbCompanyMethodTargetService.queryMethodTarget(param);
