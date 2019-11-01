@@ -331,7 +331,7 @@ public class DeptController {
     public Response getDeptUser(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"cid"};
+            String[] str = {};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 int rows = JzbDataType.getInteger(param.get("pagesize"));
