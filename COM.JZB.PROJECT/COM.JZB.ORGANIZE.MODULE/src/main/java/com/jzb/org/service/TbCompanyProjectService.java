@@ -76,37 +76,4 @@ public class TbCompanyProjectService {
         }
         return tbCompanyProjectMapper.ComProject(param);
     }
-
-    /**
-     * CRM-销售业主-我服务的业主-1
-     * 根据服务的项目ID获取项目信息,后台调用不支持前台调用
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    public List<Map<String, Object>> getServiceProjectList(List<Map<String, Object>> param) {
-        return tbCompanyProjectMapper.queryServiceProjectList(param);
-    }
-
-    /**
-     * CRM-销售业主-我服务的业主-2
-     * 根据服务的项目ID获取模糊搜索项目信息,后台调用不支持前台调用
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    public List<Map<String, Object>> searchServiceProjectList(Map<String, Object> param) {
-        return tbCompanyProjectMapper.queryServiceProject(param);
-    }
-
-    /**
-     * CRM-销售业主-我服务的业主-2
-     * 根据服务的项目ID获取模糊搜索项目信息的总数,后台调用不支持前台调用
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    public int getCompanyServiceCount(Map<String, Object> param) {
-        return tbCompanyProjectMapper.queryCompanyServiceCount(param);
-    }
 }

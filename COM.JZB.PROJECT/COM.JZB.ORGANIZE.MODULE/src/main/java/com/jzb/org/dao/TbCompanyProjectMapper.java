@@ -44,31 +44,4 @@ public interface TbCompanyProjectMapper {
      * @return
      */
     int ComProject(List<Map<String, Object>> param);
-
-    /**
-     * CRM-销售业主-我服务的业主-1
-     * 根据服务的项目ID获取项目信息,后台调用不支持前台调用
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    List<Map<String, Object>> queryServiceProjectList(List<Map<String, Object>> param);
-
-    /**
-     * CRM-销售业主-我服务的业主-2
-     * 根据服务的项目ID获取模糊搜索项目信息的总数,后台调用不支持前台调用
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    int queryCompanyServiceCount(Map<String, Object> param);
-
-    /**
-     * CRM-销售业主-我服务的业主-2
-     * 根据服务的项目ID获取模糊搜索项目信息,后台调用不支持前台调用
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    List<Map<String, Object>> queryServiceProject(Map<String, Object> param);
 }

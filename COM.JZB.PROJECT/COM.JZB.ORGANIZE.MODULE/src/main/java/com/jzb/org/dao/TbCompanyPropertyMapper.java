@@ -3,7 +3,6 @@ package com.jzb.org.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -43,16 +42,9 @@ public interface TbCompanyPropertyMapper {
     int saveCompanyProperty(Map<String, Object> param);
 
     /**
-     *  所有业主-业主列表-分配售后人员
+     *  所有业主-业主列表-设置等级
      * @param param
      * @return
      */
     int saveCompanyPropertys(Map<String, Object> param);
-
-    /**
-     * 查各个等级次数
-     * @param param
-     * @return
-     */
-    List<Map<String, Object>> queryLevelCount(Map<String, Object> param);
 }

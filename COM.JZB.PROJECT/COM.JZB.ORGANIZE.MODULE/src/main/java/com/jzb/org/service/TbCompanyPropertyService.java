@@ -5,7 +5,6 @@ import com.jzb.org.dao.TbCompanyPropertyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -76,15 +75,5 @@ public class TbCompanyPropertyService {
         param.put("addtime",time);
         param.put("updtime",time);
         return tbCompanyPropertyMapper.saveCompanyPropertys(param);
-    }
-
-
-    /**
-     * 查各个等级次数
-     * @param param
-     * @return
-     */
-    public List<Map<String, Object>> queryLevelCount(Map<String, Object> param){
-        return tbCompanyPropertyMapper.queryLevelCount(param);
     }
 }

@@ -1,7 +1,6 @@
 package com.jzb.org.controller;
 
 
-import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -28,24 +27,25 @@ public class TbCompanyListController {
      */
     @RequestMapping(value = "/getCompanyList",method = RequestMethod.POST)
     @CrossOrigin
-    public Response getCompanyList(@RequestBody(required = false) Map<String,Object> param) {
+    public Response getCompanyList(@RequestBody Map<String,Object> param) {
         Response result;
         try {
-                 if (JzbCheckParam.haveEmpty(param, new String[]{"pageno", "pagesize"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pageno", "pagesize"})) {
                 result = Response.getResponseError();
             } else {
                 //设置分页参数
                 SetPageSize setPageSize = new SetPageSize();
-               param = setPageSize.setPagenoSize(param);
+                param = setPageSize.setPagenoSize(param);
                 //获取前端传过来的分页参数
-                int count = JzbDataType.getInteger(param.get("count"));
+                //int count = JzbDataType.getInteger(param.get("count"));
                 //获取总数
-                count = count < 0 ? 0 : count;
+                /*count = count < 0 ? 0 : count;
                 if (count == 0) {
                     count = tbCompanyListService.getCount(param);
-                }
+                }*/
                 //查询数据
-              List<Map<String,Object>> list = tbCompanyListService.getCompanyList(param);
+                List<Map<String, Object>> list = tbCompanyListService.getCompanyList(param);
+
                 //获取用户信息
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
 
@@ -53,7 +53,7 @@ public class TbCompanyListController {
 
                 pageInfo.setList(list);
                 //设置分页总数
-                pageInfo.setTotal(count > 0 ? count : list.size());
+                //pageInfo.setTotal(count > 0 ? count : list.size());
                 result = Response.getResponseSuccess(userInfo);
                 result.setPageInfo(pageInfo);
             }
