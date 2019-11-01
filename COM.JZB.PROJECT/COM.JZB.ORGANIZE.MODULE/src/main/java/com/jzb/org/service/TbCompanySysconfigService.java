@@ -23,4 +23,13 @@ public class TbCompanySysconfigService {
         param.put("updtime",time);
         return tbCompanySysconfigMapper.addCompanySysconfig(param);
     }
+
+    /**
+     * 查询该单位的二级域名
+     * @param param
+     * @return
+     */
+    public String queryCompanySysconfig(Map<String, Object> param){
+        return tbCompanySysconfigMapper.queryCompanySysconfig(param);
+    }
 }

@@ -143,7 +143,7 @@
                 #{status},
             </when>
             <otherwise>
-                null,
+                1,
             </otherwise>
         </choose>
         <choose>
@@ -157,4 +157,9 @@
         )
     </insert>
 
+
+    <!-- 查询该单位是否授权电脑端授权 -->
+    <select id="queryCompanySysconfig" parameterType="java.util.Map" resultType="java.lang.String">
+        select curl from tb_company_sysconfig where cid=#{cid} and status='1' and curl is not null
+    </select>
 </mapper>

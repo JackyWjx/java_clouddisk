@@ -22,4 +22,13 @@ public class TbCompanyProductService {
     public int addCompanyProduct(Map<String, Object> param){
         return tbCompanyProductMapper.addCompanyProduct((List<Map<String, Object>>) param.get("list"));
     }
+
+    /**
+     * 查询该单位是否授权电脑端授权
+     * @param param
+     * @return
+     */
+    public int queryCompanyProductIsExists(Map<String, Object> param){
+        return tbCompanyProductMapper.queryCompanyProductIsExists(param);
+    }
 }

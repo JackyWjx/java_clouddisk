@@ -127,4 +127,8 @@
         </foreach>
     </insert>
 
+    <!-- 查询该单位的二级域名 -->
+    <select id="queryCompanyProductIsExists" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_company_product where cid=#{cid} and status='1'
+    </select>
 </mapper>

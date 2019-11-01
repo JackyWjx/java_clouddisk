@@ -16,4 +16,11 @@ public interface TbCompanyProductMapper {
      * @return
      */
     int addCompanyProduct(List<Map<String, Object>> param);
+
+    /**
+     * 查询该单位是否授权电脑端授权
+     * @param param
+     * @return
+     */
+    int queryCompanyProductIsExists(Map<String, Object> param);
 }

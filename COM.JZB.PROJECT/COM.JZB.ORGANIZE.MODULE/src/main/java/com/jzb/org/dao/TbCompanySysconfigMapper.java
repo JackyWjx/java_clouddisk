@@ -19,5 +19,12 @@ public interface TbCompanySysconfigMapper {
      * @return
      */
     int addCompanySysconfig(Map<String, Object> param);
+
+    /**
+     * 查询该单位的二级域名
+     * @param param
+     * @return
+     */
+    String queryCompanySysconfig(Map<String, Object> param);
 }
 
