@@ -1,6 +1,5 @@
 package com.jzb.org.service;
 
-import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.org.api.operate.HandleItemApi;
 import com.jzb.org.dao.TbCompanyListMapper;
@@ -25,23 +24,12 @@ public class TbCompanyListService {
      */
     public List<Map<String, Object>> getCompanyList(Map<String, Object> param) {
         List<Map<String, Object>> companyList = tbCompanyListMapper.getCompanyList(param);
-        int count = tbCompanyListMapper.getCount(param);
-        for (int i = companyList.size()-1; i>= 0; i--) {
+        for (int i = 0; i < companyList.size(); i++) {
 
-            companyList.get(i).put("beginTime", param.get("beginTime"));
-            companyList.get(i).put("endTime", param.get("endTime"));
-            companyList.get(i).put("item", param.get("item"));
-            companyList.get(i).put("service", param.get("service"));
             Response handleItem = handleItemApi.getHandleItem(companyList.get(i));
+            //设置operate 每一个
+            companyList.get(i).put("kkk", handleItem.getResponseEntity());
 
-            if (JzbDataType.isEmpty(handleItem.getResponseEntity())) {
-                companyList.get(i).clear();
-                count--;
-            } else {
-                //设置operate 每一个
-                companyList.get(i).put("kkk", handleItem.getResponseEntity());
-                companyList.get(i).put("count", count);
-            }
         }
         return companyList;
     }
