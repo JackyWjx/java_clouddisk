@@ -21,6 +21,24 @@
             order by addtime
     </select>
 
+    <!--1.查询方法论目标-->
+    <select id="queryMethodTargetByTypeid" parameterType="java.util.Map" resultType="java.util.Map">
+            SELECT
+            dataid,
+            tarkey,
+            cname,
+            controltype,
+            datatype,
+            datasize
+            FROM
+            tb_method_target
+            WHERE
+            dataid IN ( SELECT dataid FROM tb_method_data WHERE typeid = #{typeid} )
+            AND status = '1'
+    </select>
+
+
+
     <!--2.添加方法论目标-->
     <insert id="addMethodTarget" parameterType="java.util.List">
         <foreach collection="list" item="method" separator=";">

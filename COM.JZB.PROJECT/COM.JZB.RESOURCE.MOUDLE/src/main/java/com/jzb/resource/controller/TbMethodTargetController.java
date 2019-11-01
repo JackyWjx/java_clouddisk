@@ -57,6 +57,41 @@ public class TbMethodTargetController {
         return result;
     }
 
+
+    /**
+     * 获取方法论目标
+     * @param params
+     * @return
+     */
+    @RequestMapping(value = "/getMethodTargetByTypeid", method = RequestMethod.POST)
+    @ResponseBody
+    public Response getMethodTargetByTypeid(@RequestBody Map<String, Object> params) {
+        Response result;
+        try {
+            // 验证指定参数 为空则返回404 error
+            if (JzbCheckParam.haveEmpty(params, new String[]{"typeid"})) {
+                result = Response.getResponseError();
+            } else {
+                // 查询结果
+                List<Map<String, Object>> list = tbMethodTargetService.queryMethodTargetByTypeid(params);
+                // 定义pageinfo
+                PageInfo pi = new PageInfo<>();
+                pi.setList(list);
+
+                // 定义返回response
+                // 定义返回结果
+                Map<String, Object> userInfo = (Map<String, Object>) params.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+                result.setPageInfo(pi);
+            }
+        } catch (Exception e) {
+            // 打印异常信息
+            e.printStackTrace();
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
     /**
      *  添加方法论目标
      * @param param

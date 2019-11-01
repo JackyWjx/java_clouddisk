@@ -20,6 +20,12 @@ public class TbMethodTargetService {
     public List<Map<String, Object>> queryMethodTarget(Map<String, Object> param) {
         return tbMethodTargetMapper.queryMethodTarget(param);
     }
+    /*
+     * 1.查询方法论目标
+     */
+    public List<Map<String, Object>> queryMethodTargetByTypeid(Map<String, Object> param) {
+        return tbMethodTargetMapper.queryMethodTargetByTypeid(param);
+    }
 
     /*
      * 2.添加方法论目标

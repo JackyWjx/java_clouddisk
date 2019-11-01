@@ -16,6 +16,11 @@ public interface TbMethodTargetMapper {
    List<Map<String, Object>> queryMethodTarget(Map<String, Object> param);
 
    /*
+    * 1.查询方法论目标
+     */
+   List<Map<String, Object>> queryMethodTargetByTypeid(Map<String, Object> param);
+
+   /*
    * 2.添加方法论目标
    * */
    int addMethodTarget(List<Map<String, Object>> list);
