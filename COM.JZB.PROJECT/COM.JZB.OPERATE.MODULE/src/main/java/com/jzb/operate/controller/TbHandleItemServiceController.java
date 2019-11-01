@@ -86,12 +86,16 @@ public class TbHandleItemServiceController {
             List<Map<String , Object>> list = service.queryTbCompanyService(map);
             for(int i =  0 ; i< list.size() ;i++){
                 Map<String , Object> para = list.get(i);
-                Response cpm  = companyApi.getCompanyProjct(para);
-                Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
-                list.get(i).put("projectname",cpmMap.get("projectname"));
-                Response pro  = companyApi.getEnterpriseData(para);
-                Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
-                list.get(i).put("cname",proMap.get("cname"));
+                if(!JzbTools.isEmpty(para.get("projectid"))){
+                    Response cpm  = companyApi.getCompanyProjct(para);
+                    Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
+                    list.get(i).put("projectname",cpmMap.get("projectname"));
+                }
+                if(!JzbTools.isEmpty(para.get("cid"))){
+                    Response pro  = companyApi.getEnterpriseData(para);
+                    Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
+                    list.get(i).put("cname",proMap.get("cname"));
+                }
 
             }
             int count  =  service.queryTbCompanyServiceCount(map);
@@ -122,12 +126,16 @@ public class TbHandleItemServiceController {
             List<Map<String , Object>> list = service.queryTbHandleItem(map);
             for(int i =  0 ; i< list.size() ;i++){
                 Map<String , Object> para = list.get(i);
-                Response cpm  = companyApi.getCompanyProjct(para);
-                Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
-                list.get(i).put("projectname",cpmMap.get("projectname"));
-                Response pro  = companyApi.getEnterpriseData(para);
-                Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
-                list.get(i).put("cname",proMap.get("cname"));
+                if(!JzbTools.isEmpty(para.get("projectid"))){
+                    Response cpm  = companyApi.getCompanyProjct(para);
+                    Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
+                    list.get(i).put("projectname",cpmMap.get("projectname"));
+                }
+                if(!JzbTools.isEmpty(para.get("cid"))){
+                    Response pro  = companyApi.getEnterpriseData(para);
+                    Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
+                    list.get(i).put("cname",proMap.get("cname"));
+                }
             }
             int count  =  service.queryTbHandleItemCount(map);
             result =  Response.getResponseSuccess((Map)map.get("userinfo"));
