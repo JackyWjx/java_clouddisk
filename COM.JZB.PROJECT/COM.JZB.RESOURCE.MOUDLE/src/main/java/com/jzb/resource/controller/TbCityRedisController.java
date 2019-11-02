@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author chenzhengduan
+ * 获取存取city到redis的操作
+ */
 @RestController
 @RequestMapping(value = "/resource/city")
 public class TbCityRedisController {
