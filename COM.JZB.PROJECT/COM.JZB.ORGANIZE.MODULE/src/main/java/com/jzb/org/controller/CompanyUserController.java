@@ -170,7 +170,7 @@ public class CompanyUserController {
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
-            pageInfo.setTotal(companyList.size() == 0 ? 0: JzbDataType.getInteger(companyList.get(0).get("count")));
+            pageInfo.setTotal(companyList.size() == 0 ? 0 : JzbDataType.getInteger(companyList.get(0).get("count")));
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
@@ -896,8 +896,8 @@ public class CompanyUserController {
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> page = list.get(i);
                 Map<String, Object> kkk = new HashMap<>();
-                if (!JzbDataType.isEmpty(page.get("kkk"))){
-                    kkk = (Map<String, Object>)page.get("kkk");
+                if (!JzbDataType.isEmpty(page.get("kkk"))) {
+                    kkk = (Map<String, Object>) page.get("kkk");
                 }
                 // 获取跟进人
                 String uname = JzbDataType.getString(kkk.get("cname"));
@@ -938,6 +938,185 @@ public class CompanyUserController {
             }
             // 响应到客户端
             response.addHeader("Content-Disposition", "attachment;filename=ImportSellStatistics.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * CRM-销售业主-所有业主-业主下的项目1
+     * 点击导出Excel表格,将查询出的数据导出
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/createCompanyProjectExcel", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createCompanyProjectExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            String srcFilePath = "D:/v3/static/excel/CompanyProjectData.xlsx";
+            Object object = param.get("list");
+            FileInputStream in = new FileInputStream(srcFilePath);
+            List<Map<String, Object>> list = new ArrayList<>();
+            if (JzbDataType.isCollection(object)) {
+                list = (List<Map<String, Object>>) object;
+            }
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> page = list.get(i);
+                Map<String, Object> region = new HashMap<>();
+                if (!JzbDataType.isEmpty(page.get("region"))) {
+                    region = (Map<String, Object>) page.get("region");
+                }
+                // 获取所属地
+                String regionName = "";
+                if (!JzbDataType.isEmpty(JzbDataType.getString(region.get("province")))) {
+                    regionName = JzbDataType.getString(region.get("province"));
+                }
+                if (!JzbDataType.isEmpty(JzbDataType.getString(region.get("city")))) {
+                    regionName += "/" + JzbDataType.getString(region.get("city"));
+                }
+                if (!JzbDataType.isEmpty(JzbDataType.getString(region.get("county")))) {
+                    regionName += "/" + JzbDataType.getString(region.get("county"));
+                }
+                sheet.createRow(i + 1).createCell(0).setCellValue(regionName);
+                // 获取项目名称
+                String projectname = JzbDataType.getString(page.get("projectname"));
+                sheet.getRow(i + 1).createCell(1).setCellValue(projectname);
+                // 获取招标人
+                String tendername = JzbDataType.getString(page.get("tendername"));
+                sheet.getRow(i + 1).createCell(2).setCellValue(tendername);
+                // 获取招标人电话
+                String tenderphone = JzbDataType.getString(page.get("tenderphone"));
+                sheet.getRow(i + 1).createCell(3).setCellValue(tenderphone);
+                // 获取创建时间
+                String addtime = JzbDataType.getString(page.get("addtime"));
+                sheet.getRow(i + 1).createCell(4).setCellValue(addtime);
+                // 获取备注
+                String summary = JzbDataType.getString(page.get("summary"));
+                sheet.getRow(i + 1).createCell(5).setCellValue(summary);
+            }
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=CompanyProjectData.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * CRM-销售业主-所有业主-业主下的人员1
+     * 点击导出Excel表格,将查询出的数据导出
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/createCompanyUserExcel", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createCompanyUserExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            String srcFilePath = "D:/v3/static/excel/CompanyUserData.xlsx";
+            FileInputStream in = new FileInputStream(srcFilePath);
+            Object object = param.get("list");
+            List<Map<String, Object>> list = new ArrayList<>();
+            if (JzbDataType.isCollection(object)) {
+                list = (List<Map<String, Object>>) object;
+            }
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> page = list.get(i);
+                Map<String, Object> uid = new HashMap<>();
+                if (!JzbDataType.isEmpty(page.get("uid"))) {
+                    uid = (Map<String, Object>) page.get("uid");
+                }
+                // 获取姓名
+                String cname = JzbDataType.getString(uid.get("cname"));
+                sheet.createRow(i + 1).createCell(0).setCellValue(cname);
+                // 获取用户名
+                String regid = JzbDataType.getString(uid.get("regid"));
+                sheet.getRow(i + 1).createCell(1).setCellValue(regid);
+                // 获取电话
+                String relphone = JzbDataType.getString(uid.get("relphone"));
+                sheet.getRow(i + 1).createCell(2).setCellValue(relphone);
+                // 获取电子邮箱
+                String relmail = JzbDataType.getString(uid.get("relmail"));
+                sheet.getRow(i + 1).createCell(3).setCellValue(relmail);
+            }
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=CompanyUserData.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * CRM-销售业主-所有业主-业主下的合同1
+     * 点击导出Excel表格,将查询出的数据导出
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/createCompanyContractExcel", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createCompanyContractExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            String srcFilePath = "D:/v3/static/excel/CompanyContractData.xlsx";
+            FileInputStream in = new FileInputStream(srcFilePath);
+            Object object = param.get("list");
+            List<Map<String, Object>> list = new ArrayList<>();
+            if (JzbDataType.isCollection(object)) {
+                list = (List<Map<String, Object>>) object;
+            }
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> page = list.get(i);
+                // 获取合同编码
+                String contid = JzbDataType.getString(page.get("contid"));
+                sheet.createRow(i + 1).createCell(0).setCellValue(contid);
+                // 获取单位名称
+                String companyname = JzbDataType.getString(page.get("companyname"));
+                sheet.getRow(i + 1).createCell(1).setCellValue(companyname);
+                // 获取项目名称
+                String projectname = JzbDataType.getString(page.get("projectname"));
+                sheet.getRow(i + 1).createCell(2).setCellValue(projectname);
+                // 获取合同金额
+                String contamount = JzbDataType.getString(page.get("contamount"));
+                sheet.getRow(i + 1).createCell(3).setCellValue(contamount);
+                // 获取负责人
+                String username = JzbDataType.getString(page.get("username"));
+                sheet.getRow(i + 1).createCell(4).setCellValue(username);
+                // 获取电话号码
+                String userphone = JzbDataType.getString(page.get("userphone"));
+                sheet.getRow(i + 1).createCell(5).setCellValue(userphone);
+            }
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=CompanyContractData.xlsx");
             OutputStream os = new BufferedOutputStream(response.getOutputStream());
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
             // 将excel写入到输出流中
