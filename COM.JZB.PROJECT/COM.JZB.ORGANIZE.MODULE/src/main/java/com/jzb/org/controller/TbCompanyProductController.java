@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * @author chenzhengduan
+ * 企业产品
  */
 @RestController
 @RequestMapping(value = "/org/companyProduct")
@@ -30,6 +31,7 @@ public class TbCompanyProductController {
 
     /**
      * 添加企业产品
+     * @author chenzhengduan
      * @param params
      * @return
      */
@@ -57,9 +59,10 @@ public class TbCompanyProductController {
                 response = tbCompanyProductService.addCompanyProduct(params) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
+            flag=false;
             JzbTools.logError(ex);
             response=Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addCompanyProduct Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger( api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
