@@ -2,6 +2,7 @@ package com.jzb.org.service;
 
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.code.JzbDataCheck;
+import com.jzb.base.message.JzbReturnCode;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
@@ -276,19 +277,24 @@ public class ExportConfirmService {
 
             userRes = authApi.addRegistration(userMap);
             Map<String, Object> uidMap = (Map<String, Object>) userRes.getResponseEntity();
-            //加入邀请
-            String newUser = JzbDataType.getString(uidMap.get("uid"));
-            if (!JzbTools.isEmpty(newUser)) {
-                Map<String, Object> param = new HashMap<>(5);
-                String company = "计支宝";
-                param.put("relphone", map.get("phone"));
-                param.put("groupid", config.getInvite());
-                param.put("companyname", company);
-                param.put("username", map.get("name"));
-                param.put("password", pass);
-                //发送短信
-                service.sendRemind(param);
+            if (userRes.getServerResult().getResultCode()== JzbReturnCode.HTTP_404) {
+
+            }else{
+                //加入邀请
+                String newUser = JzbDataType.getString(uidMap.get("uid"));
+                if (!JzbTools.isEmpty(newUser)) {
+                    Map<String, Object> param = new HashMap<>(5);
+                    String company = "计支宝";
+                    param.put("relphone", map.get("phone"));
+                    param.put("groupid", config.getInvite());
+                    param.put("companyname", company);
+                    param.put("username", map.get("name"));
+                    param.put("password", pass);
+                    //发送短信
+                    service.sendRemind(param);
+                }
             }
+
         } catch (Exception e) {
             userRes = Response.getResponseError();
             JzbTools.logError(e);
