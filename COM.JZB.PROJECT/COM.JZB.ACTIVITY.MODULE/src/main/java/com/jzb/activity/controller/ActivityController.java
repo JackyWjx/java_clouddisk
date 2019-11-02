@@ -103,7 +103,7 @@ public class ActivityController {
      *
      * @return Response 返回json数据
      */
-    @RequestMapping("/queryActpictureList")
+    @RequestMapping(value = "/queryActpictureList",method = RequestMethod.POST)
     @CrossOrigin
     public Response queryActpictureList(@RequestBody Map<String, Object> params) {
         Response response = null;
