@@ -109,7 +109,7 @@ public class CompanyController {
         Response result;
         try {
             Map<String, Object> cidList = companyService.queryComapnyProjct(param);
-            result = Response.getResponseSuccess((Map)param.get("userinfo"));
+            result = Response.getResponseSuccess((Map) param.get("userinfo"));
             result.setResponseEntity(cidList);
         } catch (Exception ex) {
             JzbTools.logError(ex);
@@ -354,11 +354,19 @@ public class CompanyController {
     public Response addCompany(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            param.put("uid", userInfo.get("uid"));
-            Map<String, Object> map = companyService.addCompany(param);
-            result = Response.getResponseSuccess(userInfo);
-            result.setResponseEntity(map);
+            String[] str = {"phone", "cname", "type"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                Map<String, Object> map = companyService.addCompany(param);
+                result = Response.getResponseSuccess(userInfo);
+                result.setResponseEntity(map);
+            } else {
+                Map<String, Object> map = new HashMap<>(2);
+                map.put("message", "1");
+                result = Response.getResponseError();
+                result.setResponseEntity(map);
+            }
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
