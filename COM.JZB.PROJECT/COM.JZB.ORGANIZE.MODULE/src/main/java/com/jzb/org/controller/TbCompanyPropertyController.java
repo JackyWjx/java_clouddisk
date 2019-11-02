@@ -1,9 +1,12 @@
 package com.jzb.org.controller;
 
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.service.TbCompanyPropertyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +26,20 @@ public class TbCompanyPropertyController {
     @Autowired
     private TbCompanyPropertyService tbCompanyPropertyService;
 
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbCompanyPropertyController.class);
 
+    /**
+     * 初始化map
+     */
+    private final static Map<String, Object> map;
 
-    private final static Map<String, Object> map=new HashMap<>();
-
-    static{
-
+    static {
+        map = new HashMap<>();
     }
+
     /**
      * 查询ABC总数
      *
@@ -42,37 +52,51 @@ public class TbCompanyPropertyController {
     @Transactional
     public Response getCompanyProperty(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyProperty/getCompanyProperty";
+        boolean flag = true;
         try {
-
-
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             List<Map<String, Object>> list = tbCompanyPropertyService.queryLevelCount(param);
 
-
             for (int i = 0; i < list.size(); i++) {
-                map.put(list.get(i).get("dictvalue").toString(),list.get(i).get("count"));
+                map.put(list.get(i).get("dictvalue").toString(), list.get(i).get("count"));
             }
 
-            while (!map.containsKey("A级")||!map.containsKey("B级")||!map.containsKey("C级")){
-                if(!map.containsKey("A级")){
-                    map.put("A级",0);
-                }else if(!map.containsKey("B级")){
-                    map.put("B级",0);
-                }else if(!map.containsKey("C级")){
-                    map.put("C级",0);
+            while (!map.containsKey("A级") || !map.containsKey("B级") || !map.containsKey("C级")) {
+                if (!map.containsKey("A级")) {
+                    map.put("A级", 0);
+                } else if (!map.containsKey("B级")) {
+                    map.put("B级", 0);
+                } else if (!map.containsKey("C级")) {
+                    map.put("C级", 0);
                 }
             }
-
 
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
             result.setResponseEntity(map);
         } catch (Exception ex) {
+            flag=false;
             // 打印异常
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyProperty Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger( api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger( api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
-
 
     /**
      * 添加单位动态属性
@@ -123,16 +147,17 @@ public class TbCompanyPropertyController {
 
     /**
      * 所有业主-业主列表-分配售后人员
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/saveCompanyProperty",method = RequestMethod.POST)
+    @RequestMapping(value = "/saveCompanyProperty", method = RequestMethod.POST)
     @CrossOrigin
     public Response saveCompanyProperty(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-           int count =  tbCompanyPropertyService.saveCompanyProperty(param);
-           //如果返回值大于0 响应成功信息
+            int count = tbCompanyPropertyService.saveCompanyProperty(param);
+            //如果返回值大于0 响应成功信息
             if (count > 0) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 result = Response.getResponseSuccess(userInfo);
@@ -150,15 +175,16 @@ public class TbCompanyPropertyController {
 
     /**
      * 所有业主-业主列表-设置等级
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/saveCompanyPropertys",method = RequestMethod.POST)
+    @RequestMapping(value = "/saveCompanyPropertys", method = RequestMethod.POST)
     @CrossOrigin
     public Response saveCompanyPropertys(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            int count =  tbCompanyPropertyService.saveCompanyPropertys(param);
+            int count = tbCompanyPropertyService.saveCompanyPropertys(param);
             //如果返回值大于0 响应成功信息
             if (count > 0) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
