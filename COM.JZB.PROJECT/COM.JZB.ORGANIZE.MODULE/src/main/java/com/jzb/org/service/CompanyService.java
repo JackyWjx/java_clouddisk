@@ -66,7 +66,7 @@ public class CompanyService {
      * @return
      * @author kuangbin
      */
-    public Map<String ,Object> queryComapnyProjct(Map<String, Object> param) {
+    public Map<String, Object> queryComapnyProjct(Map<String, Object> param) {
         return companyMapper.queryCompanyProject(param);
     }
 
@@ -235,24 +235,20 @@ public class CompanyService {
      */
     public Map addCompany(Map<String, Object> map) {
         Map<String, Object> result = new HashMap(2);
-        if (mapIsNull(map)) {
-            result.put("message", "1");
-        } else {
-            int type = Integer.parseInt(map.get("type").toString());
-            String cname = map.get("cname").toString();
-            //type的种类
-            int found = 1;
-            int join = 2;
-            if (type == found) {
-                //创建单位
-                result = found(map);
-            }
-            if (type == join) {
-                // 加入单位
-                result = join(map);
-            }
-
+        int type = Integer.parseInt(map.get("type").toString());
+        String cname = map.get("cname").toString();
+        //type的种类
+        int found = 1;
+        int join = 2;
+        if (type == found) {
+            //创建单位
+            result = found(map);
         }
+        if (type == join) {
+            // 加入单位
+            result = join(map);
+        }
+
         return result;
     }
 
@@ -357,16 +353,7 @@ public class CompanyService {
         result.put("cid", cid);
         return result;
     }
-
-    private static boolean mapIsNull(Map<String, Object> map) {
-        boolean result = false;
-        for (Object value : map.values()) {
-            if (JzbTools.isEmpty(value)) {
-                result = true;
-            }
-        }
-        return result;
-    }
+    
 
     /**
      * 根据企业ID获取当前企业的超级管理员
@@ -756,9 +743,9 @@ public class CompanyService {
         List<Map<String, Object>> receiverList = new ArrayList<>();
         Map<String, Object> receiverMap = new HashMap<>();
         Map<String, Object> mapReceiver = new HashMap<>();
-        if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("relphone")))){
+        if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("relphone")))) {
             receiverMap.put("photo", JzbDataType.getString(map.get("relphone")));
-        }else {
+        } else {
             receiverMap.put("photo", JzbDataType.getString(map.get("phone")));
         }
         receiverList.add(receiverMap);
@@ -870,7 +857,7 @@ public class CompanyService {
                 send.put("senduid", "addCommon1013");
                 sendRemind(send);
             }
-        }else {
+        } else {
             //给负责人发送短信
             param.put("groupid", config.getAddCompany());
             param.put("msgtag", "addCommon1013");
@@ -883,6 +870,7 @@ public class CompanyService {
     /**
      * CRM-销售业主-公海-供应商5
      * 点击新建供应商建立单位下供应商
+     *
      * @Author: Kuang Bin
      */
     public int addCompanySupplier(Map<String, Object> param) {
@@ -897,7 +885,7 @@ public class CompanyService {
             }
         }
         int count = companyMapper.insertCompanySupplier(param);
-        if (count == 1){
+        if (count == 1) {
             count = companyMapper.insertCompanyCommon(param);
         }
         return count;
