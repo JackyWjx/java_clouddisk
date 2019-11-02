@@ -169,6 +169,8 @@
         left join
         tb_company_info ci on ci.cid = cl.cid
         where
+        cl.status = #{status}
+        and
         cc.status = #{status}
         <if test="province != null and province != ''">
             and cl.region IN
@@ -217,6 +219,8 @@
         left join
 		tb_company_supplier cs on cl.cid = cs.supid
         where
+        cl.status = #{status}
+        and
         cs.status = #{status}
         and
         cl.cid in (select supid from tb_company_supplier where cid = #{cid})
