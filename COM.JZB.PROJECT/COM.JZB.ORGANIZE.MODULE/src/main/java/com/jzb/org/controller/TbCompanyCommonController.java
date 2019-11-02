@@ -2,6 +2,7 @@ package com.jzb.org.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -11,6 +12,8 @@ import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.TbCompanyCommonService;
 import com.jzb.org.util.SetPageSize;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +37,13 @@ public class TbCompanyCommonController {
     private TbCityRedisApi tbCityRedisApi;
 
     /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbCompanyCommonController.class);
+
+    /**
      * 获取已分配的业主单位（不带条件查询）
-     *
+     * @author chenzhengduan
      * @param param
      * @return
      */
@@ -45,7 +53,18 @@ public class TbCompanyCommonController {
     @Transactional
     public Response getCompanyCommonList(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyCommon/getCompanyCommonList";
+        boolean flag = true;
         try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             // 如果指定参数为空的话返回error
             if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "count"})) {
                 result = Response.getResponseError();
@@ -57,19 +76,20 @@ public class TbCompanyCommonController {
                 // 获取list
                 List<Map<String, Object>> list = tbCompanyCommonService.queryCompanyCommon(param);
 
-                for (int i = 0, l = list.size(); i < l; i++) {
+                // 创建map用来获取地区信息
+                Map<String, Object> map = new HashMap<>();
 
-                    Map<String, Object> map = new HashMap<>();
+                for (int i = 0, l = list.size(); i < l; i++) {
                     map.put("key", list.get(i).get("region"));
                     Response cityList = tbCityRedisApi.getCityList(map);
                     // 获取地区map
-                    Map<String,Object> resultParam=null;
-                    if(cityList.getResponseEntity()!=null){
-                        resultParam= (Map<String,Object>) JSON.parse(cityList.getResponseEntity().toString());
+                    Map<String, Object> resultParam = null;
+                    if (cityList.getResponseEntity() != null) {
+                        resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
                     }
                     // 转map
-                    if(resultParam!=null){
-                        list.get(i).put("region",resultParam);
+                    if (resultParam != null) {
+                        list.get(i).put("region", resultParam);
                     }
                 }
                 // 分页对象
@@ -84,15 +104,24 @@ public class TbCompanyCommonController {
             }
 
         } catch (Exception ex) {
+            flag = false;
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyCommonList Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
 
     /**
      * 获取已分配的业主单位 (带条件查询)
-     *chenzhengduan
+     * @author chenzhengduan
+     *
      * @param param
      * @return
      */
@@ -102,7 +131,18 @@ public class TbCompanyCommonController {
     @Transactional
     public Response getCompanyCommonListByKeyword(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyCommon/getCompanyCommonListByKeyword";
+        boolean flag = true;
         try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             // 如果指定参数为空的话返回error
             if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "count"})) {
                 result = Response.getResponseError();
@@ -124,20 +164,11 @@ public class TbCompanyCommonController {
                     if (cityList.getResponseEntity() != null) {
                         resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
                     }
-//                    // 转map
-////                    if(resultParam!=null){
-////                        list.get(i).put("city", resultParam.get("city"));
-////                        list.get(i).put("province", resultParam.get("province"));
-////                        list.get(i).put("county", resultParam.get("county"));
-////                        list.get(i).put("creaid", resultParam.get("creaid"));
-////                    }
                     // 转map
                     if (resultParam != null) {
                         list.get(i).put("region", resultParam);
                     }
-
                 }
-
                 // 分页对象
                 PageInfo pageInfo = new PageInfo();
 
@@ -150,15 +181,23 @@ public class TbCompanyCommonController {
             }
 
         } catch (Exception ex) {
+            flag = false;
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyCommonListByKeyword Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
 
     /**
      * 修改业主单位
-     *
+     *@author chenzhengduan
      * @return
      */
     @RequestMapping(value = "/updateCompanyByCid", method = RequestMethod.POST)
@@ -167,7 +206,18 @@ public class TbCompanyCommonController {
     @Transactional
     public Response updateCompanyByCid(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyCommon/updateCompanyByCid";
+        boolean flag = true;
         try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             // 如果指定参数为空则返回error
             if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "cname", "region", "phone", "username"})) {
                 result = Response.getResponseError();
@@ -176,20 +226,28 @@ public class TbCompanyCommonController {
                 result = tbCompanyCommonService.updateCompany(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
+            flag = false;
             // 打印错误信息
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateCompanyByCid Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
 
-
     /**
      * 销售业主-所有业主-业主列表查询
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getCompanyCommon",method = RequestMethod.POST)
+    @RequestMapping(value = "/getCompanyCommon", method = RequestMethod.POST)
     @CrossOrigin
     public Response getCompanyCommon(@RequestBody Map<String, Object> param) {
         Response result;
@@ -200,7 +258,7 @@ public class TbCompanyCommonController {
             } else {
                 //设置好分页参数
                 SetPageSize setPageSize = new SetPageSize();
-                  param = setPageSize.setPagenoSize(param);
+                param = setPageSize.setPagenoSize(param);
                 //判断前端传过来的分页总数
                 int count = JzbDataType.getInteger(param.get("count"));
                 // 获取业主列表的总数
@@ -209,7 +267,7 @@ public class TbCompanyCommonController {
                     count = tbCompanyCommonService.getCount(param);
                 }
                 //查询 业主列表的所有数据
-                  List<Map<String,Object>> list = tbCompanyCommonService.getCompanyCommon(param);
+                List<Map<String, Object>> list = tbCompanyCommonService.getCompanyCommon(param);
                 //获取用户信息
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 PageInfo pageInfo = new PageInfo();
@@ -224,11 +282,13 @@ public class TbCompanyCommonController {
             JzbTools.logError(e);
             result = Response.getResponseError();
         }
+
         return result;
     }
 
     /**
      * 所有业主-业主列表-新建
+     *
      * @param param
      * @return
      */
@@ -249,8 +309,10 @@ public class TbCompanyCommonController {
         }
         return result;
     }
+
     /**
      * 所有业主-业主列表-修改
+     *
      * @param param
      * @return
      */
@@ -262,11 +324,11 @@ public class TbCompanyCommonController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
                 result = Response.getResponseError();
             } else {
-            //修改数据
-            int count = tbCompanyCommonService.updateCompanyCommon(param);
-            //获取用户信息
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                //修改数据
+                int count = tbCompanyCommonService.updateCompanyCommon(param);
+                //获取用户信息
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception e) {
             //打印错误信息
@@ -278,30 +340,31 @@ public class TbCompanyCommonController {
 
     /**
      * 所有业主-业主列表-删除
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/deleteCompanyCommon",method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteCompanyCommon", method = RequestMethod.POST)
     @CrossOrigin
-    public Response deleteCompanyCommon(@RequestBody Map<String,Object> param) {
+    public Response deleteCompanyCommon(@RequestBody Map<String, Object> param) {
         Response result;
         try {
 
-                List<Map<String, Object>> paramList = (List) param.get("list");
-                int count = tbCompanyCommonService.deleteCompanyCommon(paramList);
-                //如果返回值大于0，则返回成功信息
-                if (count > 0) {
-                    //获取用户信息
-                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                    result = Response.getResponseSuccess(userInfo);
-                } else {
-                    //否则返回失败信息
-                    result = Response.getResponseError();
-                }
+            List<Map<String, Object>> paramList = (List) param.get("list");
+            int count = tbCompanyCommonService.deleteCompanyCommon(paramList);
+            //如果返回值大于0，则返回成功信息
+            if (count > 0) {
+                //获取用户信息
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+            } else {
+                //否则返回失败信息
+                result = Response.getResponseError();
+            }
 
         } catch (Exception e) {
             //打印错误信息
-                JzbTools.logError(e);
+            JzbTools.logError(e);
             result = Response.getResponseError();
         }
         return result;
