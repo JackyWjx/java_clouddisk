@@ -7,25 +7,38 @@
     <select id="queryUserInfo" parameterType="java.util.Map"
             resultType="java.util.Map">
             SELECT
-            uid,
-            regid,
-            idcard,
-            cname,
-            nickname,
-            relphone,
-            relmail,
-            sex,
-            portrait,
-            authid,
-            sign,
-            regtime,
-            authtime,
-            updtime,
-            status
+            ul.uid,
+            ul.regid,
+            ul.idcard,
+            ul.cname,
+            ul.nickname,
+            ul.relphone,
+            ul.relmail,
+            ul.sex,
+            ul.portrait,
+            ul.authid,
+            ul.sign,
+            ul.regtime,
+            ul.authtime,
+            ul.updtime,
+            ul.status,
+            ui.age,
+            ui.content,
+            ui.origin,
+            ui.college,
+            ui.education,
+            ui.likes,
+            ui.marriage,
+            ui.childs,
+            ui.born
             FROM
-            tb_user_list
+            tb_user_list ul
+            left join
+            tb_user_info ui
+            on
+            ul.uid = ui.uid
             WHERE
-            uid = #{uid};
+            ul.uid = #{uid};
     </select>
 
     <!--根据id获取角色信息-->

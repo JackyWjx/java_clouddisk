@@ -178,11 +178,12 @@ public class TbCompanyProjectController {
      */
     @RequestMapping(value = "/getServiceProjectList", method = RequestMethod.POST)
     @CrossOrigin
-    public Response getServiceProjectList(@RequestBody List<Map<String, Object>> param) {
+    public Response getServiceProjectList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
+            List<Map<String, Object>> list = ( List<Map<String, Object>>)param.get("list");
             // 返回所有的企业列表
-            List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectList(param);
+            List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectList(list);
             result = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);

@@ -7,6 +7,7 @@ import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
+import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.dao.DeptMapper;
 import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
@@ -55,7 +56,7 @@ public class ProductController {
     private DeptMapper deptMapper;
 
     @Autowired
-    private CompanyController companyController;
+    private OrgConfigProperties config;
 
     /**
      * 查询产品的信息
@@ -101,7 +102,7 @@ public class ProductController {
     @CrossOrigin
     public void createMenuExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/ImportProductMenu.xlsx";
+            String srcFilePath = "static/excel/ImportProductMenu.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
@@ -139,14 +140,33 @@ public class ProductController {
             Map<String, Object> param = new HashMap<>();
             param.put("userinfo", userInfo);
             param.put("cid", cid);
+            // 生成批次ID
+            String batchId = JzbRandom.getRandomCharCap(11);
+
             // 获取上传文件名称
             String fileName = file.getOriginalFilename();
-            long time = System.currentTimeMillis();
-            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
 
-            // 保存文件到本地
-            File intoFile = new File(filepath);
-            file.transferTo(intoFile);
+            // 获取后缀名
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String filepath = config.getImportPath() + "/" + batchId + suffix;
+            param.put("address", filepath);
+            param.put("batchid", batchId);
+            param.put("status", "2");
+            param.put("cname", fileName);
+            try {
+                // 保存文件到本地
+                File intoFile = new File(filepath);
+                intoFile.getParentFile().mkdirs();
+                String address = intoFile.getCanonicalPath();
+                file.transferTo(new File(address));
+            } catch (Exception e) {
+                JzbTools.logError(e);
+                // 保存失败信息到批次表
+                param.put("summary", "保存文件到本地失败");
+                param.put("status", "4");
+            }
+            // 添加批次信息到用户导入批次表
+            deptService.addExportBatch(param);
             // 创建一个线程池
             ExecutorService pool = Executors.newFixedThreadPool(1);
 
@@ -192,6 +212,10 @@ public class ProductController {
             // 读取模板中的数据
             List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
 
+            // 保存到用户导入信息表
+            List<Map<String, Object>> userInfoList = new ArrayList<>();
+            Map<String, Object> exportMap = new HashMap<>(param);
+            String summary;
             // 获取当前模板中有多少列
             int size = list.get(0).size();
 
@@ -210,6 +234,8 @@ public class ProductController {
 
                 // 遍历结果行,菜单数据从第四行开始
                 for (int i = 3; i < list.size(); i++) {
+                    // 设置行信息
+                    exportMap.put("idx", i);
                     Map<Integer, String> map = list.get(i);
                     // 遍历列获取每列的数据
                     for (int t = 0; t < size - 3; t++) {
@@ -217,7 +243,7 @@ public class ProductController {
                         if (!JzbDataType.isEmpty(cname)) {
                             Map<String, Object> menuParam = new HashMap<>();
                             // 获取模板中的备注
-                            String summary = map.get(size - 1);
+                            summary = map.get(size - 1);
                             menuParam.put("summary", summary);
 
                             // 获取模板中的排序
@@ -248,8 +274,10 @@ public class ProductController {
                         } else {
                             // 代表已经获取到最后一个菜单名还没有值
                             if (t == size - 4) {
-                                result = Response.getResponseError();
-                                result.setResponseEntity("菜单名称不能为空");
+                                summary = "菜单名称不能为空!";
+                                exportMap.put("summary", summary);
+                                exportMap.put("status", "2");
+                                userInfoList.add(exportMap);
                                 bl = false;
                                 break;
                             }
@@ -263,14 +291,32 @@ public class ProductController {
                         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                         result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
                     } else {
-                        result = Response.getResponseError();
-                        result.setResponseEntity("产品创建失败");
+                        summary = "创建产品失败!";
+                        exportMap.put("summary", summary);
+                        exportMap.put("status", "2");
+                        userInfoList.add(exportMap);
                     }
                 }
             } else {
-                result = Response.getResponseError();
-                result.setResponseEntity("产品名称不能为空");
+                summary = "产品名称不能为空!";
+                exportMap.put("summary", summary);
+                exportMap.put("status", "2");
+                userInfoList.add(exportMap);
             }
+            exportMap.put("status", "1");
+            userInfoList.add(exportMap);
+            int export = 0;
+            //保存用户导入信息表
+            if (userInfoList.size() > 0) {
+                export = deptMapper.insertExportUserInfoList(userInfoList);
+            }
+            //导入完成后修改状态
+            if (export >= 1) {
+                exportMap.put("status", "8");
+            } else if (export == 0) {
+                exportMap.put("status", "4");
+            }
+            deptService.updateExportBatch(exportMap);
             return result;
         }
     }
@@ -286,7 +332,7 @@ public class ProductController {
     @CrossOrigin
     public void createPageExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/ImportProductPage.xlsx";
+            String srcFilePath = "static/excel/ImportProductPage.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             // 根据产品ID获取产品下所有的菜单
             List<Map<String, Object>> list = productService.getMenuDate(param);
@@ -338,13 +384,33 @@ public class ProductController {
             Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
             Map<String, Object> param = new HashMap<>();
             param.put("userinfo", userInfo);
+            // 生成批次ID
+            String batchId = JzbRandom.getRandomCharCap(11);
+            param.put("batchid", batchId);
+
             // 获取上传文件名称
             String fileName = file.getOriginalFilename();
-            long time = System.currentTimeMillis();
-            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
-            // 保存文件到本地
-            File intoFile = new File(filepath);
-            file.transferTo(intoFile);
+
+            // 获取后缀名
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String filepath = config.getImportPath() + "/" + batchId + suffix;
+            param.put("address", filepath);
+            param.put("status", "2");
+            param.put("cname", fileName);
+            try {
+                // 保存文件到本地
+                File intoFile = new File(filepath);
+                intoFile.getParentFile().mkdirs();
+                String address = intoFile.getCanonicalPath();
+                file.transferTo(new File(address));
+            } catch (Exception e) {
+                JzbTools.logError(e);
+                // 保存失败信息到批次表
+                param.put("status", "4");
+                param.put("summary", "保存文件到本地失败");
+            }
+            // 添加批次信息到用户导入批次表
+            deptService.addExportBatch(param);
             // 创建一个线程池
             ExecutorService pool = Executors.newFixedThreadPool(1);
 
@@ -454,7 +520,7 @@ public class ProductController {
     @CrossOrigin
     public void createControlExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/ImportPageControl.xlsx";
+            String srcFilePath = "static/excel/ImportPageControl.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             // 根据产品ID获取产品下所有的页面
             List<Map<String, Object>> list = productService.getPageDate(param);
@@ -622,7 +688,7 @@ public class ProductController {
     @CrossOrigin
     public void createCompanyTemplate(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/ImportCompanyTemplate.xlsx";
+            String srcFilePath = "static/excel/ImportCompanyTemplate.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
@@ -855,7 +921,7 @@ public class ProductController {
     @CrossOrigin
     public void createCompanyCommon(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/ImportCompanyCommon.xlsx";
+            String srcFilePath = "static/excel/ImportCompanyCommon.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);

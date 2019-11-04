@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,8 +84,10 @@ public class TbCompanyService {
         // 获取所有的服务记录
         List<Map<String, Object>> projectList = tbCompanyServiceMapper.queryCompanyServiceList(param);
         if (!JzbDataType.isEmpty(projectList)) {
+            Map<String, Object> project = new HashMap<>();
+            project.put("list", projectList);
             // 根据服务的项目ID获取项目信息
-            Response response = tbCompanyProjectApi.getServiceProjectList(projectList);
+            Response response = tbCompanyProjectApi.getServiceProjectList(project);
 
             // 获取查询到的返回值
             List<Map<String, Object>> list = response.getPageInfo().getList();
@@ -174,6 +177,14 @@ public class TbCompanyService {
     }
 
     /**
+     * 查询当日服务记录总数
+     * @return
+     */
+    public int queryCompanyServiceTypeCount(Map<String, Object> param){
+       return  tbCompanyServiceMapper.queryCompanyServiceCount(param);
+    }
+
+    /**
      * 修改跟进记录
      * @return
      */
@@ -182,6 +193,7 @@ public class TbCompanyService {
         if(param.containsKey("ouid")){
             param.put("upduid",param.get("ouid"));
         }
+        param.put("times", JzbDataType.getInteger(param.get("times")));
         return tbCompanyServiceMapper.upComanyService(param) > 0 ? true : false;
     }
 
@@ -197,6 +209,7 @@ public class TbCompanyService {
             param.put("adduid", param.get("ouid"));
         }
         param.put("planid", JzbRandom.getRandomChar(11));
+        param.put("times", JzbDataType.getInteger(param.get("times")));
         return tbCompanyServiceMapper.saveComanyService(param) > 0 ? true : false;
     }
 
@@ -226,8 +239,10 @@ public class TbCompanyService {
         // 获取所有的服务记录
         List<Map<String, Object>> projectList = tbCompanyServiceMapper.queryServiceList(param);
         if (!JzbDataType.isEmpty(projectList)) {
+            Map<String, Object> project = new HashMap<>();
+            project.put("list", projectList);
             // 根据服务的项目ID获取项目信息
-            Response response = tbCompanyProjectApi.getServiceProjectList(projectList);
+            Response response = tbCompanyProjectApi.getServiceProjectList(project);
 
             // 获取查询到的返回值
             List<Map<String, Object>> list = response.getPageInfo().getList();

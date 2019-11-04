@@ -136,6 +136,7 @@ public class TbCompanyServiceController {
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
+
             result = Response.getResponseError();
         }
         return result;
@@ -180,7 +181,9 @@ public class TbCompanyServiceController {
     public Response upComanyService(@RequestBody Map<String, Object> param){
         Response result;
         try {
-            result = tbCompanyService.upComanyService(param) ?  Response.getResponseSuccess((Map)param.get("userinfo")) : Response.getResponseError();
+            Map userinfo  =  (Map)param.get("userinfo");
+            param.put("ouid",userinfo.get("uid"));
+            result = tbCompanyService.upComanyService(param) ?  Response.getResponseSuccess(userinfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -189,7 +192,7 @@ public class TbCompanyServiceController {
     }
 
     /**
-     * 修改 服务记录
+     * 添加 服务记录
      * @auth  han bin
      * @param param
      * @return
@@ -199,7 +202,9 @@ public class TbCompanyServiceController {
     public Response saveComanyService(@RequestBody Map<String, Object> param){
         Response result;
         try {
-            result = tbCompanyService.saveComanyService(param) ?  Response.getResponseSuccess((Map)param.get("userinfo")) : Response.getResponseError();
+            Map userinfo  =  (Map)param.get("userinfo");
+            param.put("ouid",userinfo.get("uid"));
+            result = tbCompanyService.saveComanyService(param) ?  Response.getResponseSuccess(userinfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
