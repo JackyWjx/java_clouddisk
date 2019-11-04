@@ -1,6 +1,7 @@
 package com.jzb.resource.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.api.redis.TbCityRedis;
@@ -61,9 +62,21 @@ public class TbCityRedisController {
         try {
             param.put("key","jzb.system.city");
             Response response = tbCityRedis.getCityJson(param);
-            Object parse = JSON.parse(response.getResponseEntity().toString());
-            result=Response.getResponseSuccess();
-            result.setResponseEntity(parse);
+            if(response.getResponseEntity()==null){
+                Response response1 = tbGetCityApi.getCityList();
+                Map<String, Object> map = (Map<String, Object>) response1.getResponseEntity();
+                String object = JSONObject.fromObject(map).toString();
+                Map<String, Object> map1 = new HashMap<>();
+                map1.put("key", "jzb.system.city");
+                map1.put("value", object);
+                tbCityRedis.cacheCity(map1);
+                result=Response.getResponseSuccess();
+                result.setResponseEntity(JSON.parse(JzbDataType.getString(object)));
+            }else {
+                Object parse = JSON.parse(response.getResponseEntity().toString());
+                result=Response.getResponseSuccess();
+                result.setResponseEntity(parse);
+            }
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result=Response.getResponseError();
