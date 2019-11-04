@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.resource.dao.StandardMapper">
 
-	<!--    查询父子关系-->
-	<select id="queryFatherOne" resultType="java.util.Map">
+    <!--    查询父子关系-->
+    <select id="queryFatherOne" resultType="java.util.Map">
     with recursive moth as(
     select
 	   id,
@@ -55,38 +55,39 @@
 
     </select>
 
-	<!--	标准文档总数-->
-	<select id="queryDocumentsCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-	     select count(1) from tb_standard_document where typeid=#{typeid}
+    <!--	标准文档总数-->
+    <select id="queryDocumentsCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+	     select count(1) from tb_standard_document where typeid=#{typeid} and status!='4'
 	</select>
 
-	<!--	标准文档查询-->
-	<select id="queryDocumentsList" resultType="java.util.Map">
-		select
-		domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domdesc,department,effective,stdrange,domurl,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary
-		from
-		 tb_standard_document
-		 where
-		typeid = #{typeid}
-	 	<if test="keyword != null and keyword != ''">
-			and cname ~ #{keyword}
-		</if>
-		ORDER BY
-		addtime
-		desc
-		limit
-		#{pagesize}
-		offset
-		#{pageno}
-	</select>
+    <!--	标准文档查询-->
+    <select id="queryDocumentsList" resultType="java.util.Map">
+        select
+        domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domdesc,department,effective,stdrange,domurl,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary
+        from
+        tb_standard_document
+        where
+        typeid = #{typeid}
+        and status!='4'
+        <if test="keyword != null and keyword != ''">
+            and cname ~ #{keyword}
+        </if>
+        ORDER BY
+        addtime
+        desc
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
 
-	<!--    查询文档详情-->
-	<select id="queryDocumentDesc" parameterType="java.util.Map" resultType="java.util.Map">
+    <!--    查询文档详情-->
+    <select id="queryDocumentDesc" parameterType="java.util.Map" resultType="java.util.Map">
 		select domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domdesc,department,effective,stdrange,domurl,context,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary from tb_standard_document where domid=#{domid} and status!='4'
 	</select>
 
-	<!--查询热门榜-->
-	<select id="queryHotDom" parameterType="java.util.Map" resultType="java.util.Map">
+    <!--查询热门榜-->
+    <select id="queryHotDom" parameterType="java.util.Map" resultType="java.util.Map">
         select domid,cname,idx,visits from tb_standard_document where status!='4' order by visits desc limit #{count}
     </select>
 
