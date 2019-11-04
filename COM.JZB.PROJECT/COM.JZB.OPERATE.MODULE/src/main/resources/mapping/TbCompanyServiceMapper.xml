@@ -589,7 +589,7 @@
         cid = #{cid}
     </select>
 
-    <!--获取所有的我服务的业主-->
+    <!--CRM-销售业主-我服务的业主-服务记录1-显示我服务的所有记录-->
     <select id="queryServiceList" parameterType="java.util.Map" resultType="java.util.Map">
         select
         planid,
