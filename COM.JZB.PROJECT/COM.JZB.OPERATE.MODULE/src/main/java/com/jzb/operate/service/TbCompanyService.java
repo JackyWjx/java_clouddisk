@@ -6,6 +6,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.TbCompanyProjectApi;
+import com.jzb.operate.api.redis.UserRedisServiceApi;
 import com.jzb.operate.dao.TbCompanyServiceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class TbCompanyService {
 
     @Autowired
     private TbCompanyProjectApi tbCompanyProjectApi;
+
+    @Autowired
+    private UserRedisServiceApi userRedisServiceApi;
 
     /**
      * 查询地区信息
@@ -226,8 +230,8 @@ public class TbCompanyService {
     }
 
     /**
-     * CRM-销售业主-我服务的业主-1
-     * 获取所有的我服务的业主
+     * CRM-销售业主-我服务的业主-服务记录1
+     * 显示我服务的所有记录
      *
      * @Author: Kuang Bin
      * @DateTime: 2019/10/19
@@ -248,6 +252,8 @@ public class TbCompanyService {
             List<Map<String, Object>> list = response.getPageInfo().getList();
             for (int i = 0; i < projectList.size(); i++) {
                 Map<String, Object> projectMap = projectList.get(i);
+                Response res = userRedisServiceApi.getCacheUserInfo(projectMap);
+                projectMap.put("uid",res.getResponseEntity());
                 for (int k = 0; k < list.size(); k++) {
                     Map<String, Object> map = list.get(k);
                     // 如果项目ID相同则将结果全部加入返回值中
