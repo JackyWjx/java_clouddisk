@@ -4,6 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.operate.dao.TbHandItemMapper">
 
+    <select id="queryCompanyServiceTypeCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_company_service where addtime between #{begDate} and #{andDate}
+    </select>
+
     <!--  查询服务详情记录   -->
     <select id="queryTbHandleItem" resultType="java.util.Map" parameterType="java.util.Map">
         select * from tb_hendle_item where status = '1'

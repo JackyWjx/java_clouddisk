@@ -174,6 +174,14 @@ public class TbCompanyService {
     }
 
     /**
+     * 查询当日服务记录总数
+     * @return
+     */
+    public int queryCompanyServiceTypeCount(Map<String, Object> param){
+       return  tbCompanyServiceMapper.queryCompanyServiceCount(param);
+    }
+
+    /**
      * 修改跟进记录
      * @return
      */

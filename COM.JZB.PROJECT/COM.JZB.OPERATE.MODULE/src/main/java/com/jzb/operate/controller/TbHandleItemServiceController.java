@@ -1,22 +1,27 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.date.JzbDateStr;
+import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.org.OrgCompanyApi;
 import com.jzb.operate.api.org.OrgDeptApi;
+import com.jzb.operate.service.TbCompanyService;
 import com.jzb.operate.service.TbHandItemService;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @Description: 服务统计分析
@@ -35,10 +40,14 @@ public class TbHandleItemServiceController {
     @Autowired
     private OrgCompanyApi companyApi;
 
+    @Autowired
+    private TbCompanyService companyService;
+
     /**
      * 获取所有部门
      *
      * @return
+     *
      */
     @RequestMapping("/getDept")
     @ResponseBody
@@ -46,6 +55,33 @@ public class TbHandleItemServiceController {
         Response result;
         try{
             result = api.getDeptList(map);
+        }catch (Exception e ){
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 获取服务状态总数
+     *
+     * @return
+     */
+    @RequestMapping("/getTypeCount")
+    @ResponseBody
+    public Response getTypeCount(@RequestBody Map<String , Object> map){
+        Response result;
+        try{
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            long begDate = formatter.parse(DateFormatUtils.format(JzbDateUtil.getDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()), JzbDateStr.yyyy_MM_dd_HH_mm_ss), "yyyy-MM-dd 00:00:00")).getTime();
+            long andDate = formatter.parse(DateFormatUtils.format(JzbDateUtil.getDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()), JzbDateStr.yyyy_MM_dd_HH_mm_ss), "yyyy-MM-dd 29:59:59")).getTime();
+            map.put("begDate",begDate);
+            map.put("andDate",andDate);
+            int count  =  companyService.queryCompanyServiceTypeCount(map);
+            result = Response.getResponseSuccess();
+            map.clear();
+            map.put("typeCount",count);
+            result.setResponseEntity(map);
         }catch (Exception e ){
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -96,7 +132,6 @@ public class TbHandleItemServiceController {
                     Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
                     list.get(i).put("cname",proMap.get("cname"));
                 }
-
             }
             int count  =  service.queryTbCompanyServiceCount(map);
             result =  Response.getResponseSuccess((Map)map.get("userinfo"));
