@@ -1,10 +1,13 @@
 package com.jzb.org.service;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
+import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.dao.TbCompanyProjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,17 +17,22 @@ public class TbCompanyProjectService {
     @Autowired
     private TbCompanyProjectMapper tbCompanyProjectMapper;
 
+    @Autowired
+    private RegionBaseApi regionBaseApi;
+
     /**
      * 查询项目中的总数
+     *
      * @param param
      * @return
      */
     public int getCount(Map<String, Object> param) {
-    return tbCompanyProjectMapper.getCount(param);
+        return tbCompanyProjectMapper.getCount(param);
     }
 
     /**
      * 销售业主-公海-项目-数据查询和根据名称模糊查询
+     *
      * @param param
      * @return
      */
@@ -34,24 +42,26 @@ public class TbCompanyProjectService {
 
     /**
      * 项目的添加
+     *
      * @param param
      * @return
      */
     public int saveComProject(Map<String, Object> param) {
 
 
-            long time = System.currentTimeMillis();
-            param.put("addtime", time);
-            param.put("updtime", time);
-            param.put("projectid", JzbRandom.getRandomChar(19));
-            //转时间戳
-            Date tendertime = JzbDataType.getDateTime(param.get("tendertime"));
-            param.put("tendertime", tendertime.getTime());
-        return  tbCompanyProjectMapper.saveComProject(param);
+        long time = System.currentTimeMillis();
+        param.put("addtime", time);
+        param.put("updtime", time);
+        param.put("projectid", JzbRandom.getRandomChar(19));
+        //转时间戳
+        Date tendertime = JzbDataType.getDateTime(param.get("tendertime"));
+        param.put("tendertime", tendertime.getTime());
+        return tbCompanyProjectMapper.saveComProject(param);
     }
 
     /**
      * 关联业主  根据项目id进行项目表的修改
+     *
      * @param paramList
      * @return
      */
@@ -61,11 +71,12 @@ public class TbCompanyProjectService {
             paramList.get(i).put("updtime", time);
         }
 
-        return  tbCompanyProjectMapper.updateComProject(paramList);
+        return tbCompanyProjectMapper.updateComProject(paramList);
     }
 
     /**
      * 取消业主关联 根据项目id进行修改
+     *
      * @param param
      * @return
      */
@@ -96,7 +107,14 @@ public class TbCompanyProjectService {
      * @DateTime: 2019/10/19
      */
     public List<Map<String, Object>> searchServiceProjectList(Map<String, Object> param) {
-        return tbCompanyProjectMapper.queryServiceProject(param);
+        List<Map<String, Object>> list = tbCompanyProjectMapper.queryServiceProject(param);
+        // 获取地区信息
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> map = list.get(i);
+            Response response = regionBaseApi.getRegionInfo(map);
+            map.put("region", response.getResponseEntity());
+        }
+        return list;
     }
 
     /**
