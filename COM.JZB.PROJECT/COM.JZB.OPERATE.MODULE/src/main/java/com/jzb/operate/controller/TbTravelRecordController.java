@@ -5,10 +5,9 @@ import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
-import com.jzb.base.util.JzbCheckParam;
-import com.jzb.base.util.JzbPageConvert;
-import com.jzb.base.util.JzbRandom;
-import com.jzb.base.util.JzbTools;
+import com.jzb.base.util.*;
+import com.jzb.operate.api.org.OrgCompanyNameApi;
+import com.jzb.operate.api.redis.UserRedisServiceApi;
 import com.jzb.operate.service.TbTravelAimService;
 import com.jzb.operate.service.TbTravelRecordService;
 import com.jzb.operate.service.TbTravelVehicleService;
@@ -46,6 +45,12 @@ public class TbTravelRecordController {
     @Autowired
     private TbUserTravelService tbUserTravelService;
 
+    @Autowired
+    private UserRedisServiceApi userRedisServiceApi;
+
+    @Autowired
+    private OrgCompanyNameApi companyNameApi;
+
     /**
      * 根据uid 获取出差申请记录
      *
@@ -62,7 +67,7 @@ public class TbTravelRecordController {
             if (JzbCheckParam.allNotEmpty(param, new String[]{"uid", "pagesize", "pageno"})) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 // 设置分页
-                PageConvert.setPageRows(param);
+                JzbPageConvert.setPageRows(param);
                 // 如果起始时间参数不为空则转为时间戳
                 if (!JzbTools.isEmpty(param.get("beginTime"))) {
                     Date beginTime = sdf.parse(JzbDataType.getString(param.get("beginTime")));
@@ -85,8 +90,9 @@ public class TbTravelRecordController {
 
                     map.put("travelid", list.get(i).get("travelid"));
                     list.get(i).put("travelAim", tbTravelAimService.queryTravelAim(map));
-
                     list.get(i).put("userList", tbUserTravelService.queryUserTravel(map));
+                    list.get(i).put("starttime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("starttime")));
+                    list.get(i).put("finishtime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("finishtime")));
                 }
 
                 // 得到总数
@@ -144,8 +150,17 @@ public class TbTravelRecordController {
 
                     map.put("travelid", list.get(i).get("travelid"));
                     list.get(i).put("travelAim", tbTravelAimService.queryTravelAim(map));
-
                     list.get(i).put("userList", tbUserTravelService.queryUserTravel(map));
+                    Map uidMap=new HashMap();
+                    uidMap.put("uid",list.get(i).get("uid"));
+                    Response region = userRedisServiceApi.getCacheUserInfo(uidMap);
+                    list.get(i).put("userInfo", region.getResponseEntity());
+                    uidMap.put("cid",list.get(i).get("curcid"));
+                    Response company=companyNameApi.getCompanyNameById(uidMap);
+                    list.get(i).put("companyname",company.getResponseEntity());
+                    list.get(i).put("starttime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("starttime")));
+                    list.get(i).put("finishtime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("finishtime")));
+
                 }
 
                 // 得到总数
