@@ -83,7 +83,7 @@ public class AuthUserController {
                 }
             }
             response = Response.getResponseSuccess(userInfo);
-            response.setResponseEntity(userInfo);
+            response.setResponseEntity(resuMap);
         } catch (Exception e) {
             JzbTools.logError(e);
             response = Response.getResponseError();
