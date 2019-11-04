@@ -24,7 +24,7 @@ public interface TbCompanyProjectApi {
      * @DateTime: 2019/10/19
      */
     @RequestMapping(value = "/getServiceProjectList", method = RequestMethod.POST)
-    public Response getServiceProjectList(List<Map<String, Object>> param);
+    public Response getServiceProjectList(Map<String, Object> param);
 
     /**
      * CRM-销售业主-我服务的业主-2
