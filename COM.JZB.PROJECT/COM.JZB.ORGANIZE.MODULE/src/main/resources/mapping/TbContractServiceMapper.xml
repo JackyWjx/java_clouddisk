@@ -35,6 +35,14 @@
                 </otherwise>
             </choose>
             <choose>
+                <when test="item.typename!=null and item.typename!=''">
+                    #{item.typename},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
                 <when test="item.itemid!=null and item.itemid!=''">
                     #{item.itemid},
                 </when>

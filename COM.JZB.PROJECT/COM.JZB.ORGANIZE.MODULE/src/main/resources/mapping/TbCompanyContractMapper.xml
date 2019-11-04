@@ -246,7 +246,7 @@
             AND tdu.cid = tcc.cid
         WHERE
             tcc.status = '1'
-            AND cid =#{ cid }
+            AND tcc.cid =#{ cid }
             LIMIT #{ pagesize } OFFSET #{ pageno}
     </select>
 
