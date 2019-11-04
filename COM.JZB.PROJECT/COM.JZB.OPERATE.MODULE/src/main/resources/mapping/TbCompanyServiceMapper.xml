@@ -378,7 +378,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="projected != null">
+            <when test="projectid != null">
                 #{projectid},
             </when>
             <otherwise>

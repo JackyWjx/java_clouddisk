@@ -182,6 +182,7 @@ public class TbCompanyService {
         if(param.containsKey("ouid")){
             param.put("upduid",param.get("ouid"));
         }
+        param.put("times", JzbDataType.getInteger(param.get("times")));
         return tbCompanyServiceMapper.upComanyService(param) > 0 ? true : false;
     }
 
@@ -197,6 +198,7 @@ public class TbCompanyService {
             param.put("adduid", param.get("ouid"));
         }
         param.put("planid", JzbRandom.getRandomChar(11));
+        param.put("times", JzbDataType.getInteger(param.get("times")));
         return tbCompanyServiceMapper.saveComanyService(param) > 0 ? true : false;
     }
 
