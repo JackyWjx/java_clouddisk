@@ -74,8 +74,8 @@ public interface TbCompanyServiceMapper {
     int queryServiceListCount(Map<String, Object> param);
 
     /**
-     * CRM-销售业主-我服务的业主-1
-     * 获取所有的我服务的业主
+     * CRM-销售业主-我服务的业主-服务记录1
+     * 显示我服务的所有记录
      *
      * @Author: Kuang Bin
      * @DateTime: 2019/10/19
