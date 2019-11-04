@@ -74,7 +74,7 @@ public class TbHandleItemServiceController {
         try{
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             long begDate = formatter.parse(DateFormatUtils.format(JzbDateUtil.getDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()), JzbDateStr.yyyy_MM_dd_HH_mm_ss), "yyyy-MM-dd 00:00:00")).getTime();
-            long andDate = formatter.parse(DateFormatUtils.format(JzbDateUtil.getDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()), JzbDateStr.yyyy_MM_dd_HH_mm_ss), "yyyy-MM-dd 29:59:59")).getTime();
+            long andDate = formatter.parse(DateFormatUtils.format(JzbDateUtil.getDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()), JzbDateStr.yyyy_MM_dd_HH_mm_ss), "yyyy-MM-dd 23:59:59")).getTime();
             map.put("begDate",begDate);
             map.put("andDate",andDate);
             int count  =  companyService.queryCompanyServiceTypeCount(map);
