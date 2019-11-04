@@ -234,7 +234,7 @@ public class TbCompanyService {
             for (int i = 0; i < projectList.size(); i++) {
                 Map<String, Object> projectMap = projectList.get(i);
                 for (int k = 0; k < list.size(); k++) {
-                    Map<String, Object> map = list.get(i);
+                    Map<String, Object> map = list.get(k);
                     // 如果项目ID相同则将结果全部加入返回值中
                     if (JzbDataType.getString(projectMap.get("projectid")).equals(JzbDataType.getString(map.get("projectid")))
                     && JzbDataType.getString(projectMap.get("cid")).equals(JzbDataType.getString(map.get("cid")))) {
