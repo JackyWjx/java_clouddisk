@@ -10,6 +10,7 @@ import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
+import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.dao.DeptMapper;
 import com.jzb.org.service.CompanyService;
 import com.jzb.org.service.CompanyUserService;
@@ -51,7 +52,7 @@ public class CompanyUserController {
     private CompanyUserService companyUserService;
 
     @Autowired
-    private UserRedisServiceApi userRedisServiceApi;
+    private OrgConfigProperties config;
 
     @Autowired
     private OrgToken orgToken;
@@ -380,7 +381,7 @@ public class CompanyUserController {
     @CrossOrigin
     public void createCompanyProject(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/ImportCompanyProject.xlsx";
+            String srcFilePath = "static/excel/ImportCompanyProject.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
@@ -417,13 +418,15 @@ public class CompanyUserController {
             Map<String, Object> param = new HashMap<>();
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             param.put("userinfo", userInfo);
+            // 获取文件名
+            String fileName = file.getOriginalFilename();
+
             // 生成批次ID
             String batchId = JzbRandom.getRandomCharCap(11);
 
-            // 获取上传文件名称
-            long time = System.currentTimeMillis();
-            String fileName = file.getOriginalFilename();
-            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
+            //获取后缀名
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String filepath = config.getImportPath() + "/" + batchId + suffix;
             param.put("batchid", batchId);
             param.put("address", filepath);
             param.put("status", "2");
@@ -635,7 +638,7 @@ public class CompanyUserController {
     @CrossOrigin
     public void createCompanyUser(HttpServletResponse response) {
         try {
-            String srcFilePath = "D:/v3/static/excel/ImportCompanyUser.xlsx";
+            String srcFilePath = "static/excel/ImportCompanyUser.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
@@ -679,8 +682,10 @@ public class CompanyUserController {
 
             // 获取上传文件名称
             String fileName = file.getOriginalFilename();
-            long time = System.currentTimeMillis();
-            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
+
+            // 获取后缀名
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String filepath = config.getImportPath() + "/" + batchId + suffix;
             param.put("batchid", batchId);
             param.put("address", filepath);
             param.put("cid", cid);
@@ -882,7 +887,7 @@ public class CompanyUserController {
     @CrossOrigin
     public void createSellStatisticsExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/ImportSellStatistics.xlsx";
+            String srcFilePath = "static/excel/ImportSellStatistics.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             Object object = param.get("list");
             List<Map<String, Object>> list = new ArrayList<>();
@@ -960,7 +965,7 @@ public class CompanyUserController {
     @CrossOrigin
     public void createCompanyProjectExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/CompanyProjectData.xlsx";
+            String srcFilePath = "static/excel/CompanyProjectData.xlsx";
             Object object = param.get("list");
             FileInputStream in = new FileInputStream(srcFilePath);
             List<Map<String, Object>> list = new ArrayList<>();
@@ -1029,7 +1034,7 @@ public class CompanyUserController {
     @CrossOrigin
     public void createCompanyUserExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/CompanyUserData.xlsx";
+            String srcFilePath = "static/excel/CompanyUserData.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             Object object = param.get("list");
             List<Map<String, Object>> list = new ArrayList<>();
@@ -1083,7 +1088,7 @@ public class CompanyUserController {
     @CrossOrigin
     public void createCompanyContractExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
-            String srcFilePath = "D:/v3/static/excel/CompanyContractData.xlsx";
+            String srcFilePath = "static/excel/CompanyContractData.xlsx";
             FileInputStream in = new FileInputStream(srcFilePath);
             Object object = param.get("list");
             List<Map<String, Object>> list = new ArrayList<>();
@@ -1117,6 +1122,59 @@ public class CompanyUserController {
             }
             // 响应到客户端
             response.addHeader("Content-Disposition", "attachment;filename=CompanyContractData.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * CRM-销售业主-所有业主-服务统计分析1
+     * 点击导出Excel表格,将查询出的数据导出
+     *
+     * @param
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/createServiceStatisticsExcel", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createServiceStatisticsExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            String srcFilePath = "static/excel/ServiceStatisticsData.xlsx";
+            FileInputStream in = new FileInputStream(srcFilePath);
+            Object object = param.get("list");
+            List<Map<String, Object>> list = new ArrayList<>();
+            if (JzbDataType.isCollection(object)) {
+                list = (List<Map<String, Object>>) object;
+            }
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> page = list.get(i);
+                // 获取单位名称
+                String cname = JzbDataType.getString(page.get("cname"));
+                sheet.createRow(i + 1).createCell(0).setCellValue(cname);
+                // 获取项目名称
+                String projectname = JzbDataType.getString(page.get("projectname"));
+                sheet.getRow(i + 1).createCell(1).setCellValue(projectname);
+                // 获取服务人员
+                String username = JzbDataType.getString(page.get("username"));
+                sheet.getRow(i + 1).createCell(2).setCellValue(username);
+                // 获取创建时间
+                String addtime = JzbDataType.getString(page.get("addtime"));
+                sheet.getRow(i + 1).createCell(3).setCellValue(addtime);
+                // 获取服务次数
+                String service = JzbDataType.getString(page.get("service"));
+                sheet.getRow(i + 1).createCell(4).setCellValue(service);
+            }
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=ServiceStatisticsData.xlsx");
             OutputStream os = new BufferedOutputStream(response.getOutputStream());
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
             // 将excel写入到输出流中
