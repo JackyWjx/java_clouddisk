@@ -13,6 +13,10 @@
         cid=#{cid}
     </update>
 
+    <select id="queryComapny" resultType="java.util.Map" parameterType="java.util.Map">
+                select * from tb_company_list where cid =  #{cid}
+    </select>
+
     <select id="queryCompanyProject" resultType="java.util.Map" parameterType="java.util.Map">
         select * from tb_company_project where projectid =  #{projectid}
     </select>

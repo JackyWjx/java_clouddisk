@@ -4,38 +4,46 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.operate.dao.TbHandItemMapper">
 
-    <select id="queryCompanyServiceTypeCount" parameterType="java.util.Map" resultType="java.lang.Integer">
-        select count(1) from tb_company_service where addtime between #{begDate} and #{andDate}
+    <select id="queryCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_company_service where  projectid = #{projectid}
     </select>
 
-    <!--  查询服务详情记录   -->
-    <select id="queryTbHandleItem" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_hendle_item where status = '1'
-        <choose><when test="projectid != null">and projected = #{projected}</when></choose>
-        <choose><when test="uid != null">and uid = #{uid}</when></choose>
+    <!--  查询服务记录   -->
+    <select id="queryTbCompanyServiceNotDis" resultType="java.util.Map" parameterType="java.util.Map">
+        select  planid,typeid,cid,projectid,uid,region,handletime,servicetype,personid,person,telphone,context,servicecontent,needres,attach,times,result,nexttime,summary
+        from tb_company_service where status = '1'
         <choose><when test="cid != null">and cid = #{cid}</when></choose>
+        <choose><when test="person != null">and person like CONCAT('%',#{person},'%')</when></choose>
+        <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
+        <choose><when test="projectid != null">and projectid = #{projectid}</when></choose>
         limit #{pagesize}  offset #{pageno}
     </select>
 
-    <!--  查询服务记录详情总数   -->
-    <select id="queryTbHandleItemCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select count(1) from tb_hendle_item where status = '1'
-        <choose><when test="projectid != null">and projected = #{projected}</when></choose>
-        <choose><when test="uid != null">and uid = #{uid}</when></choose>
-        <choose><when test="cid != null">and cid = #{cid}</when></choose>
+    <!--  查询服务记录总数   -->
+    <select id="queryTbCompanyServiceNotDisCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_company_service where status = '1'
+        <choose><when test="cid != null">and cid  = #{cid}</when></choose>
+        <choose><when test="person != null">and person like CONCAT('%',#{person},'%')</when></choose>
+        <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
+        <choose><when test="projectid != null">and projectid = (#{projectid})</when></choose>
     </select>
 
     <!--  查询服务记录   -->
     <select id="queryTbCompanyService" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_company_service where status = '1'
-        <choose><when test="uid != null">and uid in (#{uid})</when></choose>
+        select DISTINCT on (projectid)  planid,typeid,cid,projectid,uid,region,handletime,servicetype,personid,person,telphone,context,servicecontent,needres,attach,times,result,nexttime,summary
+        from tb_company_service where status = '1'
+        <choose><when test="person != null">and person like CONCAT('%',#{person},'%')</when></choose>
+        <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
+        <choose><when test="projectid != null">and projectid = (#{projectid})</when></choose>
         limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--  查询服务记录总数   -->
     <select id="queryTbCompanyServiceCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select count(1) from tb_company_service where status = '1'
-        <choose><when test="uid != null">and uid in (#{uid})</when></choose>
+        select  count( DISTINCT projectid )  from tb_company_service where status = '1'
+        <choose><when test="person != null">and person like CONCAT('%',#{person},'%')</when></choose>
+        <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
+        <choose><when test="projectid != null">and projectid = (#{projectid})</when></choose>
     </select>
 
 </mapper>

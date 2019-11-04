@@ -3,6 +3,15 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.org.dao.TbCompanyProjectMapper">
+
+    <select id="getCompany" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from tb_company_list where cid = #{cid} and  cname like CONCAT('%',#{cname},'%')
+    </select>
+
+    <select id="getProject" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from tb_company_project where projectid = #{projectid} and  projectname like CONCAT('%',#{projectname},'%')
+    </select>
+
     <!--查询项目下的数据-->
     <select id="getComProject" parameterType="java.util.Map" resultType="java.util.Map">
         select

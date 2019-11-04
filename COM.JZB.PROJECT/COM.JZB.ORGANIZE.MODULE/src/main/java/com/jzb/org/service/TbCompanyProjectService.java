@@ -21,6 +21,24 @@ public class TbCompanyProjectService {
     private RegionBaseApi regionBaseApi;
 
     /**
+     * 模糊查询单位名称
+     * @param param
+     * @return
+     */
+    public Map<String , Object> getCompany(Map<String, Object> param){
+        return tbCompanyProjectMapper.getCompany(param);
+    }
+
+    /**
+     * 模糊查询项目名称
+     * @param param
+     * @return
+     */
+    public Map<String , Object> getProject(Map<String, Object> param){
+        return tbCompanyProjectMapper.getProject(param);
+    }
+
+    /**
      * 查询项目中的总数
      *
      * @param param

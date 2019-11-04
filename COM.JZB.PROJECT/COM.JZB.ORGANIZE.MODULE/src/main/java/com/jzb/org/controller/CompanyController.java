@@ -44,6 +44,9 @@ public class CompanyController {
     @Autowired
     RegionBaseApi regionBaseApi;
 
+
+
+
     /**
      * 开放平台调用接口获取企业地址,地区信息
      *
@@ -101,7 +104,7 @@ public class CompanyController {
     /**
      * 根据项目id获取项信息
      *
-     * @author hanbin+
+     * @author hanbin
      */
     @RequestMapping(value = "/getCompanyProjct", method = RequestMethod.POST)
     @CrossOrigin
@@ -109,6 +112,26 @@ public class CompanyController {
         Response result;
         try {
             Map<String, Object> cidList = companyService.queryComapnyProjct(param);
+            result = Response.getResponseSuccess((Map) param.get("userinfo"));
+            result.setResponseEntity(cidList);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 根据单位id获取单位信息
+     *
+     * @author hanbin
+     */
+    @RequestMapping(value = "/getCompany", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompany(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> cidList = companyService.queryComapny(param);
             result = Response.getResponseSuccess((Map) param.get("userinfo"));
             result.setResponseEntity(cidList);
         } catch (Exception ex) {

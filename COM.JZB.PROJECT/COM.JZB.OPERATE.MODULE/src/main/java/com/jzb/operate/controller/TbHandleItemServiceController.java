@@ -8,6 +8,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.org.OrgCompanyApi;
 import com.jzb.operate.api.org.OrgDeptApi;
+import com.jzb.operate.api.org.TbCompanyProjectApi;
 import com.jzb.operate.service.TbCompanyService;
 import com.jzb.operate.service.TbHandItemService;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -18,10 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description: 服务统计分析
@@ -39,6 +37,9 @@ public class TbHandleItemServiceController {
 
     @Autowired
     private OrgCompanyApi companyApi;
+
+    @Autowired
+    TbCompanyProjectApi projectApi;
 
     @Autowired
     private TbCompanyService companyService;
@@ -89,21 +90,23 @@ public class TbHandleItemServiceController {
         return result;
     }
 
+
     /**
-     * 获取跟进列表
-     *
-     * @param map
+     * 获取信息列表
      * @return
      */
-    @RequestMapping("/queryCompanyService")
+    @RequestMapping("/getCompanyService")
     @ResponseBody
-    public Response queryCompanyService(@RequestBody Map<String , Object> map){
+    public Response getCompanyService(@RequestBody Map<String , Object> map){
         Response result ;
         try{
             PageInfo pageInfo = new PageInfo();
+            if(JzbTools.isEmpty(map.get("person"))){
+                map.remove("person");
+            }
             pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
             // 判断是否存选择部门
-            if(map.containsKey("cdid")){
+            if(!JzbTools.isEmpty(map.get("cdid"))){
                 //  用户 数组
                 List<String> list =  new ArrayList<>();
                 Response dept  =  api.getDeptUserChildList(map);
@@ -117,18 +120,35 @@ public class TbHandleItemServiceController {
                         }
                     }
                 }
-                map.put("uid",list.toString().replace("[","").replace("]",""));
+                map.put("cuid",list.toString().replace("[","").replace("]",""));
             }
             List<Map<String , Object>> list = service.queryTbCompanyService(map);
+            if(!JzbTools.isEmpty(map.get("cname")) || !JzbTools.isEmpty(map.get("projectname"))){
+                Map<String , Object>  paraMap =  new HashMap<>();
+                paraMap.put("list",list);
+                if(map.containsKey("cname")){
+                    paraMap.put("cname",map.get("cname"));
+                }else {
+                    paraMap.put("projectname",map.get("projectname"));
+                }
+                Response api = projectApi.getCompany(paraMap);
+                List<Map<String , Object>> apiMap = (List<Map<String, Object>>) api.getResponseEntity();
+                list.clear();
+                list.addAll(apiMap);
+            }
             for(int i =  0 ; i< list.size() ;i++){
                 Map<String , Object> para = list.get(i);
+                int count  =  service.queryCount(para);
+                list.get(i).put("count",count);
+                para.put("userinfo",(Map<String , Object>) map.get("userinfo"));
                 if(!JzbTools.isEmpty(para.get("projectid"))){
                     Response cpm  = companyApi.getCompanyProjct(para);
                     Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
                     list.get(i).put("projectname",cpmMap.get("projectname"));
+                    list.get(i).put("proaddtime",cpmMap.get("addtime"));
                 }
                 if(!JzbTools.isEmpty(para.get("cid"))){
-                    Response pro  = companyApi.getEnterpriseData(para);
+                    Response pro  = companyApi.getCompany(para);
                     Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
                     list.get(i).put("cname",proMap.get("cname"));
                 }
@@ -146,33 +166,20 @@ public class TbHandleItemServiceController {
     }
 
     /**
-     * 获取跟进详情列表
+     * 获取跟进列表
      *
-     * @param
+     * @param map
      * @return
      */
-    @RequestMapping("/queryHandItem")
+    @RequestMapping("/queryCompanyService")
     @ResponseBody
-    public Response  queryHandItem(@RequestBody Map<String , Object> map ){
+    public Response queryCompanyService(@RequestBody Map<String , Object> map){
         Response result ;
         try{
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
-            List<Map<String , Object>> list = service.queryTbHandleItem(map);
-            for(int i =  0 ; i< list.size() ;i++){
-                Map<String , Object> para = list.get(i);
-                if(!JzbTools.isEmpty(para.get("projectid"))){
-                    Response cpm  = companyApi.getCompanyProjct(para);
-                    Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
-                    list.get(i).put("projectname",cpmMap.get("projectname"));
-                }
-                if(!JzbTools.isEmpty(para.get("cid"))){
-                    Response pro  = companyApi.getEnterpriseData(para);
-                    Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
-                    list.get(i).put("cname",proMap.get("cname"));
-                }
-            }
-            int count  =  service.queryTbHandleItemCount(map);
+            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            List<Map<String , Object>> list = service.queryTbCompanyServiceNotDis(map);
+            int count  =  service.queryTbCompanyServiceNotDisCount(map);
             result =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             pageInfo.setTotal(count);
