@@ -585,6 +585,8 @@
         tb_company_service
         where
         uid =#{uid}
+        and
+        cid = #{cid}
     </select>
 
     <!--获取所有的我服务的业主-->
@@ -611,6 +613,8 @@
         tb_company_service
         where
         uid =#{uid}
+        and
+        cid = #{cid}
         limit
         #{pagesize}
         offset
