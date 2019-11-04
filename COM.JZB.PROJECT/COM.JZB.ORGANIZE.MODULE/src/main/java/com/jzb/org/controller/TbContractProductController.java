@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -32,7 +33,7 @@ public class TbContractProductController {
     public Response addContractProduct(@RequestBody Map<String, Object> param){
         Response response;
         try {
-            tbContractProductService.addContractProduct(param);
+            tbContractProductService.addContractProduct(new ArrayList<>());
             response= Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception ex){
             JzbTools.logError(ex);
