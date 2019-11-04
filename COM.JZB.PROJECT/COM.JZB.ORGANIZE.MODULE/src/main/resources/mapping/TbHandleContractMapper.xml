@@ -5,106 +5,108 @@
 <mapper namespace="com.jzb.org.dao.TbHandleContractMapper">
 
     <!-- 添加合同动态属性 -->
-    <insert id="addHandleContract" parameterType="java.util.Map">
+    <insert id="addHandleContract" parameterType="java.util.List">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
         insert into tb_handle_contract (contid,typeid,dictid,dictvalue,fit,idx,adduid,addtime,upduid,updtime,status,summary)
         values (
         <choose>
-            <when test="contid!=null and contid!=''">
-                #{contid},
+            <when test="item.contid!=null and item.contid!=''">
+                #{item.contid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="typeid!=null and typeid!=''">
-                #{typeid},
+            <when test="item.typeid!=null and item.typeid!=''">
+                #{item.typeid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="dictid!=null and dictid!=''">
-                #{dictid},
+            <when test="item.dictid!=null and item.dictid!=''">
+                #{item.dictid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="dictvalue!=null and dictvalue!=''">
-                #{dictvalue},
+            <when test="item.dictvalue!=null and item.dictvalue!=''">
+                #{item.dictvalue},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="fit!=null and fit!=''">
-                #{fit},
+            <when test="item.fit!=null and item.fit!=''">
+                #{item.fit},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="idx!=null and idx!=''">
-                #{idx},
+            <when test="item.idx!=null and item.idx!=''">
+                #{item.idx},
+            </when>
+            <otherwise>
+                (select count(1)+#{index} from tb_handle_contract),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="item.adduid!=null and item.adduid!=''">
+                #{item.adduid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="adduid!=null and adduid!=''">
-                #{adduid},
+            <when test="item.addtime!=null and item.addtime!=''">
+                #{item.addtime},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="addtime!=null and addtime!=''">
-                #{addtime},
+            <when test="item.upduid!=null and item.upduid!=''">
+                #{item.upduid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="upduid!=null and upduid!=''">
-                #{upduid},
+            <when test="item.updtime!=null and item.updtime!=''">
+                #{item.updtime},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="updtime!=null and updtime!=''">
-                #{updtime},
+            <when test="item.status!=null and item.status!=''">
+                #{item.status},
             </when>
             <otherwise>
-                null,
+                1,
             </otherwise>
         </choose>
         <choose>
-            <when test="status!=null and status!=''">
-                #{status},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="summary!=null and summary!=''">
-                #{summary}
+            <when test="item.summary!=null and item.summary!=''">
+                #{item.summary}
             </when>
             <otherwise>
                 null
             </otherwise>
         </choose>
         )
+        </foreach>
     </insert>
 
     <!-- 修改合同动态属性 -->

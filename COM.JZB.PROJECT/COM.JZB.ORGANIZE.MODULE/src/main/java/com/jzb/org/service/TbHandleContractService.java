@@ -16,15 +16,14 @@ public class TbHandleContractService {
     @Autowired
     private TbHandleContractMapper tbHandleContractMapper;
 
-
     /**
      * 添加合同动态属性
      *
-     * @param param
+     * @param list
      * @return
      */
-    public int addHandleContract(Map<String, Object> param){
-        return tbHandleContractMapper.addHandleContract(param);
+    public int addHandleContract(List<Map<String, Object>> list) {
+        return tbHandleContractMapper.addHandleContract(list);
     }
 
     /**
@@ -33,7 +32,7 @@ public class TbHandleContractService {
      * @param param
      * @return
      */
-    public int updateHandleContract(Map<String, Object> param){
+    public int updateHandleContract(Map<String, Object> param) {
         return tbHandleContractMapper.updateHandleContract(param);
     }
 
@@ -43,7 +42,7 @@ public class TbHandleContractService {
      * @param param
      * @return
      */
-    public List<Map<String, Object>> queryHandleContract(Map<String, Object> param){
+    public List<Map<String, Object>> queryHandleContract(Map<String, Object> param) {
         return tbHandleContractMapper.queryHandleContract(param);
     }
 }
