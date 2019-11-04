@@ -5,149 +5,147 @@
 <mapper namespace="com.jzb.org.dao.TbContractProductMapper">
 
     <!-- 添加企业合同产品 -->
-    <insert id="addContractProduct" parameterType="java.util.List">
-        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+    <insert id="addContractProduct" parameterType="java.util.Map">
         insert into tb_contract_product
         (contid,plid,pid,cname,prodesc,service,price,pricedesc,accept,paradesc,idx,adduid,addtime,upduid,updtime,status,summary)
         values (
         <choose>
-            <when test="item.contid!=null and item.contid!=''">
-                #{item.contid},
+            <when test="contid!=null and contid!=''">
+                #{contid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.plid!=null and item.plid!=''">
-                #{item.plid},
+            <when test="plid!=null and plid!=''">
+                #{plid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.pid!=null and item.pid!=''">
-                #{item.pid},
+            <when test="pid!=null and pid!=''">
+                #{pid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.cname!=null and item.cname!=''">
-                #{item.cname},
+            <when test="cname!=null and cname!=''">
+                #{cname},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.prodesc!=null and item.prodesc!=''">
-                #{item.prodesc},
+            <when test="prodesc!=null and prodesc!=''">
+                #{prodesc},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.service!=null and item.service!=''">
-                #{item.service},
+            <when test="service!=null and service!=''">
+                #{service},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.price!=null and item.price!=''">
-                #{item.price},
+            <when test="price!=null and price!=''">
+                #{price},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.pricedesc!=null and item.pricedesc!=''">
-                #{item.pricedesc},
+            <when test="pricedesc!=null and pricedesc!=''">
+                #{pricedesc},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.accept!=null and item.accept!=''">
-                #{item.accept},
+            <when test="accept!=null and accept!=''">
+                #{accept},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.paradesc!=null and item.paradesc!=''">
-                #{item.paradesc},
+            <when test="paradesc!=null and paradesc!=''">
+                #{paradesc},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.idx!=null and item.idx!=''">
-                #{item.idx},
-            </when>
-            <otherwise>
-                (select count(1)+#{index} from tb_contract_product),
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="item.adduid!=null and item.adduid!=''">
-                #{item.adduid},
+            <when test="idx!=null and idx!=''">
+                #{idx},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.addtime!=null and item.addtime!=''">
-                #{item.addtime},
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.upduid!=null and item.upduid!=''">
-                #{item.upduid},
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.updtime!=null and item.updtime!=''">
-                #{item.updtime},
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.status!=null and item.status!=''">
-                #{item.status},
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
             </when>
             <otherwise>
-                1,
+                null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.summary!=null and item.summary!=''">
-                #{item.summary}
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
             </when>
             <otherwise>
                 null
             </otherwise>
         </choose>
         )
-        </foreach>
     </insert>
 
     <!-- 修改企业合同产品 -->

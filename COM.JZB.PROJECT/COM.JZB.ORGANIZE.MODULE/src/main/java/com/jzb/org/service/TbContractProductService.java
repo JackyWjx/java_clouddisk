@@ -21,11 +21,11 @@ public class TbContractProductService {
     /**
      * 添加企业合同产品功能
      *
-     * @param list
+     * @param param
      * @return
      */
-    public int addContractProduct(List<Map<String, Object>> list){
-        return tbContractProductMapper.addContractProduct(list);
+    public int addContractProduct(Map<String, Object> param){
+        return tbContractProductMapper.addContractProduct(param);
     }
 
     /**

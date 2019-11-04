@@ -5,101 +5,98 @@
 <mapper namespace="com.jzb.org.dao.TbContractItemMapper">
 
     <!-- 添加企业合同条项 -->
-    <insert id="addContractItem" parameterType="java.util.List">
-        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
-            insert into tb_contract_item
-            (contid,itemid,itemname,itemvalue,idx,adduid,addtime,upduid,updtime,status,summary)
-            values (
-            <choose>
-                <when test="item.contid!=null and item.contid!=''">
-                    #{item.contid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.itemid!=null and item.itemid!=''">
-                    #{item.itemid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.itemname!=null and item.itemname!=''">
-                    #{item.itemname},
-                </when>
-                <otherwise>pro
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.itemvalue!=null and item.itemvalue!=''">
-                    #{item.itemvalue},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.idx!=null and item.idx!=''">
-                    #{item.idx},
-                </when>
-                <otherwise>
-                    (select count(1)+#{index} from tb_contract_item),
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.adduid!=null and item.adduid!=''">
-                    #{item.adduid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.addtime!=null and item.addtime!=''">
-                    #{item.addtime},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.upduid!=null and item.upduid!=''">
-                    #{item.upduid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.updtime!=null and item.updtime!=''">
-                    #{item.updtime},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.status!=null and item.status!=''">
-                    #{item.status},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.summary!=null and item.summary!=''">
-                    #{item.summary}
-                </when>
-                <otherwise>
-                    null
-                </otherwise>
-            </choose>
-            );
-        </foreach>
+    <insert id="addContractItem" parameterType="java.util.Map">
+        insert into tb_contract_item (contid,itemid,itemname,itemvalue,idx,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="contid!=null and contid!=''">
+                #{contid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemid!=null and itemid!=''">
+                #{itemid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemname!=null and itemname!=''">
+                #{itemname},
+            </when>
+            <otherwise>pro
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemvalue!=null and itemvalue!=''">
+                #{itemvalue},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
     </insert>
 
     <!-- 修改企业合同条项 -->

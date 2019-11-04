@@ -16,10 +16,10 @@ public interface TbContractProductFunMapper {
 
     /**
      * 添加企业合同产品功能
-     * @param list
+     * @param param
      * @return
      */
-    int addContractProductFun(List<Map<String, Object>> list);
+    int addContractProductFun(Map<String, Object> param);
 
     /**
      * 修改企业合同产品功能

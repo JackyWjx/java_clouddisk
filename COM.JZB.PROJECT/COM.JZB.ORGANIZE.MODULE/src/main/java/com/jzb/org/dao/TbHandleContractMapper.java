@@ -16,10 +16,10 @@ public interface TbHandleContractMapper {
 
     /**
      * 添加合同动态属性
-     * @param list
+     * @param param
      * @return
      */
-    int addHandleContract(List<Map<String, Object>> list);
+    int addHandleContract(Map<String, Object> param);
 
 
     /**

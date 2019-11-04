@@ -6,156 +6,154 @@
 
     <!-- 添加企业合同服务 -->
     <insert id="addContractService" parameterType="java.util.Map">
-        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
-            insert into tb_contract_service
-            (contid,pid,pricetype,typename,itemid,itemname,pricedesc,size,unit,price,weight,serviceroute,idx,adduid,addtime,upduid,updtime,status,summary)
-            values (
-            <choose>
-                <when test="item.contid!=null and item.contid!=''">
-                    #{item.contid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.pid!=null and item.pid!=''">
-                    #{item.pid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.pricetype!=null and item.pricetype!=''">
-                    #{item.pricetype},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.itemid!=null and item.itemid!=''">
-                    #{item.itemid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.itemname!=null and item.itemname!=''">
-                    #{item.itemname},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.pricedesc!=null and item.pricedesc!=''">
-                    #{item.pricedesc},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.size!=null and item.size!=''">
-                    #{item.size},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.unit!=null and item.unit!=''">
-                    #{item.unit},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.price!=null and item.price!=''">
-                    #{item.price},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.weight!=null and item.weight!=''">
-                    #{item.weight},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.serviceroute!=null and item.serviceroute!=''">
-                    #{item.serviceroute},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.idx!=null and item.idx!=''">
-                    #{item.idx},
-                </when>
-                <otherwise>
-                    (select count(1)+#{index} from tb_contract_service),
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.adduid!=null and item.adduid!=''">
-                    #{item.adduid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.addtime!=null and item.addtime!=''">
-                    #{item.addtime},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.upduid!=null and item.upduid!=''">
-                    #{item.upduid},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.updtime!=null and item.updtime!=''">
-                    #{item.updtime},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.status!=null and item.status!=''">
-                    #{item.status},
-                </when>
-                <otherwise>
-                    1,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.summary!=null and item.summary!=''">
-                    #{item.summary}
-                </when>
-                <otherwise>
-                    null
-                </otherwise>
-            </choose>
-            )
-        </foreach>
+        insert into tb_contract_service
+        (contid,pid,pricetype,typename,itemid,itemname,pricedesc,size,unit,price,weight,serviceroute,idx,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        <choose>
+            <when test="contid!=null and contid!=''">
+                #{contid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pid!=null and pid!=''">
+                #{pid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricetype!=null and pricetype!=''">
+                #{pricetype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemid!=null and itemid!=''">
+                #{itemid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="itemname!=null and itemname!=''">
+                #{itemname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricedesc!=null and pricedesc!=''">
+                #{pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="size!=null and size!=''">
+                #{size},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="unit!=null and unit!=''">
+                #{unit},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price!=null and price!=''">
+                #{price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="weight!=null and weight!=''">
+                #{weight},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="serviceroute!=null and serviceroute!=''">
+                #{serviceroute},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
     </insert>
 
     <!-- 修改企业合同服务 -->

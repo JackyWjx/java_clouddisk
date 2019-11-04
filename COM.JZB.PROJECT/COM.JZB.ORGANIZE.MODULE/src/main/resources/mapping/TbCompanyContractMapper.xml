@@ -90,6 +90,7 @@
                 NULL ,
             </otherwise>
         </choose>
+
         <choose>
             <when test="contstime!=null and contstime!=''">
                 #{contstime},
