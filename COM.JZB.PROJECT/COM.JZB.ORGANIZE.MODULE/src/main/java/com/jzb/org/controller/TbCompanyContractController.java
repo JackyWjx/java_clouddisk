@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +79,7 @@ public class TbCompanyContractController {
             }
 
             // 验证指定参数为空则返回error
-            if (JzbCheckParam.allNotEmpty(param, new String[]{"companyContractList", "handleContractList", "contractItemList", "contractProductList", "contractFunctionList", "contractServiceList"})) {
+            if (JzbCheckParam.allNotEmpty(param, new String[]{"companyContractList", "contractProductList", "contractFunctionList", "contractServiceList"})) {
 
                 // 获取合同id
                 String contid = JzbRandom.getRandomCharLow(19);
@@ -95,66 +96,96 @@ public class TbCompanyContractController {
                 map.put("addtime", time);
                 map.put("updtime", time);
 
-                tbCompanyContractService.addCompanyContract(map);
-
-                // 合同动态属性
-                // begin ==========================================================>
-                List<Map<String, Object>> handleContractList = (List<Map<String, Object>>) param.get("handleContractList");
-                // 遍历存放合同id
-                for (int i = 0, l = handleContractList.size(); i < l; i++) {
-                    handleContractList.get(i).put("contid", contid);
-                }
-                // 执行添加操作
-                int baseCount = tbHandleContractService.addHandleContract(handleContractList);
-                // end ==========================================================>
+                int baseCount = tbCompanyContractService.addCompanyContract(map);
 
                 // 如果合同添加成功后
                 if (baseCount > 0) {
 
-                    // 企业合同条项
-                    // begin ==========================================================>
-                    List<Map<String, Object>> contractItemList = (List<Map<String, Object>>) param.get("contractItemList");
-                    for (int i = 0, l = contractItemList.size(); i < l; i++) {
-                        String itemid = JzbRandom.getRandomCharLow(11);
-                        contractItemList.get(i).put("contid", contid);
-                        contractItemList.get(i).put("itemid", itemid);
-                    }
-                    // 执行添加操作
-                    tbContractItemService.addContractItem(contractItemList);
-                    // end ==========================================================>
+                    if (param.get("handleContractList") != null) {
 
-                    // 企业合同产品
-                    // begin ==========================================================>
-                    List<Map<String, Object>> contractProductList = (List<Map<String, Object>>) param.get("contractProductList");
-                    // 遍历存放合同id
-                    for (int i = 0, l = contractProductList.size(); i < l; i++) {
-                        contractProductList.get(i).put("contid", contid);
-                    }
-                    // 执行添加操作
-                    tbContractProductService.addContractProduct(contractProductList);
-                    // end ==========================================================>
+                        // 合同动态属性
+                        // begin ==========================================================>
+                        List<Map<String, Object>> handleContractList = (List<Map<String, Object>>) param.get("handleContractList");
 
-                    // 企业合同产品功能
-                    // begin ==========================================================>
-                    List<Map<String, Object>> contractFunctionList = (List<Map<String, Object>>) param.get("contractFunctionList");
-                    // 遍历存放合同id
-                    for (int i = 0, l = contractFunctionList.size(); i < l; i++) {
-                        contractFunctionList.get(i).put("contid", contid);
-                    }
-                    // 执行添加操作
-                    tbContractProductFunService.addContractProductFun(contractFunctionList);
-                    // end ==========================================================>
+                        // 遍历存放合同id
+                        for (int i = 0, l = handleContractList.size(); i < l; i++) {
+                            handleContractList.get(i).put("contid", contid);
+                            handleContractList.get(i).put("addtime", time);
+                            handleContractList.get(i).put("updtime", time);
+                        }
+                        // 执行添加操作
+                        tbHandleContractService.addHandleContract(handleContractList);
+                        // end ==========================================================>
 
-                    // 企业合同服务
-                    // begin ==========================================================>
-                    List<Map<String, Object>> contractServiceList = (List<Map<String, Object>>) param.get("contractServiceList");
-                    // 遍历存放合同id
-                    for (int i = 0, l = contractServiceList.size(); i < l; i++) {
-                        contractServiceList.get(i).put("contid", contid);
                     }
-                    // 执行添加操作
-                    tbContractServiceService.addContractService(contractServiceList);
-                    // end ==========================================================>
+
+                    if (param.get("contractItemList") != null) {
+                        // 企业合同条项
+                        // begin ==========================================================>
+                        List<Map<String, Object>> contractItemList = (List<Map<String, Object>>) param.get("contractItemList");
+                        for (int i = 0, l = contractItemList.size(); i < l; i++) {
+                            String itemid = JzbRandom.getRandomCharLow(11);
+                            contractItemList.get(i).put("contid", contid);
+                            contractItemList.get(i).put("itemid", itemid);
+                            contractItemList.get(i).put("addtime", time);
+                            contractItemList.get(i).put("updtime", time);
+                        }
+                        // 执行添加操作
+                        tbContractItemService.addContractItem(contractItemList);
+                        // end ==========================================================>
+
+                    }
+
+                    if (param.get("contractProductList") != null) {
+
+                        // 企业合同产品
+                        // begin ==========================================================>
+                        List<Map<String, Object>> contractProductList = (List<Map<String, Object>>) param.get("contractProductList");
+                        // 遍历存放合同id
+                        for (int i = 0, l = contractProductList.size(); i < l; i++) {
+                            contractProductList.get(i).put("contid", contid);
+                            contractProductList.get(i).put("addtime", time);
+                            contractProductList.get(i).put("updtime", time);
+                        }
+                        // 执行添加操作
+                        tbContractProductService.addContractProduct(contractProductList);
+                        // end ==========================================================>
+
+                    }
+
+                    if (param.get("contractFunctionList") != null) {
+                        // 企业合同产品功能
+                        // begin ==========================================================>
+                        List<Map<String, Object>> contractFunctionList = (List<Map<String, Object>>) param.get("contractFunctionList");
+                        // 遍历存放合同id
+                        for (int i = 0, l = contractFunctionList.size(); i < l; i++) {
+                            contractFunctionList.get(i).put("contid", contid);
+                            contractFunctionList.get(i).put("addtime", time);
+                            contractFunctionList.get(i).put("updtime", time);
+                            contractFunctionList.get(i).put("funtype", JzbDataType.getInteger(contractFunctionList.get(i).get("funtype")));
+                            contractFunctionList.get(i).put("funsubtype", JzbDataType.getInteger(contractFunctionList.get(i).get("funsubtype")));
+
+                        }
+                        // 执行添加操作
+                        tbContractProductFunService.addContractProductFun(contractFunctionList);
+                        // end ==========================================================>
+
+                    }
+
+                    if (param.get("contractServiceList") != null) {
+                        // 企业合同服务
+                        // begin ==========================================================>
+                        List<Map<String, Object>> contractServiceList = (List<Map<String, Object>>) param.get("contractServiceList");
+                        // 遍历存放合同id
+                        for (int i = 0, l = contractServiceList.size(); i < l; i++) {
+                            contractServiceList.get(i).put("contid", contid);
+                            contractServiceList.get(i).put("addtime", time);
+                            contractServiceList.get(i).put("updtime", time);
+                        }
+                        // 执行添加操作
+                        tbContractServiceService.addContractService(contractServiceList);
+                        // end ==========================================================>
+                    }
                 }
 
                 // 添加成功则返回成功
@@ -219,7 +250,7 @@ public class TbCompanyContractController {
                 }
                 response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
                 PageInfo pageInfo = new PageInfo();
-                pageInfo.setList(list);
+                pageInfo.setList(list == null ? new ArrayList() : list);
                 // 如果count>0 就返回list 大小
                 pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
                 response.setPageInfo(pageInfo);
