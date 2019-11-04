@@ -95,7 +95,7 @@ public class TbCompanyService {
                 int count = tbCompanyServiceMapper.queryServiceCount(projectMap);
                 projectMap.put("service", count);
                 for (int k = 0; k < list.size(); k++) {
-                    Map<String, Object> map = list.get(i);
+                    Map<String, Object> map = list.get(k);
                     // 如果项目ID相同则将结果全部加入返回值中
                     if (JzbDataType.getString(projectMap.get("projectid")).equals(JzbDataType.getString(map.get("projectid")))) {
                         projectMap.putAll(map);
