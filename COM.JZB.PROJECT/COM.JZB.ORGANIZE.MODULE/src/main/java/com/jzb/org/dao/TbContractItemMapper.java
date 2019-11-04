@@ -17,10 +17,10 @@ public interface TbContractItemMapper {
     /**
      * 添加企业合同条项
      *
-     * @param param
+     * @param list
      * @return
      */
-    int addContractItem(Map<String, Object> param);
+    int addContractItem(List<Map<String, Object>> list);
 
     /**
      * 修改企业合同条项
