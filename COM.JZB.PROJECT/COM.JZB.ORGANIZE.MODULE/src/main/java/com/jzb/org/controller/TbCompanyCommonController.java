@@ -7,6 +7,7 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
+import com.jzb.base.util.JzbTimeConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.TbCompanyCommonService;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.jws.Oneway;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +42,35 @@ public class TbCompanyCommonController {
      * 日志记录对象
      */
     private final static Logger logger = LoggerFactory.getLogger(TbCompanyCommonController.class);
+
+    /**
+     * 获取单位名称
+     * @author chenzhengduan
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCompanyNameById", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response getCompanyNameById(@RequestBody Map<String, Object> param){
+        Response response;
+        try {
+
+            if(JzbCheckParam.haveEmpty(param,new String[]{"cid"})){
+                response=Response.getResponseError();
+            }else {
+                String cname = tbCompanyCommonService.queryCompanyNameByID(param);
+                response=Response.getResponseSuccess();
+                response.setResponseEntity(cname);
+            }
+        }catch (Exception ex){
+            JzbTools.logError(ex);
+            response=Response.getResponseError();
+        }
+        return response;
+    }
+
 
     /**
      * 获取已分配的业主单位（不带条件查询）

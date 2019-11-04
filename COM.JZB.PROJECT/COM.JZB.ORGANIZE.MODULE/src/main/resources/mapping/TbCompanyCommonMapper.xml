@@ -30,6 +30,11 @@ WHERE
     </select>
 
 
+    <!-- 查询单位名称 -->
+    <select id="queryCompanyNameByID" parameterType="java.util.Map" resultType="java.lang.String">
+        select cname from tb_company_list where cid=#{cid} and status='1'
+    </select>
+
     <!-- 查询已分配的业主  带条件 -->
     <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map">
         select * from (

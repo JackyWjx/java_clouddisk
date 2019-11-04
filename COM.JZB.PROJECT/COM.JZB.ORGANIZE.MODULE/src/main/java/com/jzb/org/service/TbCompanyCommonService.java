@@ -39,6 +39,15 @@ public class TbCompanyCommonService {
 
 
     /**
+     * 查询单位名称
+     * @param param
+     * @return
+     */
+    public String queryCompanyNameByID(Map<String, Object> param){
+        return tbCompanyCommonMapper.queryCompanyNameByID(param);
+    }
+
+    /**
      * 修改单位信息
      * @param param
      * @return
