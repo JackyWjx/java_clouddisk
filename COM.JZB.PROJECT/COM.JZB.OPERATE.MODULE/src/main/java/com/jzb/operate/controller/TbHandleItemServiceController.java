@@ -6,6 +6,7 @@ import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.auth.AuthUserApi;
 import com.jzb.operate.api.org.OrgCompanyApi;
 import com.jzb.operate.api.org.OrgDeptApi;
 import com.jzb.operate.api.org.TbCompanyProjectApi;
@@ -43,6 +44,9 @@ public class TbHandleItemServiceController {
 
     @Autowired
     private TbCompanyService companyService;
+
+    @Autowired
+    private AuthUserApi authUserApi;
 
     /**
      * 获取所有部门
@@ -141,6 +145,9 @@ public class TbHandleItemServiceController {
                 int count  =  service.queryCount(para);
                 list.get(i).put("count",count);
                 para.put("userinfo",(Map<String , Object>) map.get("userinfo"));
+                Response user = authUserApi.getUserInfo(para);
+                Map<String , Object> userMap = (Map<String, Object>) user.getResponseEntity();
+                list.get(i).put("username",userMap.get("cname"));
                 if(!JzbTools.isEmpty(para.get("projectid"))){
                     Response cpm  = companyApi.getCompanyProjct(para);
                     Map<String , Object> cpmMap = (Map<String, Object>) cpm.getResponseEntity();
@@ -177,8 +184,15 @@ public class TbHandleItemServiceController {
         Response result ;
         try{
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            pageInfo.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             List<Map<String , Object>> list = service.queryTbCompanyServiceNotDis(map);
+            for(int  i = 0 ; i < list.size() ;i++){
+                Map<String , Object> para  = list.get(i);
+                para.put("userinfo",map.get("userinfo"));
+                Response user = authUserApi.getUserInfo(para);
+                Map<String , Object> userMap = (Map<String, Object>) user.getResponseEntity();
+                list.get(i).put("username",userMap.get("cname"));
+            }
             int count  =  service.queryTbCompanyServiceNotDisCount(map);
             result =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);

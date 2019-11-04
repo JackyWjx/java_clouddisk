@@ -14,7 +14,6 @@
         from tb_company_service where status = '1'
         <choose><when test="cid != null">and cid = #{cid}</when></choose>
         <choose><when test="person != null">and person like CONCAT('%',#{person},'%')</when></choose>
-        <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
         <choose><when test="projectid != null">and projectid = #{projectid}</when></choose>
         limit #{pagesize}  offset #{pageno}
     </select>
@@ -24,7 +23,6 @@
         select count(1) from tb_company_service where status = '1'
         <choose><when test="cid != null">and cid  = #{cid}</when></choose>
         <choose><when test="person != null">and person like CONCAT('%',#{person},'%')</when></choose>
-        <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
         <choose><when test="projectid != null">and projectid = (#{projectid})</when></choose>
     </select>
 
