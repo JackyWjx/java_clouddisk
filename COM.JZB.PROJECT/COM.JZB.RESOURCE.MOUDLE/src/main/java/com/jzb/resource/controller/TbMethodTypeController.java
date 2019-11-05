@@ -13,6 +13,7 @@ import com.jzb.resource.service.TbMethodTypeService;
 import com.jzb.resource.util.PageConvert;
 import org.jsoup.select.Evaluator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class TbMethodTypeController {
     @RequestMapping(value = "/getMethodType", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
+    @Transactional
     public Response getMethodType(@RequestBody(required = false) Map<String, Object> param) {
         Response response;
         try {
