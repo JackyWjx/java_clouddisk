@@ -67,6 +67,7 @@ public class TbCompanyMethodController {
             // 如果指定参数为空则返回error
             if (JzbCheckParam.haveEmpty(param, new String[]{"list"})) {
                 result = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addCompanyMethod Method", "[param error] or [param is null]"));
             } else {
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
                 long time = System.currentTimeMillis();
@@ -80,9 +81,10 @@ public class TbCompanyMethodController {
                 result = tbCompanyMethodService.addCompanyMethod(list) * tbCompanyMethodTargetService.addMethodTarget(targetList) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
+            flag = false;
             JzbTools.logError(ex);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addCompanyMethod Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -104,9 +106,20 @@ public class TbCompanyMethodController {
     @Transactional
     public Response getMethodType(@RequestBody Map<String, Object> param) {
         Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/companyMethod/getCompanyMethod";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
                 response = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getMethodType Method", "[param error] or [param is null]"));
             } else {
 
                 //参照tbTempitemController
@@ -196,15 +209,22 @@ public class TbCompanyMethodController {
                         System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
                     }
                 }
-                // 定义返回结果
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+
                 response = Response.getResponseSuccess(userInfo);
                 response.setResponseEntity(result);
             }
         } catch (Exception e) {
+            flag = false;
             // 打印异常信息
             e.printStackTrace();
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getMethodType Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }

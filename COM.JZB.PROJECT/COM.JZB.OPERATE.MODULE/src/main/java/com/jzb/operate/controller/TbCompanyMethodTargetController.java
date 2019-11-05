@@ -40,7 +40,7 @@ public class TbCompanyMethodTargetController {
     public Response getCompanyMethodTarget(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/activity/getDiscuss";
+        String api = "/operate/companyMethodTarget/getCompanyMethodTarget";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -52,6 +52,7 @@ public class TbCompanyMethodTargetController {
             }
             if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "methodid"})) {
                 response = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyMethodTarget Method", "[param error] or [param is null]"));
             } else {
                 List<Map<String, Object>> list = tbCompanyMethodTargetService.queryMethodTarget(param);
                 PageInfo pageInfo = new PageInfo();
@@ -64,7 +65,7 @@ public class TbCompanyMethodTargetController {
         } catch (Exception ex) {
             JzbTools.logError(ex);
             response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyMethodTarget Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
