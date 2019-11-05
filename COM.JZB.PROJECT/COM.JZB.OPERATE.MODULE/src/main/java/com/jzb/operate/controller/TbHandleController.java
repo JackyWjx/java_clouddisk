@@ -31,7 +31,7 @@ public class TbHandleController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(TbCompanyMethodController.class);
+    private final static Logger logger = LoggerFactory.getLogger(TbHandleController.class);
 
     /**
      * CRM-销售业主-公海-业主下的人员13
