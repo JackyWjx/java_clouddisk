@@ -126,6 +126,7 @@ public class TbCompanyCommonController {
                     Map<String, Object> resultParam = null;
                     if (cityList.getResponseEntity() != null) {
                         resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
+                        resultParam.put("region",resultParam.get("creaid"));
                     }
                     // 转map
                     if (resultParam != null) {
@@ -204,6 +205,7 @@ public class TbCompanyCommonController {
                     Map<String, Object> resultParam = null;
                     if (cityList.getResponseEntity() != null) {
                         resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
+                        resultParam.put("region",resultParam.get("creaid"));
                     }
                     // 转map
                     if (resultParam != null) {
