@@ -54,28 +54,29 @@ public class TbCompanyCommonController {
 
     /**
      * 获取单位名称
-     * @author chenzhengduan
+     *
      * @param param
      * @return
+     * @author chenzhengduan
      */
     @RequestMapping(value = "/getCompanyNameById", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response getCompanyNameById(@RequestBody Map<String, Object> param){
+    public Response getCompanyNameById(@RequestBody Map<String, Object> param) {
         Response response;
         try {
 
-            if(JzbCheckParam.haveEmpty(param,new String[]{"cid"})){
-                response=Response.getResponseError();
-            }else {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                response = Response.getResponseError();
+            } else {
                 String cname = tbCompanyCommonService.queryCompanyNameByID(param);
-                response=Response.getResponseSuccess();
+                response = Response.getResponseSuccess();
                 response.setResponseEntity(cname);
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             JzbTools.logError(ex);
-            response=Response.getResponseError();
+            response = Response.getResponseError();
         }
         return response;
     }
@@ -83,9 +84,10 @@ public class TbCompanyCommonController {
 
     /**
      * 获取已分配的业主单位（不带条件查询）
-     * @author chenzhengduan
+     *
      * @param param
      * @return
+     * @author chenzhengduan
      */
     @RequestMapping(value = "/getCompanyCommonList", method = RequestMethod.POST)
     @ResponseBody
@@ -126,7 +128,7 @@ public class TbCompanyCommonController {
                     Map<String, Object> resultParam = null;
                     if (cityList.getResponseEntity() != null) {
                         resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
-                        resultParam.put("region",resultParam.get("creaid"));
+                        resultParam.put("region", resultParam.get("creaid"));
                     }
                     // 转map
                     if (resultParam != null) {
@@ -162,10 +164,10 @@ public class TbCompanyCommonController {
 
     /**
      * 获取已分配的业主单位 (带条件查询)
-     * @author chenzhengduan
      *
      * @param param
      * @return
+     * @author chenzhengduan
      */
     @RequestMapping(value = "/getCompanyCommonListByKeyword", method = RequestMethod.POST)
     @ResponseBody
@@ -205,7 +207,7 @@ public class TbCompanyCommonController {
                     Map<String, Object> resultParam = null;
                     if (cityList.getResponseEntity() != null) {
                         resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
-                        resultParam.put("region",resultParam.get("creaid"));
+                        resultParam.put("region", resultParam.get("creaid"));
                     }
                     // 转map
                     if (resultParam != null) {
@@ -241,8 +243,9 @@ public class TbCompanyCommonController {
 
     /**
      * 修改业主单位
-     *@author chenzhengduan
+     *
      * @return
+     * @author chenzhengduan
      */
     @RequestMapping(value = "/updateCompanyByCid", method = RequestMethod.POST)
     @ResponseBody
@@ -284,6 +287,7 @@ public class TbCompanyCommonController {
         }
         return result;
     }
+
     /**
      * 所有业主-业主列表-新建
      *
@@ -292,7 +296,7 @@ public class TbCompanyCommonController {
      */
     @RequestMapping(value = "/saveCompanyCommon", method = RequestMethod.POST)
     @CrossOrigin
-    public Response saveCompanyCommon(@RequestBody Map<String, Object> param ,@RequestHeader(value = "token") String token) {
+    public Response saveCompanyCommon(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
         Response result;
         try {
             Response response = deptUserControllerApi.addCompanyCommon(param, token);
@@ -408,10 +412,10 @@ public class TbCompanyCommonController {
 
     /**
      * 所有业主-业主列表查询
-     * @author chenzhengduan
      *
      * @param param
      * @return
+     * @author chenzhengduan
      */
     @RequestMapping(value = "/getCompanyCommon", method = RequestMethod.POST)
     @ResponseBody
@@ -453,7 +457,7 @@ public class TbCompanyCommonController {
                     }
                 }
 
-               int count = tbCompanyCommonService.getCount(param);
+                int count = tbCompanyCommonService.getCount(param);
                 // 分页对象
                 PageInfo pageInfo = new PageInfo();
 
@@ -480,4 +484,28 @@ public class TbCompanyCommonController {
         return result;
     }
 
+    /**
+     * CRM-所有业主-业主列表-修改
+     * 点击修改判断是否是系统中的用户如果不是就新建用户
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/11
+     */
+    @RequestMapping(value = "/modifyCompanyCommon", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyCompanyCommon(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            //修改数据
+            int count = tbCompanyCommonService.modifyCompanyCommon(param);
+            //获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }
