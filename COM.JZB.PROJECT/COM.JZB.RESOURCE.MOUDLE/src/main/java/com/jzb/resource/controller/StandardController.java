@@ -34,13 +34,10 @@ public class StandardController {
     @Autowired
     private StandardService standardService;
 
-
-
     /**
      * 日志记录对象
      */
     private final static Logger logger = LoggerFactory.getLogger(AdvertController.class);
-
 
     /**
      * 标准查询,根据父类查子类
@@ -53,18 +50,17 @@ public class StandardController {
     public Response queryFatherOne(@RequestBody(required = false) Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
-        String  api="/standardDocument/getFatherOne";
+        String api = "/standardDocument/getFatherOne";
         boolean flag = true;
         try {
 
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-
 
             List<Map<String, Object>> records = standardService.queryFatherOne();
 
@@ -135,7 +131,7 @@ public class StandardController {
             response = Response.getResponseSuccess();
             response.setResponseEntity(result);
         } catch (Exception e) {
-            flag=false;
+            flag = false;
             e.printStackTrace();
             response = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryFatherOne Method", e.toString()));
@@ -160,15 +156,15 @@ public class StandardController {
     public Response queryDocumentsList(@RequestBody Map<String, Object> params) {
         Response result;
         Map<String, Object> userInfo = null;
-        String  api="/standardDocument/getDocumentsList";
+        String api = "/standardDocument/getDocumentsList";
         boolean flag = true;
         try {
             if (params.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) params.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
             // 判断如果参数为空则返回404
@@ -178,11 +174,11 @@ public class StandardController {
 
             } else {
                 List<Map<String, Object>> list;
-                int count ;
+                int count;
                 // 为1 的时候返回空list
                 if (params.get("typeid").toString().equals("1")) {
-                    list=new ArrayList<>();
-                    count=0;
+                    list = new ArrayList<>();
+                    count = 0;
                 } else {
                     // 设置分页参数
                     PageConvert.setPageRows(params);
@@ -209,7 +205,7 @@ public class StandardController {
                 result.setPageInfo(pi);
             }
         } catch (Exception e) {
-            flag=false;
+            flag = false;
             e.printStackTrace();
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryDocumentsList Method", e.toString()));
@@ -235,15 +231,15 @@ public class StandardController {
     public Response getStandartDocumentDesc(@RequestBody Map<String, Object> params) {
         Response result;
         Map<String, Object> userInfo = null;
-        String  api="/standardDocument/getStandartDocumentDesc";
+        String api = "/standardDocument/getStandartDocumentDesc";
         boolean flag = true;
         try {
             if (params.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) params.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
             // 判断如果参数为空则返回404
@@ -254,8 +250,8 @@ public class StandardController {
 
                 // 结果集
                 List<Map<String, Object>> list = standardService.getStandardDocumentDesc(params);
-                for (int i=0,l=list.size();i<l;i++){
-                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd));
+                for (int i = 0, l = list.size(); i < l; i++) {
+                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
                 }
                 // 定义返回pageinfo
                 PageInfo pi = new PageInfo();
@@ -267,7 +263,7 @@ public class StandardController {
 
             }
         } catch (Exception e) {
-            flag=false;
+            flag = false;
             // 打印异常信息
             e.printStackTrace();
             result = Response.getResponseError();
@@ -282,12 +278,12 @@ public class StandardController {
         return result;
     }
 
-
     /**
      * 标准文档热门榜
-     * @author chenzhengduan
+     *
      * @param param
      * @return
+     * @author chenzhengduan
      */
     @RequestMapping(value = "/getStandartHotDom", method = RequestMethod.POST)
     @ResponseBody
@@ -295,15 +291,15 @@ public class StandardController {
     public Response getSolutionHotDom(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String  api="/standardDocument/getStandartHotDom";
+        String api = "/standardDocument/getStandartHotDom";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
             if (JzbCheckParam.haveEmpty(param, new String[]{"count"})) {
@@ -319,7 +315,7 @@ public class StandardController {
                 result.setPageInfo(pi);
             }
         } catch (Exception e) {
-            flag=false;
+            flag = false;
             // 打印异常信息
             e.printStackTrace();
             result = Response.getResponseError();
