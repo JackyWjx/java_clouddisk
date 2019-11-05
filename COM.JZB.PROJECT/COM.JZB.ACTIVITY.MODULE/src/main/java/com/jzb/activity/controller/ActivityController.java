@@ -70,13 +70,13 @@ public class ActivityController {
                 JzbPageConvert.setPageRows(params);
                 // 获取结果集
                 List<Map<String, Object>> list = activityService.queryActivityList(params);
-                for(int i=0;i<list.size();i++){
-                    params.put("actid",list.get(i).get("actid"));
-                    params.put("uid",list.get(i).get("adduid"));
+                for (int i = 0; i < list.size(); i++) {
+                    params.put("actid", list.get(i).get("actid"));
+                    params.put("uid", list.get(i).get("adduid"));
                     Response region = userRedisApi.getCacheUserInfo(params);
-                    list.get(i).put("photoList",newActivityService.queryActivityPhoto(params));
-                    list.get(i).put("userInfo",region.getResponseEntity());
-                    list.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                    list.get(i).put("photoList", newActivityService.queryActivityPhoto(params));
+                    list.get(i).put("userInfo", region.getResponseEntity());
+                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
                 }
                 // 获取总数
                 int count = activityService.queryActivityCount();
@@ -103,21 +103,21 @@ public class ActivityController {
      *
      * @return Response 返回json数据
      */
-    @RequestMapping(value = "/queryActpictureList",method = RequestMethod.POST)
+    @RequestMapping(value = "/queryActpictureList", method = RequestMethod.POST)
     @CrossOrigin
     public Response queryActpictureList(@RequestBody Map<String, Object> params) {
         Response response = null;
         try {
             //获取前台传的值
-            int count= activityService.EnquiryCount();
+            int count = activityService.EnquiryCount();
             List<Map<String, Object>> arr = activityService.queryActpictureList(params);
-            for(int i=0;i<arr.size();i++){
-                params.put("actid",arr.get(i).get("actid"));
-                params.put("uid",arr.get(i).get("adduid"));
+            for (int i = 0; i < arr.size(); i++) {
+                params.put("actid", arr.get(i).get("actid"));
+                params.put("uid", arr.get(i).get("adduid"));
                 Response region = userRedisApi.getCacheUserInfo(params);
-                arr.get(i).put("actpicture",newActivityService.queryActivityPhoto(params).get(0).get("photo"));
-                arr.get(i).put("userInfo",region.getResponseEntity());
-                arr.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(arr.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                arr.get(i).put("actpicture", newActivityService.queryActivityPhoto(params).get(0).get("photo"));
+                arr.get(i).put("userInfo", region.getResponseEntity());
+                arr.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(arr.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
             }
             // 定义返回
 //            Map<String, Object> userInfo = (Map<String, Object>) params.get("userinfo");
@@ -184,27 +184,28 @@ public class ActivityController {
     public Response getDiscuss(@RequestBody Map<String, Object> params) {
         Response response;
         Map<String, Object> userInfo = null;
-        String  api="/activity/getDiscuss";
+        String api = "/activity/getDiscuss";
         boolean flag = true;
         try {
             if (params.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) params.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(params,new String[]{"actid"})) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"actid"})) {
                 response = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getDiscuss Method", "[param error] or [param is null]"));
             } else {
                 List<Map<String, Object>> list = newActivityService.getActivityDesc(params);
-                for(int i=0;i<list.size();i++){
-                    params.put("actid",list.get(i).get("actid"));
-                    params.put("uid",list.get(i).get("adduid"));
+                for (int i = 0; i < list.size(); i++) {
+                    params.put("actid", list.get(i).get("actid"));
+                    params.put("uid", list.get(i).get("adduid"));
                     Response region = userRedisApi.getCacheUserInfo(params);
-                    list.get(i).put("actpicture",newActivityService.queryActivityPhoto(params).get(0).get("photo"));
-                    list.get(i).put("userInfo",region.getResponseEntity());
-                    list.get(i).put("addtime",JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                    list.get(i).put("actpicture", newActivityService.queryActivityPhoto(params).get(0).get("photo"));
+                    list.get(i).put("userInfo", region.getResponseEntity());
+                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
                 }
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
@@ -218,13 +219,13 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(ex);
             response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "add Company Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getDiscuss Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
                     userInfo.get("msgTag").toString(), "User Login Message"));
         } else {
-            logger.info(JzbLoggerUtil.getApiLogger( api, "2", "ERROR", "", "", "", "", "User Login Message"));
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }
@@ -235,14 +236,24 @@ public class ActivityController {
      * @param params map接收参数
      * @return
      */
-    @RequestMapping("/findParticularsList")
+    @RequestMapping(value = "/findParticularsList", method = RequestMethod.POST)
     @CrossOrigin
     public Response findParticularsList(@RequestBody Map<String, Object> params) {
         Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/activity/findParticularsList";
+        boolean flag = true;
         try {
+            if (params.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) params.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
 
             if (JzbCheckParam.haveEmpty(params, new String[]{"actid"})) {
-
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "findParticularsList Method", "[param error] or [param is null]"));
                 response = Response.getResponseError();
             } else {
 
@@ -267,9 +278,17 @@ public class ActivityController {
                 response.setPageInfo(pi);
             }
         } catch (Exception e) {
-
+            flag = false;
             JzbTools.logError(e);
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "findParticularsList Method", "[param error] or [param is null]"));
+
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }
@@ -284,19 +303,26 @@ public class ActivityController {
     @CrossOrigin
     public Response findParticularsByList(@RequestBody Map<String, Object> params) {
         Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/activity/findParticularsList";
+        boolean flag = true;
         try {
-
-            if (!CheckParam.verifition(params, new String[]{"pageno", "pagesize", "actid"})) {
-
-                response = Response.getResponseError();
-
+            if (params.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) params.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
 
+            if (JzbCheckParam.haveEmpty(params, new String[]{"pageno", "pagesize", "actid"})) {
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "findParticularsByList Method", "[param error] or [param is null]"));
+                response = Response.getResponseError();
+            } else {
                 PageConvert.setPageRows(params);
                 // 分页查询
                 List<Map<String, Object>> list = newActivityService.findParticularsByList(params);
                 Map<String, Object> map = new HashMap<>();
-
                 for (int i = 0, l = list.size(); i < l; i++) {
                     map.put("uid", list.get(i).get("uid"));
                     Response resp = userRedisApi.getCacheUserInfo(map);
@@ -305,24 +331,25 @@ public class ActivityController {
                     list.get(i).put("cname", user.get("cname"));
 //                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
                 }
-
                 int count = newActivityService.findParticularsListCount(params);
-
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
                 pi.setTotal(count);
-
                 // 定义返回
                 response = Response.getResponseSuccess();
-
                 response.setPageInfo(pi);
-
             }
         } catch (Exception e) {
-
+            flag = false;
             JzbTools.logError(e);
             response = Response.getResponseError();
-
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "findParticularsByList Method", "[param error] or [param is null]"));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }
@@ -340,7 +367,7 @@ public class ActivityController {
         try {
 
             // 验证参数为空返回error
-            if (JzbCheckParam.haveEmpty(params,new String[]{"pageno","pagesize","keyword"})) {
+            if (JzbCheckParam.haveEmpty(params, new String[]{"pageno", "pagesize", "keyword"})) {
 
                 response = Response.getResponseError();
 
@@ -496,11 +523,11 @@ public class ActivityController {
     public Response getActivityList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            if (!JzbDataType.isEmpty(JzbDataType.getLong(param.get("starttime")))){
+            if (!JzbDataType.isEmpty(JzbDataType.getLong(param.get("starttime")))) {
                 long startTime = JzbDataType.getLong(param.get("starttime"));
                 param.put("starttime", startTime);
             }
-            if (!JzbDataType.isEmpty(JzbDataType.getLong(param.get("endtime")))){
+            if (!JzbDataType.isEmpty(JzbDataType.getLong(param.get("endtime")))) {
                 long endTime = JzbDataType.getLong(param.get("endtime"));
                 param.put("endtime", endTime);
             }
