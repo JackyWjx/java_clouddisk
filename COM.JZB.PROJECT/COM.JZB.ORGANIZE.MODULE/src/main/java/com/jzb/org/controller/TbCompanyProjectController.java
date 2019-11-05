@@ -46,6 +46,8 @@ public class TbCompanyProjectController {
     public Response getCompany(@RequestBody Map<String, Object> param){
         Response result;
         try {
+            Map<String , Object> resultMap = new HashMap<>();
+            List<Map<String , Object>> resultList = new ArrayList<>();
             List<Map<String , Object>> paraList = new ArrayList<>();
             List<Map<String , Object>> list  = (List<Map<String, Object>>) param.get("list");
             if(param.containsKey("cname")){
@@ -54,7 +56,9 @@ public class TbCompanyProjectController {
                     comMap.put("cid",list.get(i).get("cid"));
                     comMap.put("cname",param.get("cname"));
                     Map<String , Object> com = tbCompanyProjectService.getCompany(comMap);
-                    paraList.add(com);
+                    if(!JzbTools.isEmpty(com)){
+                        paraList.add(list.get(i));
+                    }
                 }
             }else if(param.containsKey("projectname")){
                 for(int i = 0  ; i< list.size() ; i++){
@@ -62,11 +66,30 @@ public class TbCompanyProjectController {
                     proMap.put("projectid",list.get(i).get("projectid"));
                     proMap.put("projectname",param.get("projectname"));
                     Map<String , Object> com = tbCompanyProjectService.getProject(proMap);
-                    paraList.add(com);
+                    if(!JzbTools.isEmpty(com)){
+                        paraList.add(list.get(i));
+                    }
                 }
             }
+            // 索引
+            int count = 1;
+            // 页数
+            int pageno  = JzbDataType.getInteger(param.get("pageno")) == 1 ? 0 : JzbDataType.getInteger(param.get("pageno"));
+            // 页码
+            int pagesize  = JzbDataType.getInteger(param.get("pagesize"));
+            // 起始
+            int begsize = pageno * pagesize;
+            for(int  i = begsize ; i < paraList.size() ; i++){
+                resultList.add(paraList.get(i));
+                count ++;
+                if(count >= pagesize ){
+                    break;
+                }
+            }
+            resultMap.put("list",resultList);
+            resultMap.put("count",paraList.size());
             result = Response.getResponseSuccess();
-            result.setResponseEntity(paraList);
+            result.setResponseEntity(resultMap);
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

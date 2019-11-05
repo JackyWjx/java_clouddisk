@@ -45,7 +45,6 @@ public class TbHandItemService {
     /**
      * 根据项目id 获取项目跟进详情
      *
-     * @param proid
      * @return
      */
     public List<Map<String , Object>> queryTbCompanyServiceNotDis(Map<String , Object> map){
@@ -73,6 +72,14 @@ public class TbHandItemService {
      */
     public int  queryCount(Map<String , Object> map){
         return mapper.queryCount(map);
+    }
+
+    /**
+     * 获取所有
+     * @return
+     */
+    public List<Map<String , Object>>  selectCompanyService(Map<String , Object> map){
+            return mapper.selectCompanyService(map);
     }
 
 }

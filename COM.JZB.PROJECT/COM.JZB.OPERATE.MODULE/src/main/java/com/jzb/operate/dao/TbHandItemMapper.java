@@ -54,5 +54,11 @@ public interface TbHandItemMapper {
      */
     int queryTbCompanyServiceCount(Map<String , Object> map);
 
+    /**
+     * 获取所有
+     * @param map
+     * @return
+     */
+    List<Map<String , Object>>  selectCompanyService(Map<String , Object> map);
 
 }

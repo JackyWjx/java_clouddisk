@@ -104,7 +104,14 @@ public class TbHandleItemServiceController {
     public Response getCompanyService(@RequestBody Map<String , Object> map){
         Response result ;
         try{
+            JzbTools.logInfo("getCompanyService=================>>"+map.toString());
             PageInfo pageInfo = new PageInfo();
+            // 返回数据
+            List<Map<String , Object>> list = new ArrayList<>();
+            //  总数
+            int companyCount = 0;
+            //  是否需要获取总数
+            boolean isCount = true;
             if(JzbTools.isEmpty(map.get("person"))){
                 map.remove("person");
             }
@@ -112,33 +119,47 @@ public class TbHandleItemServiceController {
             // 判断是否存选择部门
             if(!JzbTools.isEmpty(map.get("cdid"))){
                 //  用户 数组
-                List<String> list =  new ArrayList<>();
+                List<String> bblist =  new ArrayList<>();
                 Response dept  =  api.getDeptUserChildList(map);
-                Map<String , Object> deMap  =  (Map<String, Object>) dept.getResponseEntity();
-                for(Map.Entry <String , Object> typetry:deMap.entrySet()) {
-                    Map<String , Object> typetryMap = (Map<String, Object>) deMap.get(typetry.getKey());
-                    if(typetryMap.containsKey("list") && !JzbTools.isEmpty(typetryMap.get("list"))){
-                        List<Map<String , Object>>  uidList  = (List<Map<String, Object>>) typetryMap.get("list");
-                        for(int i = 0 ; i < uidList.size() ;i++){
-                            list.add(uidList.get(i).get("uid").toString());
-                        }
+                Map<String , Object> deMap  =  (Map<String, Object>) ((ArrayList) dept.getResponseEntity()).get(0);
+                List<Map<String , Object>> paraList = new ArrayList<>();
+                if(!JzbTools.isEmpty(deMap.get("list"))){
+                    paraList.addAll((List)deMap.get("list"));
+                }
+                if(!JzbTools.isEmpty(deMap.get("children"))){
+                    paraList.addAll((List)deMap.get("children"));
+                }
+                for(int i = 0 ; i < paraList.size();i++){
+                    Map<String , Object> uidMap =  paraList.get(i);
+                    if(uidMap.containsKey("uid") && !JzbTools.isEmpty(uidMap.get("uid"))){
+                        bblist.add(uidMap.get("uid").toString());
                     }
                 }
                 map.put("cuid",list.toString().replace("[","").replace("]",""));
             }
-            List<Map<String , Object>> list = service.queryTbCompanyService(map);
+            // 是否有传项目名称 单位名称
             if(!JzbTools.isEmpty(map.get("cname")) || !JzbTools.isEmpty(map.get("projectname"))){
+                list = service.selectCompanyService(new HashMap<>());
                 Map<String , Object>  paraMap =  new HashMap<>();
                 paraMap.put("list",list);
+                // 添加分页数据 进行手动分页
+                paraMap.put("pageno",map.get("pageno"));
+                paraMap.put("pagesize",map.get("pagesize"));
                 if(map.containsKey("cname")){
                     paraMap.put("cname",map.get("cname"));
                 }else {
                     paraMap.put("projectname",map.get("projectname"));
                 }
                 Response api = projectApi.getCompany(paraMap);
-                List<Map<String , Object>> apiMap = (List<Map<String, Object>>) api.getResponseEntity();
+                Map<String , Object> apiMap =  (Map<String , Object>) api.getResponseEntity();
+                // 数据 替换
+                List<Map<String , Object>> apiList= (List<Map<String, Object>>) apiMap.get("list");
+                companyCount = JzbDataType.getInteger(apiMap.get("count"));
+                isCount = false;
                 list.clear();
-                list.addAll(apiMap);
+                list.addAll(apiList);
+            }else{
+                list  = service.queryTbCompanyService(map);
             }
             for(int i =  0 ; i< list.size() ;i++){
                 Map<String , Object> para = list.get(i);
@@ -160,10 +181,12 @@ public class TbHandleItemServiceController {
                     list.get(i).put("cname",proMap.get("cname"));
                 }
             }
-            int count  =  service.queryTbCompanyServiceCount(map);
+            if(isCount){
+                companyCount =  service.queryTbCompanyServiceCount(map);
+            }
             result =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
-            pageInfo.setTotal(count);
+            pageInfo.setTotal(companyCount);
             result.setPageInfo(pageInfo);
         }catch (Exception e){
             JzbTools.logError(e);

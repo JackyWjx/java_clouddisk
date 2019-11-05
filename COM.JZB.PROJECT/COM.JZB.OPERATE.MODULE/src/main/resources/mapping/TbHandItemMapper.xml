@@ -36,6 +36,12 @@
         limit #{pagesize}  offset #{pageno}
     </select>
 
+    <!--  查询服务记录   -->
+    <select id="selectCompanyService" resultType="java.util.Map" parameterType="java.util.Map">
+        select DISTINCT on (projectid)  planid,typeid,cid,projectid,uid,region,handletime,servicetype,personid,person,telphone,context,servicecontent,needres,attach,times,result,nexttime,summary
+        from tb_company_service where status = '1'
+    </select>
+
     <!--  查询服务记录总数   -->
     <select id="queryTbCompanyServiceCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select  count( DISTINCT projectid )  from tb_company_service where status = '1'
