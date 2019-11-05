@@ -14,6 +14,7 @@ import com.jzb.org.service.OrgToken;
 import com.jzb.org.service.ProductService;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -103,7 +104,8 @@ public class ProductController {
     public void createMenuExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/ImportProductMenu.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             // 读取了模板内所有sheet内容
@@ -333,7 +335,8 @@ public class ProductController {
     public void createPageExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/ImportProductPage.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             // 根据产品ID获取产品下所有的菜单
             List<Map<String, Object>> list = productService.getMenuDate(param);
             // 读取excel模板
@@ -521,7 +524,8 @@ public class ProductController {
     public void createControlExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/ImportPageControl.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             // 根据产品ID获取产品下所有的页面
             List<Map<String, Object>> list = productService.getPageDate(param);
             // 读取excel模板
@@ -689,7 +693,8 @@ public class ProductController {
     public void createCompanyTemplate(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/ImportCompanyTemplate.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             // 读取了模板内所有sheet内容
@@ -922,7 +927,8 @@ public class ProductController {
     public void createCompanyCommon(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/ImportCompanyCommon.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             // 读取了模板内所有sheet内容
