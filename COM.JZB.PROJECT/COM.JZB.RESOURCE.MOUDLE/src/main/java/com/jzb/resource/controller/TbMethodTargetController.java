@@ -95,6 +95,8 @@ public class TbMethodTargetController {
      */
     @RequestMapping(value = "/getMethodTargetByTypeid", method = RequestMethod.POST)
     @ResponseBody
+    @CrossOrigin
+    @Transactional
     public Response getMethodTargetByTypeid(@RequestBody Map<String, Object> params) {
         Response result;
         Map<String, Object> userInfo = null;
@@ -193,6 +195,7 @@ public class TbMethodTargetController {
     @RequestMapping(value = "/deleteMethodTarget", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
+    @Transactional
     public Response deleteMethod(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
