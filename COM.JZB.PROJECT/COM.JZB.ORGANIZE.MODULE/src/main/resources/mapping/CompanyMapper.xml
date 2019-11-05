@@ -897,7 +897,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         )
     </insert>
 
-    <!-- 邀请用户加入企业,查询企业中有没有该员工 -->
+    <!-- 查询供应商是否存在该企业 -->
     <select id="queryIsCompanySupplier" parameterType="java.util.Map"
             resultType="java.lang.Integer">
         SELECT
