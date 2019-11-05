@@ -3,6 +3,7 @@ package com.jzb.operate.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.*;
@@ -14,6 +15,8 @@ import com.jzb.operate.service.TbTravelVehicleService;
 import com.jzb.operate.service.TbUserTravelService;
 import com.jzb.operate.util.PageConvert;
 import com.jzb.operate.util.VeriafitionParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +54,13 @@ public class TbTravelRecordController {
     @Autowired
     private OrgCompanyNameApi companyNameApi;
 
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbResourceVotesController.class);
+
+
     /**
      * 根据uid 获取出差申请记录
      *
@@ -61,9 +71,19 @@ public class TbTravelRecordController {
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response getTravekRecordList(@RequestBody Map<String, Object> param) {
+    public Response getTravelRecordList(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String  api="/operate/travelRecord/getTravelRecordList";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             if (JzbCheckParam.allNotEmpty(param, new String[]{"uid", "pagesize", "pageno"})) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 // 设置分页
@@ -79,15 +99,12 @@ public class TbTravelRecordController {
                 }
                 // 得到结果集
                 List<Map<String, Object>> list = tbTravelRecordService.getTravelRecordListByUid(param);
-
                 for (int i = 0, l = list.size(); i < l; i++) {
                     Map<String, Object> map = new HashMap<>();
-
                     // 取出每一行记录的出差工具id
                     map.put("vehicleid", list.get(i).get("vehicle"));
                     // 查出name 后放入
                     list.get(i).put("vehicleName", tbTravelVehicleService.getTravelName(map));
-
                     map.put("travelid", list.get(i).get("travelid"));
                     list.get(i).put("travelAim", tbTravelAimService.queryTravelAim(map));
                     list.get(i).put("userList", tbUserTravelService.queryUserTravel(map));
@@ -102,19 +119,26 @@ public class TbTravelRecordController {
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
                 pi.setTotal(count);
-
                 // 设置userinfo
                 result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-
                 result.setPageInfo(pi);
 
             } else {
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTravelRecordList Method", "[param error] or [param is null]"));
                 result = Response.getResponseError();
             }
         } catch (Exception ex) {
+            flag=false;
             // 返回错误
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTravelRecordList Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -131,7 +155,17 @@ public class TbTravelRecordController {
     @Transactional
     public Response getTravelRecordListByCid(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String  api="/operate/travelRecord/getTravelRecordListByCid";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             if (JzbCheckParam.allNotEmpty(param, new String[]{"count", "curcid", "pagesize", "pageno"})) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 // 设置分页
@@ -160,7 +194,6 @@ public class TbTravelRecordController {
                     list.get(i).put("companyname",company.getResponseEntity());
                     list.get(i).put("starttime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("starttime")));
                     list.get(i).put("finishtime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("finishtime")));
-
                 }
 
                 // 得到总数
@@ -169,21 +202,30 @@ public class TbTravelRecordController {
                 // 定义分页  pageinfo
                 PageInfo pi = new PageInfo();
                 pi.setList(list);
-
                 pi.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
-
                 // 设置userinfo
                 result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-
                 result.setPageInfo(pi);
 
             } else {
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTravelRecordListByCid Method", "[param error] or [param is null]"));
+
                 result = Response.getResponseError();
             }
         } catch (Exception ex) {
+            flag=false;
+
             // 返回错误
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTravelRecordListByCid Method", ex.toString()));
+
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
