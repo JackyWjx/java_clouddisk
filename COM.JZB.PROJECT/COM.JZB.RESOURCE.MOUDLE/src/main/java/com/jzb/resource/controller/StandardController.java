@@ -37,7 +37,7 @@ public class StandardController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(AdvertController.class);
+    private final static Logger logger = LoggerFactory.getLogger(StandardController.class);
 
     /**
      * 标准查询,根据父类查子类
