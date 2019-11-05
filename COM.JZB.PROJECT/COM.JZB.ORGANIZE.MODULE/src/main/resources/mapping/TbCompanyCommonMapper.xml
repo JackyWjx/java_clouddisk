@@ -5,7 +5,7 @@
 <mapper namespace="com.jzb.org.dao.TbCompanyCommonMapper">
 
     <!-- 查询公海单位 不做条件-->
-    <select id="queryCompanyCommon"  resultType="java.util.Map">
+    <select id="queryCompanyCommon" resultType="java.util.Map">
 SELECT
 	tcc.cid,
 	tcc.uid,
@@ -81,10 +81,10 @@ WHERE
 
     <!--所有业主-业主列表查询出来的总数-->
     <select id="getCount" parameterType="java.util.Map" resultType="int">
-       select
-       count(1)
-       from
-       (
+        select
+        count(1)
+        from
+        (
         select * from (
         SELECT
         tcc.cid,
@@ -133,7 +133,6 @@ WHERE
     </select>
 
 
-
     <update id="updateCompanyCommon" parameterType="java.util.Map">
         update
         tb_company_list
@@ -150,12 +149,12 @@ WHERE
     <!--所有业主-业主列表-删除-->
     <update id="deleteCompanyCommon" parameterType="java.util.List">
         <foreach collection="list" item="item" separator=";">
-        update
-        tb_company_common
-        set
-        <if test="item.status != null and item.status != ''">status=#{item.status}</if>
-        where
-        cid = #{item.cid}
+            update
+            tb_company_common
+            set
+            <if test="item.status != null and item.status != ''">status=#{item.status}</if>
+            where
+            cid = #{item.cid}
         </foreach>
     </update>
 
@@ -227,4 +226,17 @@ WHERE
         #{pageno}
     </select>
 
+    <!-- 修改企业信息 -->
+    <update id="updateCompanyListInfo" parameterType="java.util.Map">
+        update
+        tb_company_list
+        set
+        <if test="cname != null and cname != ''">cname=#{cname},</if>
+        <if test="region != null and region != ''">region=#{region},</if>
+        <if test="manager != null and manager != ''">manager=#{uid},</if>
+        <if test="logo != null and logo != ''">logo=#{logo},</if>
+        updtime=#{updtime}
+        where
+        cid = #{cid};
+    </update>
 </mapper>
