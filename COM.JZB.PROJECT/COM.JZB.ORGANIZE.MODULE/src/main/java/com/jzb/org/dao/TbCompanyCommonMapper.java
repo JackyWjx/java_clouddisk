@@ -49,19 +49,6 @@ public interface TbCompanyCommonMapper {
      */
     int getCount(Map<String, Object> param);
 
-    /**
-     * 查询所有业主-业主列表
-     * @param param
-     * @return
-     */
-    List<Map<String, Object>> getCompanyCommon(Map<String, Object> param);
-
-    /**
-     * 所有业主-业主列表-新建
-     * @param param
-     * @return
-     */
-    int saveCompanyCommon(Map<String, Object> param);
 
     /**
      * 所有业主-业主列表-修改
@@ -83,4 +70,12 @@ public interface TbCompanyCommonMapper {
      * @return
      */
     int updateCompanys(Map<String, Object> param);
+
+    /**
+     * 所有业主-业主列表查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getCompanyCommoms(Map<String, Object> param);
+
 }
