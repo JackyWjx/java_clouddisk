@@ -4,6 +4,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.CompanyAuthTempApi;
+import com.jzb.org.api.auth.TbUserControlAuthApi;
 import com.jzb.org.service.TbCompanyProductService;
 import com.jzb.org.service.TbCompanySysconfigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class TbCompanyAuthController {
     @Autowired
     private TbCompanySysconfigService tbCompanySysconfigService;
 
+    @Autowired
+    private TbUserControlAuthApi tbUserControlAuthApi;
+
     /**
      * 获取授权状态
      * @return
@@ -45,11 +49,13 @@ public class TbCompanyAuthController {
                 Response companyIsAuth = companyAuthTempApi.getCompanyIsAuth(param);
                 int count = tbCompanyProductService.queryCompanyProductIsExists(param);
                 String curl = tbCompanySysconfigService.queryCompanySysconfig(param);
+                Response companyIsAuth1 = tbUserControlAuthApi.getCompanyIsAuth(param);
                 Map<String, Object> map=new HashMap<>();
                 map.put("temp",companyIsAuth.getResponseEntity());
                 map.put("computerAuth",count);
                 map.put("levelTwo",curl);
                 map.put("memo","");
+                map.put("auth",companyIsAuth1.getResponseEntity());
                 result=Response.getResponseSuccess();
                 result.setResponseEntity(map);
             }
