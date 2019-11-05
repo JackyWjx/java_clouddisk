@@ -144,7 +144,7 @@ public class TbHandleItemServiceController {
                 Map<String , Object> para = list.get(i);
                 int count  =  service.queryCount(para);
                 list.get(i).put("count",count);
-                para.put("userinfo",(Map<String , Object>) map.get("userinfo"));
+                para.put("userinfo",map.get("userinfo"));
                 Response user = authUserApi.getUserInfo(para);
                 Map<String , Object> userMap = (Map<String, Object>) user.getResponseEntity();
                 list.get(i).put("username",userMap.get("cname"));
