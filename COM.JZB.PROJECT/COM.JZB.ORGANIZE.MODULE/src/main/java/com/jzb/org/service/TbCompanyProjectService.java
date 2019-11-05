@@ -3,14 +3,17 @@ package com.jzb.org.service;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
+import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.dao.TbCompanyProjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 @Service
 public class TbCompanyProjectService {
@@ -145,4 +148,34 @@ public class TbCompanyProjectService {
     public int getCompanyServiceCount(Map<String, Object> param) {
         return tbCompanyProjectMapper.queryCompanyServiceCount(param);
     }
+
+
+    /**
+     * 获取今日添加项目的数量
+     * @param param
+     * @return
+     */
+    public int getComProjectCount(Map<String, Object> param) {
+
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getDefault());
+        String now = sdf.format(date);
+        try
+        {
+            //当前时区下的0时0分0秒
+            Date newDate = sdf.parse(now);
+            long start1 = newDate.getTime();
+            param.put("startTime", start1);
+            //获取当天23时59分59秒
+            param.put("endTime", start1 + 24 * 60 * 60 * 1000 - 1);
+        }
+        catch (Exception e)
+        {
+            JzbTools.logError(e);
+        }
+
+        return tbCompanyProjectMapper.getComProjectCount(param);
+    }
+
 }
