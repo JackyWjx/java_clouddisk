@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.auth.dao.TbUserControlAuthMapper">
+
+
+    <!-- 给单个用户授权 -->
+    <insert id="addUserControlAuth" parameterType="java.util.List">
+        <foreach collection="list" separator=";" index="index" item="item" close="" open="">
+            insert into tb_user_control_auth
+            (cid,uid,pid,mid,pageid,controlid,ouid,addtime,upduid,updtime,status,summary)
+            values (
+            <choose>
+                <when test="item.cid!=null and item.cid!=''">
+                    #{item.cid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.uid!=null and item.uid!=''">
+                    #{item.uid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.pid!=null and item.pid!=''">
+                    #{item.pid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.mid!=null and item.mid!=''">
+                    #{item.mid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.pageid!=null and item.pageid!=''">
+                    #{item.pageid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.controlid!=null and item.controlid!=''">
+                    #{item.controlid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.ouid!=null and item.ouid!=''">
+                    #{item.ouid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.addtime!=null and item.addtime!=''">
+                    #{item.addtime},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.upduid!=null and item.upduid!=''">
+                    #{item.upduid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.updtime!=null and item.updtime!=''">
+                    #{item.updtime},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.status!=null and item.status!=''">
+                    #{item.status},
+                </when>
+                <otherwise>
+                    1,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.summary!=null and item.summary!=''">
+                    #{item.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            );
+        </foreach>
+    </insert>
+
+</mapper>
