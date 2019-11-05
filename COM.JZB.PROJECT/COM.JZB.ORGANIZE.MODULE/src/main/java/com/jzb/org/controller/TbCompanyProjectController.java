@@ -1,6 +1,7 @@
 package com.jzb.org.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -9,6 +10,8 @@ import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.TbCompanyProjectService;
 import com.jzb.org.util.SetPageSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,11 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "org/CompanyProject")
 public class TbCompanyProjectController {
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbCompanyCommonController.class);
 
     @Autowired
     private TbCompanyProjectService tbCompanyProjectService;
@@ -263,4 +271,53 @@ public class TbCompanyProjectController {
         }
         return result;
     }
+
+
+    /**
+     * 获取今日添加项目
+     * @param param
+     * @return
+     */
+
+    @RequestMapping(value = "/getComProjectCount",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getComProjectCount(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/CompanyProject/getComProjectCount";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            int count =  tbCompanyProjectService.getComProjectCount(param);
+
+            PageInfo pageInfo = new PageInfo();
+
+            pageInfo.setTotal(count);
+            // 获取用户信息返回
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            result.setPageInfo(pageInfo);
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getComProjectCount Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 }

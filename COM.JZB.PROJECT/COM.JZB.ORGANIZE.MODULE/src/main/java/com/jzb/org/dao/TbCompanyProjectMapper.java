@@ -86,4 +86,11 @@ public interface TbCompanyProjectMapper {
      */
     Map<String , Object> getProject(Map<String, Object> param);
 
+    /**
+     * 获取今日添加项目的数量
+     * @param param
+     * @return
+     */
+    int getComProjectCount(Map<String, Object> param);
+
 }

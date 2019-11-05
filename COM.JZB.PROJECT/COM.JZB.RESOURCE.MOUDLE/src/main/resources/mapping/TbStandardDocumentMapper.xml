@@ -9,6 +9,7 @@
     <!--根据文档类别进行查询-->
     <select id="getTbStandardDocument" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        policystatus,
         domcode,
         context,
         adduid,
@@ -68,19 +69,23 @@
         <if test="endTime != null and endTime != ''">
             and effective &lt;= #{endTime}
         </if>
-        limit
-        #{pagesize}
-        offset
-        #{pageno}
     </select>
 
     <!--新增-->
     <insert id="saveTbStandardDom" parameterType="java.util.Map">
         insert into
-        tb_standard_document(adduid,context,domtitle,domftype,typecode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
+        tb_standard_document(policystatus,adduid,context,domtitle,domftype,typecode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
         updtime)
         values
         (
+        <choose>
+            <when test="policystatus != null">
+                #{policystatus},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="adduid != null">
                 #{adduid},
@@ -199,6 +204,7 @@
         update
         tb_standard_document
         set
+        <if test="policystatus != null">policystatus=#{policystatus},</if>
         <if test="tpeycode != null">typecode=#{tpeycode},</if>
         <if test="context != null">context=#{context},</if>
         <if test="domcode != null">domcode=#{domcode},</if>
@@ -226,6 +232,7 @@
     <!--根据名称进行模糊查询-->
     <select id="getCname" parameterType="java.util.Map" resultType="java.util.Map">
        select
+        policystatus,
        adduid,
         Id,
         typecode,

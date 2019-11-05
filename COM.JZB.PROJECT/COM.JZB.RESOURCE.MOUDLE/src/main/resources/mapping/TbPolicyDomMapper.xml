@@ -112,6 +112,7 @@
     <!--根据文档类别进行查询，文档名称进行模糊查询 LBQ-->
     <select id="getTbPolicyDocument" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        policystatus,
         context,
         domcode,
         adduid,
@@ -170,10 +171,26 @@
     <!--新增-->
     <insert id="saveTbPolicyDom" parameterType="java.util.Map">
         insert into
-        tb_policy_document(domtitle,adduid,domid,typeid,domcode,cname,price,department,effective,stdrange,status,pagekey,pagedesc,addtime,
+        tb_policy_document(context,policystatus,domtitle,adduid,domid,typeid,domcode,cname,price,department,effective,stdrange,status,pagekey,pagedesc,addtime,
         updtime,idx)
         values
         (
+        <choose>
+            <when test="context != null">
+                #{context},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="policystatus != null">
+                #{policystatus},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="domtitle != null">
                 #{domtitle},
@@ -282,6 +299,7 @@
         update
         tb_policy_document
         set
+        <if test="policystatus != null">policystatus=#{policystatus},</if>
         <if test="tpeycode != null">tpeycode=#{tpeycode},</if>
         <if test="context != null">context=#{context},</if>
         <if test="domcode != null">domcode=#{domcode},</if>

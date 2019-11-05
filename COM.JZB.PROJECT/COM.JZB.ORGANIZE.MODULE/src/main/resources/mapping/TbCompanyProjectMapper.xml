@@ -366,4 +366,16 @@
         offset
         #{pageno}
     </select>
+
+    <!--所有业主-今日添加项目的数量-->
+    <select id="getComProjectCount" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from
+        tb_company_project
+        where
+        addtime &gt;= #{startTime} and addtime &lt;= #{endTime}
+    </select>
+
+
 </mapper>

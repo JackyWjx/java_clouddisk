@@ -1,5 +1,6 @@
 package com.jzb.org.dao;
 
+import com.jzb.base.message.Response;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -55,4 +56,36 @@ public interface TbCompanyPropertyMapper {
      * @return
      */
     List<Map<String, Object>> queryLevelCount(Map<String, Object> param);
+
+
+    /**
+     * 分配服务人员
+     * @param param
+     * @return
+     */
+    int addCompanyPropert(Map<String, Object> param);
+
+
+    /**
+     * 查询单位的设置等级
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getsaveCompanyPropertys(Map<String, Object> param);
+
+
+    /**
+     * 修改等级
+     * @param param
+     * @return
+     */
+    int updateompanyPropertys(Map<String, Object> param);
+
+
+    /**
+     * 根据A类 B类  C类进行分页
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> GroupCompanyPropert(Map<String, Object> param);
 }
