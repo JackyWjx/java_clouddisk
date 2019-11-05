@@ -1,5 +1,6 @@
 package com.jzb.api.controller.org;
 
+import com.jzb.api.api.org.CompanyCommonApi;
 import com.jzb.api.api.org.CompanyOrgApi;
 import com.jzb.api.service.CompanyService;
 import com.jzb.api.service.DeptUserService;
@@ -59,6 +60,8 @@ public class DeptUserController {
     @Autowired
     private CompanyOrgApi companyOrgApi;
 
+    @Autowired
+    private CompanyCommonApi companyCommonApi;
     /**
      * 根据企业id和部门中的手机号或用户姓名获取组织与用户的数据
      *
@@ -389,27 +392,6 @@ public class DeptUserController {
                     if (JzbTools.isEmpty(uid)) {
                         result = Response.getResponseError();
                     } else {
-                        // 获取前台传过来的营业期限
-                        String limit = JzbDataType.getString(param.get("limitday"));
-
-                        // 获取前台传过来的成立日期
-                        String birth = JzbDataType.getString(param.get("birthday"));
-
-                        // 注意是空格+UTC,获取UTC通用标准时格式yyyy-MM-dd'T'HH:mm:ss.SSS UTC
-                        limit = limit.replace("Z", " UTC");
-                        birth = birth.replace("Z", " UTC");
-                        // 设置时间格式yyyy-MM-dd'T'HH:mm:ss.SSS Z
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
-                        Date date = simpleDateFormat.parse(limit);
-
-                        // 将日期从毫秒转化为毫秒值
-                        long limitday = date.getTime() / 1000;
-                        param.put("limitday", limitday);
-
-                        date = simpleDateFormat.parse(birth);
-                        // 将日期从毫秒转化为毫秒值
-                        long birthday = date.getTime() / 1000;
-                        param.put("birthday", birthday);
                         param.put("type", "1");
                         // 创建供应商单位
                         param.put("userinfo", userInfo);
@@ -430,7 +412,7 @@ public class DeptUserController {
                 } else {
                     result = Response.getResponseError();
                 }
-            }else {
+            } else {
                 result = Response.getResponseError();
                 result.setResponseEntity("电话号码输入有误!");
             }
@@ -455,6 +437,48 @@ public class DeptUserController {
         } catch (Exception e) {
             JzbTools.logError(e);
             e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-所有业主-业主列表-修改
+     * 点击修改判断是否是系统中的用户如果不是就新建用户
+     *
+     * @param param
+     * @param token
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/11
+     */
+    @RequestMapping(value = "/modifyCompanyCommon", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyCompanyCommon(@RequestBody Map<String, Object> param, @RequestHeader(value = "token") String token) {
+        Response result;
+        try {
+            if (toPhone(JzbDataType.getString(param.get("phone")))) {
+                Map<String, Object> userInfo = apiToken.getUserInfoByToken(token);
+                param.put("userinfo", userInfo);
+                if (userInfo.size() > 0) {
+                    //先确认负责人id
+                    Map<String, Object> send = companyService.getUid(param);
+                    String uid = JzbDataType.getString(send.get("uid"));
+                    if (JzbTools.isEmpty(uid)) {
+                        result = Response.getResponseError();
+                    } else {
+                        param.putAll(send);
+                        result = companyCommonApi.modifyCompanyCommon(param);
+                    }
+                } else {
+                    result = Response.getResponseError();
+                }
+            } else {
+                result = Response.getResponseError();
+                result.setResponseEntity("电话号码输入有误!");
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
         }
         return result;
     }
