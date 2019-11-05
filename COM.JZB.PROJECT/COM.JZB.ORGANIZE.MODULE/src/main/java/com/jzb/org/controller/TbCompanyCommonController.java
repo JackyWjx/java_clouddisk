@@ -129,7 +129,8 @@ public class TbCompanyCommonController {
                     }
                     // 转map
                     if (resultParam != null) {
-                        list.get(i).put("region", resultParam);
+                        Response response = regionBaseApi.getRegionInfo(resultParam);
+                        list.get(i).put("region", response.getResponseEntity());
                     }
                 }
                 // 分页对象
@@ -206,7 +207,8 @@ public class TbCompanyCommonController {
                     }
                     // 转map
                     if (resultParam != null) {
-                        list.get(i).put("region", resultParam);
+                        Response response = regionBaseApi.getRegionInfo(resultParam);
+                        list.get(i).put("region", response.getResponseEntity());
                     }
                 }
                 // 分页对象

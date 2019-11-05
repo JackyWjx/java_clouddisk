@@ -163,7 +163,7 @@ public class CompanyUserService {
                 // 判断返回值中是否存在省信息
                 if (!JzbDataType.isEmpty(myJsonArray.get(JzbDataType.getString(param.get("province"))))) {
                     // 获取对应省下所有的城市信息
-                    List<Map<String, Object>> myJsonList = (List<Map<String, Object>>) myJsonArray.get(JzbDataType.getString(param.get("1")));
+                    List<Map<String, Object>> myJsonList = (List<Map<String, Object>>) myJsonArray.get(JzbDataType.getString(param.get("province")));
                     for (int i = 0; i < myJsonList.size(); i++) {
                         // 获取省份下所有城市的信息
                         Map<String, Object> provinceMap = myJsonList.get(i);
@@ -171,7 +171,7 @@ public class CompanyUserService {
                         // 如果为传入的城市ID则进行下一步
                         if (!JzbDataType.isEmpty(provinceMap.get(JzbDataType.getString(param.get("city"))))) {
                             // 获取城市下所有的县级信息
-                            List<Map<String, Object>> countyMap = (List<Map<String, Object>>) provinceMap.get(JzbDataType.getString(param.get("2")));
+                            List<Map<String, Object>> countyMap = (List<Map<String, Object>>) provinceMap.get(JzbDataType.getString(param.get("city")));
                             Map<String, Object> county =  countyMap.get(0);
                             List<Map<String, Object>> cityList = (List<Map<String, Object>>) county.get("list");
                             for (int b = 0; b < cityList.size(); b++) {
