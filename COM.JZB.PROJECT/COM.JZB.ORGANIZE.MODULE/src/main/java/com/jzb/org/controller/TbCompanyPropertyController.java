@@ -72,13 +72,13 @@ public class TbCompanyPropertyController {
                 map.put(list.get(i).get("dictvalue").toString(), list.get(i).get("count"));
             }
 
-            while (!map.containsKey("A级") || !map.containsKey("B级") || !map.containsKey("C级")) {
-                if (!map.containsKey("A级")) {
-                    map.put("A级", 0);
-                } else if (!map.containsKey("B级")) {
-                    map.put("B级", 0);
-                } else if (!map.containsKey("C级")) {
-                    map.put("C级", 0);
+            while (!map.containsKey("A类") || !map.containsKey("B类") || !map.containsKey("C类")) {
+                if (!map.containsKey("A类")) {
+                    map.put("A类", 0);
+                } else if (!map.containsKey("B类")) {
+                    map.put("B类", 0);
+                } else if (!map.containsKey("C类")) {
+                    map.put("C类", 0);
                 }
             }
 
