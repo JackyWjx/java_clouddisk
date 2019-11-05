@@ -7,6 +7,7 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
+import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.dao.TbCompanyCommonMapper;
 import com.jzb.org.dao.TbCompanyListMapper;
 import net.sf.json.JSONArray;
@@ -39,6 +40,12 @@ public class TbCompanyCommonService {
 
     @Autowired
     private TbCompanyListMapper tbCompanyListMapper;
+
+    @Autowired
+    private OrgConfigProperties config;
+
+    @Autowired
+    private CompanyService companyService;
 
     /**
      * 查询不带条件的业主单位全部（不带条件）
@@ -225,4 +232,23 @@ public class TbCompanyCommonService {
         return list;
     }
 
+    /**
+     * CRM-所有业主-业主列表-修改
+     * 点击修改判断是否是系统中的用户如果不是就新建用户
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/11
+     */
+    public int modifyCompanyCommon(Map<String, Object> param) {
+        if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("password")))){
+            //给负责人发送短信
+            param.put("groupid", config.getAddCompany());
+            param.put("senduid", "addCommon1013");
+            param.put("msgtag", "addCommon1013");
+            companyService.sendRemind(param);
+        }
+        long updtime = System.currentTimeMillis();
+        param.put("updtime", updtime);
+        return tbCompanyCommonMapper.updateCompanyListInfo(param);
+    }
 }
