@@ -111,4 +111,9 @@
         </foreach>
     </insert>
 
+
+    <!-- 查询cid是否存在 -->
+    <select id="queryIsExistsCid" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_user_control_auth where cid=#{cid} and status='1'
+    </select>
 </mapper>

@@ -22,4 +22,13 @@ public class TbUserControlAuthService {
     public int addUserControlAuth(List<Map<String, Object>> list){
         return tbUserControlAuthMapper.addUserControlAuth(list);
     }
+
+    /**
+     * 查询cid是否存在
+     * @param param
+     * @return
+     */
+    public int queryIsExistsCid(Map<String, Object> param){
+        return tbUserControlAuthMapper.queryIsExistsCid(param);
+    }
 }

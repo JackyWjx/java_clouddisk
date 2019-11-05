@@ -17,4 +17,11 @@ public interface TbUserControlAuthMapper {
      * @return
      */
     int addUserControlAuth(List<Map<String, Object>> list);
+
+    /**
+     * 查询cid是否存在
+     * @param param
+     * @return
+     */
+    int queryIsExistsCid(Map<String, Object> param);
 }
