@@ -40,7 +40,7 @@ public class TbHandleItemServiceController {
     private OrgCompanyApi companyApi;
 
     @Autowired
-    TbCompanyProjectApi projectApi;
+    private TbCompanyProjectApi projectApi;
 
     @Autowired
     private TbCompanyService companyService;
