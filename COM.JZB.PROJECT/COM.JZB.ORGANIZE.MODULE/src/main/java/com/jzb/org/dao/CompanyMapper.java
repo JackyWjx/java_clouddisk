@@ -39,6 +39,14 @@ public interface CompanyMapper {
     Map<String, Object> queryCompanyProject(Map<String, Object> param);
 
     /**
+     * 主页获取单位信息
+     *
+     * @param param
+     * @return
+     */
+    Map<String, Object> queryComapny(Map<String, Object> param);
+
+    /**
      * 获取当前用户下的所以企业
      *
      * @param param
@@ -329,4 +337,11 @@ public interface CompanyMapper {
      * @Author: Kuang Bin
      */
     int insertCompanySupplier(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-公海-供应商5
+     * 点击新建供应商建立单位下供应商
+     * @Author: Kuang Bin
+     */
+    int queryIsCompanySupplier(Map<String, Object> param);
 } // End interface CompanyMapper

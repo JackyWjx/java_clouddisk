@@ -1,6 +1,7 @@
 package com.jzb.org.controller;
 
 import com.jzb.base.log.JzbLoggerUtil;
+import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,13 +72,13 @@ public class TbCompanyPropertyController {
                 map.put(list.get(i).get("dictvalue").toString(), list.get(i).get("count"));
             }
 
-            while (!map.containsKey("A级") || !map.containsKey("B级") || !map.containsKey("C级")) {
-                if (!map.containsKey("A级")) {
-                    map.put("A级", 0);
-                } else if (!map.containsKey("B级")) {
-                    map.put("B级", 0);
-                } else if (!map.containsKey("C级")) {
-                    map.put("C级", 0);
+            while (!map.containsKey("A类") || !map.containsKey("B类") || !map.containsKey("C类")) {
+                if (!map.containsKey("A类")) {
+                    map.put("A类", 0);
+                } else if (!map.containsKey("B类")) {
+                    map.put("B类", 0);
+                } else if (!map.containsKey("C类")) {
+                    map.put("C类", 0);
                 }
             }
 
@@ -191,7 +193,7 @@ public class TbCompanyPropertyController {
                 result = Response.getResponseSuccess(userInfo);
             } else {
                 //返回失败的信息
-                result = Response.getResponseError();
+                    result = Response.getResponseError();
             }
         } catch (Exception e) {
             //打印错误信息
@@ -200,4 +202,98 @@ public class TbCompanyPropertyController {
         }
         return result;
     }
+
+    /**
+     * 分配服务人员
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/addCompanyPropert",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyProperty(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                result = Response.getResponseError();
+            } else {
+                //添加数据获取返回成功信息的结果
+                result = tbCompanyPropertyService.addCompanyPropert(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+
+            }
+
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /**
+     * 根据A类 B类  C类进行分页
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/GroupCompanyPropert", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response GroupCompanyPropert(@RequestBody(required = false) Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyProperty/GroupCompanyPropert";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+               List<Map<String,Object>>  list = tbCompanyPropertyService.GroupCompanyPropert(param);
+
+           List<Object> list1 = new ArrayList<>();
+            Map<String, Object> hashMap = new HashMap<>();
+            for (int i = 0; i < list.size(); i++) {
+                    String dictvalue = (String) list.get(i).get("dictvalue");
+                    list1.add(dictvalue);
+
+            }
+            if (!list1.contains("A类")) {
+                hashMap.put("dictvalue", "A类");
+                hashMap.put("count", 0);
+            } else if (!    list1.contains("B类")) {
+                hashMap.put("dictvalue", "B类");
+                hashMap.put("count", 0);
+            }
+            else if (!list1.contains("C类")) {
+                hashMap.put("dictvalue", "C类");
+                hashMap.put("count", 0);
+            }
+            list.add(hashMap);
+
+
+            PageInfo pageInfo = new PageInfo();
+
+            pageInfo.setList(list);
+            // 获取用户信息返回
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "GroupCompanyPropert Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 }

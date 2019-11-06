@@ -117,7 +117,7 @@ public class TbSolutionDomService {
     public int removeSolutionDom(Map<String, Object> param) {
         long updtime = System.currentTimeMillis();
         param.put("updtime", updtime);
-        param.put("status", "2");
+        param.put("status", 2);
         // 加入文章信息
         return tbSolutionDomMapper.deleteSolutionDom(param);
     }
@@ -129,7 +129,7 @@ public class TbSolutionDomService {
      * @author kuangbin
      */
     public int searchSolutionDomCount(Map<String, Object> param) {
-        param.put("status", "1");
+        param.put("status", 1);
         return tbSolutionDomMapper.searchSolutionDomCount(param);
     }
 
@@ -140,7 +140,7 @@ public class TbSolutionDomService {
      * @author kuangbin
      */
     public List<Map<String, Object>> searchSolutionDom(Map<String, Object> param) {
-        param.put("status", "1");
+        param.put("status", 1);
         // 设置分页参数
         param = setPageSize(param);
         List<Map<String, Object>> list = tbSolutionDomMapper.searchSolutionDom(param);

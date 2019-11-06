@@ -5,11 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.resource.service.StandardService;
 import com.jzb.resource.util.PageConvert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +35,11 @@ public class StandardController {
     private StandardService standardService;
 
     /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(StandardController.class);
+
+    /**
      * 标准查询,根据父类查子类
      *
      * @return
@@ -41,7 +49,18 @@ public class StandardController {
     @CrossOrigin
     public Response queryFatherOne(@RequestBody(required = false) Map<String, Object> param) {
         Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/standardDocument/getFatherOne";
+        boolean flag = true;
         try {
+
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
 
             List<Map<String, Object>> records = standardService.queryFatherOne();
 
@@ -112,8 +131,16 @@ public class StandardController {
             response = Response.getResponseSuccess();
             response.setResponseEntity(result);
         } catch (Exception e) {
+            flag = false;
             e.printStackTrace();
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryFatherOne Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }
@@ -128,17 +155,30 @@ public class StandardController {
     @CrossOrigin
     public Response queryDocumentsList(@RequestBody Map<String, Object> params) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/standardDocument/getDocumentsList";
+        boolean flag = true;
         try {
+            if (params.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) params.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
             // 判断如果参数为空则返回404
             if (JzbCheckParam.haveEmpty(params, new String[]{"pageno", "pagesize", "typeid"})) {
                 result = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryDocumentsList Method", "[param error] or [param is null]"));
+
             } else {
                 List<Map<String, Object>> list;
-                int count ;
+                int count;
                 // 为1 的时候返回空list
                 if (params.get("typeid").toString().equals("1")) {
-                    list=new ArrayList<>();
-                    count=0;
+                    list = new ArrayList<>();
+                    count = 0;
                 } else {
                     // 设置分页参数
                     PageConvert.setPageRows(params);
@@ -165,8 +205,16 @@ public class StandardController {
                 result.setPageInfo(pi);
             }
         } catch (Exception e) {
+            flag = false;
             e.printStackTrace();
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryDocumentsList Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -182,16 +230,28 @@ public class StandardController {
     @CrossOrigin
     public Response getStandartDocumentDesc(@RequestBody Map<String, Object> params) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/standardDocument/getStandartDocumentDesc";
+        boolean flag = true;
         try {
+            if (params.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) params.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
             // 判断如果参数为空则返回404
             if (JzbCheckParam.haveEmpty(params, new String[]{"domid"})) {
                 result = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getStandartDocumentDesc Method", "[param error] or [param is null]"));
             } else {
 
                 // 结果集
                 List<Map<String, Object>> list = standardService.getStandardDocumentDesc(params);
-                for (int i=0,l=list.size();i<l;i++){
-                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")),JzbDateStr.yyyy_MM_dd));
+                for (int i = 0, l = list.size(); i < l; i++) {
+                    list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
                 }
                 // 定义返回pageinfo
                 PageInfo pi = new PageInfo();
@@ -203,30 +263,48 @@ public class StandardController {
 
             }
         } catch (Exception e) {
-
+            flag = false;
             // 打印异常信息
             e.printStackTrace();
             result = Response.getResponseError();
-
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getStandartDocumentDesc Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
 
-
     /**
      * 标准文档热门榜
-     * @author chenzhengduan
+     *
      * @param param
      * @return
+     * @author chenzhengduan
      */
     @RequestMapping(value = "/getStandartHotDom", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     public Response getSolutionHotDom(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/standardDocument/getStandartHotDom";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
             if (JzbCheckParam.haveEmpty(param, new String[]{"count"})) {
                 result = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getSolutionHotDom Method", "[param error] or [param is null]"));
             } else {
                 // 查询结果
                 List<Map<String, Object>> list = standardService.queryHotDom(param);
@@ -237,9 +315,17 @@ public class StandardController {
                 result.setPageInfo(pi);
             }
         } catch (Exception e) {
+            flag = false;
             // 打印异常信息
             e.printStackTrace();
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getSolutionHotDom Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }

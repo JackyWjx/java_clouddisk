@@ -1,5 +1,6 @@
 package com.jzb.org.service;
 
+import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.org.dao.TbCompanyPropertyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,12 +71,23 @@ public class TbCompanyPropertyService {
      * @return
      */
     public int saveCompanyPropertys(Map<String, Object> param) {
-        param.put("typeid", "t111111");
-        param.put("dictid", JzbRandom.getRandomChar(11));
-        long time = System.currentTimeMillis();
-        param.put("addtime",time);
-        param.put("updtime",time);
-        return tbCompanyPropertyMapper.saveCompanyPropertys(param);
+
+
+         List<Map<String,Object>> list = tbCompanyPropertyMapper.getsaveCompanyPropertys(param);
+        int count;
+        if (list.size() > 0) {
+            param.put("updtime", System.currentTimeMillis());
+           count = tbCompanyPropertyMapper.updateompanyPropertys(param);
+        } else {
+
+            param.put("typeid", "t111111");
+            param.put("dictid", JzbRandom.getRandomChar(11));
+            long time = System.currentTimeMillis();
+            param.put("addtime",time);
+            param.put("updtime",time);
+           count =  tbCompanyPropertyMapper.saveCompanyPropertys(param);
+        }
+        return count;
     }
 
 
@@ -86,5 +98,28 @@ public class TbCompanyPropertyService {
      */
     public List<Map<String, Object>> queryLevelCount(Map<String, Object> param){
         return tbCompanyPropertyMapper.queryLevelCount(param);
+    }
+
+    /**
+     *  分配服务人员
+     * @param param
+     * @return
+     */
+    public int addCompanyPropert(Map<String, Object> param) {
+        param.put("typeid", "t222222");
+        param.put("dictid", JzbRandom.getRandomChar(11));
+        long time = System.currentTimeMillis();
+        param.put("addtime",time);
+        param.put("updtime",time);
+        return tbCompanyPropertyMapper.addCompanyPropert(param);
+    }
+
+    /**
+     * 根据A类 B类  C类进行分页
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> GroupCompanyPropert(Map<String, Object> param) {
+        return tbCompanyPropertyMapper.GroupCompanyPropert(param);
     }
 }

@@ -29,6 +29,13 @@ public interface TbCompanyCommonMapper {
     List<Map<String, Object>> queryCompanyCommonByKeyWord(Map<String, Object> param);
 
     /**
+     * 查询单位名称
+     * @param param
+     * @return
+     */
+    String queryCompanyNameByID(Map<String, Object> param);
+
+    /**
      * 修改单位信息
      * @param param
      * @return
@@ -42,19 +49,6 @@ public interface TbCompanyCommonMapper {
      */
     int getCount(Map<String, Object> param);
 
-    /**
-     * 查询所有业主-业主列表
-     * @param param
-     * @return
-     */
-    List<Map<String, Object>> getCompanyCommon(Map<String, Object> param);
-
-    /**
-     * 所有业主-业主列表-新建
-     * @param param
-     * @return
-     */
-    int saveCompanyCommon(Map<String, Object> param);
 
     /**
      * 所有业主-业主列表-修改
@@ -76,4 +70,20 @@ public interface TbCompanyCommonMapper {
      * @return
      */
     int updateCompanys(Map<String, Object> param);
+
+    /**
+     * 所有业主-业主列表查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getCompanyCommoms(Map<String, Object> param);
+
+    /**
+     * CRM-所有业主-业主列表-修改
+     * 点击修改判断是否是系统中的用户如果不是就新建用户
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/11
+     */
+    int updateCompanyListInfo(Map<String, Object> param);
 }

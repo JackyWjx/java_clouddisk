@@ -38,4 +38,13 @@ public interface OrgCompanyApi {
     @CrossOrigin
     public Response getEnterpriseData(@RequestBody Map<String, Object> param);
 
+    /**
+     * 根据单位id获取单位信息
+     *
+     * @author hanbin
+     */
+    @RequestMapping(value = "/getCompany", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompany(@RequestBody Map<String, Object> param);
+
 }

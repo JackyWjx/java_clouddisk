@@ -23,4 +23,13 @@ public interface TbCompanyListMapper {
      * @return
      */
     int getCount(Map<String, Object> param);
+
+
+    /**
+     * 获取今天添加业主的数量
+     * @param param
+     * @return
+     */
+    int getCompanyListCount(Map<String, Object> param);
+
 }

@@ -20,7 +20,7 @@ public interface TbHandItemMapper {
      * @param proid
      * @return
      */
-    List<Map<String , Object>>  queryTbHandleItem(Map<String , Object> map);
+    List<Map<String , Object>>  queryTbCompanyServiceNotDis(Map<String , Object> map);
 
     /**
      * 根据项目id 获取项目跟进详情总数
@@ -28,7 +28,15 @@ public interface TbHandItemMapper {
      * @param proid
      * @return
      */
-    int  queryTbHandleItemCount(Map<String , Object> map);
+    int  queryTbCompanyServiceNotDisCount(Map<String , Object> map);
+
+    /**
+     * 根据项目id
+     *
+     * @param proid
+     * @return
+     */
+    int  queryCount(Map<String , Object> map);
 
     /**
      * 根据项目id 获取项目跟进详情
@@ -44,12 +52,13 @@ public interface TbHandItemMapper {
      * @param proid
      * @return
      */
-    int  queryTbCompanyServiceCount(Map<String , Object> map);
+    int queryTbCompanyServiceCount(Map<String , Object> map);
 
     /**
-     * 查询项目总数
+     * 获取所有
      * @param map
      * @return
      */
-    int queryCompanyServiceTypeCount(Map<String , Object> map);
+    List<Map<String , Object>>  selectCompanyService(Map<String , Object> map);
+
 }

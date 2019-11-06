@@ -71,4 +71,26 @@ public interface TbCompanyProjectMapper {
      * @DateTime: 2019/10/19
      */
     List<Map<String, Object>> queryServiceProject(Map<String, Object> param);
+
+    /**
+     * 模糊查询单位名称
+     * @param param
+     * @return
+     */
+    Map<String , Object> getCompany(Map<String, Object> param);
+
+    /**
+     * 模糊查询项目名称
+     * @param param
+     * @return
+     */
+    Map<String , Object> getProject(Map<String, Object> param);
+
+    /**
+     * 获取今日添加项目的数量
+     * @param param
+     * @return
+     */
+    int getComProjectCount(Map<String, Object> param);
+
 }

@@ -13,6 +13,10 @@
         cid=#{cid}
     </update>
 
+    <select id="queryComapny" resultType="java.util.Map" parameterType="java.util.Map">
+                select * from tb_company_list where cid =  #{cid}
+    </select>
+
     <select id="queryCompanyProject" resultType="java.util.Map" parameterType="java.util.Map">
         select * from tb_company_project where projectid =  #{projectid}
     </select>
@@ -145,7 +149,7 @@
         VALUES
         (
         #{cid},
-        #{limitday},
+        ${limitday},
         #{address},
         #{range},
         #{ctype},
@@ -166,7 +170,7 @@
             </otherwise>
         </choose>
         #{capital},
-        #{birthday},
+        ${birthday},
         <choose>
             <when test="license != null and license != ''">
                 #{license},
@@ -201,8 +205,8 @@
         updtime = #{modtime},
         ctype = #{ctype},
         capital = #{capital},
-        birthday = #{birthday},
-        limitday = #{limitday},
+        birthday = ${birthday},
+        limitday = ${limitday},
         range = #{range},
         ouid = #{uid}
         <if test="license !=null and license != ''">, license = #{license}</if>
@@ -859,6 +863,8 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
             </otherwise>
         </choose>
         )
+        ON conflict(cid) DO UPDATE SET
+        status = #{status}
     </insert>
 
     <!--管理员创建公海单位-->
@@ -890,4 +896,16 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         </choose>
         )
     </insert>
+
+    <!-- 查询供应商是否存在该企业 -->
+    <select id="queryIsCompanySupplier" parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_company_supplier
+        where
+        cid = #{maincid}
+        and supid = #{cid}
+    </select>
 </mapper>

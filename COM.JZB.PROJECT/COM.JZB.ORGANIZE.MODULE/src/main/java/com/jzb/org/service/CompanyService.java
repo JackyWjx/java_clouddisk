@@ -70,6 +70,18 @@ public class CompanyService {
         return companyMapper.queryCompanyProject(param);
     }
 
+
+    /**
+     * 开放平台调用接口修改企业地址,地区信息
+     *
+     * @param param
+     * @return
+     * @author kuangbin
+     */
+    public Map<String, Object> queryComapny(Map<String, Object> param) {
+        return companyMapper.queryComapny(param);
+    }
+
     /**
      * 开放平台调用接口修改企业地址,地区信息
      *
@@ -178,27 +190,6 @@ public class CompanyService {
                 // 修改企业List表信息,返回修改数
                 count = companyMapper.updateCompanyList(param);
                 if (count == 1) {
-                    // 获取前台传过来的营业期限
-                    String limit = JzbDataType.getString(param.get("limitday"));
-
-                    // 获取前台传过来的成立日期
-                    String birth = JzbDataType.getString(param.get("birthday"));
-
-                    // 注意是空格+UTC,获取UTC通用标准时格式yyyy-MM-dd'T'HH:mm:ss.SSS UTC
-                    limit = limit.replace("Z", " UTC");
-                    birth = birth.replace("Z", " UTC");
-                    // 设置时间格式yyyy-MM-dd'T'HH:mm:ss.SSS Z
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
-                    Date date = simpleDateFormat.parse(limit);
-
-                    // 将日期从毫秒转化为毫秒值
-                    long limitday = date.getTime() / 1000;
-                    param.put("limitday", limitday);
-
-                    date = simpleDateFormat.parse(birth);
-                    // 将日期从毫秒转化为毫秒值
-                    long birthday = date.getTime() / 1000;
-                    param.put("birthday", birthday);
                     // 增加企业Info表信息,返回修改成功数
                     count = companyMapper.insertCompanyInfo(param);
                 }
@@ -884,7 +875,12 @@ public class CompanyService {
                 sendRemind(send);
             }
         }
-        int count = companyMapper.insertCompanySupplier(param);
+        int count = companyMapper.queryIsCompanySupplier(param);
+        if (count==0){
+            count = companyMapper.insertCompanySupplier(param);
+        }else{
+            count = 4;
+        }
         if (count == 1) {
             count = companyMapper.insertCompanyCommon(param);
         }

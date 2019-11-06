@@ -1,11 +1,14 @@
 package com.jzb.resource.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.AdvertService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +29,11 @@ public class AdvertController {
 
     @Autowired
     private AdvertService advertService;
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(AdvertController.class);
 
 
     /**
@@ -48,15 +56,33 @@ public class AdvertController {
      */
     @RequestMapping("/queryAdvertisingList")
     public Response queryAdvertisingList(@RequestBody Map<String, Object> param) {
-        Response response = null;
+        Response response;
+        Map<String, Object> userInfo = null;
+        String  api="/advertising/queryAdvertisingList";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             List<Map<String, Object>> list = advertService.queryAdvertisingList();
             // 定义返回结果
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             response = Response.getResponseSuccess(userInfo);
             setPageInfoList(list, response);
         } catch (Exception e) {
+            flag=false;
             JzbTools.logError(e);
+            response=Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryAdvertisingList Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }
@@ -71,7 +97,17 @@ public class AdvertController {
     @CrossOrigin
     public Response getAdvertList(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String  api="/advertising/getAdvertList";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             int count = JzbDataType.getInteger(param.get("count"));
             // 获取推广信息总数
             count = count < 0 ? 0 : count;
@@ -81,15 +117,22 @@ public class AdvertController {
             }
             // 返回所有的推广信息列表
             List<Map<String, Object>> adverList = advertService.getAdvertList(param);
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(adverList);
             pageInfo.setTotal(count > 0 ? count : adverList.size());
             result.setPageInfo(pageInfo);
         } catch (Exception e) {
+            flag=false;
             JzbTools.logError(e);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getAdvertList Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     } // End getAdvertList
@@ -104,9 +147,18 @@ public class AdvertController {
     @CrossOrigin
     public Response modifyAdvertData(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String  api="/advertising/modifyAdvertData";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             // 获取用户信息
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             String advid = JzbDataType.getString(param.get("advid"));
             int count;
@@ -118,8 +170,16 @@ public class AdvertController {
             }
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
+            flag=false;
             JzbTools.logError(e);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "modifyAdvertData Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     } // End modifyAdvertData

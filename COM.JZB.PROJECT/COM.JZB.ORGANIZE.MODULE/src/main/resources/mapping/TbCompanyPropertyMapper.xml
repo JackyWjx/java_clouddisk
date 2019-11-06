@@ -214,7 +214,7 @@
         )
     </insert>
 
-
+ <!--设置等级-->
     <insert id="saveCompanyPropertys" parameterType="java.util.Map">
         insert
         into
@@ -314,8 +314,151 @@
     </insert>
 
 
+
+     <!--分配服务人员-->
+    <insert id="addCompanyPropert" parameterType="java.util.Map">
+        insert
+        into
+        tb_company_property
+        (cid,typeid,dictid,dictvalue,idx,adduid,addtime,upduid,updtime,status,summary)
+        VALUES
+        (
+        <choose>
+            <when test="cid!=null and cid!=''">
+                #{cid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typeid!=null and typeid!=''">
+                #{typeid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="dictid!=null and dictid!=''">
+                #{dictid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="dictvalue!=null and dictvalue!=''">
+                #{dictvalue},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx!=null and idx!=''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_company_property),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+
     <select id="queryLevelCount" resultType="java.util.Map">
-      select dictvalue, count(dictvalue) FROM tb_company_property where typeid='t111111' group by dictvalue
+        SELECT
+            dictvalue,
+            COUNT ( dictvalue ) ,
+            tcc.cid
+        FROM
+            tb_company_property tcp
+            LEFT JOIN tb_company_common tcc ON tcp.cid = tcc.cid
+        WHERE
+            tcp.typeid = 't111111'
+            and tcp.cid =tcc.cid
+            and tcc.status='2'
+        GROUP BY
+            tcp.dictvalue,tcc.cid
     </select>
 
+
+    <!--查询单位设置的等级-->
+    <select id="getsaveCompanyPropertys" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        cid,
+        dictid,
+        dictvalue
+        from
+        tb_company_property
+        where
+        cid = #{cid}
+        and typeid = 't111111'
+    </select>
+     <!--修改等级-->
+    <update id="updateompanyPropertys" parameterType="java.util.Map">
+        update
+        tb_company_property
+        set
+        <if test="dictvalue != null">
+            dictvalue = #{dictvalue},
+        </if>
+        updtime = #{updtime}
+        where cid = #{cid} and typeid = 't111111'
+    </update>
+
+
+    <!--根据A类 B类  C类进行分页-->
+    <select id="GroupCompanyPropert" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT dictvalue,count(1) from tb_company_property where typeid='t111111' GROUP BY dictvalue
+    </select>
 </mapper>

@@ -1,12 +1,16 @@
 package com.jzb.org.controller;
 
 
+import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.service.TbCompanyListService;
 import com.jzb.org.util.SetPageSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +20,11 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/org/CompanyList")
 public class TbCompanyListController {
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbCompanyPropertyController.class);
 
     @Autowired
     private TbCompanyListService tbCompanyListService;
@@ -51,11 +60,16 @@ public class TbCompanyListController {
 
                 PageInfo pageInfo = new PageInfo();
 
+
+
                 pageInfo.setList(list);
                 //设置分页总数
                 //pageInfo.setTotal(count > 0 ? count : list.size());
                 result = Response.getResponseSuccess(userInfo);
                 result.setPageInfo(pageInfo);
+                for (int i = 0; i < list.size(); i++) {
+                    pageInfo.setTotal(JzbDataType.getInteger(list.get(list.size()-1).get("count")))  ;
+                }
             }
         } catch (Exception e) {
             //打印错误信息
@@ -64,4 +78,51 @@ public class TbCompanyListController {
         }
         return result;
     }
+
+    /**
+     * 所有业主-今日添加业主
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCompanyListCount",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyListCount(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/CompanyList/getCompanyListCount";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+                 //获取今天添加业主的数量
+                 int count  = tbCompanyListService.getCompanyListCount(param);
+
+               PageInfo pageInfo = new PageInfo();
+
+               pageInfo.setTotal(count);
+               // 获取用户信息返回
+               result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+               result.setPageInfo(pageInfo);
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyListCount Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 }
