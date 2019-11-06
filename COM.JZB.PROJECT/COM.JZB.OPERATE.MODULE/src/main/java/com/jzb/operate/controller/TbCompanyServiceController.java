@@ -3,6 +3,7 @@ package com.jzb.operate.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -12,6 +13,8 @@ import com.jzb.base.util.JzbTools;
 
 import com.jzb.operate.api.redis.UserRedisServiceApi;
 import com.jzb.operate.service.TbCompanyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +31,13 @@ public class TbCompanyServiceController {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbCompanyMethodController.class);
+
     /**
      * 项目跟进
      *
@@ -243,6 +253,55 @@ public class TbCompanyServiceController {
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 所有业主-销售统计分析-服务跟踪记录
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/queryServiceList",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryServiceList(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/CompanyService/queryServiceList";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            //如果指定参数为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"uid"})) {
+                result = Response.getResponseError();
+            } else {
+                List<Map<String, Object>> list = tbCompanyService.queryServiceList(param);
+
+                PageInfo pageInfo = new PageInfo();
+                //获取用户信息
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                pageInfo.setList(list);
+                //响应成功信息
+                result = Response.getResponseSuccess(userInfo);
+                result.setPageInfo(pageInfo);
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryServiceList Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }

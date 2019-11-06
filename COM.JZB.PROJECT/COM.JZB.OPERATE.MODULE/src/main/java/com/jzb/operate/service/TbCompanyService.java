@@ -5,6 +5,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.operate.api.base.RegionBaseApi;
+import com.jzb.operate.api.org.TbCompanyListApi;
 import com.jzb.operate.api.org.TbCompanyProjectApi;
 import com.jzb.operate.api.redis.UserRedisServiceApi;
 import com.jzb.operate.dao.TbCompanyServiceMapper;
@@ -27,6 +28,9 @@ public class TbCompanyService {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
+    @Autowired
+    private TbCompanyListApi tbCompanyListApi;
 
     /**
      * 查询地区信息
@@ -266,5 +270,43 @@ public class TbCompanyService {
             }
         }
         return projectList;
+    }
+
+    /**
+     * 销售统计分析服务跟踪记录
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> queryServiceList(Map<String, Object> param) {
+        List<Map<String, Object>> list = tbCompanyServiceMapper.getHandleItem(param);
+        for (int i = 0; i < list.size(); i++) {
+            //拿到cid 进行销售统计分析的查询
+            //HashMap<String, Object> map = new HashMap<>();
+            param.put("cid", list.get(i).get("cid"));
+            //调用org服务的api进行销售统计分析的数据进行查询
+            Response response = tbCompanyListApi.queryCompanyList(param);
+            //查询出来的结果转成map
+            Map<String,Object>  responseEntity = (Map<String, Object>) response.getResponseEntity();
+            //遍历map 把map中的数据添加到list中
+            if (responseEntity != null) {
+
+                list.get(i).put("projectname", responseEntity.get("projectname"));
+                list.get(i).put("dictvalue", responseEntity.get("dictvalue"));
+                list.get(i).put("unitName", responseEntity.get("cname"));
+                list.get(i).put("contamount", responseEntity.get("contamount"));
+            }
+            //根据等级进行条件查询
+            if (param.get("dictvalue") != null && param.get("dictvalue") != "") {
+                if (responseEntity == null) {
+                    list.get(i).clear();
+                }
+                //根据业主名称进行条件查询的判断
+            }else if (param.get("cname") != null && param.get("cname") != "") {
+                if (responseEntity == null) {
+                    list.get(i).clear();
+                }
+            }
+        }
+        return list;
     }
 }

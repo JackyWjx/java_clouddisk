@@ -81,4 +81,11 @@ public interface TbCompanyServiceMapper {
      * @DateTime: 2019/10/19
      */
     List<Map<String, Object>> queryServiceList(Map<String, Object> param);
+
+    /**
+     * 所有业主-销售统计分析-服务跟踪记录
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getHandleItem(Map<String, Object> param);
 }
