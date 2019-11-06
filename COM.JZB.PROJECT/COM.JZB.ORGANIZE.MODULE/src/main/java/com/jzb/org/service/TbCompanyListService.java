@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 @Service
 public class TbCompanyListService {
@@ -87,7 +84,14 @@ public class TbCompanyListService {
         return tbCompanyListMapper.getCompanyListCount(param);
     }
 
+    /**
+     * 销售统计分析的查询
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> queryCompanyList(Map<String, Object> param) {
+        List<Map<String, Object>> list = tbCompanyListMapper.queryCompanyList(param);
 
-
-
+        return list;
+    }
 }
