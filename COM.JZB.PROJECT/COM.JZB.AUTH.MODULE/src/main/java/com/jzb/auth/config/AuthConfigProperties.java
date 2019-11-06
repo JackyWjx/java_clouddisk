@@ -41,6 +41,33 @@ public class AuthConfigProperties {
      */
     private String retrieve;
 
+    /**
+     * 转让超级管理员权限发送短信
+     * 您好,(XXX姓名)在(xx时间)已将(XX单位)的超级管理员权限转让给您.请您尽快登录,核对信息!
+     */
+    private String administrator;
+
+    /**
+     * 信息变更验证码发送短信
+     * 验证码${code}，您正在尝试变更重要信息，请妥善保管账户信息。
+     */
+    private String verification;
+
+    public String getVerification() {
+        return verification;
+    }
+
+    public void setVerification(String verification) {
+        this.verification = verification;
+    }
+
+    public String getAdministrator() {
+        return administrator;
+    }
+    public void setAdministrator(String administrator) {
+        this.administrator = administrator;
+    }
+
     public String getRegister() {
         return register;
     }
