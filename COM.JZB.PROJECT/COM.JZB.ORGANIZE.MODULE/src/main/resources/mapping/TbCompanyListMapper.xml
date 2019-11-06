@@ -5,119 +5,119 @@
 <mapper namespace="com.jzb.org.dao.TbCompanyListMapper">
 
     <select id="getCompanyList" parameterType="java.util.Map" resultType="java.util.Map">
-              select
-              num.cname,
-              num.relperson,
-              num.dictvalue,
-              num.projectname,
-              num.contamount,
-              num.ac,
-              num.checkamount
-              from
-              (
-              select
-              a.cname as cname,
-                a.cid as ac,
-                b.cid as bc,  /*业主名称*/
-                c.cid as cc,  /*业主名称*/
-                d.cid as dc,   /*业主名称*/
-                e.cid as ec,
-              a.relperson,   /*联系人*/
-              b.dictvalue,   /*客户等级*/
-              c.projectname,    /*项目名称*/
-              d.contamount,
-              d.checkamount              /*预计合同金额*/
-              from
-              tb_company_list a
-              Inner JOIN
-              tb_company_property b
-              on
-              a.cid = b.cid
-              LEFT JOIN
-              tb_company_project c
-              on
-              c.cid = a.cid and c.cid = b.cid
-              LEFT JOIN
-              tb_company_contract d
-              on
-              d.cid = a.cid and d.cid = c.cid
-              left join
-              tb_company_common e
-              on e.cid = d.cid and e.cid = c.cid
-              where b.typeid = 't111111'
-              <if test="keyword != null and keyword != ''">
-                  and a.cname ~ #{keyword} or e.uid ~ #{keyword}
-              </if>
-              <if test="dictvalue != null and dictvalue != ''">
-                  and b.dictvalue = #{dictvalue}
-              </if>
-              <if test="uid != null and uid != ''">
-                  and e.uid = #{uid}
-              </if>
-              ) as num where ac is not null and bc is not null and cc is not null and dc is not null and ec is not null
-              limit
-              #{pagesize}
-              offset
-              #{pageno}
+        select
+        num.cname,
+        num.relperson,
+        num.dictvalue,
+        num.projectname,
+        num.contamount,
+        num.ac,
+        num.checkamount
+        from
+        (
+        select
+        a.cname as cname,
+        a.cid as ac,
+        b.cid as bc, /*业主名称*/
+        c.cid as cc, /*业主名称*/
+        d.cid as dc, /*业主名称*/
+        e.cid as ec,
+        a.relperson, /*联系人*/
+        b.dictvalue, /*客户等级*/
+        c.projectname, /*项目名称*/
+        d.contamount,
+        d.checkamount /*预计合同金额*/
+        from
+        tb_company_list a
+        Inner JOIN
+        tb_company_property b
+        on
+        a.cid = b.cid
+        LEFT JOIN
+        tb_company_project c
+        on
+        c.cid = a.cid and c.cid = b.cid
+        LEFT JOIN
+        tb_company_contract d
+        on
+        d.cid = a.cid and d.cid = c.cid
+        left join
+        tb_company_common e
+        on e.cid = d.cid and e.cid = c.cid
+        where b.typeid = 't111111'
+        <if test="keyword != null and keyword != ''">
+            and a.cname ~ #{keyword} or e.uid ~ #{keyword}
+        </if>
+        <if test="dictvalue != null and dictvalue != ''">
+            and b.dictvalue = #{dictvalue}
+        </if>
+        <if test="uid != null and uid != ''">
+            and e.uid = #{uid}
+        </if>
+        ) as num where ac is not null and bc is not null and cc is not null and dc is not null and ec is not null
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
     </select>
 
 
-         <select id="getCount" parameterType="java.util.Map" resultType="int">
+    <select id="getCount" parameterType="java.util.Map" resultType="int">
 
-             select
-             count(1)
-             from
-             (select
-              num.cname,
-              num.relperson,
-              num.dictvalue,
-              num.projectname,
-              num.contamount,
-              num.ac,
-              num.checkamount
-              from
-              (select
-              a.cname,
-                a.cid as ac,
-                b.cid as bc,  /*业主名称*/
-                c.cid as cc,  /*业主名称*/
-                d.cid as dc,   /*业主名称*/
-                e.cid as ec,
-              a.relperson,   /*联系人*/
-              b.dictvalue,   /*客户等级*/
-              c.projectname,    /*项目名称*/
-              d.contamount,      /*预计合同金额*/
-              d.checkamount
-              from
-              tb_company_list a
-              Inner JOIN
-              tb_company_property b
-              on
-              a.cid = b.cid
-              LEFT JOIN
-              tb_company_project c
-              on
-              c.cid = a.cid and c.cid = b.cid
-              LEFT JOIN
-              tb_company_contract d
-              on
-              d.cid = a.cid and d.cid = c.cid
-              left join
-              tb_company_common e
-              on e.cid = d.cid and e.cid = c.cid
-              where b.typeid = 't111111'
-              <if test="keyword != null and keyword != ''">
-                  and a.cname ~ #{keyword} or e.uid ~ #{keyword}
-              </if>
-              <if test="dictvalue != null and dictvalue != ''">
-                  and b.dictvalue = #{dictvalue}
-              </if>
-             <if test="uid != null and uid != ''">
-                 and e.uid = #{uid}
-             </if>
-              ) as num where ac is not null and bc is not null and cc is not null and dc is not null and ec is not null
-              ) as num
-         </select>
+        select
+        count(1)
+        from
+        (select
+        num.cname,
+        num.relperson,
+        num.dictvalue,
+        num.projectname,
+        num.contamount,
+        num.ac,
+        num.checkamount
+        from
+        (select
+        a.cname,
+        a.cid as ac,
+        b.cid as bc, /*业主名称*/
+        c.cid as cc, /*业主名称*/
+        d.cid as dc, /*业主名称*/
+        e.cid as ec,
+        a.relperson, /*联系人*/
+        b.dictvalue, /*客户等级*/
+        c.projectname, /*项目名称*/
+        d.contamount, /*预计合同金额*/
+        d.checkamount
+        from
+        tb_company_list a
+        Inner JOIN
+        tb_company_property b
+        on
+        a.cid = b.cid
+        LEFT JOIN
+        tb_company_project c
+        on
+        c.cid = a.cid and c.cid = b.cid
+        LEFT JOIN
+        tb_company_contract d
+        on
+        d.cid = a.cid and d.cid = c.cid
+        left join
+        tb_company_common e
+        on e.cid = d.cid and e.cid = c.cid
+        where b.typeid = 't111111'
+        <if test="keyword != null and keyword != ''">
+            and a.cname ~ #{keyword} or e.uid ~ #{keyword}
+        </if>
+        <if test="dictvalue != null and dictvalue != ''">
+            and b.dictvalue = #{dictvalue}
+        </if>
+        <if test="uid != null and uid != ''">
+            and e.uid = #{uid}
+        </if>
+        ) as num where ac is not null and bc is not null and cc is not null and dc is not null and ec is not null
+        ) as num
+    </select>
 
     <!--今日添加业主的数量-->
     <select id="getCompanyListCount" parameterType="java.util.Map" resultType="int">
@@ -129,5 +129,32 @@
         regtime &gt;= #{startTime} and regtime &lt;= #{endTime}
     </select>
 
+     <!--所有业主-销售统计分析-->
+    <select id="queryCompanyList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM (
+        SELECT
+        tcl.cid,
+        tcl.cname,
+        tcp1.projectname,
+        (SELECT dictvalue FROM tb_company_property WHERE cid = tcl.cid AND typeid = 't111111' limit 1) dictvalue,
+        tcc.contamount
+        FROM
+        tb_company_list tcl
+        LEFT JOIN tb_company_property tcp ON tcl.cid = tcp.cid
+        LEFT JOIN tb_company_contract tcc ON tcc.cid = tcl.cid
+        LEFT JOIN tb_company_project tcp1 ON tcp1.cid = tcl.cid
+        ) as a
+        where
+        1 = 1
+      <if test="dictvalue != null and dictvalue != ''">
+         and a.dictvalue = #{dictvalue}
+      </if>
+      <if test="cname != null and cname != ''">
+        and a.cname like concat('%',#{cname},'%')
+      </if>
+      <if test="cid != null and cid != ''">
+         and a.cid = #{cid}
+      </if>
+    </select>
 
 </mapper>
