@@ -386,6 +386,7 @@ public class ActivityController {
                     params.put("uid", mapList.get(i).get("adduid"));
                     params.put("actid", mapList.get(i).get("actid"));
                     Response region = userRedisApi.getCacheUserInfo(params);
+                    mapList.get(i).put("photoList", newActivityService.queryActivityPhoto(params));
                     mapList.get(i).put("userInfo", region.getResponseEntity());
                     mapList.get(i).put("photoList", newActivityService.queryActivityPhoto(params));
                 }

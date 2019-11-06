@@ -209,7 +209,6 @@
         tal.cid,
         tal.cdid,
         tal.context,
-        tap.photo,
         tal.addtime,
         tal.votes,
         tal.actdesc,
@@ -222,9 +221,9 @@
         tal.actlogo
         FROM
         tb_activity_list tal
-        LEFT JOIN tb_activity_photo tap ON tap.actid = tal.actid
         WHERE
         1 = 1
+        and tal.status='1'
         <if test="keyword!= null and keyword != ''">
             AND tal.cname ~ #{keyword}
         </if>
