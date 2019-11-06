@@ -27,4 +27,125 @@
             solution order by solution.id
     </select>
 
+    <!-- 点击新增按钮新建文章分类 -->
+    <insert id="insertSolutionType" parameterType="java.util.Map">
+        insert into
+        tb_solution_type(typeid, cname, typecode, parentid, typedesc, idx, adduid, addtime, status, summary)
+        values
+        (
+        #{typeid},
+        #{cname},
+        <choose>
+            <when test="typecode!=null and typecode!=''">
+                #{typecode},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="parentid!=null and parentid!=''">
+                #{parentid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="typedesc!=null and typedesc!=''">
+                #{typedesc},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        (select count(1)+1 from tb_solution_type),
+        #{uid},
+        #{addtime},
+        #{status},
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!-- 点击修改按钮进行文章分类修改 -->
+    <update id="updateSolutionType" parameterType="java.util.Map">
+        update
+        tb_solution_type
+        set
+        cname=#{cname},
+        <if test="typedesc!= null">typedesc=#{typedesc},</if>
+        <if test="typecode!= null">typecode=#{typecode},</if>
+        upduid=#{uid},
+        updtime=#{updtime}
+        <if test="summary!= null">,summary=#{summary}</if>
+        where
+        typeid=#{typeid}
+    </update>
+
+    <!--点击新建显示文章分类的总数-->
+    <select id="querySolutionTypeDataCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_solution_type
+        where
+        status = #{status}
+    </select>
+
+    <!--点击新建显示文章分类-->
+    <select id="getSolutionTypeData" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        typeid,
+        cname,
+        typecode,
+        parentid,
+        typedesc,
+        summary
+        FROM
+        tb_solution_type
+        where
+        status = #{status}
+        order by id desc
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--查询分类下是否存在数据-->
+    <select id="getSolutionTypeDocument" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_solution_type st
+        left join
+        tb_solution_document sd
+        on
+        st.typeid = sd.typeid
+        where
+        st.status = '1'
+        and
+        sd.status = '1'
+        and
+        st.typeid = #{typeid}
+    </select>
+
+    <!-- 点击修改按钮进行文章分类修改 -->
+    <update id="deleteSolutionType" parameterType="java.util.Map">
+        update
+        tb_solution_type
+        set
+        upduid=#{uid},
+        updtime=#{updtime},
+        status = #{status}
+        where
+        typeid=#{typeid}
+    </update>
 </mapper>
