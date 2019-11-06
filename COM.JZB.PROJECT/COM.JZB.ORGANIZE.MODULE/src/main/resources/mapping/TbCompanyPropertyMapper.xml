@@ -416,7 +416,19 @@
 
 
     <select id="queryLevelCount" resultType="java.util.Map">
-      select dictvalue, count(dictvalue) FROM tb_company_property where typeid='t111111' group by dictvalue
+        SELECT
+            dictvalue,
+            COUNT ( dictvalue ) ,
+            tcc.cid
+        FROM
+            tb_company_property tcp
+            LEFT JOIN tb_company_common tcc ON tcp.cid = tcc.cid
+        WHERE
+            tcp.typeid = 't111111'
+            and tcp.cid =tcc.cid
+            and tcc.status='2'
+        GROUP BY
+            tcp.dictvalue,tcc.cid
     </select>
 
 
