@@ -825,6 +825,7 @@ public class AuthUserController {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("upduid", userInfo.get("uid"));
             int count = userService.modifyCompanyEmployee(param);
+            comHasUserKey(param);
             result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
