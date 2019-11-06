@@ -61,6 +61,7 @@ public class TbCompanySysconfigController {
             } else {
                 userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("adduid",userInfo.get("uid").toString());
+                param.put("upduid",userInfo.get("uid").toString());
                 response = tbCompanySysconfigService.addCompanySysconfig(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {

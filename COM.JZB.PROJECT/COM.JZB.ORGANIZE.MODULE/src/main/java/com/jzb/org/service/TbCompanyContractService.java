@@ -23,7 +23,6 @@ public class TbCompanyContractService {
         long time=System.currentTimeMillis();
         param.put("addtime",time);
         param.put("updtime",time);
-        param.put("contid", JzbRandom.getRandomCharLow(19));
         return tbCompanyContractMapper.addCompanyContract(param);
     }
 
