@@ -10,6 +10,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
+import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.service.CompanyService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +45,8 @@ public class CompanyController {
     @Autowired
     RegionBaseApi regionBaseApi;
 
+    @Autowired
+    OrgConfigProperties orgConfigProperties;
 
     /**
      * 开放平台调用接口获取企业地址,地区信息
@@ -676,13 +679,13 @@ public class CompanyController {
                 // 1发送邀请加入单位模板,2取消加入单位模板
                 if (maybe == 1) {
                     // 发送邀请信息模板
-                    param.put("groupid", "1014");
+                    param.put("groupid", orgConfigProperties.getInvitationToJoin());
                     param.put("msgtag", "addInvitee1014");
                     param.put("senduid", "addInvitee1014");
                     sendResult = companyService.sendRemind(param);
                 } else {
                     // 发送取消信息模板
-                    param.put("groupid", "1012");
+                    param.put("groupid", orgConfigProperties.getDisinvite());
                     param.put("msgtag", "addInvitee1012");
                     param.put("senduid", "addInvitee1012");
                     sendResult = companyService.sendRemind(param);
