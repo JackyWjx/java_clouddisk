@@ -14,7 +14,6 @@
         context,
         adduid,
         Id,
-        typecode,
         domid,
         typeid,
         cname,
@@ -74,7 +73,7 @@
     <!--新增-->
     <insert id="saveTbStandardDom" parameterType="java.util.Map">
         insert into
-        tb_standard_document(policystatus,adduid,context,domtitle,domftype,typecode,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
+        tb_standard_document(policystatus,adduid,context,domtitle,domftype,domid,typeid,domcode,cname,price,department,effective,stdrange,status,idx,pagekey,pagedesc,createtime,addtime,
         updtime)
         values
         (
@@ -104,14 +103,6 @@
         </choose>
         #{domtitle},
         cast(#{domftype} as INTEGER),
-        <choose>
-            <when test="tpeycode != null">
-                #{tpeycode},
-            </when>
-            <otherwise>
-                null,
-            </otherwise>
-        </choose>
         #{domid},
         #{typeid},
         <choose>
@@ -207,7 +198,6 @@
         <if test="policystatus != null">policystatus=#{policystatus},</if>
         <if test="tpeycode != null">typecode=#{tpeycode},</if>
         <if test="context != null">context=#{context},</if>
-        <if test="domcode != null">domcode=#{domcode},</if>
         <if test="cname != null">cname=#{cname},</if>
         <if test="domcode != null">domcode=#{domcode},</if>
         <if test="price != null">price=cast(#{price} as integer),</if>
@@ -233,9 +223,8 @@
     <select id="getCname" parameterType="java.util.Map" resultType="java.util.Map">
        select
         policystatus,
-       adduid,
+        adduid,
         Id,
-        typecode,
         domid,
         typeid,
         cname,
@@ -253,6 +242,9 @@
             cname
             like
             concat('%',#{cname},'%')
+        </if>
+        <if test="typeid != null">
+            and typeid = #{typeid}
         </if>
         <if test="startTime != null and startTime != ''">
             and effective &gt;= #{startTime}
@@ -279,6 +271,9 @@
             cname
             like
             concat('%',#{cname},'%')
+        </if>
+        <if test="typeid != null">
+            and typeid = #{typeid}
         </if>
         <if test="startTime != null and startTime != ''">
             and effective &gt;= #{startTime}
