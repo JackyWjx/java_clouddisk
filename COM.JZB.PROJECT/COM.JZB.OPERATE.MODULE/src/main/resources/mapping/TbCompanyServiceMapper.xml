@@ -620,4 +620,30 @@
         offset
         #{pageno}
     </select>
+
+    <select id="getHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
+        a.uid,
+        a.personid,
+        to_char(to_timestamp(a.handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
+        a.context,
+        a.needres,
+        a.invest,
+        a.attach,
+        a.summary,
+        a.projectid,
+        a.cid,
+        a.region,
+        a.person
+        from
+        tb_company_service a
+        where
+        a.uid = #{uid}
+        <if test="beginTime != null and beginTime != ''">
+            and a.handletime &gt;= #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and a.handletime &lt;= #{endTime}
+        </if>
+    </select>
+
 </mapper>

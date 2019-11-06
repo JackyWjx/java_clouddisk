@@ -7,76 +7,64 @@
     <select id="getHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
         select
         a.uid,
+        a.personid,
         to_char(to_timestamp(a.handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
         a.context,
         a.needres,
-        a.invest,
-        a.invest,
-        a.attach,
-        a.summary
-        from
-        tb_handle_item a
-        where
-        a.cid = #{ac}
-        <if test="beginTime != null and beginTime != ''">
-            and handletime &gt;= #(beginTime)
-        </if>
-        <if test="endTime != null and endTime != ''">
-            and handletime &lt;= #(endTime)
-        </if>
-    </select>
-
-    
-    <select id="getService" parameterType="java.util.Map" resultType="java.util.Map">
-            select
-            a.uid,
-            to_char(to_timestamp(a.handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
-            b.context,
-            b.needres,
-            b.invest,
-            b.invest,
-            b.attach,
-            b.summary,
-            a.projectid
-            from
-            tb_handle_item b
-            left join
-            tb_company_service a
-            on a.cid = b.cid
-            where
-            a.cid = #{ac}
-            <if test="beginTime != null and beginTime != ''">
-                and handletime &gt;= #(beginTime)
-            </if>
-            <if test="endTime != null and endTime != ''">
-                and handletime &lt;= #(endTime)
-            </if>
-    </select>
-
-
-
-    <select id="getItem" parameterType="java.util.Map" resultType="java.util.Map">
-        select
-        a.uid,
-        to_char(to_timestamp(a.handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
-        a.context,
-        a.needres,
-        a.invest,
         a.invest,
         a.attach,
         a.summary,
-        a.projectid
+        a.projectid,
+        a.nexttime,
+        a.cid,
+        a.region,
+        a.person
         from
         tb_handle_item a
         where
-        a.cid = #{ac}
+        a.uid = #{uid}
         <if test="beginTime != null and beginTime != ''">
-            and handletime &gt;= #(beginTime)
+            and a.handletime &gt;= #{beginTime}
         </if>
         <if test="endTime != null and endTime != ''">
-            and handletime &lt;= #(endTime)
+            and a.handletime &lt;= #{endTime}
+        </if>
+        <if test="projectid != null and projectid != ''">
+            and a.projectid is not null
         </if>
     </select>
 
+    <!--所有业主-销售统计分许-根据页面的超链接进行查询-->
+    <select id="queryHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
+      select
+        a.uid,
+        a.personid,
+        to_char(to_timestamp(a.handletime / 1000), 'yyyy-MM-dd HH24:MI') as handletime,
+        a.context,
+        a.needres,
+        a.invest,
+        a.attach,
+        a.summary,
+        a.projectid,
+        a.nexttime,
+        a.cid,
+        a.region,
+        a.person
+        from
+        tb_handle_item a
+        where
+        <if test="uid != null and uid != ''">
+            uid = #{uid}
+        </if>
+        <if test="personid != null and personid != ''">
+            personid = #{personid}
+        </if>
+        <if test="cid != null and cid != ''">
+            cid = #{cid}
+        </if>
+        <if test="projectid != null and projectid != ''">
+            projectid = #{projectid}
+        </if>
+    </select>
 
 </mapper>
