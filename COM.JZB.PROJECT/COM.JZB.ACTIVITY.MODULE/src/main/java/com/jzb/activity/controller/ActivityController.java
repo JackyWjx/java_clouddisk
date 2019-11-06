@@ -115,7 +115,8 @@ public class ActivityController {
                 params.put("actid", arr.get(i).get("actid"));
                 params.put("uid", arr.get(i).get("adduid"));
                 Response region = userRedisApi.getCacheUserInfo(params);
-                arr.get(i).put("actpicture", newActivityService.queryActivityPhoto(params).get(0).get("photo"));
+                List<Map<String, Object>> list1 = newActivityService.queryActivityPhoto(params);
+                arr.get(i).put("actpicture", list1.size() <= 0 ? null : list1.get(0).get("photo"));
                 arr.get(i).put("userInfo", region.getResponseEntity());
                 arr.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(arr.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
             }
@@ -203,7 +204,8 @@ public class ActivityController {
                     params.put("actid", list.get(i).get("actid"));
                     params.put("uid", list.get(i).get("adduid"));
                     Response region = userRedisApi.getCacheUserInfo(params);
-                    list.get(i).put("actpicture", newActivityService.queryActivityPhoto(params).get(0).get("photo"));
+                    List<Map<String, Object>> list1 = newActivityService.queryActivityPhoto(params);
+                    list.get(i).put("actpicture", list1.size() <= 0 ? null : list1.get(0).get("photo"));
                     list.get(i).put("userInfo", region.getResponseEntity());
                     list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
                 }
@@ -380,7 +382,13 @@ public class ActivityController {
 
                 // 得到结果集
                 List<Map<String, Object>> mapList = activityService.getLikeName(params);
-
+                for (int i = 0; i < mapList.size(); i++) {
+                    params.put("uid", mapList.get(i).get("adduid"));
+                    params.put("actid", mapList.get(i).get("actid"));
+                    Response region = userRedisApi.getCacheUserInfo(params);
+                    mapList.get(i).put("userInfo", region.getResponseEntity());
+                    mapList.get(i).put("photoList", newActivityService.queryActivityPhoto(params));
+                }
                 // 定义pageinfo
                 PageInfo pi = new PageInfo();
                 pi.setList(mapList);

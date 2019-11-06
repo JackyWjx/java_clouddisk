@@ -212,10 +212,13 @@
         tap.photo,
         tal.addtime,
         tal.votes,
+        tal.actdesc,
+        tal.actkey,
         tal.comments,
         tal.READS,
         tal.shares,
         tal.acttheme,
+        tal.adduid,
         tal.actlogo
         FROM
         tb_activity_list tal
