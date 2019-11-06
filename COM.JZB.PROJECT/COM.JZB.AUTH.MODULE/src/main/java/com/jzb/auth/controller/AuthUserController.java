@@ -670,11 +670,13 @@ public class AuthUserController {
             Response sendResult;
             if (type == 1) {
                 // 发送验证码模板
-                param.put("groupid", "1012");
+                param.put("groupid", authConfig.getVerification());
                 sendResult = userLoginService.sendSmsCode(param, telNumber, sezi);
             } else {
                 // 发送转让成功信息模板
-                param.put("groupid", "1013");
+                param.put("groupid", authConfig.getAdministrator());
+                param.put("msgtag", "Administrator1015");
+                param.put("senduid", "Administrator1015");
                 sendResult = userLoginService.sendRemind(param);
             }
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
