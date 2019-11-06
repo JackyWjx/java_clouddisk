@@ -28,6 +28,7 @@
         FROM
         (
         SELECT
+        distinct
         cl.id,
         cl.cid,
         cl.cname,
@@ -224,6 +225,8 @@
         cs.status = #{status}
         and
         cl.cid in (select supid from tb_company_supplier where cid = #{cid})
+        and
+        cs.cid = #{cid}
         order by cl.id desc
         limit
         #{pagesize}
@@ -285,7 +288,7 @@
     <insert id="insertCompanyProject" parameterType="java.util.Map">
         INSERT INTO tb_company_project
         (cid, projectid, projectname, region, address, tendertime, tenderuid,
-         tendername, tenderphone, wintime, idx, adduid, addtime, status, summary)
+        tendername, tenderphone, wintime, idx, adduid, addtime, status, summary)
         VALUES
         (
         #{cid},

@@ -809,16 +809,46 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
     </insert>
 
     <!--主页中单位设置基本资料进行企业系统配置表修改-->
-    <update id="updateCompanySysconfig" parameterType="java.util.Map">
-        UPDATE
-        tb_company_sysconfig
-        SET
+    <insert id="updateCompanySysconfig" parameterType="java.util.Map">
+        INSERT INTO
+        tb_company_sysconfig (cid, curl, systemname, adduid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{cid},
+        <choose>
+            <when test=" curl != null and curl !=''">
+                #{curl},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test=" systemname != null and systemname !=''">
+                #{systemname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{modtime},
+        #{modtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+        ON conflict(cid) DO UPDATE SET
         upduid = #{uid},
         updtime = #{modtime}
         <if test="systemname != null ">,systemname = #{systemname}</if>
-        WHERE
-        cid = #{cid}
-    </update>
+    </insert>
 
     <!--保存伙伴单位信息-->
     <insert id="insertCompanyFriend">
