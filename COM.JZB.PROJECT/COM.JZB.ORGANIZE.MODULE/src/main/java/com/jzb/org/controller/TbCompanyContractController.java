@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -241,19 +242,32 @@ public class TbCompanyContractController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "count", "pageno", "pagesize"})) {
                 response = Response.getResponseSuccess();
             } else {
-
-                JzbPageConvert.setPageRows(param);
+                if (JzbCheckParam.haveEmpty(param, new String[]{"contid"})) {
+                    JzbPageConvert.setPageRows(param);
+                }
                 // 查询合同
                 List<Map<String, Object>> list = tbCompanyContractService.quertCompantContract(param);
                 for (int i = 0, l = list.size(); i < l; i++) {
                     list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
                 }
                 response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-                PageInfo pageInfo = new PageInfo();
-                pageInfo.setList(list == null ? new ArrayList() : list);
-                // 如果count>0 就返回list 大小
-                pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
-                response.setPageInfo(pageInfo);
+                if (JzbCheckParam.allNotEmpty(param, new String[]{"contid"})) {
+                    Map<String, Object> map = new HashMap<>();
+                    List<Map<String, Object>> productFun = tbContractProductFunService.queryContractProductFun(param);
+                    List<Map<String, Object>> contProduct = tbContractProductService.queryContractProduct(param);
+                    List<Map<String, Object>> contService = tbContractServiceService.queryContractService(param);
+                    map.put("companyContract", list.get(0));
+                    map.put("productFun", productFun);
+                    map.put("contProduct", contProduct);
+                    map.put("contService", contService);
+                    response.setResponseEntity(map);
+                } else {
+                    PageInfo pageInfo = new PageInfo();
+                    pageInfo.setList(list == null ? new ArrayList() : list);
+                    // 如果count>0 就返回list 大小
+                    pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
+                    response.setPageInfo(pageInfo);
+                }
 
             }
         } catch (Exception ex) {
