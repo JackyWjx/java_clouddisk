@@ -645,7 +645,7 @@
         </foreach>
     </insert>
 
-    <!-- 点击修改时返回需要修改的信息 -->
+     <!-- 点击修改时返回需要修改的信息 -->
     <select id="queryActivityData" parameterType="java.util.Map"
             resultType="java.util.Map">
         select
@@ -673,7 +673,7 @@
         on
         al.actid = ap.actid
         where
-        al.status = '1' and ap.status = '1'
+        al.status = '1' and (ap.status = '1' or ap.status is null)
         and
         al.actid = #{actid})as al
     </select>
@@ -704,7 +704,7 @@
             values
             (
             #{item.actid},
-            #{item.newFileId},
+            #{item.fileid},
             #{item.photo},
             (select count(1)+1 from tb_activity_photo),
             #{item.uid},
@@ -720,6 +720,7 @@
             </choose>
             )
             ON conflict(actid,fileid) DO UPDATE SET
+            fileid = #{item.newFileId},
             upduid = #{item.uid},
             status = '2',
             updtime = #{item.updtime}
