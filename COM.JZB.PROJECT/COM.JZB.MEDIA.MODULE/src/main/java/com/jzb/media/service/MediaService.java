@@ -44,7 +44,7 @@ public class MediaService {
             String  fileType = JzbFileUtil.isFileType(type);
             String fileId= JzbFileUtil.getFileId();
             String filePath= JzbFileUtil.getFilePath();
-            String fileMd5 = JzbFileUtil.SHA256(new String (file.getBytes()));
+            String fileMd5 = JzbFileUtil.SHA256(new String (file.getBytes(),"UTF-8"));
             map.put("filemd5",fileMd5);
             List<Map<String , Object>> list =  mediaMapper.queryMedia(map);
             if(list.size() == 0){
