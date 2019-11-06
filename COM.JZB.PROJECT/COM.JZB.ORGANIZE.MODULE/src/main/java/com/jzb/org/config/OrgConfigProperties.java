@@ -35,6 +35,48 @@ public class OrgConfigProperties {
      */
     private String addCompany;
 
+    /**
+     * 邀请用户加入单位
+     * 您好,您在(XXX时间)接收到了来自(XXX单位)的邀请.请登录系统确认是否加入!
+     */
+    private String invitationToJoin;
+
+    /**
+     * 取消邀请用户
+     * 您好,(XXX企业)在(xxx时间)取消了对您的邀请.请登录查看详情!
+     */
+    private String disinvite;
+
+    /**
+     * 通过申请加入单位
+     * 您好,您申请加入(XXX单位)的审核已在(XXX时间)通过.请您尽快登录,核对信息!
+     */
+    private String applicantPass;
+
+    public String getApplicantPass() {
+        return applicantPass;
+    }
+
+    public void setApplicantPass(String applicantPass) {
+        this.applicantPass = applicantPass;
+    }
+
+    public String getDisinvite() {
+        return disinvite;
+    }
+
+    public void setDisinvite(String disinvite) {
+        this.disinvite = disinvite;
+    }
+
+    public String getInvitationToJoin() {
+        return invitationToJoin;
+    }
+
+    public void setInvitationToJoin(String invitationToJoin) {
+        this.invitationToJoin = invitationToJoin;
+    }
+
     public String getAddCompany() {
         return addCompany;
     }
