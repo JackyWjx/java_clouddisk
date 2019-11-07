@@ -684,4 +684,30 @@ public class ActivityController {
         }
         return result;
     } // End modifySolutionDomSEO
+
+    /**
+     * CRM-运营管理-活动-SEO优化2
+     * 点击SEO优化显示活动首页SEO优化信息
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getActivityDataSEO", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getActivityDataSEO(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 返回活动信息
+            List<Map<String, Object>> activity = newActivityService.getActivityDataSEO(param);
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess(userInfo);
+            pageInfo.setList(activity);
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifySolutionDomSEO
 }

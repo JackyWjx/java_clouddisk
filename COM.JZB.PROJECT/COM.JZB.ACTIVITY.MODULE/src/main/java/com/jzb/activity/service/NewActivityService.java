@@ -296,4 +296,16 @@ public class NewActivityService {
         param.put("updtime", updtime);
         return activityMapper.updateActivityDataSEO(param);
     }
+
+    /**
+     * CRM-运营管理-活动-SEO优化2
+     * 点击SEO优化显示活动首页SEO优化信息
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getActivityDataSEO(Map<String, Object> param) {
+        // 获取活动首页状态为4,4为隐藏活动首页不显示
+        param.put("status", "4");
+        return activityMapper.queryActivityDataSEO(param);
+    }
 }

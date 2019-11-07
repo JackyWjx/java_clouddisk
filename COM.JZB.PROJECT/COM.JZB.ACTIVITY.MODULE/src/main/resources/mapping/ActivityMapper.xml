@@ -746,6 +746,7 @@
         UPDATE
         tb_activity_list
         SET
+        cname = #{cname},
         pagekey = #{pagekey},
         pagedesc = #{pagedesc},
         upduid = #{uid},
@@ -753,4 +754,19 @@
         WHERE
         actid=#{actid}
     </update>
+
+    <!--点击SEO优化显示活动首页SEO优化信息-->
+    <select id="queryActivityDataSEO" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        actid,
+        cname,
+        pagekey,
+        pagedesc
+        from
+        tb_activity_list
+        where
+        status = #{status}
+        and
+        actid=#{actid}
+    </select>
 </mapper>
