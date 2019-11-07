@@ -98,4 +98,12 @@ public interface TbSolutionDomMapper {
      * @author kuangbin
      */
     int updateSolutionDomSEO(Map<String, Object> param);
+
+    /**
+     * CRM-运营管理-活动-SEO优化2
+     * 点击SEO优化显示活动首页SEO优化信息
+     *
+     * @author kuangbin
+     */
+    List<Map<String, Object>> querySolutionDomSEO(Map<String, Object> param);
 }
