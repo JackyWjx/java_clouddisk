@@ -29,6 +29,9 @@ public class TbContractTemplateService {
      * @return
      */
     public int addContractTemplate(Map<String, Object> param){
+        long time = System.currentTimeMillis();
+        param.put("addtime", time);
+        param.put("updtime", time);
         param.put("typeid", "T0000");
         return tbContractTemplateMapper.addContractTemplate(param);
     }
@@ -40,6 +43,8 @@ public class TbContractTemplateService {
      * @return
      */
     public int updateContractTemplate(Map<String, Object> param){
+        long time = System.currentTimeMillis();
+        param.put("updtime", time);
         return tbContractTemplateMapper.updateContractTemplate(param);
     }
 

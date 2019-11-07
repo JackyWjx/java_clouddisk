@@ -309,5 +309,64 @@ public class TbPolicyDomController {
         return result;
     }
 
+    /**
+     * 政策的SEO优化
+     * @param param
+     * @return
+     */
+
+    @RequestMapping(value = "/updateSeo",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response updateSeo(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            //如果指定参数为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"domid"})) {
+                result = Response.getResponseError();
+            } else {
+                int  count = tbPolicyDomService.updateSeo(param);
+
+                //获取用户信息
+                //响应成功或者失败的
+                result = count > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /**
+     * 政策SEO优化的查询
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getSeo",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getSeo(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            //如果指定参数为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"domid"})) {
+                result = Response.getResponseError();
+            } else {
+                Map<String,Object> map = tbPolicyDomService.getSeo(param);
+
+                //获取用户信息
+                //响应成功或者失败的
+                PageInfo pageInfo = new PageInfo();
+                result = Response.getResponseSuccess();
+                result.setResponseEntity(map);
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 
 }

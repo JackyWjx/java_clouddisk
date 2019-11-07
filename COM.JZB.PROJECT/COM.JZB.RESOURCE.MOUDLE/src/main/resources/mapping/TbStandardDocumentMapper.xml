@@ -196,6 +196,7 @@
         tb_standard_document
         set
         <if test="policystatus != null">policystatus=#{policystatus},</if>
+        <if test="domtitle  != null">domtitle =#{domtitle },</if>
         <if test="tpeycode != null">typecode=#{tpeycode},</if>
         <if test="context != null">context=#{context},</if>
         <if test="cname != null">cname=#{cname},</if>
@@ -281,5 +282,27 @@
         <if test="endTime != null and endTime != ''">
             and effective &lt;= #{endTime}
         </if>
+    </select>
+
+    <update id="updateSeo" parameterType="java.util.Map">
+        update
+        tb_standard_document
+        set
+        <if test="domtitle != null and domtitle != ''"> domtitle = #{domtitle},</if>
+        <if test="pagekey != null and pagekey != ''"> pagekey = #{pagekey},</if>
+        <if test="pagedesc != null and pagedesc != ''"> pagedesc = #{pagedesc}</if>
+         where
+         domid = #{domid}
+    </update>
+
+    <select id="getSeo" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        domtitle,
+        pagekey,
+        pagedesc
+        from
+        tb_standard_document
+        where
+        domid = #{domid}
     </select>
 </mapper>

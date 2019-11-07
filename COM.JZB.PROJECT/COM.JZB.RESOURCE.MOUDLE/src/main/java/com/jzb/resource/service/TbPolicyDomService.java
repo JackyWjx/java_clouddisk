@@ -109,4 +109,22 @@ public class TbPolicyDomService {
     public int getCount(Map<String, Object> param) {
         return tbPolicyDomMapper.getCount(param);
     }
+
+    /**
+     * 政策SEO优化的修改
+     * @param param
+     * @return
+     */
+    public int updateSeo(Map<String, Object> param) {
+        return tbPolicyDomMapper.updateSeo(param);
+    }
+
+    /**
+     * 政策SEO优化的查询
+     * @param param
+     * @return
+     */
+    public Map<String, Object> getSeo(Map<String, Object> param) {
+        return tbPolicyDomMapper.getSeo(param);
+    }
 }
