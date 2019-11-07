@@ -666,12 +666,12 @@ public class AuthUserController {
             // 获取联系电话
             String telNumber = param.get("phone") == null ? "" : param.get("phone").toString();
             // 验证码长度
-            int sezi = 6;
+            int size = 6;
             Response sendResult;
             if (type == 1) {
                 // 发送验证码模板
                 param.put("groupid", authConfig.getVerification());
-                sendResult = userLoginService.sendSmsCode(param, telNumber, sezi);
+                sendResult = userLoginService.sendSmsCode(param, telNumber, size);
             } else {
                 // 发送转让成功信息模板
                 param.put("groupid", authConfig.getAdministrator());
