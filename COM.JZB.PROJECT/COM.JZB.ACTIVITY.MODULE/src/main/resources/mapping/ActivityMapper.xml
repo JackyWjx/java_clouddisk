@@ -124,6 +124,8 @@
         tal.cid,
         tal.cdid,
         tal.context,
+        tal.actkey,
+        tal.actdesc,
         tap.photo,
         tal.addtime,
         tal.votes,
