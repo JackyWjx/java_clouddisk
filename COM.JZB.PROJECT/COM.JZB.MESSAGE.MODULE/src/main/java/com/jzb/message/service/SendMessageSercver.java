@@ -95,7 +95,7 @@ public class SendMessageSercver {
                 }
                 if(receiverJson.containsKey("emil")){
                     // 邮件消息
-                    List<Map<String , Object>> list =  (List<Map<String, Object>>) receiverJson.get("meil");
+                    List<Map<String , Object>> list =  (List<Map<String, Object>>) receiverJson.get("emil");
                     for(int i = 0 ; i < list.size() ; i++){
                         dataMap.put("msgid", JzbRandom.getRandomNum(16));
                         Map<String , Object> meilUserMap =  list.get(i);
