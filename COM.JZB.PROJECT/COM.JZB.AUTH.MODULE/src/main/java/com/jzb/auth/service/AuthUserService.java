@@ -317,6 +317,7 @@ public class AuthUserService {
      */
     public int modifyCompanyEmployee(Map<String, Object> param) {
         param.put("updtime", System.currentTimeMillis());
+        param.put("born", JzbDataType.getInteger(param.get("born")));
         return userMapper.updateCompanyEmployee(param);
     }
 } // End class AuthUserService
