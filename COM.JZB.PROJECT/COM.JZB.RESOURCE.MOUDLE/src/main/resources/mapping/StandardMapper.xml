@@ -83,7 +83,7 @@
 
     <!--    查询文档详情-->
     <select id="queryDocumentDesc" parameterType="java.util.Map" resultType="java.util.Map">
-		select domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domdesc,department,effective,stdrange,domurl,context,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary from tb_standard_document where domid=#{domid} and status!='4'
+		select domid,typeid,domcode,cname,photo,domfname,domfpath,domftype,domtitle,domdesc,department,effective,stdrange,domurl,context,idx,uid,uname,createtime,pagekey,pagedesc,visits,forwards,downloads,price,adduid,addtime,upduid,updtime,status,summary from tb_standard_document where domid=#{domid} and status!='4'
 	</select>
 
     <!--查询热门榜-->
