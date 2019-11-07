@@ -93,7 +93,7 @@ public class SendMessageSercver {
                         msgListMapper.insertMsgList(dataMap);
                     }
                 }
-                if(receiverJson.containsKey("meil")){
+                if(receiverJson.containsKey("emil")){
                     // 邮件消息
                     List<Map<String , Object>> list =  (List<Map<String, Object>>) receiverJson.get("meil");
                     for(int i = 0 ; i < list.size() ; i++){
@@ -109,7 +109,7 @@ public class SendMessageSercver {
                         dataMap.put("msgtype",'2');
                         meilUserMap.remove("photo");
                         // 参数替换
-                        Map<String, Object> paraGroupMap = MessageUtile.setUpParaByMeil(listGroupTemplateMap.get("2").toString(),paraJson.get("meil").toString(),"2");
+                        Map<String, Object> paraGroupMap = MessageUtile.setUpParaByMeil(listGroupTemplateMap.get("2").toString(),paraJson.get("emil").toString(),"2");
                         // 找到对应的参数
                         Map<String, Object> paraMap = MessageUtile.msgTypeGroup(listGroupConfig, paraGroupMap);
                         // 添加到待发送队列
