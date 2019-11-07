@@ -189,7 +189,7 @@ public class TbSolutionDomService {
      * @author kuangbin
      */
     public List<Map<String, Object>> getSolutionDomSEO(Map<String, Object> param) {
-        // 获取活动首页状态为4,4为隐藏活动首页不显示
+        // 获取解决方案首页状态为4,4为隐藏活动首页不显示
         param.put("status", 4);
         return tbSolutionDomMapper.querySolutionDomSEO(param);
     }
