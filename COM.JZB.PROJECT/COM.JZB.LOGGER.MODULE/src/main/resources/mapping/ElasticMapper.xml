@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.logger.dao.ElasticMapper">
+    <!--批量新增系统请求日志表-->
+    <insert id="insertRequestApiLog">
+        insert into tb_request_api_log (cid, pid, uid, reqip, reqtime, reqapi, times, status, summary)
+        values
+        <foreach separator=","  index="index" item="item" collection="list">
+          (#{item.cid},
+            #{item.pid},
+            #{item.uid},
+            #{item.reqip},
+            #{item.reqtime},
+            #{item.reqapi},
+            #{item.times},
+            #{item.status},
+            #{item.summary})
+        </foreach>
+    </insert>
+
+    <select id="queryApiTimeLog" resultType="java.util.Map">
+        SELECT * from tb_request_api_log
+    </select>
+    <select id="queryRequestLog" resultType="java.lang.String">
+        SELECT date_trunc('day',to_date(MAX(reqtime),'yyyy-MM-dd'))-interval '1d'   FROM tb_request_api_log
+    </select>
+</mapper>

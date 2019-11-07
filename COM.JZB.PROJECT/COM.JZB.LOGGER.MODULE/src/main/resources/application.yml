@@ -8,7 +8,7 @@ spring:
   datasource:
     username: jzb
     password: AAAaaa111***
-    url: jdbc:postgresql://192.168.0.251:9123/jdb_auth
+    url: jdbc:postgresql://192.168.0.251:9345/jdb_logger
     driver-class-name: org.postgresql.Driver
 
 mybatis:
@@ -18,11 +18,13 @@ mybatis:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:7101/eureka/
+      defaultZone: http://localhost:8101/eureka/
   instance:
     prefer-ip-address: true
 
-
+logging:
+  level:
+    com.jzb.logger.dao.*: debug     #这是你的mapper包路径。
 
 # 请求处理的超时时间 请求连接的超时时间
 ribbon:
