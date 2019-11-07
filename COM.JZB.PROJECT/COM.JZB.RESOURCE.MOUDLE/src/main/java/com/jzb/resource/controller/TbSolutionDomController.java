@@ -290,10 +290,8 @@ public class TbSolutionDomController {
         try {
             // 返回活动信息
             List<Map<String, Object>> activity = tbSolutionDomService.getSolutionDomSEO(param);
-            // 获取用户信息
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             PageInfo pageInfo = new PageInfo();
-            result = Response.getResponseSuccess(userInfo);
+            result = Response.getResponseSuccess();
             pageInfo.setList(activity);
             result.setPageInfo(pageInfo);
         } catch (Exception e) {
