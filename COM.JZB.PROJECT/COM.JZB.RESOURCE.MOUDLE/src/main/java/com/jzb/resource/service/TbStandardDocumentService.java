@@ -108,4 +108,22 @@ public class TbStandardDocumentService {
     public int getCounts(Map<String, Object> param) {
         return tbStandardDocumentMapper.getCounts(param);
     }
+
+    /**
+     * 标准的SEO优化
+     * @param param
+     * @return
+     */
+    public int updateSeo(Map<String, Object> param) {
+        return tbStandardDocumentMapper.updateSeo(param);
+    }
+
+    /**
+     * 标准的SEO优化的查询
+     * @param param
+     * @return
+     */
+    public Map<String, Object> getSeo(Map<String, Object> param) {
+        return tbStandardDocumentMapper.getSeo(param);
+    }
 }

@@ -70,4 +70,18 @@ public interface TbPolicyDomMapper {
      * @return
      */
     int getCount(Map<String, Object> param);
+
+    /**
+     * 政策SEO优化的修改
+     * @param param
+     * @return
+     */
+    int updateSeo(Map<String, Object> param);
+
+    /**
+     * 政策SEO优化的查询
+     * @param param
+     * @return
+     */
+    Map<String, Object> getSeo(Map<String, Object> param);
 }
