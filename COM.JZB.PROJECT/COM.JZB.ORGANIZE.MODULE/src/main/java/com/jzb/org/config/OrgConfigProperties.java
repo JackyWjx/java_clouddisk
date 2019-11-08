@@ -53,6 +53,20 @@ public class OrgConfigProperties {
      */
     private String applicantPass;
 
+    /**
+     * 拒绝用户加入单位
+     * 您好,您申请加入(XXX单位)的审核在(XXX时间)已被拒绝.请登录查看详情!
+     */
+    private String applicantRefuse;
+
+    public String getApplicantRefuse() {
+        return applicantRefuse;
+    }
+
+    public void setApplicantRefuse(String applicantRefuse) {
+        this.applicantRefuse = applicantRefuse;
+    }
+
     public String getApplicantPass() {
         return applicantPass;
     }
