@@ -241,12 +241,23 @@ public class TbCompanyCommonService {
      */
     public int modifyCompanyCommon(Map<String, Object> param) {
         if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("password")))){
-            //给负责人发送短信
+            // 给新负责人发送短信
+            param.put("groupid", config.getAddCompany());
+            param.put("senduid", "addCommon1013");
+            param.put("msgtag", "addCommon1013");
+            companyService.sendRemind(param);
+        }else {
+            // 给新负责人发送短信
             param.put("groupid", config.getAddCompany());
             param.put("senduid", "addCommon1013");
             param.put("msgtag", "addCommon1013");
             companyService.sendRemind(param);
         }
+        // 给老负责人发送撤销管理员信息
+        param.put("groupid", config.getAddCompany());
+        param.put("senduid", "addCommon1013");
+        param.put("msgtag", "addCommon1013");
+        companyService.sendRemind(param);
         long updtime = System.currentTimeMillis();
         param.put("updtime", updtime);
         return tbCompanyCommonMapper.updateCompanyListInfo(param);
