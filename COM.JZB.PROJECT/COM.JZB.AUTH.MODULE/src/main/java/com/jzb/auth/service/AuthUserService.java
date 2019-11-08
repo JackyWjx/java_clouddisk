@@ -320,4 +320,26 @@ public class AuthUserService {
         param.put("born", JzbDataType.getInteger(param.get("born")));
         return userMapper.updateCompanyEmployee(param);
     }
+
+    /**
+     * 根据手机号模糊搜索用户姓名总数
+     *
+     * @author kuangbin
+     */
+    public int searchUserNameListCount(Map<String, Object> param) {
+        param.put("status", "1");
+        return userMapper.searchUserNameListCount(param);
+    }
+
+    /**
+     * 根据手机号模糊搜索用户姓名
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> searchUserNameList(Map<String, Object> param) {
+        // 设置分页数
+        param = setPageSize(param);
+        param.put("status", "1");
+        return userMapper.searchUserNameList(param);
+    }
 } // End class AuthUserService
