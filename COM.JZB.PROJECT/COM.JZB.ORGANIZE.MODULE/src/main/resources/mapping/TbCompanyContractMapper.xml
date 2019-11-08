@@ -211,11 +211,11 @@
         SELECT
         tcc.contid,
         tcc.cname,
-        tcl.cname AS companyname,
-        ( SELECT cname FROM tb_dept_user WHERE uid = tcd.duid LIMIT 1 ) username,
-        tdu.phone AS userphone,
-        tcp.projectname,
         tcc.cid,
+        (select cname from tb_company_list where status='1'  and cid=tcc.cid) as companyname,
+        (select projectname from tb_company_project where status='1'  and projectid=tcc.projectid) as projectname,
+        (select phone from tb_dept_user where uid=(select manager from tb_company_list where cid=tcc.cid) and cid=tcc.cid) AS userphone,
+        (select cname from tb_dept_user where uid=(select manager from tb_company_list where cid=tcc.cid) and cid=tcc.cid) as username,
         tcc.projectid,
         tcc.typeid,
         tcc.tempid,
@@ -240,11 +240,6 @@
         tcc.summary
         FROM
         tb_company_contract tcc
-        LEFT JOIN tb_company_list tcl ON tcc.cid = tcl.cid
-        LEFT JOIN tb_company_project tcp ON tcc.projectid = tcp.projectid
-        LEFT JOIN tb_company_dept tcd ON tcc.cid = tcd.cid
-        LEFT JOIN tb_dept_user tdu ON tcd.duid = tdu.uid
-        AND tdu.cid = tcc.cid
         WHERE
         tcc.status = '1'
         AND tcc.cid =#{ cid }
