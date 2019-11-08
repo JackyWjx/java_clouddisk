@@ -835,4 +835,36 @@ public class AuthUserController {
         }
         return result;
     }
+
+    /**
+     * 根据手机号模糊搜索用户姓名
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/searchUserNameList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchUserNameList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取申请人总数
+            int count = JzbDataType.getInteger(param.get("count"));
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询申请人总数
+                count = userService.searchUserNameListCount(param);
+            }
+            // 返回企业下所有的申请成员
+            List<Map<String, Object>> userList = userService.searchUserNameList(param);
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess(userInfo);
+            pageInfo.setList(userList);
+            pageInfo.setTotal(count > 0 ? count : userList.size());
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 } // End class AuthUserController
