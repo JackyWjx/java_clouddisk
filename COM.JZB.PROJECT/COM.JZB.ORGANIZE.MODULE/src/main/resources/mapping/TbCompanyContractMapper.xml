@@ -244,6 +244,7 @@
         tcc.status = '1'
         AND tcc.cid =#{ cid }
         <if test="contid != null and contid != ''">
+
             and tcc.contid=#{contid}
         </if>
         LIMIT #{ pagesize } OFFSET #{ pageno}
