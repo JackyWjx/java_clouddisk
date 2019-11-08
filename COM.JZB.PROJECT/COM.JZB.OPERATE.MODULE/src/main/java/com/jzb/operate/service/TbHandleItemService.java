@@ -48,33 +48,31 @@ public class TbHandleItemService {
             Response response = tbCompanyListApi.queryCompanyList(param);
             //查询出来的结果转成map
             List<Map<String,Object>> entity = (List<Map<String, Object>>) response.getResponseEntity();
-            if (entity.size() <= 0) {
-                list.get(i).put("projectname", "");
-                list.get(i).put("dictvalue", "");
-                list.get(i).put("unitName", "");
-                list.get(i).put("contamount", "");
+
+            //根据业主名称进行条件查询的判断
+            if (param.get("cname") != null && param.get("cname") != "") {
+                if (entity.size() <= 0 || entity == null) {
+                    list.get(i).clear();
+                }
             }
+
+            //根据等级进行条件查询
+            if (param.get("dictvalue") != null && param.get("dictvalue") != "") {
+                if (entity.size() <= 0 || entity == null) {
+                    list.get(i).clear();
+                }
+            }
+
             for (int j = 0; j < entity.size(); j++) {
                 if (entity.get(j) != null) {
                     list.get(i).put("projectname", entity.get(j).get("projectname"));
                     list.get(i).put("dictvalue", entity.get(j).get("dictvalue"));
                     list.get(i).put("unitName", entity.get(j).get("cname"));
                     list.get(i).put("contamount", entity.get(j).get("contamount"));
-                    break;
+                    continue;
                 }
+        }
 
-                    //根据等级进行条件查询
-                    if (param.get("dictvalue") != null && param.get("dictvalue") != "") {
-                        if (entity.get(i) == null) {
-                            list.get(i).clear();
-                        }
-                        //根据业主名称进行条件查询的判断
-                    } else if (param.get("cname") != null && param.get("cname") != "") {
-                        if (entity.get(i) == null) {
-                            list.get(i).clear();
-                        }
-                    }
-            }
         }
             return list;
         }
@@ -90,11 +88,19 @@ public class TbHandleItemService {
         List<Map<String, Object>> list = tbHandleItemMapper.queryHandleItem(param);
         Map<String, Object> map = new HashMap<>();
         for (int i = 0; i < list.size(); i++) {
-            map.put("cid", list.get(i).get("cid"));
-            Response response = tbCompanyListApi.queryCompanyList(map);
-
+            //拿到cid 进行销售统计分析的查询
+            //HashMap<String, Object> map = new HashMap<>();
+            param.put("cid", list.get(i).get("cid"));
+            //调用org服务的api进行销售统计分析的数据进行查询
+            Response response = tbCompanyListApi.queryCompanyList(param);
+            //查询出来的结果转成map
             List<Map<String,Object>> entity = (List<Map<String, Object>>) response.getResponseEntity();
-
+            if (entity.size() <= 0) {
+                list.get(i).put("projectname", "");
+                list.get(i).put("dictvalue", "");
+                list.get(i).put("unitName", "");
+                list.get(i).put("contamount", "");
+            }
             for (int j = 0; j < entity.size(); j++) {
                 if (entity.get(j) != null) {
                     list.get(i).put("projectname", entity.get(j).get("projectname"));
@@ -103,8 +109,19 @@ public class TbHandleItemService {
                     list.get(i).put("contamount", entity.get(j).get("contamount"));
                     break;
                 }
-            }
+                //根据等级进行条件查询
+                if (param.get("dictvalue") != null && param.get("dictvalue") != "") {
+                    if (entity.get(i) == null) {
+                        list.get(i).clear();
+                    }
+                    //根据业主名称进行条件查询的判断
+                } else if (param.get("cname") != null && param.get("cname") != "") {
+                    if (entity.get(i) == null) {
+                        list.get(i).clear();
+                    }
+                }
 
+            }
         }
         return list;
     }

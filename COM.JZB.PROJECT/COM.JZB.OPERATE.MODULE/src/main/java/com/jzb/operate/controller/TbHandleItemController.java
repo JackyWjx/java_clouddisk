@@ -5,11 +5,13 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.auth.AuthUserApi;
 import com.jzb.operate.api.redis.UserRedisServiceApi;
 import com.jzb.operate.service.TbHandleItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.DelegatingServletInputStream;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,6 +28,9 @@ public class TbHandleItemController {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
+    @Autowired
+    private AuthUserApi authUserApi;
 
     /**
      * 日志记录对象
@@ -59,9 +64,9 @@ public class TbHandleItemController {
                 List list1 = new ArrayList<>();
 
                 for (int i = 0; i < paramList.size(); i++) {
-                    Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(paramList.get(i));
+                     Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(paramList.get(i));
                     //遍历list 调用服务查询数据
-                    List<Map<String, Object>> list  = tbhandleitemservice.getHandleItem(paramList.get(i));
+                    List<Map<String, Object>> list  = tbhandleitemservice.queryHandleItem(paramList.get(i));
                     Map<String, Object> map = new HashMap<>();
                     Map<String,Object> map1 = (Map<String, Object>) cacheUserInfo.getResponseEntity();
                     //如果list为空，但是缓存中查询出来的数据uid和cname不为空，则默认吧其他参数置为空返回给前端
@@ -85,22 +90,36 @@ public class TbHandleItemController {
                             map.put("projectid", "");
                             map.put("cid", "");
                        //遍历缓存中查询出来的map，
-                        for (Object key:map1.keySet()) {
-                            map.put("uidcname", map1.get("cname"));
-                            map.put("uid", map1.get("uid"));
+                            if (param.get("cnames") == null) {
+                                map.put("uidcname", map1.get("cname"));
+                                map.put("uid", map1.get("uid"));
+                            }
+                            if (param.get("cnames") != null) {
+                                if (map1.containsValue(param.get("cnames"))) {
+                                    map.put("uidcname", map1.get("cname"));
+                                    map.put("uid", map1.get("uid"));
+                                } else {
+                                    map.clear();
+                                }
                          }
                         //添加到list1中返回
                             list1.add(map);
                         } else {
                         //遍历缓存中查询出来的map数据 添加到list中返回给前端
                             for (int j = 0; j < list.size(); j++) {
-                                for (Object key:map1.keySet()) {
-
-                                    list.get(j).put("uidcname", map1.get("cname"));
-                                    list.get(j).put("uid", map1.get("uid"));
-                                };
+                                    if (param.get("cnames") == null) {
+                                        list.get(j).put("uidcname", map1.get("cname"));
+                                        list.get(j).put("uid", map1.get("uid"));
+                                    }
+                                    if (param.get("cnames") != null) {
+                                        if (map1.containsValue(param.get("cnames"))) {
+                                            list.get(j).put("uidcname", map1.get("cname"));
+                                            list.get(j).put("uid", map1.get("uid"));
+                                        } else {
+                                            list.get(j).clear();
+                                        }
+                                }
                                  list1.add(list.get(j));
-                            break;
                         }
                     }
                 }
@@ -157,24 +176,109 @@ public class TbHandleItemController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-             //查询数据返回返回结果
-            List<Map<String,Object>>  list = tbhandleitemservice.queryHandleItem(param);
-            for (int i = 0; i < list.size(); i++) {
 
-                Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(list.get(i));
+            List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
 
-                Map<String,Object> map1 = (Map<String, Object>) cacheUserInfo.getResponseEntity();
-                for (Object key:map1.keySet()) {
-                    list.get(i).put("uidcname", map1.get("cname"));
-                    list.get(i).put("uid", map1.get("uid"));
-                };
 
+                Response cacheUserInfo;
+
+                if (param.get("projectid") != null && param.get("projectid") != "" || param.get("personid") != null &&
+                param.get("personid") != "" ||
+                        param.get("cid") != null && param.get("cid") != "" || param.get("cname") != null && param.get("cname") != "" ||
+                        param.get("dictvalue") != null && param.get("dictvalue") != ""
+                ) {
+
+                    //遍历list 调用服务查询数据
+                    List<Map<String, Object>> list  = tbhandleitemservice.getHandleItem(param);
+
+
+
+                        //遍历缓存中查询出来的map数据 添加到list中返回给前端
+                        for (int  x = list.size() -1; x >=0 ; x--) {
+                            cacheUserInfo = userRedisServiceApi.getCacheUserInfo(list.get(x));
+                            Map<String,Object> map1 = (Map<String, Object>) cacheUserInfo.getResponseEntity();
+                            //如果list为空，但是缓存中查询出来的数据uid和cname不为空，则默认吧其他参数置为空返回给前端
+
+                            if (list.get(x) != null) {
+                                if (map1 != null) {
+                                    list.get(x).put("uidcname", map1.get("cname"));
+                                    list.get(x).put("uid", map1.get("uid"));
+                                }
+                            }
+                            if (param.get("cnames") != null && param.get("cnames") !="") {
+                                if (map1.containsValue(param.get("cnames"))) {
+                                    list.get(x).put("uidcname", map1.get("cname"));
+                                    list.get(x).put("uid", map1.get("uid"));
+                                } else {
+                                    list.get(x).clear();
+                                }
+                            }
+                            list1.add(list.get(x));
+                        }
+                    }
+
+                if (param.get("uid") != null && param.get("uid") != ""){
+
+                    //遍历list 调用服务查询数据
+                    List<Map<String, Object>> list  = tbhandleitemservice.getHandleItem(param);
+
+                    cacheUserInfo = userRedisServiceApi.getCacheUserInfo(param);
+                    Map<String,Object> map1 = (Map<String, Object>) cacheUserInfo.getResponseEntity();
+                    //如果list为空，但是缓存中查询出来的数据uid和cname不为空，则默认吧其他参数置为空返回给前端
+
+                    //遍历缓存中查询出来的map数据 添加到list中返回给前端
+                    for (int j = 0; j < list.size(); j++) {
+                        if (list.get(j) != null) {
+                            list.get(j).put("uidcname", map1.get("cname"));
+                            list.get(j).put("uid", map1.get("uid"));
+                        }
+                        list1.add(list.get(j));
+                    }
+                }
+
+                if (param.get("cnames") != null && param.get("cnames") != "") {
+                    Map<String, Object> hashMap = new HashMap<>();
+                    hashMap = (Map<String, Object>) param;
+                    hashMap.put("cname", param.get("cnames"));
+                    Response response = authUserApi.searchInvitee(hashMap);
+                    List<Map<String,Object>> entitys = (List<Map<String, Object>>) response.getPageInfo().getList();
+                    if (entitys != null) {
+
+                    for (int y = 0; y < entitys.size(); y++) {
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("uid", entitys.get(y).get("uid"));
+                        //遍历list 调用服务查询数据
+                        List<Map<String, Object>> list  = tbhandleitemservice.getHandleItem(map);
+
+                        cacheUserInfo = userRedisServiceApi.getCacheUserInfo(entitys.get(y));
+                        Map<String,Object> map1 = (Map<String, Object>) cacheUserInfo.getResponseEntity();
+                        //如果list为空，但是缓存中查询出来的数据uid和cname不为空，则默认吧其他参数置为空返回给前端
+
+                        //遍历缓存中查询出来的map数据 添加到list中返回给前端
+                        for (int j = 0; j < list.size(); j++) {
+                            if (list.get(j) != null) {
+                                list.get(j).put("uidcname", map1.get("cname"));
+                                list.get(j).put("uid", map1.get("uid"));
+                            }
+                            list1.add(list.get(j));
+                        }
+
+                    }
+                }
+                }
+
+            List<Object> objects = new ArrayList<>();
+
+            for (int i = 0; i < list1.size(); i++) {
+                if (list1.get(i).get("cid") != null) {
+                    objects.add(list1.get(i));
+                }
             }
 
             //获取用户信息
             userInfo = (Map<String, Object>) param.get("userinfo");
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setList(list);
+            pageInfo.setList(objects);
             //响应成功信息
             result = Response.getResponseSuccess(userInfo);
             result.setPageInfo(pageInfo);

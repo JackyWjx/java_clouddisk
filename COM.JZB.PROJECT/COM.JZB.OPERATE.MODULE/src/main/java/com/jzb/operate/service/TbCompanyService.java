@@ -286,24 +286,32 @@ public class TbCompanyService {
             //调用org服务的api进行销售统计分析的数据进行查询
             Response response = tbCompanyListApi.queryCompanyList(param);
             //查询出来的结果转成map
-            Map<String,Object>  responseEntity = (Map<String, Object>) response.getResponseEntity();
-            //遍历map 把map中的数据添加到list中
-            if (responseEntity != null) {
-
-                list.get(i).put("projectname", responseEntity.get("projectname"));
-                list.get(i).put("dictvalue", responseEntity.get("dictvalue"));
-                list.get(i).put("unitName", responseEntity.get("cname"));
-                list.get(i).put("contamount", responseEntity.get("contamount"));
+            List<Map<String,Object>> entity = (List<Map<String, Object>>) response.getResponseEntity();
+            if (entity.size() <= 0) {
+                list.get(i).put("projectname", "");
+                list.get(i).put("dictvalue", "");
+                list.get(i).put("unitName", "");
+                list.get(i).put("contamount", "");
             }
-            //根据等级进行条件查询
-            if (param.get("dictvalue") != null && param.get("dictvalue") != "") {
-                if (responseEntity == null) {
-                    list.get(i).clear();
+            for (int j = 0; j < entity.size(); j++) {
+                if (entity.get(j) != null) {
+                    list.get(i).put("projectname", entity.get(j).get("projectname"));
+                    list.get(i).put("dictvalue", entity.get(j).get("dictvalue"));
+                    list.get(i).put("unitName", entity.get(j).get("cname"));
+                    list.get(i).put("contamount", entity.get(j).get("contamount"));
+                    break;
                 }
-                //根据业主名称进行条件查询的判断
-            }else if (param.get("cname") != null && param.get("cname") != "") {
-                if (responseEntity == null) {
-                    list.get(i).clear();
+
+                //根据等级进行条件查询
+                if (param.get("dictvalue") != null && param.get("dictvalue") != "") {
+                    if (entity.get(i) == null) {
+                        list.get(i).clear();
+                    }
+                    //根据业主名称进行条件查询的判断
+                } else if (param.get("cname") != null && param.get("cname") != "") {
+                    if (entity.get(i) == null) {
+                        list.get(i).clear();
+                    }
                 }
             }
         }
