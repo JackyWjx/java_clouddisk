@@ -592,13 +592,13 @@ public class CompanyController {
                 // 1发送通过加入单位模板,2拒绝加入单位模板
                 if (maybe == 1) {
                     // 发送审核通过信息模板
-                    param.put("groupid", "1007");
+                    param.put("groupid", orgConfigProperties.getApplicantPass());
                     param.put("msgtag", "Proposer1007");
                     param.put("senduid", "Proposer1007");
                     sendResult = companyService.sendRemind(param);
                 } else {
                     // 发送拒绝通过信息模板
-                    param.put("groupid", "1008");
+                    param.put("groupid", orgConfigProperties.getApplicantRefuse());
                     param.put("msgtag", "Proposer1008");
                     param.put("senduid", "Proposer1008");
                     sendResult = companyService.sendRemind(param);
@@ -639,7 +639,7 @@ public class CompanyController {
                 for (int i = 0; i < list.size(); i++) {
                     Map<String, Object> map = list.get(i);
                     // 通过申请模板ID
-                    map.put("groupid", "1007");
+                    map.put("groupid", orgConfigProperties.getApplicantPass());
                     map.put("msgtag", "Proposer1007");
                     map.put("senduid", "Proposer1007");
                     // 配置短信信息发送短信
