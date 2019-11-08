@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.operate.dao.TbHandleItemMapper">
 
-    <select id="getHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
+    <select id="queryHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
         select
         a.uid,
         a.personid,
@@ -21,8 +21,10 @@
         a.person
         from
         tb_handle_item a
-        where
-        a.uid = #{uid}
+        where  1=1
+        <if test="uid != null and uid != ''">
+           and uid = #{uid}
+        </if>
         <if test="beginTime != null and beginTime != ''">
             and a.handletime &gt;= #{beginTime}
         </if>
@@ -34,8 +36,9 @@
         </if>
     </select>
 
+
     <!--所有业主-销售统计分许-根据页面的超链接进行查询-->
-    <select id="queryHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
+    <select id="getHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
       select
         a.uid,
         a.personid,
@@ -52,18 +55,18 @@
         a.person
         from
         tb_handle_item a
-        where
+        where 1=1
         <if test="uid != null and uid != ''">
-            uid = #{uid}
+           and uid = #{uid}
         </if>
         <if test="personid != null and personid != ''">
-            personid = #{personid}
+           and personid = #{personid}
         </if>
         <if test="cid != null and cid != ''">
-            cid = #{cid}
+           and cid = #{cid}
         </if>
         <if test="projectid != null and projectid != ''">
-            projectid = #{projectid}
+           and projectid = #{projectid}
         </if>
     </select>
 
