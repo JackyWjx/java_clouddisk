@@ -170,4 +170,18 @@ public interface AuthUserMapper {
      * @author kuangbin
      */
     int updateCompanyEmployee(Map<String, Object> param);
+
+    /**
+     * 根据手机号模糊搜索用户姓名总数
+     *
+     * @author kuangbin
+     */
+    int searchUserNameListCount(Map<String, Object> param);
+
+    /**
+     * 根据手机号模糊搜索用户姓名
+     *
+     * @author kuangbin
+     */
+    List<Map<String, Object>> searchUserNameList(Map<String, Object> param);
 } // End interface AuthUserMapper
