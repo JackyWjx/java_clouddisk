@@ -133,6 +133,7 @@
     <select id="queryCompanyList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT * FROM (
         SELECT
+        DISTINCT
         tcl.cid,
         tcl.cname,
         tcp1.projectname,
@@ -150,7 +151,7 @@
          and a.dictvalue = #{dictvalue}
       </if>
       <if test="cname != null and cname != ''">
-        and a.cname like concat('%',#{cname},'%')
+        and a.projectname like concat('%',#{cname},'%')
       </if>
       <if test="cid != null and cid != ''">
          and a.cid = #{cid}
