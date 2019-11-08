@@ -124,15 +124,12 @@
     <!-- 修改合同模板-->
     <update id="updateContractTemplate" parameterType="java.util.Map">
         update tb_contract_template set
-        <if test="cname != '' and cname!= null">
-            cname=#{cname}
-        </if>
-        <if test="path != '' and path!= null">
-            path=#{path}
-        </if>
-        <if test="updtime != '' and updtime!= null">
-            updtime=#{updtime}
-        </if>
+        <if test="cname != '' and cname!= null">cname=#{cname},</if>
+        <if test="summary != '' and summary!= null">summary=#{summary},</if>
+        <if test="tempdesc != '' and tempdesc!= null">tempdesc=#{tempdesc},</if>
+        <if test="path != '' and path!= null"> path=#{path},</if>
+        <if test="tempcode != '' and tempcode!= null"> tempcode=#{tempcode},</if>
+        <if test="updtime != '' and updtime!= null">updtime=#{updtime}</if>
         where tempid=#{tempid}
     </update>
 
