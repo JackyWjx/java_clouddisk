@@ -7,6 +7,7 @@
     <!-- 查询公海单位 不做条件-->
     <select id="queryCompanyCommon" resultType="java.util.Map">
 SELECT
+DISTINCT
 	tcc.cid,
 	tcc.uid,
 	( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid LIMIT 1 ) sales,
@@ -39,6 +40,7 @@ WHERE
     <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map" resultType="java.util.Map">
         select * from (
         SELECT
+        DISTINCT
         tcc.cid,
         tcc.uid,
         (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
@@ -87,6 +89,7 @@ WHERE
         (
         select * from (
         SELECT
+        DISTINCT
         tcc.cid,
         tcc.uid,
         (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
@@ -178,6 +181,7 @@ WHERE
     <select id="getCompanyCommoms" parameterType="java.util.Map" resultType="java.util.Map">
         select * from (
         SELECT
+        DISTINCT
         tcc.cid,
         tcc.uid,
         (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
