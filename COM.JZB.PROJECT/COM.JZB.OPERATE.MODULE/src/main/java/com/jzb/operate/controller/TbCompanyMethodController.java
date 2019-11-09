@@ -77,8 +77,14 @@ public class TbCompanyMethodController {
                     list.get(i).put("addtime", time);
                     list.get(i).put("updtime", time);
                 }
-                List<Map<String, Object>> targetList = (List<Map<String, Object>>) param.get("targetList");
-                result = tbCompanyMethodService.addCompanyMethod(list) * tbCompanyMethodTargetService.addMethodTarget(targetList) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+                result = tbCompanyMethodService.addCompanyMethod(list) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+                if (JzbCheckParam.allNotEmpty(param, new String[]{"targetList"})) {
+                    List<Map<String, Object>> targetList = (List<Map<String, Object>>) param.get("targetList");
+                    if(targetList.size()>0){
+                        tbCompanyMethodTargetService.addMethodTarget(targetList);
+                    }
+                }
+
             }
         } catch (Exception ex) {
             flag = false;
