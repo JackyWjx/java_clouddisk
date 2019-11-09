@@ -5,7 +5,7 @@ import com.jzb.base.data.JzbDataType;
 import java.util.Map;
 
 public class PageConvert {
-    private PageConvert(){}
+    public PageConvert(){}
 
     /**
      * 设置好分页参数
