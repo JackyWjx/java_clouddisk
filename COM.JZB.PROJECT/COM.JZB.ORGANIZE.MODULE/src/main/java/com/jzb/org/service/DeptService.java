@@ -222,11 +222,11 @@ public class DeptService {
         int size = deptList.size();
         List<Map<String, Object>> result = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            Map<String, Object>  deptMap = deptList.get(i);
+            Map<String, Object> deptMap = deptList.get(i);
             Response resp = userRedisServiceApi.getCacheUserInfo(deptMap);
             if (JzbDataType.isMap(resp.getResponseEntity())) {
                 Map<Object, Object> userInfo = (Map<Object, Object>) resp.getResponseEntity();
-                deptMap.put("portrait",userInfo.get("portrait"));
+                deptMap.put("portrait", userInfo.get("portrait"));
             }
             result.add(deptMap);
         }
@@ -381,6 +381,10 @@ public class DeptService {
                             } else {
                                 addMap.put("uid", newUid);
                                 addMap.put("password", pass);
+
+                                //新用户添加到部门
+                                Map<String, Object> deptUserMap = toDeptUser(addMap, map, cdid);
+                                deptUserList.add(deptUserMap);
                             }
                         } catch (Exception e) {
                             JzbTools.logError(e);
