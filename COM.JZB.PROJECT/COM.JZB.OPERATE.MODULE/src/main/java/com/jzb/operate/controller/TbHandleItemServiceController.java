@@ -179,6 +179,7 @@ public class TbHandleItemServiceController {
                     Response pro  = companyApi.getCompany(para);
                     Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
                     list.get(i).put("cname",proMap.get("cname"));
+                    list.get(i).put("caddtime",proMap.get("addtime"));
                 }
             }
             if(isCount){
