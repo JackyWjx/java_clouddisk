@@ -22,7 +22,7 @@ public interface TbUserControlAuthApi {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getCompanyIsAuth", method = RequestMethod.POST)
+    @RequestMapping(value = "/theCidIsExists", method = RequestMethod.POST)
     @CrossOrigin
-    public Response getCompanyIsAuth(@RequestBody Map<String, Object> param);
+    public Response theCidIsExists(@RequestBody Map<String, Object> param);
 }
