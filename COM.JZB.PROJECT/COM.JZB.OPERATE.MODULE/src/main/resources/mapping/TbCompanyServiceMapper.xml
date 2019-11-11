@@ -317,7 +317,7 @@
         from
         tb_company_service
         where
-        cid = # {cid}
+        cid = #{cid}
         <if test="projectid != null and projectid != ''">
             and projectid = #{projectid}
         </if>
