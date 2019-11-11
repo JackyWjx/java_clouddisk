@@ -344,7 +344,7 @@ public class CompanyService {
         result.put("cid", cid);
         return result;
     }
-    
+
 
     /**
      * 根据企业ID获取当前企业的超级管理员
@@ -379,7 +379,7 @@ public class CompanyService {
     public int getApplyCount(Map<String, Object> param) {
         int count;
         try {
-            param.put("status", "1");
+            param.put("status", 1);
             param.put("reqtype", "1");
             count = companyMapper.queryApplyCount(param);
         } catch (Exception ex) {
@@ -397,7 +397,7 @@ public class CompanyService {
     public int getInviteeCount(Map<String, Object> param) {
         int count;
         try {
-            param.put("status", "2");
+            param.put("status", 2);
             param.put("reqtype", "2");
             count = companyMapper.queryApplyCount(param);
         } catch (Exception ex) {
@@ -418,7 +418,7 @@ public class CompanyService {
         try {
             // 设置分页数
             param = setPageSize(param);
-            param.put("status", "1");
+            param.put("status", 1);
             param.put("reqtype", "1");
             // 查询所有的被邀请人ID
             List<Map<String, Object>> uidList = companyMapper.queryApplyList(param);
@@ -457,7 +457,7 @@ public class CompanyService {
         try {
             // 设置分页数
             param = setPageSize(param);
-            param.put("status", "2");
+            param.put("status", 2);
             param.put("reqtype", "2");
             // 查询所有的被邀请人ID
             List<Map<String, Object>> uidList = companyMapper.queryApplyList(param);
@@ -722,7 +722,7 @@ public class CompanyService {
         // 创建单位成功判断是否有密码需要发送给用户
         codeMap.put("username", JzbDataType.getString(map.get("username")));
         if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("password")))) {
-            codeMap.put("pwassword", JzbDataType.getString(map.get("password")));
+            codeMap.put("password", JzbDataType.getString(map.get("password")));
         }
         codeMap.put("companyname", JzbDataType.getString(map.get("companyname")));
         Map<String, Object> smsMap = new HashMap<>(1);
@@ -875,12 +875,7 @@ public class CompanyService {
                 sendRemind(send);
             }
         }
-        int count = companyMapper.queryIsCompanySupplier(param);
-        if (count==0){
-            count = companyMapper.insertCompanySupplier(param);
-        }else{
-            count = 4;
-        }
+        int count = companyMapper.insertCompanySupplier(param);
         if (count == 1) {
             count = companyMapper.insertCompanyCommon(param);
         }
