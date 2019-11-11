@@ -59,6 +59,48 @@ public class OrgConfigProperties {
      */
     private String applicantRefuse;
 
+    /**
+     * 修改管理员有密码
+     * 尊敬的用户您好,XXX【单位】已将您设置为管理员.账号为您的手机号码,密码为XXXXXXX.请您尽快登录,核对信息!
+     */
+    private String changeManagerPwd;
+
+    /**
+     * 修改管理员
+     * 尊敬的用户您好,XXX【单位】已将您设置为管理员.请您尽快登录,核对信息!
+     */
+    private String changeManager;
+
+    /**
+     * 给被修改的管理员发送短信
+     * 尊敬的用户您好,XXX【单位】已取消您的管理员设置.登录查看详情!
+     */
+    private String oldManager;
+
+    public String getOldManager() {
+        return oldManager;
+    }
+
+    public void setOldManager(String oldManager) {
+        this.oldManager = oldManager;
+    }
+
+    public String getChangeManager() {
+        return changeManager;
+    }
+
+    public void setChangeManager(String changeManager) {
+        this.changeManager = changeManager;
+    }
+
+    public String getChangeManagerPwd() {
+        return changeManagerPwd;
+    }
+
+    public void setChangeManagerPwd(String changeManagerPwd) {
+        this.changeManagerPwd = changeManagerPwd;
+    }
+
     public String getApplicantRefuse() {
         return applicantRefuse;
     }
