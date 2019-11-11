@@ -253,6 +253,28 @@ public class TbHandleItemController {
                         cacheUserInfo = userRedisServiceApi.getCacheUserInfo(entitys.get(y));
                         Map<String,Object> map1 = (Map<String, Object>) cacheUserInfo.getResponseEntity();
                         //如果list为空，但是缓存中查询出来的数据uid和cname不为空，则默认吧其他参数置为空返回给前端
+                        if (list.size() <= 0 && entitys != null) {
+                            map.put("summary", "");
+                            map.put("projectname", "");
+                            map.put("unitName", "");
+                            map.put("dictvalue", "");
+                            map.put("invest", "");
+                            map.put("contamount", "");
+                            map.put("needres", "");
+                            map.put("handletime", "");
+                            map.put("uid", "");
+                            map.put("nexttime", "");
+                            map.put("person", "");
+                            map.put("context", "");
+                            map.put("personid", "");
+                            map.put("attach", "");
+                            map.put("region", "");
+                            map.put("projectid", "");
+                            map.put("cid", "");
+                            map.put("uidcname", map1.get("cname"));
+                            map.put("uid", map1.get("uid"));
+                            list1.add(map);
+                        }
 
                         //遍历缓存中查询出来的map数据 添加到list中返回给前端
                         for (int j = 0; j < list.size(); j++) {
@@ -270,7 +292,7 @@ public class TbHandleItemController {
             List<Object> objects = new ArrayList<>();
 
             for (int i = 0; i < list1.size(); i++) {
-                if (list1.get(i).get("cid") != null) {
+                if (list1.get(i).get("uid") != null) {
                     objects.add(list1.get(i));
                 }
             }

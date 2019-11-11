@@ -360,4 +360,50 @@ public class TbCompanyServiceController {
         }
         return result;
     }
+
+
+    /**
+     * 给项目分配售后人员
+     * @param param
+     * @return
+     */
+
+    @RequestMapping(value = "/saveCompanyService",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response saveCompanyService(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/CompanyService/saveCompanyService";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            //如果指定参数为空，则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"projectid"})) {
+                result = Response.getResponseError();
+            } else {
+                int count = tbCompanyService.saveCompanyService(param);
+                //获取用户信息
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                //返回成功后者失败的结果
+                result = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryServiceList Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
 }

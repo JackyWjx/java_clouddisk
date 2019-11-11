@@ -88,4 +88,17 @@ public interface TbCompanyServiceMapper {
      * @return
      */
     List<Map<String, Object>> getHandleItem(Map<String, Object> param);
+
+    /**
+     * 查询项目分配的售后人员
+     */
+    List<Map<String, Object>> getCompanyService(Map<String,Object> param);
+
+    /**
+     * 分配项目的售后人员进行修改
+     * @param param
+     * @return
+     */
+    int updateCompanyService(Map<String, Object> param);
+
 }

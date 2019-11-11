@@ -317,4 +317,28 @@ public class TbCompanyService {
         }
         return list;
     }
+
+
+    /**
+     *
+     * @return
+     * @param param
+     */
+    public int saveCompanyService(Map<String, Object> param) {
+        //如果该项目的售后人员存在，就进行修改，一个项目只能有一个售后人员
+        int count;
+        if (tbCompanyServiceMapper.getCompanyService(param).size() > 0) {
+            long time = System.currentTimeMillis();
+            param.put("updtime", time);
+           count = tbCompanyServiceMapper.updateCompanyService(param);
+        } else {
+            long time = System.currentTimeMillis();
+            //如果不存在就进行售后人员的添加
+            param.put("typeid", "2");
+            param.put("addtime", time);
+            param.put("updtime", time);
+            count = tbCompanyServiceMapper.saveComanyService(param);
+        }
+        return count;
+    }
 }
