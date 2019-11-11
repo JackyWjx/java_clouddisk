@@ -651,4 +651,37 @@
         </if>
     </select>
 
+    <!--查询给项目分配的售后人员-->
+    <select id="getCompanyService" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        *
+        from
+        tb_company_service
+        where
+        typeid = '2'
+        <if test="projectid != null and projectid != ''">
+           and projectid = #{projectid}
+        </if>
+    </select>
+
+    <!--修改分配项目的售后人员-->
+    <update id="updateCompanyService" parameterType="java.util.Map">
+        update tb_company_service set updtime = #{updtime}
+        <choose><when test="upduid != null">,upduid  = #{upduid}</when></choose>
+        <choose><when test="uid != null">,uid  = #{uid}</when></choose>
+        <choose><when test="region != null">,region  = #{region}</when></choose>
+        <choose><when test="servicetype != null">,servicetype  = #{servicetype}</when></choose>
+        <choose><when test="personid != null">,personid  = #{personid}</when></choose>
+        <choose><when test="person != null">,person  = #{person}</when></choose>
+        <choose><when test="telphone != null">,telphone  = #{telphone}</when></choose>
+        <choose><when test="context != null">,context  = #{context}</when></choose>
+        <choose><when test="servicecontent != null">,servicecontent  = #{servicecontent}</when></choose>
+        <choose><when test="needres != null">,needres  = #{needres}</when></choose>
+        <choose><when test="attach != null">,attach  = #{attach}</when></choose>
+        <choose><when test="remark != null">,remark  = #{remark}</when></choose>
+        <choose><when test="times != null">,times  = #{times}</when></choose>
+        <choose><when test="result != null">,result  = #{result}</when></choose>
+        <choose><when test="nexttime != null">,nexttime  = #{nexttime}</when></choose>
+        where  typeid = '2'  and projectid = #{projectid}
+    </update>
 </mapper>
