@@ -1022,12 +1022,7 @@ public class CompanyController {
             param.put("uid", uid);
             param.put("status", "1");
             int add = companyService.addCompanySupplier(param);
-            if (add == 1) {
-                result = Response.getResponseSuccess(userInfo);
-            } else {
-                result = Response.getResponseError();
-                result.setResponseEntity("此单位已存在!");
-            }
+            result = add == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
