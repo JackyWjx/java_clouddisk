@@ -108,4 +108,17 @@
 --         and	cid =#{ cid}
     </select>
 
+    <!-- 删除供应商(即修改供应商的状态) -->
+    <update id="deleteCompanySupplier" parameterType="java.util.Map">
+        UPDATE
+        tb_company_supplier
+        SET
+        upduid = #{uid},
+        updtime = #{updtime},
+        status = #{status}
+        WHERE
+        cid = #{cid}
+        and
+        supid = #{supid}
+    </update>
 </mapper>
