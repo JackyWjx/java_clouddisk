@@ -24,6 +24,6 @@ public class TbScoreManualService {
     }
 
     public List<Map<String, Object>> getActivity(Map<String, Object> paramap) {
-        return scoreManual.getScoreManual(paramap);
+        return scoreManual.queryScoreManualList(paramap);
     }
 }

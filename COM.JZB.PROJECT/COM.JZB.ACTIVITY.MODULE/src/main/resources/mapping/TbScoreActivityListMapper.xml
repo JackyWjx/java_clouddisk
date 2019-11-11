@@ -9,7 +9,7 @@
     </select>
 
     <!--查询活动列表-->
-    <select id="getActivity" parameterType="java.util.Map" resultType="java.util.Map">
+    <select id="queryActivityList" parameterType="java.util.Map" resultType="java.util.Map">
         select
             actid,
             addtime,

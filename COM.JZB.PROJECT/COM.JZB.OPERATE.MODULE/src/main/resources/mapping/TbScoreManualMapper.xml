@@ -9,7 +9,7 @@
     </select>
 
     <!--查询积分指导详情-->
-    <select id="getScoreManual" parameterType="java.util.Map" resultType="java.util.Map">
+    <select id="queryScoreManualList" parameterType="java.util.Map" resultType="java.util.Map">
           select
               manualid,
               cname,

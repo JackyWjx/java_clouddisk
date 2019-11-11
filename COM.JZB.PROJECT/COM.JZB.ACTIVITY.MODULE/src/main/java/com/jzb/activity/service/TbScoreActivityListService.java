@@ -25,7 +25,7 @@ public class TbScoreActivityListService {
      */
     public List<Map<String, Object>> getActivity(Map<String, Object> paramap) {
 
-    return scoreMapper.getActivity(paramap);
+    return scoreMapper.queryActivityList(paramap);
     }
 
     /**

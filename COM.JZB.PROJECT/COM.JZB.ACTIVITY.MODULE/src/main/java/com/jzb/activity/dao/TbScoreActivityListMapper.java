@@ -24,7 +24,7 @@ public interface TbScoreActivityListMapper {
      * @param paramap
      * @return
      */
-    List<Map<String, Object>> getActivity(Map<String, Object> paramap);
+    List<Map<String, Object>> queryActivityList(Map<String, Object> paramap);
 
     /**
      * 查询活动总数

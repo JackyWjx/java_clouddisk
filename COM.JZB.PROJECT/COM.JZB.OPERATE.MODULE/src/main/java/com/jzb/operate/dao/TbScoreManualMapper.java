@@ -19,5 +19,5 @@ public interface TbScoreManualMapper {
     Integer getCount(Map<String, Object> paramap);
 
     //查询指导手册列表
-    List<Map<String, Object>> getScoreManual(Map<String, Object> paramap);
+    List<Map<String, Object>> queryScoreManualList(Map<String, Object> paramap);
 }
