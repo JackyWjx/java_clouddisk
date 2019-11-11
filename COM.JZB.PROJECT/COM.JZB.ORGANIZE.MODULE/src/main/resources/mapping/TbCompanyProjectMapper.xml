@@ -289,82 +289,98 @@
         </foreach>
     </update>
 
- <!--根据服务的项目ID获取项目信息-->
-    <select id="queryServiceProjectList" parameterType="java.util.List" resultType="java.util.Map">
-        select
-        cl.cid,
-        cl.cname,
-        cl.region,
-        cp.projectid,
-        cp.projectname,
-        to_char(to_timestamp(cp.addtime / 1000), 'yyyy-MM-dd') as addtime
-        from
-        tb_company_project cp
-        left join
-        tb_company_list cl
-        on
-        cp.cid = cl.cid
-        where
-        cp.projectid in
-        <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
-            #{item.projectid}
-        </foreach>
-        and
-        cp.status = '1'
-    </select>
-
-    <!--根据服务的项目ID获取模糊搜索项目信息的总数-->
-    <select id="queryCompanyServiceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    <!--根据服务的项目ID获取项目信息的总数,后台调用不支持前台调用-->
+    <select id="getServiceProjectListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select
         count(1)
         from
-        tb_company_project cp
-        left join
-        tb_company_list cl
-        on
-        cp.cid = cl.cid
-        where
-        cp.projectid in
-        <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
-            #{item.projectid}
-        </foreach>
-        <if test="starttime != null and starttime != ''">and addtime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and addtime &lt;= #{endtime}</if>
-        <if test="projectname != null and projectname != ''">and projectname LIKE CONCAT( '%',#{projectname},'%')</if>
-        and
-        cp.status = '1'
-    </select>
-
-    <!--根据服务的项目ID获取模糊搜索项目信息-->
-    <select id="queryServiceProject" parameterType="java.util.Map" resultType="java.util.Map">
+        (
         select
-        cl.cid,
+        distinct
+        cpp.cid,
         cl.cname,
         cl.region,
         cp.projectid,
         cp.projectname,
-        to_char(to_timestamp(cp.addtime / 1000), 'yyyy-MM-dd') as addtime
+        to_char(to_timestamp(cl.regtime / 1000), 'yyyy-MM-dd') as addtime
         from
+        tb_company_property cpp
+        left join
         tb_company_project cp
+        on
+        cpp.cid = cp.cid
         left join
         tb_company_list cl
         on
-        cp.cid = cl.cid
+        cpp.cid = cl.cid
         where
-        cp.projectid in
-        <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
-            #{item.projectid}
-        </foreach>
-        <if test="starttime != null and starttime != ''">and addtime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and addtime &lt;= #{endtime}</if>
-        <if test="projectname != null and projectname != ''">and projectname LIKE CONCAT( '%',#{projectname},'%')</if>
+        cpp.status = '1'
         and
-        cp.status = '1'
-        order by cp.id
-        limit
-        #{pagesize}
-        offset
-        #{pageno}
+        cpp.typeid = 't000000'
+        <if test="uid != null and uid != ''">and cpp.dictvalue = #{uid}</if>
+        <if test="starttime != null and starttime != ''">and cl.regtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and cl.regtime &lt;= #{endtime}</if>
+        <if test="projectname != null and projectname != ''">and cp.projectname LIKE CONCAT( '%',#{projectname},'%')</if>
+        ) as company
+    </select>
+
+ <!--根据服务的项目ID获取项目信息-->
+    <select id="queryServiceProjectList" parameterType="java.util.List" resultType="java.util.Map">
+        select
+        distinct
+        cpp.cid,
+        cl.cname,
+        cl.region,
+        cp.projectid,
+        cp.projectname,
+        to_char(to_timestamp(cl.regtime / 1000), 'yyyy-MM-dd') as addtime,
+        cc.uid
+        from
+        tb_company_property cpp
+        left join
+        tb_company_project cp
+        on
+        cpp.cid = cp.cid
+        left join
+        tb_company_list cl
+        on
+        cpp.cid = cl.cid
+        left join
+        tb_company_common cc
+        on
+        cpp.cid = cc.cid
+        where
+        cpp.status = '1'
+        and
+        cpp.typeid = 't000000'
+        <if test="uid != null and uid != ''">and cpp.dictvalue = #{uid}</if>
+        <if test="starttime != null and starttime != ''">and cl.regtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and cl.regtime &lt;= #{endtime}</if>
+        <if test="projectname != null and projectname != ''">and cp.projectname LIKE CONCAT( '%',#{projectname},'%')</if>
+        LIMIT #{pagesize} offset #{pageno}
+    </select>
+
+    <!--获取所有人的uid-->
+    <select id="queryServiceProjectUid" parameterType="java.util.List" resultType="java.util.Map">
+        select
+        distinct
+        cpp.cid,
+        cp.projectid,
+        from
+        tb_company_property cpp
+        left join
+        tb_company_project cp
+        on
+        cpp.cid = cp.cid
+        where
+        cpp.status = '1'
+        and
+        cpp.typeid = 't000000'
+        <if test="uid != null and uid != ''">and cpp.dictvalue = #{uid}</if>
+        <if test="starttime != null and starttime != ''">and cl.addtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and cl.addtime &lt;= #{endtime}</if>
+        <if test="projectname != null and projectname != ''">and cp.projectname LIKE CONCAT( '%',#{projectname},'%')</if>
+        LIMIT #{pagesize} offset #{pageno}
     </select>
 
     <!--所有业主-今日添加项目的数量-->

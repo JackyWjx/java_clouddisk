@@ -895,7 +895,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         </choose>
         )
         ON conflict(cid) DO UPDATE SET
-        status = #{status}
+        updtime = #{addtime}
     </insert>
 
     <!--管理员创建供应商单位-->
