@@ -126,7 +126,7 @@
         )ON conflict(cid,pid) DO UPDATE SET
             cid=#{item.cid},
             pid=#{item.pid}
-            <if test="item.plid!=null item.plid!=''">
+            <if test="item.plid!=null and  item.plid!=''">
                 ,plid=#{item.plid}
             </if>
         </foreach>

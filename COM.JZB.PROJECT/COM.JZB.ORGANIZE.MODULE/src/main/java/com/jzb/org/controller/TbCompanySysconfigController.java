@@ -56,7 +56,7 @@ public class TbCompanySysconfigController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 验证指定参数为空则返回error
-            if (JzbCheckParam.haveEmpty(param, new String[]{"curl", "logo", "compname", "background", "systemname"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"curl","compname", "systemname"})) {
                 response = Response.getResponseError();
             } else {
                 userInfo = (Map<String, Object>) param.get("userinfo");
