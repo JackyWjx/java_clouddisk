@@ -6,6 +6,7 @@ import com.jzb.auth.api.organize.CompanyApi;
 import com.jzb.auth.api.redis.CommonRedisApi;
 import com.jzb.auth.api.redis.UserRedisApi;
 import com.jzb.auth.config.AuthConfigProperties;
+import com.jzb.auth.controller.AuthUserController;
 import com.jzb.auth.dao.AuthUserMapper;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.code.JzbDataCheck;
@@ -33,9 +34,10 @@ import java.util.regex.Pattern;
 @Service
 public class AuthUserLoginService {
     /**
-     * 更新时间
+     * 用户控制层操作对象
      */
-    private Long authtime;
+    @Resource
+    private AuthUserController authUserController;
 
     /**
      * 用户数据库操作对象
@@ -259,6 +261,7 @@ public class AuthUserLoginService {
                 map.put("ktid", 1);
                 map.put("passwd", password().encode(JzbDataType.getString(map.get("passwd"))));
                 userMapper.insertUserList(map);
+                authUserController.getUserInfo(map);
                 userRedisApi.cachePhoneUid(map);
                 response.put("uid", uid);
             }

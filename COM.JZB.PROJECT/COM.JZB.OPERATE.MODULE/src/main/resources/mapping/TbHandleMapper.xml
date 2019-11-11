@@ -11,6 +11,8 @@
         tb_handle_item
         where
         cid=#{cid}
+        <if test="projectid!=null and projectid!=''">and projectid =#{projectid}</if>
+        <if test="personid!=null and personid!=''">and personid =#{personid}</if>
     </select>
 
     <!--点击业主/项目/跟进信息获取项目下的跟进信息-->
@@ -40,8 +42,8 @@
         tb_handle_item
         where
         cid=#{cid}
-        <if test="projected!=null and projected!=''">and projectid =#{projected}</if>
-        <if test="uid!=null and uid!=''">and uid =#{uid}</if>
+        <if test="projectid!=null and projectid!=''">and projectid =#{projectid}</if>
+        <if test="personid!=null and personid!=''">and personid =#{personid}</if>
         limit
         #{pagesize}
         offset
@@ -58,7 +60,7 @@
         #{planid},
         #{typeid},
         #{cid},
-        #{projected},
+        #{projectid},
         #{adduid},
         #{region},
         <choose>
@@ -132,7 +134,7 @@
         WHERE
         cid=#{cid}
         and
-        projectid = #{projected}
+        projectid = #{projectid}
         and
         planid = #{planid}
     </update>
