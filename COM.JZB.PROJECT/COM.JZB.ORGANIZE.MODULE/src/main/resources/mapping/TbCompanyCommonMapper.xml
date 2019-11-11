@@ -235,7 +235,7 @@
         #{pageno}
     </select>
 
-    <!-- 修改企业信息 -->
+    <!-- 修改企业list表和info表信息 -->
     <update id="updateCompanyListInfo" parameterType="java.util.Map">
         update
         tb_company_list
@@ -244,6 +244,31 @@
         <if test="region != null and region != ''">region=#{region},</if>
         <if test="manager != null and manager != ''">manager=#{uid},</if>
         <if test="logo != null and logo != ''">logo=#{logo},</if>
+        <if test="uscc != null and uscc != ''">uscc=#{uscc},</if>
+        <if test="photo != null and photo != ''">photo=#{photo},</if>
+        <if test="authid != null and authid != ''">authid=${authid},</if>
+        <if test="summary != null and summary != ''">summary=#{summary},</if>
+        updtime=#{updtime}
+        where
+        cid = #{cid};
+        update
+        tb_company_info
+        set
+        <if test="curl != null and curl != ''">curl=#{curl},</if>
+        <if test="fax != null and fax != ''">fax=#{fax},</if>
+        <if test="limitday != null and limitday != ''">limitday=${limitday},</if>
+        <if test="address != null and address != ''">address=#{address},</if>
+        <if test="range != null and range != ''">range=#{range},</if>
+        <if test="ctype != null and ctype != ''">ctype=#{ctype},</if>
+        <if test="legaler != null and legaler != ''">legaler=#{legaler},</if>
+        <if test="cardid != null and cardid != ''">cardid=#{cardid},</if>
+        <if test="capital != null and capital != ''">capital=#{capital},</if>
+        <if test="birthday != null and birthday != ''">birthday=${birthday},</if>
+        <if test="content != null and content != ''">content=#{content},</if>
+        <if test="license != null and license != ''">license=#{license},</if>
+        <if test="idcardup != null and idcardup != ''">idcardup=#{idcardup},</if>
+        <if test="idecarddown != null and idecarddown != ''">idecarddown=#{idecarddown},</if>
+        <if test="authorg != null and authorg != ''">authorg=#{authorg},</if>
         updtime=#{updtime}
         where
         cid = #{cid};
