@@ -82,4 +82,8 @@ public class TbHandItemService {
             return mapper.selectCompanyService(map);
     }
 
+
+    public int queryCompanyServiceCountAAA(Map<String , Object> map){
+        return mapper.queryCompanyServiceCountAAA(map);
+    }
 }
