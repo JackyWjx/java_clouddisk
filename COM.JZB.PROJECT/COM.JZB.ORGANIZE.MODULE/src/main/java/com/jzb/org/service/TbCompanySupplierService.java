@@ -44,4 +44,16 @@ public class TbCompanySupplierService {
     public List<Map<String, Object>> queryCompanySupplier(Map<String, Object> param){
         return tbCompanySupplierMapper.queryCompanySupplier(param);
     }
+
+    /**
+     * CRM-销售业主-公海-供应商6
+     * 删除供应商
+     *
+     * @author kuangbin
+     */
+    public int removeCompanySupplier(Map<String, Object> param) {
+        param.put("status", "2");
+        param.put("updtime", System.currentTimeMillis());
+        return tbCompanySupplierMapper.deleteCompanySupplier(param);
+    }
 }
