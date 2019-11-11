@@ -3,6 +3,7 @@ package com.jzb.auth.service;
 import com.jzb.auth.dao.CompanyListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
@@ -17,30 +18,17 @@ import java.util.Map;
 public class CompanyListService {
 
     @Autowired
-    CompanyListMapper mapper;
+    private CompanyListMapper mapper;
 
     /**
-     * 创建企业
+     * 根据用户姓名获取id合集
+     *
+     * @param param
+     * @return java.lang.String
+     * @Author: DingSC
      */
-    public Integer saveCompanyList(Map<String, Object> param) {
-        long regtime = System.currentTimeMillis();
-        param.put("regtime",regtime);
-        return mapper.saveCompanyList(param);
+    public String searchUidByUidCname(Map<String, Object> param) {
+        return mapper.searchUidByUidCname(param);
     }
-
-    /**
-     * 单位信息表
-     */
-    public Integer saveCompanyInfo(Map<String, Object> param) {
-        return mapper.saveCompanyInfo(param);
-    }
-
-    /**
-     * 申请记录
-     */
-    public Integer saveInviteUser(Map<String, Object> param) {
-        return mapper.saveInviteUser(param);
-    }
-
 
 }

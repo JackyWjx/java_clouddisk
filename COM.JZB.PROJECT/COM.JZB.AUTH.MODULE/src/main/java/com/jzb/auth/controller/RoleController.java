@@ -124,7 +124,7 @@ public class RoleController {
     public Response addRoleMenuAuth(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"pid", "crgid", "cid", "ptype", "menu"};
+            String[] str = {"pid", "crgid", "cid", "ptype"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("uid", userInfo.get("uid"));
