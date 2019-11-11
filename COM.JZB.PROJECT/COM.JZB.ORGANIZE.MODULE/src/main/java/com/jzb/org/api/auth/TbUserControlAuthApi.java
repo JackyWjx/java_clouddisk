@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Map;
 
 @Repository
-@FeignClient(name = "jzb-org")
+@FeignClient(name = "jzb-auth")
 @RequestMapping(value = "/auth/userControlAuth")
 public interface TbUserControlAuthApi {
 
