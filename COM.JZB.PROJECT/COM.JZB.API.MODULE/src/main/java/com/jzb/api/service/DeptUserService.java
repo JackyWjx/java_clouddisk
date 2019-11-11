@@ -298,10 +298,13 @@ public class DeptUserService {
         String cdId = "";
         if (JzbDataType.isCollection(result.getResponseEntity())) {
             List<Map<String, Object>> deptList = (List<Map<String, Object>>) result.getResponseEntity();
-            cdId = JzbDataType.getString(deptList.get(0).get("cdid"));
+            if (deptList != null && deptList.size()>0) {
+                cdId = JzbDataType.getString(deptList.get(0).get("cdid"));
+            }
         }
         userMap.put("cdid", cdId);
         userMap.put("userinfo", param.get("userinfo"));
+        userMap.put("pid", param.get("pid"));
         result = userAuthApi.getUserAllMenuList(userMap);
         return result;
     }
