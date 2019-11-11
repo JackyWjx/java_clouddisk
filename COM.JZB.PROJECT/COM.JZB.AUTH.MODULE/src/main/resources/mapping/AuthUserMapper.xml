@@ -290,6 +290,9 @@
         ma.status
         FROM tb_role_menu_auth ma
         WHERE ma.status = '1'
+        <if test=" pid != null and pid != ''">
+            AND ma.pid =#{pid}
+        </if>
         AND exists(select 1
         from tb_role_relation rr
         where (
