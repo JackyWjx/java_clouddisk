@@ -37,4 +37,11 @@ public interface TbCompanySupplierMapper {
      */
     List<Map<String, Object>> queryCompanySupplier(Map<String, Object> param);
 
+    /**
+     * CRM-销售业主-公海-供应商6
+     * 删除供应商
+     *
+     * @author kuangbin
+     */
+    int deleteCompanySupplier(Map<String, Object> param);
 }
