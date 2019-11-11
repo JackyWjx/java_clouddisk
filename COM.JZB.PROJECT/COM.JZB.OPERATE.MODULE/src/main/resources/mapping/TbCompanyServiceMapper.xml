@@ -310,16 +310,17 @@
         #{pageno}
     </select>
 
-    <!--获取所有的我服务的业主项目的次数-->
+      <!--获取所有的我服务的业主项目的次数-->
     <select id="queryServiceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select
         count(1)
         from
         tb_company_service
         where
-        uid =#{uid}
-        and
-        projectid = #{projectid}
+        cid = # {cid}
+        <if test="projectid != null and projectid != ''">
+            and projectid = #{projectid}
+        </if>
     </select>
 
     <insert id="saveComanyService" parameterType="java.util.Map">
@@ -574,7 +575,10 @@
         <choose><when test="times != null">,times  = #{times}</when></choose>
         <choose><when test="result != null">,result  = #{result}</when></choose>
         <choose><when test="nexttime != null">,nexttime  = #{nexttime}</when></choose>
-        where  cid = #{cid}  and projectid = #{projectid}
+        where  cid = #{cid}
+        <if test="projectid != null and projectid != ''">
+            and projectid = #{projectid}
+        </if>
     </update>
 
     <!--获取所有的我服务的业主的总数-->
@@ -584,8 +588,6 @@
         from
         tb_company_service
         where
-        uid =#{uid}
-        and
         cid = #{cid}
     </select>
 
@@ -612,8 +614,6 @@
         from
         tb_company_service
         where
-        uid =#{uid}
-        and
         cid = #{cid}
         limit
         #{pagesize}
