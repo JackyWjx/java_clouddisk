@@ -28,7 +28,7 @@
 
     <!--  查询服务记录   -->
     <select id="queryTbCompanyService" resultType="java.util.Map" parameterType="java.util.Map">
-        select DISTINCT on (projectid)  planid,typeid,cid,projectid,uid,region,handletime,servicetype,personid,person,telphone,context,servicecontent,needres,attach,times,result,nexttime,summary
+        select DISTINCT on (cid)  planid,typeid,cid,projectid,uid,region,handletime,servicetype,personid,person,telphone,context,servicecontent,needres,attach,times,result,nexttime,summary
         from tb_company_service where status = '1'
         <choose><when test="person != null">and person like CONCAT('%',#{person},'%')</when></choose>
         <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
@@ -38,18 +38,18 @@
 
     <!--  查询服务记录   -->
     <select id="selectCompanyService" resultType="java.util.Map" parameterType="java.util.Map">
-        select DISTINCT on (projectid)  planid,typeid,cid,projectid,uid,region,handletime,servicetype,personid,person,telphone,context,servicecontent,needres,attach,times,result,nexttime,summary
+        select DISTINCT on (cid)  planid,typeid,cid,projectid,uid,region,handletime,servicetype,personid,person,telphone,context,servicecontent,needres,attach,times,result,nexttime,summary
         from tb_company_service where status = '1'
         <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
     </select>
 
     <select id="queryCompanyServiceCountAAA" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select count(1) from  tb_company_service where  addtime BETWEEN  #{begDate} and #{andDate}
+        select count( DISTINCT cid )  from  tb_company_service where  addtime BETWEEN  #{begDate} and #{andDate}
     </select>
 
     <!--  查询服务记录总数   -->
     <select id="queryTbCompanyServiceCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select  count( DISTINCT projectid )  from tb_company_service where status = '1'
+        select  count( DISTINCT cid )  from tb_company_service where status = '1'
         <choose><when test="person != null">and person like CONCAT('%',#{person},'%')</when></choose>
         <choose><when test="uid != null">and uid in (#{cuid})</when></choose>
         <choose><when test="projectid != null">and projectid = (#{projectid})</when></choose>
