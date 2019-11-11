@@ -131,52 +131,25 @@ public class TbCompanyServiceController {
         Response result;
         try {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            // 获取前台的总数
-            int count = JzbDataType.getInteger(param.get("count"));
-            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            count = count < 0 ? 0 : count;
-            if (count == 0) {
-                // 查询所有我服务的业主总数
-                count = tbCompanyService.getCompanyServiceCount(param);
+            if (JzbDataType.getString(userInfo.get("uid")) != "JZBDCDCJZBDC") {
+                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             }
-            // 返回所有的企业列表
+            //  返回所有的企业列表
             List<Map<String, Object>> companyList = tbCompanyService.getCompanyServiceList(param);
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
-            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            // 判断结果是否为空
+            if (!JzbDataType.isEmpty(companyList)) {
+                pageInfo.setTotal(JzbDataType.getInteger(companyList.get(0).get("count")));
+            }else {
+                // 等于空返回总数0
+                pageInfo.setTotal(0);
+            }
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
 
-            result = Response.getResponseError();
-        }
-        return result;
-    }
-
-    /**
-     * CRM-销售业主-我服务的业主-2
-     * 根据模糊搜索条件获取所有的我服务的业主
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    @RequestMapping(value = "/searchCompanyServiceList", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response searchCompanyServiceList(@RequestBody Map<String, Object> param) {
-        Response result;
-        try {
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            // 返回所有的企业列表
-            List<Map<String, Object>> companyList = tbCompanyService.searchCompanyServiceList(param);
-            result = Response.getResponseSuccess(userInfo);
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setList(companyList);
-            pageInfo.setTotal(companyList.size() == 0 ? 0: JzbDataType.getInteger(companyList.get(0).get("count")));
-            result.setPageInfo(pageInfo);
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
             result = Response.getResponseError();
         }
         return result;
@@ -184,18 +157,19 @@ public class TbCompanyServiceController {
 
     /**
      * 修改 服务记录
-     * @auth  han bin
+     *
      * @param param
      * @return
+     * @auth han bin
      */
     @RequestMapping(value = "/upComanyService", method = RequestMethod.POST)
     @CrossOrigin
-    public Response upComanyService(@RequestBody Map<String, Object> param){
+    public Response upComanyService(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            Map userinfo  =  (Map)param.get("userinfo");
-            param.put("ouid",userinfo.get("uid"));
-            result = tbCompanyService.upComanyService(param) ?  Response.getResponseSuccess(userinfo) : Response.getResponseError();
+            Map userinfo = (Map) param.get("userinfo");
+            param.put("ouid", userinfo.get("uid"));
+            result = tbCompanyService.upComanyService(param) ? Response.getResponseSuccess(userinfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -205,18 +179,19 @@ public class TbCompanyServiceController {
 
     /**
      * 添加 服务记录
-     * @auth  han bin
+     *
      * @param param
      * @return
+     * @auth han bin
      */
     @RequestMapping(value = "/saveComanyService", method = RequestMethod.POST)
     @CrossOrigin
-    public Response saveComanyService(@RequestBody Map<String, Object> param){
+    public Response saveComanyService(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            Map userinfo  =  (Map)param.get("userinfo");
-            param.put("ouid",userinfo.get("uid"));
-            result = tbCompanyService.saveComanyService(param) ?  Response.getResponseSuccess(userinfo) : Response.getResponseError();
+            Map userinfo = (Map) param.get("userinfo");
+            param.put("ouid", userinfo.get("uid"));
+            result = tbCompanyService.saveComanyService(param) ? Response.getResponseSuccess(userinfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
