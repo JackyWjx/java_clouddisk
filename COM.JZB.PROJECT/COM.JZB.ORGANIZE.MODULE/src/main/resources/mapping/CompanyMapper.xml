@@ -124,8 +124,9 @@
         from
         tb_invite_user
         where
-        status = '1' or
-        status = '2'
+        cid = #{cid}
+        and
+        (status = '1' or status = '2')
     </select>
 
     <!-- 修改企业认证企业List表信息 -->
