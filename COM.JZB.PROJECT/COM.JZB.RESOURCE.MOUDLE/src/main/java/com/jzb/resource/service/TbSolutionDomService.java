@@ -181,4 +181,16 @@ public class TbSolutionDomService {
         param.put("updtime", updtime);
         return tbSolutionDomMapper.updateSolutionDomSEO(param);
     }
+
+    /**
+     * CRM-运营管理-解决方案-SEO优化
+     * 点击保存后对解决方案中的SEO优化进行修改
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getSolutionDomSEO(Map<String, Object> param) {
+        // 获取解决方案首页状态为4,4为隐藏活动首页不显示
+        param.put("status", 4);
+        return tbSolutionDomMapper.querySolutionDomSEO(param);
+    }
 }

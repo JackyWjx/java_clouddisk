@@ -10,6 +10,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
+import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.service.CompanyService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +45,8 @@ public class CompanyController {
     @Autowired
     RegionBaseApi regionBaseApi;
 
+    @Autowired
+    OrgConfigProperties orgConfigProperties;
 
     /**
      * 开放平台调用接口获取企业地址,地区信息
@@ -589,13 +592,13 @@ public class CompanyController {
                 // 1发送通过加入单位模板,2拒绝加入单位模板
                 if (maybe == 1) {
                     // 发送审核通过信息模板
-                    param.put("groupid", "1007");
+                    param.put("groupid", orgConfigProperties.getApplicantPass());
                     param.put("msgtag", "Proposer1007");
                     param.put("senduid", "Proposer1007");
                     sendResult = companyService.sendRemind(param);
                 } else {
                     // 发送拒绝通过信息模板
-                    param.put("groupid", "1008");
+                    param.put("groupid", orgConfigProperties.getApplicantRefuse());
                     param.put("msgtag", "Proposer1008");
                     param.put("senduid", "Proposer1008");
                     sendResult = companyService.sendRemind(param);
@@ -636,7 +639,7 @@ public class CompanyController {
                 for (int i = 0; i < list.size(); i++) {
                     Map<String, Object> map = list.get(i);
                     // 通过申请模板ID
-                    map.put("groupid", "1007");
+                    map.put("groupid", orgConfigProperties.getApplicantPass());
                     map.put("msgtag", "Proposer1007");
                     map.put("senduid", "Proposer1007");
                     // 配置短信信息发送短信
@@ -676,13 +679,13 @@ public class CompanyController {
                 // 1发送邀请加入单位模板,2取消加入单位模板
                 if (maybe == 1) {
                     // 发送邀请信息模板
-                    param.put("groupid", "1014");
+                    param.put("groupid", orgConfigProperties.getInvitationToJoin());
                     param.put("msgtag", "addInvitee1014");
                     param.put("senduid", "addInvitee1014");
                     sendResult = companyService.sendRemind(param);
                 } else {
                     // 发送取消信息模板
-                    param.put("groupid", "1012");
+                    param.put("groupid", orgConfigProperties.getDisinvite());
                     param.put("msgtag", "addInvitee1012");
                     param.put("senduid", "addInvitee1012");
                     sendResult = companyService.sendRemind(param);
@@ -1019,12 +1022,7 @@ public class CompanyController {
             param.put("uid", uid);
             param.put("status", "1");
             int add = companyService.addCompanySupplier(param);
-            if (add == 1) {
-                result = Response.getResponseSuccess(userInfo);
-            } else {
-                result = Response.getResponseError();
-                result.setResponseEntity("此单位已存在!");
-            }
+            result = add == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

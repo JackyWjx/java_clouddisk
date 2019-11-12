@@ -2,10 +2,7 @@ package com.jzb.operate.api.auth;
 
 import com.jzb.base.message.Response;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,4 +22,16 @@ public interface AuthUserApi {
     @PostMapping(value = "/getUserInfo")
     @CrossOrigin
     public Response getUserInfo(@RequestBody Map<String, Object> param);
+
+
+    /**
+     * 单位设置-申请/邀请成员
+     * 通过名字模糊搜索所有用户或通过注册手机号搜索用户
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/searchInvitee", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchInvitee(@RequestBody Map<String, Object> param);
+
 }

@@ -61,4 +61,6 @@ public interface TbHandItemMapper {
      */
     List<Map<String , Object>>  selectCompanyService(Map<String , Object> map);
 
+    int queryCompanyServiceCountAAA(Map<String , Object> map);
+
 }

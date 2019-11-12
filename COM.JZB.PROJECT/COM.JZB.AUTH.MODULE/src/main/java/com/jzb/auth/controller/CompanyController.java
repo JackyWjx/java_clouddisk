@@ -1,13 +1,10 @@
 package com.jzb.auth.controller;
 
 import com.jzb.auth.service.CompanyListService;
-import com.jzb.base.message.JzbReturnCode;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 /***
@@ -18,69 +15,35 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/company/list")
+@RequestMapping("/auth/list")
 public class CompanyController {
     @Autowired
-    CompanyListService service;
+    private CompanyListService service;
 
     /**
-     * @param
-     * @return
-     * @date 2019/7/26 13:22
-     * @describe 创建单位
+     * 根据用户姓名获取id合集
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
      */
-    @PostMapping("/saveCompany")
-    @ResponseBody
-    @Transactional
-    public Response saveCompanyList(@RequestBody Map<String, Object> map, @RequestHeader("token") String token) {
+    @RequestMapping(value = "/searchUidByUidCname", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchUidByUidCname(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            if ("jzbtoken".equals(token)) {
-                //创建一条企业信息
-                int countlist = service.saveCompanyList(map);
-                //创建一条企业详细信息
-                int countinfo = service.saveCompanyInfo(map);
-                if(countlist > 0 ){
-                    result = countinfo > 0 ? Response.getResponseSuccess() : Response.getResponseError();
-                }else {
-                    result = Response.getResponseError();
-                }
-            } else {
-                result = Response.getResponseError();
-            }
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("start", 0);
+            param.put("pagesize", 100);
+            String deList = service.searchUidByUidCname(param);
+            result = Response.getResponseSuccess(userInfo);
+            result.setResponseEntity(deList);
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
         }
         return result;
     }
-
-    /**
-     * @param
-     * @return
-     * @date 2019/7/26 13:22
-     * @describe 加入单位
-     */
-    @PostMapping("/addCompany")
-    @ResponseBody
-    public Response addCompany(@RequestBody Map<String,Object> map,@RequestHeader("token") String token){
-        Response result ;
-        try {
-            if ("jzbtoken".equals(token)) {
-                //添加一条申请记录
-                int count = service.saveInviteUser(map);
-                result = count > 0 ? Response.getResponseSuccess() : Response.getResponseError();
-            } else {
-                result =  Response.getResponseError();
-            }
-        } catch (Exception e) {
-            JzbTools.logError(e);
-            result = Response.getResponseError();
-        }
-        return result;
-    }
-
-
 
 
 }

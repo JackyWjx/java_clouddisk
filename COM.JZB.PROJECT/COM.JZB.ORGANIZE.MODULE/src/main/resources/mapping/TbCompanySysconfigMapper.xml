@@ -155,6 +155,21 @@
             </otherwise>
         </choose>
         )
+        ON conflict(cid) DO UPDATE
+        <trim prefix="set" suffixOverrides="," suffix="  where tb_company_sysconfig.cid=#{cid} ">
+            <if test="curl !=null and curl!=''">curl=#{curl},</if>
+            <if test="systemname !=null and systemname!=''">systemname=#{systemname},</if>
+            <if test="tempid !=null and tempid!=''">tempid=#{tempid},</if>
+            <if test="tempname !=null and tempname!=''">tempname=#{tempname},</if>
+            <if test="logo !=null and logo!=''">logo=#{logo},</if>
+            <if test="compname !=null and compname!=''">compname=#{compname},</if>
+            <if test="favicon !=null and favicon!=''">favicon=#{favicon},</if>
+            <if test="background !=null and background!=''">background=#{background},</if>
+            <if test="keys !=null and keys!=''">keys=#{keys},</if>
+            <if test="website !=null and website!=''">website=#{website},</if>
+            <if test="upduid !=null and upduid!=''">upduid=#{upduid},</if>
+            <if test="updtime !=null and updtime!=''">updtime=#{updtime},</if>
+        </trim>
     </insert>
 
 

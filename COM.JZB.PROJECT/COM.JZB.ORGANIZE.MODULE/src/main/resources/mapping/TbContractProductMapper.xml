@@ -176,7 +176,7 @@
     </update>
 
     <!-- 查询企业合同产品 -->
-    <select id="queryContractProduct" parameterType="java.util.Map">
+    <select id="queryContractProduct" parameterType="java.util.Map" resultType="java.util.Map">
         select contid,plid,pid,cname,prodesc,service,price,pricedesc,accept,paradesc,idx,adduid,addtime,upduid,updtime,status,summary
         from tb_contract_product where status='1' and contid=#{contid}
     </select>

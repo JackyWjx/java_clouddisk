@@ -276,4 +276,28 @@ public class TbSolutionDomController {
         }
         return result;
     } // End modifySolutionDomSEO
+
+    /**
+     * CRM-运营管理-解决方案-SEO优化2
+     * 点击SEO优化中进行SEO显示
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getSolutionDomSEO", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getSolutionDomSEO(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 返回活动信息
+            List<Map<String, Object>> activity = tbSolutionDomService.getSolutionDomSEO(param);
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess();
+            pageInfo.setList(activity);
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End getSolutionDomSEO
 }

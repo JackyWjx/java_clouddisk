@@ -336,6 +336,7 @@
         UPDATE
         tb_solution_document
         SET
+        cname = #{cname},
         pagekey = #{pagekey},
         pagedesc = #{pagedesc},
         upduid = #{uid},
@@ -343,4 +344,19 @@
         WHERE
         domid = #{domid}
     </update>
+
+    <!--点击SEO优化显示活动首页SEO优化信息-->
+    <select id="querySolutionDomSEO" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        domid,
+        cname,
+        pagekey,
+        pagedesc
+        from
+        tb_solution_document
+        where
+        status = #{status}
+        and
+        domid = #{domid}
+    </select>
 </mapper>

@@ -54,17 +54,17 @@ public class TbCompanySupplierController {
 
                 // 循环list 赋值
                 for (int i = 0, l = list.size(); i < l; i++) {
-                    Map<String, Object> map=new HashMap<>();
+                    Map<String, Object> map = new HashMap<>();
                     // 从返回结果中获取地区id
-                    map.put("key",list.get(i).get("region"));
+                    map.put("key", list.get(i).get("region"));
                     // 从redis 获取地区信息
                     Response cityList = tbCityRedisApi.getCityList(map);
                     // 获取地区map
-                    Map<String, Object> resultParam=(Map<String, Object>) cityList.getResponseEntity();
-                    list.get(i).put("city",resultParam.get("city"));
-                    list.get(i).put("province",resultParam.get("province"));
-                    list.get(i).put("county",resultParam.get("county"));
-                    list.get(i).put("creaid",resultParam.get("creaid"));
+                    Map<String, Object> resultParam = (Map<String, Object>) cityList.getResponseEntity();
+                    list.get(i).put("city", resultParam.get("city"));
+                    list.get(i).put("province", resultParam.get("province"));
+                    list.get(i).put("county", resultParam.get("county"));
+                    list.get(i).put("creaid", resultParam.get("creaid"));
                 }
                 // 分页对象
                 PageInfo pageInfo = new PageInfo();
@@ -103,7 +103,7 @@ public class TbCompanySupplierController {
                 result = Response.getResponseError();
             } else {
                 tbCompanySupplierService.addCompanySupplier(param);
-                result=Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
             }
         } catch (Exception ex) {
             JzbTools.logError(ex);
@@ -131,8 +131,31 @@ public class TbCompanySupplierController {
                 result = Response.getResponseError();
             } else {
                 tbCompanySupplierService.updateCompanySupplier(param);
-                result=Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
             }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-供应商6
+     * 删除供应商
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/removeCompanySupplier", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response removeCompanySupplier(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("upduid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回删除数
+            int count = tbCompanySupplierService.removeCompanySupplier(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();

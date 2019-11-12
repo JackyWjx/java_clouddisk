@@ -4,11 +4,11 @@
 
     <!-- 获取合同模板-->
     <select id="queryContractTemplate" parameterType="java.util.Map" resultType="java.util.Map">
-        select typeid,tempid,tempcode,cname,tempdesc,path,cid,idx,ouid,to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,updtime,status,summary
+        select typeid,tempid,tempcode,cname,tempdesc,path,cid,idx,ouid,to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd') as addtime,updtime,status,summary
         from tb_contract_template
         where status='1'
         <if test="keyword!='' and keyword!=null">
-            and (cname ~ #{keyword} or tempcode ~ #{keyword})
+            and (cname ~ #{keyword} or tempid ~ #{keyword})
         </if>
         order by idx
         limit #{pagesize} offset #{pageno}
@@ -124,15 +124,12 @@
     <!-- 修改合同模板-->
     <update id="updateContractTemplate" parameterType="java.util.Map">
         update tb_contract_template set
-        <if test="cname != '' and cname!= null">
-            cname=#{cname}
-        </if>
-        <if test="path != '' and path!= null">
-            path=#{path}
-        </if>
-        <if test="updtime != '' and updtime!= null">
-            updtime=#{updtime}
-        </if>
+        <if test="cname != '' and cname!= null">cname=#{cname},</if>
+        <if test="summary != '' and summary!= null">summary=#{summary},</if>
+        <if test="tempdesc != '' and tempdesc!= null">tempdesc=#{tempdesc},</if>
+        <if test="path != '' and path!= null"> path=#{path},</if>
+        <if test="tempcode != '' and tempcode!= null"> tempcode=#{tempcode},</if>
+        <if test="updtime != '' and updtime!= null">updtime=#{updtime}</if>
         where tempid=#{tempid}
     </update>
 

@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class MediaService {
             String  fileType = JzbFileUtil.isFileType(type);
             String fileId= JzbFileUtil.getFileId();
             String filePath= JzbFileUtil.getFilePath();
-            String fileMd5 = JzbFileUtil.SHA256(fileName);
+            String fileMd5 = JzbFileUtil.SHA256(new String (file.getBytes(),"UTF-8"));
             map.put("filemd5",fileMd5);
             List<Map<String , Object>> list =  mediaMapper.queryMedia(map);
             if(list.size() == 0){

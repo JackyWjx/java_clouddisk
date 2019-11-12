@@ -290,6 +290,9 @@
         ma.status
         FROM tb_role_menu_auth ma
         WHERE ma.status = '1'
+        <if test=" pid != null and pid != ''">
+            AND ma.pid =#{pid}
+        </if>
         AND exists(select 1
         from tb_role_relation rr
         where (
@@ -312,7 +315,7 @@
         and rr.crgid = ma.crgid)
         GROUP BY ma.mid,ma.status,ma.pageid
         order by ma.mid,
-        pageid LIMIT #{pagesize}  OFFSET #{start}
+        pageid LIMIT #{pagesize} OFFSET #{start}
     </select>
 
     <!--增加用户信息,增加用户注册信息-->
@@ -320,11 +323,11 @@
         INSERT INTO
         tb_user_list ( uid,cname, passwd, relphone, sex, authid, regtime, authtime, status,relmail )
         VALUES
-	    (#{uid},#{cname},#{passwd},#{relphone},#{sex},${authid},#{addtime},#{addtime},#{status},#{relmail});
-	    INSERT INTO
-	    tb_user_info ( uid, origin, college, education, likes, marriage, born, adduid, addtime, status)
+        (#{uid},#{cname},#{passwd},#{relphone},#{sex},${authid},#{addtime},#{addtime},#{status},#{relmail});
+        INSERT INTO
+        tb_user_info ( uid, origin, college, education, likes, marriage, born, adduid, addtime, status)
         VALUES
-	    (#{uid},#{origin},#{college},#{education},#{likes},#{marriage},
+        (#{uid},#{origin},#{college},#{education},#{likes},#{marriage},
         <choose>
             <when test=" born != null and born !=''">
                 ${born},
@@ -333,7 +336,7 @@
                 null,
             </otherwise>
         </choose>
-	    #{adduid},#{addtime},#{status});
+        #{adduid},#{addtime},#{status});
         INSERT INTO
         tb_user_key ( uid, keyid, ktid, addtime, status )
         VALUES
@@ -366,4 +369,37 @@
         WHERE
         uid = #{uid};
     </update>
+
+    <!--根据手机号模糊搜索用户姓名总数-->
+    <select id="searchUserNameListCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_user_list
+        where
+        status = #{status}
+        <if test="relphone!= null and relphone!= ''">and relphone LIKE CONCAT( #{relphone},'%')</if>
+    </select>
+
+    <!--根据企业ID显示所有申请成员-->
+    <select id="searchUserNameList" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT
+        uid,
+        cname,
+        relphone,
+        relmail,
+        nickname
+        from
+        tb_user_list
+        where
+        status = #{status}
+        <if test="relphone!= null and relphone!= ''">and relphone LIKE CONCAT( #{relphone},'%')</if>
+        order by
+        id desc
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
 </mapper>

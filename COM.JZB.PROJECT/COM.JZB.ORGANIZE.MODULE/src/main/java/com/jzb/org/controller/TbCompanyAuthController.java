@@ -49,7 +49,7 @@ public class TbCompanyAuthController {
                 Response companyIsAuth = companyAuthTempApi.getCompanyIsAuth(param);
                 int count = tbCompanyProductService.queryCompanyProductIsExists(param);
                 String curl = tbCompanySysconfigService.queryCompanySysconfig(param);
-                Response companyIsAuth1 = tbUserControlAuthApi.getCompanyIsAuth(param);
+                Response companyIsAuth1 = tbUserControlAuthApi.theCidIsExists(param);
                 Map<String, Object> map=new HashMap<>();
                 map.put("temp",companyIsAuth.getResponseEntity());
                 map.put("computerAuth",count);

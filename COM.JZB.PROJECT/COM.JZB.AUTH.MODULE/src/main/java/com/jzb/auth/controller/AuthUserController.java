@@ -666,15 +666,17 @@ public class AuthUserController {
             // 获取联系电话
             String telNumber = param.get("phone") == null ? "" : param.get("phone").toString();
             // 验证码长度
-            int sezi = 6;
+            int size = 6;
             Response sendResult;
             if (type == 1) {
                 // 发送验证码模板
-                param.put("groupid", "1012");
-                sendResult = userLoginService.sendSmsCode(param, telNumber, sezi);
+                param.put("groupid", authConfig.getVerification());
+                sendResult = userLoginService.sendSmsCode(param, telNumber, size);
             } else {
                 // 发送转让成功信息模板
-                param.put("groupid", "1013");
+                param.put("groupid", authConfig.getAdministrator());
+                param.put("msgtag", "Administrator1015");
+                param.put("senduid", "Administrator1015");
                 sendResult = userLoginService.sendRemind(param);
             }
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
@@ -827,6 +829,38 @@ public class AuthUserController {
             int count = userService.modifyCompanyEmployee(param);
             comHasUserKey(param);
             result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 根据手机号模糊搜索用户姓名
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/searchUserNameList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchUserNameList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取申请人总数
+            int count = JzbDataType.getInteger(param.get("count"));
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                // 查询申请人总数
+                count = userService.searchUserNameListCount(param);
+            }
+            // 返回企业下所有的申请成员
+            List<Map<String, Object>> userList = userService.searchUserNameList(param);
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess(userInfo);
+            pageInfo.setList(userList);
+            pageInfo.setTotal(count > 0 ? count : userList.size());
+            result.setPageInfo(pageInfo);
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

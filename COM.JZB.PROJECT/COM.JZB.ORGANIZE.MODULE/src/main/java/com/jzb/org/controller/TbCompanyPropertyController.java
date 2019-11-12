@@ -251,27 +251,34 @@ public class TbCompanyPropertyController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
+            //查询出分类的结果
                List<Map<String,Object>>  list = tbCompanyPropertyService.GroupCompanyPropert(param);
 
            List<Object> list1 = new ArrayList<>();
             Map<String, Object> hashMap = new HashMap<>();
+            Map<String, Object> hashMap1 = new HashMap<>();
+            //遍历结果拿到查询出来的结果添加到list1集合中
             for (int i = 0; i < list.size(); i++) {
                     String dictvalue = (String) list.get(i).get("dictvalue");
                     list1.add(dictvalue);
 
             }
+            //判断集合中是否包含这个分类对应的值,如果不包含则添加对应的分类的数量为0,
             if (!list1.contains("A类")) {
                 hashMap.put("dictvalue", "A类");
                 hashMap.put("count", 0);
-            } else if (!    list1.contains("B类")) {
+            }
+            if (!list1.contains("B类")) {
                 hashMap.put("dictvalue", "B类");
                 hashMap.put("count", 0);
             }
-            else if (!list1.contains("C类")) {
-                hashMap.put("dictvalue", "C类");
-                hashMap.put("count", 0);
+             if (!list1.contains("C类")) {
+                hashMap1.put("dictvalue", "C类");
+                hashMap1.put("count", 0);
             }
+             //把添加到map中的数据添加到list中去
             list.add(hashMap);
+            list.add(hashMap1);
 
 
             PageInfo pageInfo = new PageInfo();

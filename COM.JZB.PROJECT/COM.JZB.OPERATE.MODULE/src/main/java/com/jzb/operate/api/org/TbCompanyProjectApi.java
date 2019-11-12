@@ -30,7 +30,7 @@ public interface TbCompanyProjectApi {
 
     /**
      * CRM-销售业主-我服务的业主-1
-     * 根据服务的项目ID获取项目信息,后台调用不支持前台调用
+     * 根据服务的项目ID获取项目信息,后台调用不支持前台调用c
      *
      * @Author: Kuang Bin
      * @DateTime: 2019/10/19
@@ -40,11 +40,11 @@ public interface TbCompanyProjectApi {
 
     /**
      * CRM-销售业主-我服务的业主-2
-     * 根据服务的项目ID获取模糊搜索项目信息,后台调用不支持前台调用
+     * 获取所有人的uid
      *
      * @Author: Kuang Bin
      * @DateTime: 2019/10/19
      */
-    @RequestMapping(value = "/searchCompanyServiceList", method = RequestMethod.POST)
-    public Response searchCompanyServiceList(Map<String, Object> param);
+    @RequestMapping(value = "/getServiceProjectUid", method = RequestMethod.POST)
+    public Response getServiceProjectUid(Map<String, Object> param);
 }

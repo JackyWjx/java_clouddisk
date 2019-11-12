@@ -82,7 +82,7 @@ public class TbHandleItemServiceController {
             long andDate = formatter.parse(DateFormatUtils.format(JzbDateUtil.getDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()), JzbDateStr.yyyy_MM_dd_HH_mm_ss), "yyyy-MM-dd 23:59:59")).getTime();
             map.put("begDate",begDate);
             map.put("andDate",andDate);
-            int count  =  companyService.queryCompanyServiceTypeCount(map);
+            int count  =  service.queryCompanyServiceCountAAA(map);
             result = Response.getResponseSuccess();
             map.clear();
             map.put("typeCount",count);
@@ -161,6 +161,18 @@ public class TbHandleItemServiceController {
             }else{
                 list  = service.queryTbCompanyService(map);
             }
+            // 根据项目id去重
+            for(int i = 0 ;i <list.size() ;i++){
+                for(int j = i+1 ;j < list.size();j++ ){
+                    if(list.get(i).get("projectid") != null && list.get(i).get("projectid") != "" ||  list.get(j).get("projectid") != null && list.get(j).get("projectid") != ""){
+                        // 去重
+                        if(list.get(i).get("projectid").equals(list.get(j).get("projectid"))){
+                            list.remove(i);
+                            j--;
+                        }
+                    }
+                }
+            }
             for(int i =  0 ; i< list.size() ;i++){
                 Map<String , Object> para = list.get(i);
                 int count  =  service.queryCount(para);
@@ -179,6 +191,7 @@ public class TbHandleItemServiceController {
                     Response pro  = companyApi.getCompany(para);
                     Map<String,Object> proMap = (Map<String, Object>) pro.getResponseEntity();
                     list.get(i).put("cname",proMap.get("cname"));
+                    list.get(i).put("caddtime",proMap.get("regtime"));
                 }
             }
             if(isCount){

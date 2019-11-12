@@ -73,6 +73,7 @@
     <select id="queryCompanyList" parameterType="java.util.Map"
             resultType="java.util.Map">
         SELECT
+        distinct
         c.cid,
         c.cname,
         c.logo
@@ -436,7 +437,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         tb_invite_user
         SET
         restime = #{restime},
-        status = '9'
+        status = 9
         <if test="summary != null and summary != ''">,summary = #{summary}</if>
         WHERE
         cid = #{cid}
@@ -452,7 +453,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         tb_invite_user
         SET
         restime = #{restime},
-        status = '5'
+        status = 5
         <if test="summary != null and summary != ''">,summary = #{summary}</if>
         WHERE
         cid = #{cid}
@@ -469,7 +470,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
             tb_invite_user
             SET
             restime = #{item.restime},
-            status = '9'
+            status = 9
             <if test="item.summary != null and item.summary != ''">,summary = #{item.summary}</if>
             WHERE
             cid = #{item.cid}
@@ -703,7 +704,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
                 #{status}
             </when>
             <otherwise>
-                '2'
+                2
             </otherwise>
         </choose>
         <choose>
@@ -722,7 +723,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         UPDATE
         tb_invite_user
         SET
-        status = '4',
+        status = 4,
         restime = #{restime}
         <if test="summary!= null and summary!= ''">,summary = #{summary}</if>
         WHERE
@@ -809,16 +810,46 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
     </insert>
 
     <!--主页中单位设置基本资料进行企业系统配置表修改-->
-    <update id="updateCompanySysconfig" parameterType="java.util.Map">
-        UPDATE
-        tb_company_sysconfig
-        SET
+    <insert id="updateCompanySysconfig" parameterType="java.util.Map">
+        INSERT INTO
+        tb_company_sysconfig (cid, curl, systemname, adduid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{cid},
+        <choose>
+            <when test=" curl != null and curl !=''">
+                #{curl},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test=" systemname != null and systemname !=''">
+                #{systemname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{modtime},
+        #{modtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+        ON conflict(cid) DO UPDATE SET
         upduid = #{uid},
         updtime = #{modtime}
         <if test="systemname != null ">,systemname = #{systemname}</if>
-        WHERE
-        cid = #{cid}
-    </update>
+    </insert>
 
     <!--保存伙伴单位信息-->
     <insert id="insertCompanyFriend">
@@ -864,10 +895,10 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         </choose>
         )
         ON conflict(cid) DO UPDATE SET
-        status = #{status}
+        updtime = #{addtime}
     </insert>
 
-    <!--管理员创建公海单位-->
+    <!--管理员创建供应商单位-->
     <insert id="insertCompanySupplier" parameterType="java.util.Map">
         INSERT INTO tb_company_supplier (cid, supid, idx, adduid, addtime, updtime, status, summary)
         VALUES
@@ -895,17 +926,8 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
             </otherwise>
         </choose>
         )
+        ON conflict(cid,supid) DO UPDATE SET
+        status = #{status}
     </insert>
 
-    <!-- 查询供应商是否存在该企业 -->
-    <select id="queryIsCompanySupplier" parameterType="java.util.Map"
-            resultType="java.lang.Integer">
-        SELECT
-        count(1)
-        from
-        tb_company_supplier
-        where
-        cid = #{maincid}
-        and supid = #{cid}
-    </select>
 </mapper>

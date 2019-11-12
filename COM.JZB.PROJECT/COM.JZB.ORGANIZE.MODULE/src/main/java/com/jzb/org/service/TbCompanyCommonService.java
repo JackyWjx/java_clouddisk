@@ -49,45 +49,50 @@ public class TbCompanyCommonService {
 
     /**
      * 查询不带条件的业主单位全部（不带条件）
+     *
      * @param param
      * @return
      */
-    public List<Map<String, Object>> queryCompanyCommon(Map<String, Object> param){
+    public List<Map<String, Object>> queryCompanyCommon(Map<String, Object> param) {
         return tbCompanyCommonMapper.queryCompanyCommon(param);
     }
 
 
     /**
      * 查询带条件的业主单位全部（带条件）
+     *
      * @param param
      * @return
      */
-    public List<Map<String, Object>> queryCompanyCommonByKeyWord(Map<String, Object> param){
+    public List<Map<String, Object>> queryCompanyCommonByKeyWord(Map<String, Object> param) {
         return tbCompanyCommonMapper.queryCompanyCommonByKeyWord(param);
     }
 
 
     /**
      * 查询单位名称
+     *
      * @param param
      * @return
      */
-    public String queryCompanyNameByID(Map<String, Object> param){
+    public String queryCompanyNameByID(Map<String, Object> param) {
         return tbCompanyCommonMapper.queryCompanyNameByID(param);
     }
 
     /**
      * 修改单位信息
+     *
      * @param param
      * @return
      */
-    public int updateCompany(Map<String, Object> param){
+    public int updateCompany(Map<String, Object> param) {
         return tbCompanyCommonMapper.updateCompany(param);
     }
 
 
     /**
      * 查询业主列表下的查询出来的总数
+     *
      * @param param
      * @return
      */
@@ -97,6 +102,7 @@ public class TbCompanyCommonService {
 
     /**
      * 所有业主-业主列表-修改
+     *
      * @param param
      * @return
      */
@@ -108,6 +114,7 @@ public class TbCompanyCommonService {
 
     /**
      * 所有业主-业主列表-删除
+     *
      * @param paramList
      * @return
      */
@@ -120,6 +127,7 @@ public class TbCompanyCommonService {
 
     /**
      * 所有业主-业主列表-分配业务员
+     *
      * @param param
      * @return
      */
@@ -130,10 +138,11 @@ public class TbCompanyCommonService {
 
     /**
      * 所有业主-业主列表查询
+     *
      * @param param
      * @return
      */
-    public List<Map<String, Object>> getCompanyCommoms(Map<String, Object> param){
+    public List<Map<String, Object>> getCompanyCommoms(Map<String, Object> param) {
 
         // 定义地区list列表
         List<Map<String, Object>> regionList = new ArrayList<>();
@@ -167,7 +176,7 @@ public class TbCompanyCommonService {
                         if (!JzbDataType.isEmpty(provinceMap.get(JzbDataType.getString(param.get("city"))))) {
                             // 获取城市下所有的县级信息
                             List<Map<String, Object>> countyMap = (List<Map<String, Object>>) provinceMap.get(JzbDataType.getString(param.get("city")));
-                            Map<String, Object> county =  countyMap.get(0);
+                            Map<String, Object> county = countyMap.get(0);
                             List<Map<String, Object>> cityList = (List<Map<String, Object>>) county.get("list");
                             for (int b = 0; b < cityList.size(); b++) {
                                 // 获取城市下单个的县级信息
@@ -240,9 +249,25 @@ public class TbCompanyCommonService {
      * @DateTime: 2019/10/11
      */
     public int modifyCompanyCommon(Map<String, Object> param) {
-        if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("password")))){
-            //给负责人发送短信
-            param.put("groupid", config.getAddCompany());
+        if (!JzbDataType.isEmpty(JzbDataType.getString("oldphone"))) {
+            param.put("companyname", JzbDataType.getString(param.get("cname")));
+            if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("password")))) {
+                // 给新负责人发送短信,系统中不存在的用户
+                param.put("groupid", config.getChangeManagerPwd());
+                param.put("senduid", "addCommon1013");
+                param.put("msgtag", "addCommon1013");
+                companyService.sendRemind(param);
+            } else {
+                // 给新负责人发送短信,系统中存在的用户没有新密码
+                param.put("groupid", config.getChangeManager());
+                param.put("senduid", "addCommon1013");
+                param.put("msgtag", "addCommon1013");
+                companyService.sendRemind(param);
+            }
+            // 将要发送的手机号改为旧管理员手机号
+            param.put("relphone", JzbDataType.getString(param.get("oldphone")));
+            // 给老负责人发送撤销管理员信息
+            param.put("groupid", config.getOldManager());
             param.put("senduid", "addCommon1013");
             param.put("msgtag", "addCommon1013");
             companyService.sendRemind(param);

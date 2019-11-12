@@ -13,6 +13,7 @@ import com.jzb.org.api.api.DeptUserControllerApi;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.dao.TbCompanyListMapper;
+import com.jzb.org.service.CompanyService;
 import com.jzb.org.service.TbCompanyCommonService;
 import com.jzb.org.util.SetPageSize;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
@@ -46,6 +47,12 @@ public class TbCompanyCommonController {
 
     @Autowired
     private RegionBaseApi regionBaseApi;
+
+    @Autowired
+    private CompanyController companyController;
+
+    @Autowired
+    private CompanyService companyService;
 
     /**
      * 日志记录对象
@@ -500,7 +507,13 @@ public class TbCompanyCommonController {
             int count = tbCompanyCommonService.modifyCompanyCommon(param);
             //获取用户信息
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            if (count >= 1) {
+                result = Response.getResponseSuccess(userInfo);
+                Map<String, Object> map= companyService.getEnterpriseData(param);
+                companyController.comHasCompanyKey(map);
+            } else {
+                result = Response.getResponseError();
+            }
         } catch (Exception e) {
             //打印错误信息
             JzbTools.logError(e);

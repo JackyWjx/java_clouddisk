@@ -5,6 +5,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
+import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.dao.TbCompanyProjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class TbCompanyProjectService {
     private TbCompanyProjectMapper tbCompanyProjectMapper;
 
     @Autowired
-    private RegionBaseApi regionBaseApi;
+    private UserRedisServiceApi userRedisServiceApi;
 
     /**
      * 模糊查询单位名称
@@ -111,44 +112,42 @@ public class TbCompanyProjectService {
 
     /**
      * CRM-销售业主-我服务的业主-1
+     * 根据服务的项目ID获取项目信息的总数,后台调用不支持前台调用
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    public int getServiceProjectListCount(Map<String, Object> param) {
+        return tbCompanyProjectMapper.getServiceProjectListCount(param);
+    }
+
+    /**
+     * CRM-销售业主-我服务的业主-1
      * 根据服务的项目ID获取项目信息,后台调用不支持前台调用
      *
      * @Author: Kuang Bin
      * @DateTime: 2019/10/19
      */
-    public List<Map<String, Object>> getServiceProjectList(List<Map<String, Object>> param) {
-        return tbCompanyProjectMapper.queryServiceProjectList(param);
-    }
-
-    /**
-     * CRM-销售业主-我服务的业主-2
-     * 根据服务的项目ID获取模糊搜索项目信息,后台调用不支持前台调用
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    public List<Map<String, Object>> searchServiceProjectList(Map<String, Object> param) {
-        List<Map<String, Object>> list = tbCompanyProjectMapper.queryServiceProject(param);
-        // 获取地区信息
+    public List<Map<String, Object>> getServiceProjectList(Map<String, Object> param) {
+        List<Map<String, Object>> list = tbCompanyProjectMapper.queryServiceProjectList(param);
         for (int i = 0; i < list.size(); i++) {
-            Map<String, Object> map = list.get(i);
-            Response response = regionBaseApi.getRegionInfo(map);
-            map.put("region", response.getResponseEntity());
+            Map<String, Object> uidMap = list.get(i);
+            Response region = userRedisServiceApi.getCacheUserInfo(uidMap);
+            uidMap.put("uid", region.getResponseEntity());
         }
         return list;
     }
 
     /**
      * CRM-销售业主-我服务的业主-2
-     * 根据服务的项目ID获取模糊搜索项目信息的总数,后台调用不支持前台调用
+     * 获取所有人的uid
      *
      * @Author: Kuang Bin
      * @DateTime: 2019/10/19
      */
-    public int getCompanyServiceCount(Map<String, Object> param) {
-        return tbCompanyProjectMapper.queryCompanyServiceCount(param);
+    public List<Map<String, Object>> getServiceProjectUid(Map<String, Object> param) {
+        return tbCompanyProjectMapper.queryServiceProjectUid(param);
     }
-
 
     /**
      * 获取今日添加项目的数量

@@ -386,6 +386,7 @@ public class ActivityController {
                     params.put("uid", mapList.get(i).get("adduid"));
                     params.put("actid", mapList.get(i).get("actid"));
                     Response region = userRedisApi.getCacheUserInfo(params);
+                    mapList.get(i).put("photoList", newActivityService.queryActivityPhoto(params));
                     mapList.get(i).put("userInfo", region.getResponseEntity());
                     mapList.get(i).put("photoList", newActivityService.queryActivityPhoto(params));
                 }
@@ -677,6 +678,30 @@ public class ActivityController {
             // 修改修改成功数
             int count = newActivityService.modifyActivityDataSEO(param);
             result = count >= 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    } // End modifySolutionDomSEO
+
+    /**
+     * CRM-运营管理-活动-SEO优化2
+     * 点击SEO优化显示活动首页SEO优化信息
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/getActivityDataSEO", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getActivityDataSEO(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 返回活动信息
+            List<Map<String, Object>> activity = newActivityService.getActivityDataSEO(param);
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess();
+            pageInfo.setList(activity);
+            result.setPageInfo(pageInfo);
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

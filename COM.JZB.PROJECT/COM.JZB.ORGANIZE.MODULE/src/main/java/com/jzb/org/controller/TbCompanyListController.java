@@ -31,12 +31,13 @@ public class TbCompanyListController {
 
     /**
      * 所有业主-销售统计分析
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getCompanyList",method = RequestMethod.POST)
+    @RequestMapping(value = "/getCompanyList", method = RequestMethod.POST)
     @CrossOrigin
-    public Response getCompanyList(@RequestBody Map<String,Object> param) {
+    public Response getCompanyList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
             if (JzbCheckParam.haveEmpty(param, new String[]{"pageno", "pagesize"})) {
@@ -61,14 +62,13 @@ public class TbCompanyListController {
                 PageInfo pageInfo = new PageInfo();
 
 
-
                 pageInfo.setList(list);
                 //设置分页总数
                 //pageInfo.setTotal(count > 0 ? count : list.size());
                 result = Response.getResponseSuccess(userInfo);
                 result.setPageInfo(pageInfo);
                 for (int i = 0; i < list.size(); i++) {
-                    pageInfo.setTotal(JzbDataType.getInteger(list.get(list.size()-1).get("count")))  ;
+                    pageInfo.setTotal(JzbDataType.getInteger(list.get(list.size() - 1).get("count")));
                 }
             }
         } catch (Exception e) {
@@ -81,10 +81,11 @@ public class TbCompanyListController {
 
     /**
      * 所有业主-今日添加业主
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getCompanyListCount",method = RequestMethod.POST)
+    @RequestMapping(value = "/getCompanyListCount", method = RequestMethod.POST)
     @CrossOrigin
     public Response getCompanyListCount(@RequestBody Map<String, Object> param) {
         Response result;
@@ -100,21 +101,68 @@ public class TbCompanyListController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-                 //获取今天添加业主的数量
-                 int count  = tbCompanyListService.getCompanyListCount(param);
+            //获取今天添加业主的数量
+            int count = tbCompanyListService.getCompanyListCount(param);
 
-               PageInfo pageInfo = new PageInfo();
+            PageInfo pageInfo = new PageInfo();
 
-               pageInfo.setTotal(count);
-               // 获取用户信息返回
-               result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-               result.setPageInfo(pageInfo);
+            pageInfo.setTotal(count);
+            // 获取用户信息返回
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            result.setPageInfo(pageInfo);
 
         } catch (Exception ex) {
             flag = false;
             JzbTools.logError(ex);
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyListCount Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+    /**
+     * 销售统计分析的查询
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/queryCompanyList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryCompanyList(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/CompanyList/queryCompanyList";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            List<Map<String,Object>> map = tbCompanyListService.queryCompanyList(param);
+            PageInfo pageInfo = new PageInfo();
+            //获取用户信息
+            userInfo = (Map<String, Object>) param.get("userinfo");
+            //响应成功信息
+
+            result = Response.getResponseSuccess();
+            result.setPageInfo(pageInfo);
+            result.setResponseEntity(map);
+        } catch (Exception ex) {
+            //获取异常信息不捕捉进行日志信息的打印
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryCompanyList Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),

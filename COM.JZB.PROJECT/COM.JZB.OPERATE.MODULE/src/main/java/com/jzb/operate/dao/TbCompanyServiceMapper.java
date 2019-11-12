@@ -81,4 +81,24 @@ public interface TbCompanyServiceMapper {
      * @DateTime: 2019/10/19
      */
     List<Map<String, Object>> queryServiceList(Map<String, Object> param);
+
+    /**
+     * 所有业主-销售统计分析-服务跟踪记录
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getHandleItem(Map<String, Object> param);
+
+    /**
+     * 查询项目分配的售后人员
+     */
+    List<Map<String, Object>> getCompanyService(Map<String,Object> param);
+
+    /**
+     * 分配项目的售后人员进行修改
+     * @param param
+     * @return
+     */
+    int updateCompanyService(Map<String, Object> param);
+
 }

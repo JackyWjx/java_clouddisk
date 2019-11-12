@@ -63,4 +63,18 @@ public interface TbStandardDocumentMapper {
      * @return
      */
     int getCounts(Map<String, Object> param);
+
+    /**
+     * 标准的SEO优化
+     * @param param
+     * @return
+     */
+    int updateSeo(Map<String, Object> param);
+
+    /**
+     * 标准的SEO优化的查询
+     * @param param
+     * @return
+     */
+    Map<String, Object> getSeo(Map<String, Object> param);
 }

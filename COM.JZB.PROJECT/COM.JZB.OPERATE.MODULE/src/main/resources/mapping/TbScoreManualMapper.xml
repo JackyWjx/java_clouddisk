@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbScoreManualMapper">
+    <!--查询积分指导总条数-->
+    <select id="getCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_score_manual
+    </select>
+
+    <!--查询积分指导详情-->
+    <select id="queryScoreManualList" parameterType="java.util.Map" resultType="java.util.Map">
+          select
+              manualid,
+              cname,
+              manualcontent
+          from tb_score_manual
+          order by idx
+              LIMIT #{pagesize}
+              OFFSET #{pageno}
+    </select>
+
+</mapper>

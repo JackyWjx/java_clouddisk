@@ -300,6 +300,7 @@
         tb_policy_document
         set
         <if test="policystatus != null">policystatus=#{policystatus},</if>
+        <if test="domtitle  != null">domtitle =#{domtitle },</if>
         <if test="tpeycode != null">tpeycode=#{tpeycode},</if>
         <if test="context != null">context=#{context},</if>
         <if test="domcode != null">domcode=#{domcode},</if>
@@ -324,5 +325,27 @@
         set
         status=cast(#{status} as integer) where domid=#{domid}
     </update>
+
+    <update id="updateSeo" parameterType="java.util.Map">
+        update
+        tb_policy_document
+        set
+        <if test="domtitle != null and domtitle != ''"> domtitle = #{domtitle},</if>
+        <if test="pagekey != null and pagekey != ''"> pagekey = #{pagekey},</if>
+        <if test="pagedesc != null and pagedesc != ''"> pagedesc = #{pagedesc}</if>
+        where
+        domid = #{domid}
+    </update>
+
+    <select id="getSeo" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        domtitle,
+        pagekey,
+        pagedesc
+        from
+        tb_policy_document
+        where
+        domid = #{domid}
+    </select>
 
 </mapper>

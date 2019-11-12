@@ -254,12 +254,20 @@ public class TbCompanyProjectController {
     public Response getServiceProjectList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            List<Map<String, Object>> list = ( List<Map<String, Object>>)param.get("list");
+            //判断前端传过来的分页总数
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取产品报价总数
+            count = count < 0 ? 0 : count;
+            if (count == 0) {
+                count = tbCompanyProjectService.getServiceProjectListCount(param);
+            }
             // 返回所有的企业列表
-            List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectList(list);
+            List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectList(param);
             result = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
+            //设置分页总数
+            pageInfo.setTotal(count > 0 ? count : companyList.size());
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
@@ -270,23 +278,21 @@ public class TbCompanyProjectController {
 
     /**
      * CRM-销售业主-我服务的业主-2
-     * 根据服务的项目ID获取模糊搜索项目信息,后台调用不支持前台调用
+     * 获取所有人的uid
      *
      * @Author: Kuang Bin
      * @DateTime: 2019/10/19
      */
-    @RequestMapping(value = "/searchCompanyServiceList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getServiceProjectUid", method = RequestMethod.POST)
     @CrossOrigin
-    public Response searchCompanyServiceList(@RequestBody Map<String, Object> param) {
+    public Response getServiceProjectUid(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            int count = tbCompanyProjectService.getCompanyServiceCount(param);
             // 返回所有的企业列表
-            List<Map<String, Object>> companyList = tbCompanyProjectService.searchServiceProjectList(param);
+            List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectUid(param);
             result = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
-            pageInfo.setTotal(count);
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
@@ -294,7 +300,6 @@ public class TbCompanyProjectController {
         }
         return result;
     }
-
 
     /**
      * 获取今日添加项目

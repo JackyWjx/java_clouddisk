@@ -3,6 +3,7 @@ package com.jzb.operate.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -12,9 +13,13 @@ import com.jzb.base.util.JzbTools;
 
 import com.jzb.operate.api.redis.UserRedisServiceApi;
 import com.jzb.operate.service.TbCompanyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +33,13 @@ public class TbCompanyServiceController {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbCompanyMethodController.class);
+
     /**
      * 项目跟进
      *
@@ -119,52 +131,25 @@ public class TbCompanyServiceController {
         Response result;
         try {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            // 获取前台的总数
-            int count = JzbDataType.getInteger(param.get("count"));
-            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            count = count < 0 ? 0 : count;
-            if (count == 0) {
-                // 查询所有我服务的业主总数
-                count = tbCompanyService.getCompanyServiceCount(param);
+            if (JzbDataType.getString(userInfo.get("uid")) != "JZBDCDCJZBDC") {
+                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             }
-            // 返回所有的企业列表
+            //  返回所有的企业列表
             List<Map<String, Object>> companyList = tbCompanyService.getCompanyServiceList(param);
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
-            pageInfo.setTotal(count > 0 ? count : companyList.size());
+            // 判断结果是否为空
+            if (!JzbDataType.isEmpty(companyList)) {
+                pageInfo.setTotal(JzbDataType.getInteger(companyList.get(0).get("count")));
+            }else {
+                // 等于空返回总数0
+                pageInfo.setTotal(0);
+            }
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
 
-            result = Response.getResponseError();
-        }
-        return result;
-    }
-
-    /**
-     * CRM-销售业主-我服务的业主-2
-     * 根据模糊搜索条件获取所有的我服务的业主
-     *
-     * @Author: Kuang Bin
-     * @DateTime: 2019/10/19
-     */
-    @RequestMapping(value = "/searchCompanyServiceList", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response searchCompanyServiceList(@RequestBody Map<String, Object> param) {
-        Response result;
-        try {
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            // 返回所有的企业列表
-            List<Map<String, Object>> companyList = tbCompanyService.searchCompanyServiceList(param);
-            result = Response.getResponseSuccess(userInfo);
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setList(companyList);
-            pageInfo.setTotal(companyList.size() == 0 ? 0: JzbDataType.getInteger(companyList.get(0).get("count")));
-            result.setPageInfo(pageInfo);
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
             result = Response.getResponseError();
         }
         return result;
@@ -172,18 +157,19 @@ public class TbCompanyServiceController {
 
     /**
      * 修改 服务记录
-     * @auth  han bin
+     *
      * @param param
      * @return
+     * @auth han bin
      */
     @RequestMapping(value = "/upComanyService", method = RequestMethod.POST)
     @CrossOrigin
-    public Response upComanyService(@RequestBody Map<String, Object> param){
+    public Response upComanyService(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            Map userinfo  =  (Map)param.get("userinfo");
-            param.put("ouid",userinfo.get("uid"));
-            result = tbCompanyService.upComanyService(param) ?  Response.getResponseSuccess(userinfo) : Response.getResponseError();
+            Map userinfo = (Map) param.get("userinfo");
+            param.put("ouid", userinfo.get("uid"));
+            result = tbCompanyService.upComanyService(param) ? Response.getResponseSuccess(userinfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -193,18 +179,19 @@ public class TbCompanyServiceController {
 
     /**
      * 添加 服务记录
-     * @auth  han bin
+     *
      * @param param
      * @return
+     * @auth han bin
      */
     @RequestMapping(value = "/saveComanyService", method = RequestMethod.POST)
     @CrossOrigin
-    public Response saveComanyService(@RequestBody Map<String, Object> param){
+    public Response saveComanyService(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            Map userinfo  =  (Map)param.get("userinfo");
-            param.put("ouid",userinfo.get("uid"));
-            result = tbCompanyService.saveComanyService(param) ?  Response.getResponseSuccess(userinfo) : Response.getResponseError();
+            Map userinfo = (Map) param.get("userinfo");
+            param.put("ouid", userinfo.get("uid"));
+            result = tbCompanyService.saveComanyService(param) ? Response.getResponseSuccess(userinfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -243,6 +230,154 @@ public class TbCompanyServiceController {
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 所有业主-销售统计分析-服务跟踪记录
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/queryServiceList",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryServiceList(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/CompanyService/queryServiceList";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            //如果指定参数为空则返回404
+            //获取map中的list
+            List<Map<String, Object>> paramList = (List) param.get("list");
+            List list1 = new ArrayList<>();
+
+            for (int i = 0; i < paramList.size(); i++) {
+                Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(paramList.get(i));
+                //遍历list 调用服务查询数据
+                List<Map<String, Object>> list  = tbCompanyService.queryServiceList(paramList.get(i));
+                Map<String, Object> map = new HashMap<>();
+                Map<String,Object> map1 = (Map<String, Object>) cacheUserInfo.getResponseEntity();
+                //如果list为空，但是缓存中查询出来的数据uid和cname不为空，则默认吧其他参数置为空返回给前端
+                if (list.size() <=0  && cacheUserInfo.getResponseEntity() != null) {
+                    //往map中添加空字符串，返回给前端
+                    map.put("summary", "");
+                    map.put("projectname", "");
+                    map.put("unitName", "");
+                    map.put("dictvalue", "");
+                    map.put("invest", "");
+                    map.put("contamount", "");
+                    map.put("needres", "");
+                    map.put("handletime", "");
+                    map.put("uid", "");
+                    map.put("nexttime", "");
+                    map.put("person", "");
+                    map.put("context", "");
+                    map.put("personid", "");
+                    map.put("attach", "");
+                    map.put("region", "");
+                    map.put("projectid", "");
+                    map.put("cid", "");
+                    //遍历缓存中查询出来的map，
+                    for (Object key:map1.keySet()) {
+                        map.put("uidcname", map1.get("cname"));
+                        map.put("uid", map1.get("uid"));
+                    }
+                    //添加到list1中返回
+                    list1.add(map);
+                } else {
+                    //遍历缓存中查询出来的map数据 添加到list中返回给前端
+                    for (int j = 0; j < list.size(); j++) {
+                        for (Object key:map1.keySet()) {
+
+                            list.get(j).put("uidcname", map1.get("cname"));
+                            list.get(j).put("uid", map1.get("uid"));
+                        };
+                        list1.add(list.get(j));
+                    }
+                }
+            }
+
+                /*for (int i = 0; i < list.size(); i++) {
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("uid", list.get(i).get("uid"));
+
+                    Response userInfo1 = userRedisServiceApi.getNameById(list.get(i));
+
+                    list.get(i).put("uidname",userInfo1.getResponseEntity());
+                }*/
+
+            //获取用户信息
+            userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list1);
+            //响应成功信息
+            result = Response.getResponseSuccess(userInfo);
+            result.setPageInfo(pageInfo);
+
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryServiceList Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+
+    /**
+     * 给项目分配售后人员
+     * @param param
+     * @return
+     */
+
+    @RequestMapping(value = "/saveCompanyService",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response saveCompanyService(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/CompanyService/saveCompanyService";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            //如果指定参数为空，则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"projectid"})) {
+                result = Response.getResponseError();
+            } else {
+                int count = tbCompanyService.saveCompanyService(param);
+                //获取用户信息
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                //返回成功后者失败的结果
+                result = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryServiceList Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }

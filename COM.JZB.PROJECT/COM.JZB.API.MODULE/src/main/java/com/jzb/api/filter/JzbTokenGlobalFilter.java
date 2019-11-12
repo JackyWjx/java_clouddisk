@@ -161,6 +161,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-ACTIVITY/activity/addActivityVotes", "");
         GATEWAY_WHITE_LIST.put("/JZB-ACTIVITY/activity/getResourceVotes", "");
         GATEWAY_WHITE_LIST.put("/JZB-ACTIVITY/activity/addActivityReads", "");
+        GATEWAY_WHITE_LIST.put("/JZB-ACTIVITY/activity/getActivityDataSEO", "");
         //---- end activity
 
         //---- begin operate
@@ -186,6 +187,9 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/ProductResList/saveFile", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/ProductResList/creatFile", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/city/getCityJson", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/solutionDom/getSolutionDomSEO", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/standardDocument/getSeo", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/policyDom/getSeo", "");
 
         //---- end resource
 

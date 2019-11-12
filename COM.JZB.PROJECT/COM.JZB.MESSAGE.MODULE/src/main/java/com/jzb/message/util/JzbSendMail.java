@@ -83,10 +83,7 @@ public final class JzbSendMail {
             JSONObject configjson = JSONObject.fromObject(config.get("context"));            //连接邮件服务器的参数配置
             msg.setFrom(new InternetAddress(configjson.get("username").toString()));
             if(!JzbTools.isEmpty(configjson.get("receiver").toString())){
-                String[] strings = configjson.get("receiver").toString().split(",");
-                for(int i = 0; i <strings.length ;i++){
-                    msg.setRecipient(MimeMessage.RecipientType.TO,new InternetAddress(strings[i]));
-                }
+                    msg.setRecipient(MimeMessage.RecipientType.TO,new InternetAddress(info.getItem("receive").getString()));
             }
             if(!JzbTools.isEmpty(configjson.get("copier").toString())){
                 String[] strings = configjson.get("copier").toString().split(",");

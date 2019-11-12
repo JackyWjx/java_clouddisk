@@ -177,9 +177,9 @@
     </update>
 
     <!-- 查询合同项 -->
-    <select id="queryContractProductFun" parameterType="java.util.Map">
+    <select id="queryContractProductFun" parameterType="java.util.Map" resultType="java.util.Map">
         select contid,pid,funtype,funsubtype,funid,cname,price,weight,introduce,fundesc,funroute,idx,adduid,addtime,upduid,updtime,status,summary
-        from tb_contract_item where status='1' and contid=#{contid}
+        from tb_contract_product_fun where status='1' and contid=#{contid}
     </select>
 
 

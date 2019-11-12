@@ -112,7 +112,7 @@
                 #{item.status},
             </when>
             <otherwise>
-                NULL,
+                1,
             </otherwise>
         </choose>
         <choose>
@@ -123,7 +123,12 @@
                 NULL
             </otherwise>
         </choose>
-        );
+        )ON conflict(cid,pid) DO UPDATE SET
+            cid=#{item.cid},
+            pid=#{item.pid}
+            <if test="item.plid!=null and  item.plid!=''">
+                ,plid=#{item.plid}
+            </if>
         </foreach>
     </insert>
 

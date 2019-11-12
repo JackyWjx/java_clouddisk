@@ -240,10 +240,13 @@ public class TbCompanyContractController {
             }
             // 如果指定参数为空则返回error
             if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "count", "pageno", "pagesize"})) {
-                response = Response.getResponseSuccess();
+                response = Response.getResponseError();
             } else {
                 if (JzbCheckParam.haveEmpty(param, new String[]{"contid"})) {
                     JzbPageConvert.setPageRows(param);
+                }else {
+                    param.remove("pageno");
+                    param.remove("pagesize");
                 }
                 // 查询合同
                 List<Map<String, Object>> list = tbCompanyContractService.quertCompantContract(param);
@@ -256,7 +259,7 @@ public class TbCompanyContractController {
                     List<Map<String, Object>> productFun = tbContractProductFunService.queryContractProductFun(param);
                     List<Map<String, Object>> contProduct = tbContractProductService.queryContractProduct(param);
                     List<Map<String, Object>> contService = tbContractServiceService.queryContractService(param);
-                    map.put("companyContract", list.get(0));
+                    map.put("companyContract", list.size()>0?list.get(0):null);
                     map.put("productFun", productFun);
                     map.put("contProduct", contProduct);
                     map.put("contService", contService);

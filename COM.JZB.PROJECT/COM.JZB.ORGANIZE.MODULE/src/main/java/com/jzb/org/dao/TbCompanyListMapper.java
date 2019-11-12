@@ -32,4 +32,10 @@ public interface TbCompanyListMapper {
      */
     int getCompanyListCount(Map<String, Object> param);
 
+    /**
+     * 销售统计分析的查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> queryCompanyList(Map<String, Object> param);
 }

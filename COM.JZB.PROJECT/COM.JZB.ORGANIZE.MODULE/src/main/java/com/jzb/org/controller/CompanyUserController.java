@@ -8,26 +8,25 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.base.RegionBaseApi;
-import com.jzb.org.api.redis.OrgRedisServiceApi;
-import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.dao.DeptMapper;
 import com.jzb.org.service.CompanyService;
 import com.jzb.org.service.CompanyUserService;
 import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
-import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -143,7 +142,7 @@ public class CompanyUserController {
             param.put("username", JzbDataType.getString(param.get("name")));
             param.put("companyname", JzbDataType.getString(param.get("cname")));
             param.put("relphone", JzbDataType.getString(param.get("phone")));
-            param.put("groupid", "1013");
+            param.put("groupid", config.getAddCompany());
             param.put("msgtag", "sendRemind1013");
             param.put("senduid", "sendRemind1013");
             result = companyService.sendRemind(param);
@@ -382,7 +381,8 @@ public class CompanyUserController {
     public void createCompanyProject(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/ImportCompanyProject.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             // 读取了模板内所有sheet内容
@@ -639,7 +639,8 @@ public class CompanyUserController {
     public void createCompanyUser(HttpServletResponse response) {
         try {
             String srcFilePath = "static/excel/ImportCompanyUser.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             // 读取了模板内所有sheet内容
@@ -888,7 +889,8 @@ public class CompanyUserController {
     public void createSellStatisticsExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/ImportSellStatistics.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             Object object = param.get("list");
             List<Map<String, Object>> list = new ArrayList<>();
             if (JzbDataType.isCollection(object)) {
@@ -966,8 +968,9 @@ public class CompanyUserController {
     public void createCompanyProjectExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/CompanyProjectData.xlsx";
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             Object object = param.get("list");
-            FileInputStream in = new FileInputStream(srcFilePath);
             List<Map<String, Object>> list = new ArrayList<>();
             if (JzbDataType.isCollection(object)) {
                 list = (List<Map<String, Object>>) object;
@@ -1035,7 +1038,8 @@ public class CompanyUserController {
     public void createCompanyUserExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/CompanyUserData.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             Object object = param.get("list");
             List<Map<String, Object>> list = new ArrayList<>();
             if (JzbDataType.isCollection(object)) {
@@ -1089,7 +1093,8 @@ public class CompanyUserController {
     public void createCompanyContractExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/CompanyContractData.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             Object object = param.get("list");
             List<Map<String, Object>> list = new ArrayList<>();
             if (JzbDataType.isCollection(object)) {
@@ -1145,16 +1150,20 @@ public class CompanyUserController {
     public void createServiceStatisticsExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
             String srcFilePath = "static/excel/ServiceStatisticsData.xlsx";
-            FileInputStream in = new FileInputStream(srcFilePath);
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
             Object object = param.get("list");
             List<Map<String, Object>> list = new ArrayList<>();
             if (JzbDataType.isCollection(object)) {
                 list = (List<Map<String, Object>>) object;
             }
-            // 读取excel模板
-            XSSFWorkbook wb = new XSSFWorkbook(in);
-            // 读取了模板内所有sheet内容
-            XSSFSheet sheet = wb.getSheetAt(0);
+            Workbook wb = new XSSFWorkbook(in);
+
+            XSSFSheet sheet = (XSSFSheet) wb.getSheetAt(0);
+
+            XSSFCellStyle cellStyle = (XSSFCellStyle) wb.createCellStyle();
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);//左右居中
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> page = list.get(i);
                 // 获取单位名称

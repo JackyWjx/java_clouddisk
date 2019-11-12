@@ -183,7 +183,7 @@
     </update>
 
     <!-- 查询企业合同服务 -->
-    <select id="queryContractService" parameterType="java.util.Map">
+    <select id="queryContractService" parameterType="java.util.Map" resultType="java.util.Map">
         select contid,pid,pricetype,typename,itemid,itemname,pricedesc,size,unit,price,weight,serviceroute,idx,adduid,addtime,upduid,updtime,status,summary
         from tb_contract_service where status='1' and contid=#{contid}
     </select>

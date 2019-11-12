@@ -10,25 +10,19 @@ import java.util.Map;
 @Repository
 public interface TbHandleItemMapper {
 
+
     /**
      * 跟进人详情查询
      * @param param
      * @return
      */
-    Map<String, Object> getHandleItem(Map<String, Object> param);
+    List<Map<String, Object>> getHandleItem(Map<String, Object> param);
+
 
     /**
-     * 点击服务跟踪记录
+     * 所有业主-销售统计分许-根据页面的超链接进行查询
      * @param param
      * @return
      */
-    Map<String, Object> getService(Map<String, Object> param);
-
-    /**
-     * 点击项目查询项目跟踪记录
-     * @param param
-     * @return
-     */
-    Map<String, Object> getItem(Map<String, Object> param);
-
+    List<Map<String, Object>> queryHandleItem(Map<String, Object> param);
 }

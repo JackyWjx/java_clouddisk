@@ -175,10 +175,15 @@ public class RoleService implements Service {
                         List<Map<String, Object>> pageList = (List<Map<String, Object>>) midMap.get("children");
                         int page = JzbDataType.getInteger(pageList == null ? "0" : pageList.size());
                         if (page > 0) {
+                            //存在页面，默认不存在
+                            boolean existPage = false;
+
+                            //循环children中的数据
                             for (int j = 0; j < page; j++) {
                                 //循环页面数据
                                 Map<String, Object> pageTemp = pageList.get(j);
                                 if (JzbDataType.getInteger(pageTemp.get("status")) == 1) {
+                                    existPage = true;
                                     Map<String, Object> pageMap = new HashMap(conMap);
                                     pageMap.put("mid", midMap.get("id"));
                                     if (!JzbTools.isEmpty(pageTemp.get("id"))) {
@@ -201,6 +206,17 @@ public class RoleService implements Service {
                                     menuList.add(pageMap);
                                 }
                             }
+
+                            //children只有菜单没有页面
+                            if (!existPage) {
+                                if (JzbDataType.getInteger(midMap.get("status")) == 0) {
+                                    //菜单没有页面
+                                    Map<String, Object> pageMap = new HashMap(conMap);
+                                    pageMap.put("mid", midMap.get("id"));
+                                    menuList.add(pageMap);
+                                }
+                            }
+
                         } else {
                             if (JzbDataType.getInteger(midMap.get("status")) == 0) {
                                 //菜单没有页面

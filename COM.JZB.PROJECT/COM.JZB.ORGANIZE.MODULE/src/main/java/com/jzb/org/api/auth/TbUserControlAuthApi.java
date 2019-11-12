@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Map;
 
 @Repository
-@FeignClient(name = "jzb-org")
+@FeignClient(name = "jzb-auth")
 @RequestMapping(value = "/auth/userControlAuth")
 public interface TbUserControlAuthApi {
 
@@ -22,7 +22,7 @@ public interface TbUserControlAuthApi {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getCompanyIsAuth", method = RequestMethod.POST)
+    @RequestMapping(value = "/theCidIsExists", method = RequestMethod.POST)
     @CrossOrigin
-    public Response getCompanyIsAuth(@RequestBody Map<String, Object> param);
+    public Response theCidIsExists(@RequestBody Map<String, Object> param);
 }

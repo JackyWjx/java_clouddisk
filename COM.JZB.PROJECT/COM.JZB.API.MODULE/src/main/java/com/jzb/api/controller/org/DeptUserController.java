@@ -62,6 +62,7 @@ public class DeptUserController {
 
     @Autowired
     private CompanyCommonApi companyCommonApi;
+
     /**
      * 根据企业id和部门中的手机号或用户姓名获取组织与用户的数据
      *
@@ -466,6 +467,7 @@ public class DeptUserController {
                     if (JzbTools.isEmpty(uid)) {
                         result = Response.getResponseError();
                     } else {
+                        param.put("manager", uid);
                         param.putAll(send);
                         result = companyCommonApi.modifyCompanyCommon(param);
                     }

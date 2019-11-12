@@ -181,7 +181,7 @@ public class NewActivityService {
         return param;
     }
 
-    /**
+   /**
      * CRM-运营管理-活动-文章列表
      * 点击新建后加入新建的活动文章内容
      *
@@ -200,9 +200,9 @@ public class NewActivityService {
                 Object photo = param.get("photolist");
                 if (JzbDataType.isCollection(photo)) {
                     List<Map<String, Object>> photoList = (List<Map<String, Object>>) photo;
-                    for (int i = photoList.size()-1; i >= 0; i--) {
+                    for (int i = photoList.size() - 1; i >= 0; i--) {
                         Map<String, Object> photoMap = photoList.get(i);
-                        if (!JzbDataType.isEmpty(photoMap.get("photo"))){
+                        if (!JzbDataType.isEmpty(photoMap.get("photo"))) {
                             // 加入默认状态
                             photoMap.put("status", "1");
                             photoMap.put("addtime", addtime);
@@ -210,7 +210,7 @@ public class NewActivityService {
                             photoMap.put("uid", param.get("uid"));
                             photoMap.put("summary", param.get("summary"));
                             photoMap.put("fileid", JzbRandom.getRandomCharCap(15));
-                        }else {
+                        } else {
                             photoList.remove(i);
                         }
                     }
@@ -234,7 +234,7 @@ public class NewActivityService {
         return activityMapper.queryActivityData(param);
     }
 
-    /**
+     /**
      * CRM-运营管理-活动-文章列表
      * 点击修改后对活动文章进行修改
      *
@@ -249,15 +249,16 @@ public class NewActivityService {
                 Object photo = param.get("photolist");
                 if (JzbDataType.isCollection(photo)) {
                     List<Map<String, Object>> list = (List<Map<String, Object>>) photo;
-                    for (int i = 0; i < list.size(); i++) {
+                    for (int i = list.size() - 1; i >= 0; i--) {
                         Map<String, Object> photoMap = list.get(i);
-                        if (!JzbDataType.isEmpty(photoMap.get("photo"))){
+                        if (!JzbDataType.isEmpty(photoMap.get("photo"))) {
                             // 加入默认状态
                             photoMap.put("updtime", updtime);
                             photoMap.put("actid", JzbDataType.getString(param.get("actid")));
                             photoMap.put("uid", JzbDataType.getString(param.get("uid")));
+                            photoMap.put("fileid", JzbDataType.getString(photoMap.get("fileid")));
                             photoMap.put("newFileId", JzbRandom.getRandomCharCap(15));
-                        }else {
+                        } else {
                             list.remove(i);
                         }
                     }
@@ -294,5 +295,17 @@ public class NewActivityService {
         // 加入修改时间
         param.put("updtime", updtime);
         return activityMapper.updateActivityDataSEO(param);
+    }
+
+    /**
+     * CRM-运营管理-活动-SEO优化2
+     * 点击SEO优化显示活动首页SEO优化信息
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getActivityDataSEO(Map<String, Object> param) {
+        // 获取活动首页状态为4,4为隐藏活动首页不显示
+        param.put("status", "4");
+        return activityMapper.queryActivityDataSEO(param);
     }
 }
