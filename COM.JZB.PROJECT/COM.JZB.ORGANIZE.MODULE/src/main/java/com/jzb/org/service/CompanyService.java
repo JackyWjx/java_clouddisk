@@ -714,6 +714,9 @@ public class CompanyService {
      */
     public Response sendRemind(Map<String, Object> map) {
         Response rul;
+        // 加入必填参数
+        map.put("msgtag", "jzb001");
+        map.put("senduid", "jzb001");
         // 将日期格式化为年月日,时分秒
         SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = sim.format(new Date());
