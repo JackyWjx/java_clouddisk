@@ -34,4 +34,13 @@ public interface AuthApi {
     @PostMapping("/addCompanyEmployee")
     @CrossOrigin
     public Response addCompanyEmployee(@RequestBody Map<String, Object> param);
+
+    /**
+     * 主页获取用户信息
+     *
+     * @author kuangbin
+     */
+    @PostMapping(value = "/getUserInfo")
+    @CrossOrigin
+    public Response getUserInfo(@RequestBody Map<String, Object> param);
 }
