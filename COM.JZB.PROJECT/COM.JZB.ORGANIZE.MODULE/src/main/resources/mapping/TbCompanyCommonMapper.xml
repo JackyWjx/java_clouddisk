@@ -24,7 +24,6 @@ FROM
 	INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
 	LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
 	AND tdu.uid = tcl.manager
-	LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid AND tcp.typeid = 't000000'
 WHERE
 	tcc.status = '2'
 and tcc.uid=#{uid}
@@ -57,7 +56,6 @@ and tcc.uid=#{uid}
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
         LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
         AND tdu.uid = tcl.manager
-        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid AND tcp.typeid = 't000000'
         WHERE
         tcc.status = '2'
         ) a where 1=1
