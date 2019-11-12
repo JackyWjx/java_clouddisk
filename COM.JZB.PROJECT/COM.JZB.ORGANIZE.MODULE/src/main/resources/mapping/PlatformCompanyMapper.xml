@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.PlatformCompanyMapper">
+
+
+    <!--开放平台企业列表查询-->
+    <select id="searchPlatformComList" resultType="java.util.Map">
+        select distinct cl.cid, cl.cname, ci.address, cl.region
+        from tb_company_list cl
+        left join tb_company_info ci on ci.cid = cl.cid
+        inner join (SELECT regexp_split_to_table(#{cids}, ',') as cid) pl on pl.cid = cl.cid
+        where (cl.cname ~ #{value}
+        <if test=" cidbyuid != null and cidbyuid !='' ">
+            or cl.cid in (SELECT regexp_split_to_table(#{cidbyuid}, ',') )
+        </if>
+        )
+        and cl.status = '1'
+        order by cl.cid
+        LIMIT #{pagesize} OFFSET #{start}
+    </select>
+    <!--开放平台企业列表查询总数-->
+    <select id="searchPlatformComCount" resultType="java.lang.Integer">
+        select count(distinct cl.cid)
+        from tb_company_list cl
+        inner join (SELECT regexp_split_to_table(#{cids}, ',') as cid) pl on pl.cid = cl.cid
+        where (cl.cname ~ #{value}
+        <if test=" cidbyuid != null and cidbyuid !='' ">
+            or cl.cid in (SELECT regexp_split_to_table(#{cidbyuid}, ',') )
+        </if>
+        )
+        and cl.status = '1'
+    </select>
+    <!--根据CIds获取管理员合集-->
+    <select id="getUIdsByCIds" resultType="java.lang.String">
+
+    </select>
+</mapper>
