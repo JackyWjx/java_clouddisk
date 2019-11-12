@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.open.dao.PlatformComMapper">
+
+    <!--获取所有开放平台的企业id-->
+    <select id="queryPlatformIds" resultType="java.util.Map">
+        select COALESCE( string_agg ( DISTINCT cid, ',' ), '' ) AS cids,
+        COALESCE ( string_agg ( DISTINCT manager, ',' ), '' ) AS uids
+        FROM tb_platform_org WHERE status = '1'
+        <if test=" uids != null and uids != '' ">
+            and manager in ( SELECT regexp_split_to_table( #{uids},',' ) )
+        </if>
+    </select>
+    <!--开发者列表查询-->
+    <select id="searchAppDeveloper" resultType="java.util.Map">
+
+    </select>
+    <!--根据cid和集获取管理员信息-->
+    <select id="getComAndMan" resultType="java.util.Map">
+        SELECT
+        cid,manager
+        FROM
+        tb_platform_org
+        WHERE
+        status = '1'
+        <if test=" cid != null and cid != '' ">
+            and cid = #{cid}
+        </if>
+    </select>
+</mapper>
