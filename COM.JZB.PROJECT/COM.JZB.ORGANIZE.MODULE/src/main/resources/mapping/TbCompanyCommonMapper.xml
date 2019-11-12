@@ -16,7 +16,7 @@ SELECT DISTINCT
 	tcl.region,
 	tdu.cname AS username,
 	tdu.phone AS userphone,
-	(select cname from tb_dept_user where uid=(select dictvalue from tb_company_property where typeid='t000000' and cid='ALFRZMU' GROUP BY dictvalue limit 1 ) limit 1) as service,
+	(select cname from tb_dept_user where uid=(select dictvalue from tb_company_property where typeid='t000000' and cid=tcc.cid  GROUP BY dictvalue limit 1 ) limit 1) as service,
 	( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' LIMIT 1 ) AS companyLevel,
 	tcl.authid
 FROM
@@ -49,7 +49,7 @@ and tcc.uid=#{uid}
         tcl.region,
         tdu.cname AS username,
         tdu.phone AS userphone,
-        (select cname from tb_dept_user where uid=(select dictvalue from tb_company_property where typeid='t000000' and cid='ALFRZMU' GROUP BY dictvalue limit 1 ) limit 1) as service,
+        (select cname from tb_dept_user where uid=(select dictvalue from tb_company_property where typeid='t000000' and cid=tcc.cid GROUP BY dictvalue limit 1 ) limit 1) as service,
         ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' LIMIT 1 ) AS companyLevel,
         tcl.authid
         FROM
