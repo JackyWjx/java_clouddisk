@@ -39,10 +39,10 @@ public interface TbProductPriceMapper {
     /**
      * 修改产品价格报价
      *
-     * @param paramList
+     * @param param
      * @return
      */
-    int updateProductPrice(List<Map<String, Object>> paramList);
+    int updateProductPrices(Map<String,Object> param);
 
 
     /**
@@ -58,4 +58,20 @@ public interface TbProductPriceMapper {
      * @return
      */
     int getCount(Map<String, Object> param);
+
+
+    /**
+     * 修改时前端新添加的服务项目
+     * @param param
+     * @return
+     */
+    int addProductPrice(Map<String, Object> param);
+
+    /**
+     * 修改时如果前端删除了的服务项目
+     * @param param
+     * @return
+     */
+    int deleteProductPrice(Map<String, Object> param);
+
 }

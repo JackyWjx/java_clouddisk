@@ -88,7 +88,7 @@ public class TbProductPriceController {
                 long time = System.currentTimeMillis();
                 paramList.get(i).put("addtime", time);
                 paramList.get(i).put("updtime", time);
-                paramList.get(i).put("paraid", JzbRandom.getRandomCharCap(13));
+                paramList.get(i).put("itemid", JzbRandom.getRandomCharCap(13));
             }
                 //如果返回值大于0则表示添加成功否则添加失败
                 result = tbProductPriceService.saveProductPrice(paramList) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
@@ -113,12 +113,27 @@ public class TbProductPriceController {
         Response result;
         try {
             List<Map<String, Object>> paramList = (List) param.get("list");
-            for (int i = 0; i < paramList.size(); i++) {
+            int count;
+            if (paramList == null || paramList.size() <= 0) {
                 long time = System.currentTimeMillis();
-                paramList.get(i).put("updtime", time);
+                param.put("updtime", time);
+                param.put("status", "2");
+                count = tbProductPriceService.updateProductPrices(param);
+            } else {
+                for (int i = 0; i < paramList.size(); i++) {
+                    long time = System.currentTimeMillis();
+                    paramList.get(i).put("updtime", time);
+                    if (paramList.get(i).get("itemid") == null) {
+                        time = System.currentTimeMillis();
+                        paramList.get(i).put("addtime", time);
+                        paramList.get(i).put("updtime", time);
+                        paramList.get(i).put("itemid", JzbRandom.getRandomChar(13));
+                        tbProductPriceService.addProductPrice(paramList.get(i));
+                        //如果返回值大于0则表示修改成功否则添加失败
+                    }
+                }
             }
-                //如果返回值大于0则表示修改成功否则添加失败
-                result = tbProductPriceService.updateProductPrice(paramList) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            result = tbProductPriceService.updateProductPrice(paramList) >= 0 ? Response.getResponseSuccess() : Response.getResponseError();
 
         } catch (Exception e) {
             //打印错误信息

@@ -1,10 +1,13 @@
 package com.jzb.resource.service;
 
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.resource.dao.TbProductPriceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +52,37 @@ public class TbProductPriceService {
      * @return
      */
     public int updateProductPrice(List<Map<String, Object>> paramList) {
-        return tbProductPriceMapper.updateProductPrice(paramList);
+
+        //根据产品id查询出来所有的服务项目
+        List<Map<String, Object>> productPrice = null;
+        for (int i = 0; i < paramList.size(); i++) {
+            if (paramList != null)
+             productPrice = tbProductPriceMapper.getTbProductPrice(paramList.get(i));
+        }
+        //在修改的时候如果新添加了服务，就进行服务的添加
+          List list = new ArrayList<String>();
+        for (int i = 0; i < paramList.size(); i++) {
+            list.add(paramList.get(i).get("itemid"));
+        }
+
+        int count = 0;
+        //循环判断前端传过来删除了的服务项目
+        for (int i = 0; i < productPrice.size(); i++) {
+            if (!list.contains(productPrice.get(i).get("itemid"))) {
+                long time = System.currentTimeMillis();
+                productPrice.get(i).put("updtime", time);
+                productPrice.get(i).put("status", "2");
+               count = tbProductPriceMapper.deleteProductPrice(productPrice.get(i));
+            } else {
+                long time = System.currentTimeMillis();
+                productPrice.get(i).put("updtime", time);
+                if (paramList != null) {
+                    count = tbProductPriceMapper.deleteProductPrice(paramList.get(i));
+                }
+            }
+        }
+
+        return count;
     }
 
     /**
@@ -69,4 +102,28 @@ public class TbProductPriceService {
     public int getCount(Map<String, Object> param) {
         return tbProductPriceMapper.getCount(param);
     }
+
+    /**修改时新增数据的添加
+     *
+     * @param param
+     * @return
+     */
+    public int addProductPrice(Map<String, Object> param) {
+        return tbProductPriceMapper.addProductPrice(param);
+    }
+
+
+    public int deleteProductPrice(Map<String, Object> param) {
+       return tbProductPriceMapper.deleteProductPrice(param);
+    }
+
+    /**
+     * 如果为空全部删除
+     * @param param
+     * @return
+     */
+    public int updateProductPrices(Map<String,Object> param) {
+       return tbProductPriceMapper.updateProductPrices(param);
+    }
+
 }
