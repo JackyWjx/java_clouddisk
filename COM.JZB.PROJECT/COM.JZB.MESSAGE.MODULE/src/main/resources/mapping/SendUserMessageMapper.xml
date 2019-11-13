@@ -21,6 +21,28 @@
         <choose><when test="msgtype != null">and msgtype = #{msgtype}</when></choose>
     </select>
 
+    <!-- 查询 -->
+    <select id="queryUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from  tb_send_user_message where
+        msgtype = '4' and receiveuid = #{uid}
+        limit  #{pagesize}  offset #{pageno}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="queryUserMessageCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from  tb_send_user_message where  msgtype = '4' and receiveuid = #{uid}
+    </select>
+
+    <!--获取未读 -->
+    <select id="querySendCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from  tb_send_user_message where  status ='1' and msgtype = '4' and receiveuid = #{uid}
+    </select>
+
+    <!-- 改成已读 -->
+    <update id="updateSendCount"  parameterType="java.util.Map">
+        update  tb_send_user_message set  status = '4'  where receiveuid = #{uid} and  status = '1'
+    </update>
+
     <!-- 模糊查询 -->
     <select id="searchSendUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
         select msgid,sendid,msgtype,receiveuid,account,receivename,summary from  tb_send_user_message where status = '1'

@@ -81,6 +81,7 @@ public class SendMessageSercver {
                         }
                         dataMap.put("receiver", smsUserMap.get("photo"));
                         dataMap.put("msgtype",'1');
+                        dataMap.put("msgtag",map.get("msgtag"));
                         smsUserMap.remove("phone");
                         // 参数替换
                         Map<String, Object> paraGroupMap = MessageUtile.setUpParaByUser(listGroupTemplateMap.get("1").toString(),paraJson.get("sms").toString(),"1");
@@ -106,6 +107,7 @@ public class SendMessageSercver {
                             dataMap.put("senduid",meilUserMap.get("photo"));
                         }
                         dataMap.put("receiver", meilUserMap.get("photo"));
+                        dataMap.put("msgtag",map.get("msgtag"));
                         dataMap.put("msgtype",'2');
                         meilUserMap.remove("photo");
                         // 参数替换
@@ -132,6 +134,7 @@ public class SendMessageSercver {
                             dataMap.put("senduid",meilUserMap.get("topic"));
                         }
                         dataMap.put("receiver", meilUserMap.get("topic"));
+                        dataMap.put("msgtag",map.get("msgtag"));
                         dataMap.put("msgtype",'4');
                         meilUserMap.remove("topic");
                         // 参数替换

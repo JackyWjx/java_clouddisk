@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,63 @@ public class SendUserMessageController {
 
     @Autowired
     private SendUserMessageService service;
+
+    /**
+     * 查询
+     *
+     *  map 用户参数
+     */
+    @RequestMapping(value = "/queryUserMessage", method = RequestMethod.POST)
+    @ResponseBody
+    public Response queryUserMessage(@RequestBody Map<String, Object> map) {
+        Response response;
+        try {
+            logger.info("==============>>querySendUserMessage");
+            List<Map<String, Object>> list;
+            PageInfo info = new PageInfo();
+            info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
+            response = Response.getResponseSuccess();
+            // 获取所有信息
+            list = service.queryUserMessage(map);
+            int count = service.queryUserMessageCount(map);
+            // 获取所有未读
+            int noCount = service.querySendCount(map);
+            info.setTotal(count);
+            info.setList(list);
+            response.setPageInfo(info);
+            Map<String , Object> para =  new HashMap<>();
+            para.put("count",noCount);
+            response.setResponseEntity(para);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+    /**
+     * 查询
+     *
+     *  map 用户参数
+     */
+    @RequestMapping(value = "/upUserMessage", method = RequestMethod.POST)
+    @ResponseBody
+    public Response upUserMessage(@RequestBody Map<String, Object> map) {
+        Response response;
+        try {
+            logger.info("==============>>upUserMessage");
+            int count = service.updateSendCount(map);
+            response = Response.getResponseSuccess();
+            Map<String , Object> para =  new HashMap<>();
+            para.put("count",count);
+            response.setResponseEntity(para);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
     /**
      * 查询
      *
@@ -39,7 +97,6 @@ public class SendUserMessageController {
     public Response querySendUserMessage(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-
             logger.info("==============>>querySendUserMessage");
             List<Map<String, Object>> list;
             PageInfo info = new PageInfo();

@@ -7,6 +7,7 @@ import com.jzb.message.util.JzbSendMail;
 import com.jzb.message.util.JzbSendMsg;
 import com.jzb.message.config.MqttGateway;
 import com.jzb.message.util.JzbSendSys;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -34,9 +35,6 @@ public class SendMessage {
         try{
             dataMap.put("sendtime",System.currentTimeMillis());
             dataMap.put("status","1");
-            if(parajson.containsKey("senduid")){
-                dataMap.put("receiveuid",parajson.get("senduid").toString());
-            }
             if(parajson.containsKey("receivename")){
                 dataMap.put("receivename",parajson.get("sendname").toString());
             }
@@ -53,7 +51,7 @@ public class SendMessage {
             dataMap.put("summary",message);
         }catch (Exception e){
             JzbTools.logError(e);
-            dataMap.put("msgtype",2);
+            dataMap.put("status",2);
         }finally {
             ssmService.saveSendsUserMessage(dataMap);
         }
@@ -70,11 +68,14 @@ public class SendMessage {
             dataMap.put("msgid", msg.getItem("msgid").getString());
             boolean result = JzbSendMail.sendMime(msg);
             //发送状态
-            dataMap.put("msgtype", result ? 1 : 2);
+            dataMap.put("msgtype", 2);
             if (msg.isItem("userid")) {
                 dataMap.put("receivename", msg.getItem("userid").getString());
                 dataMap.put("receiveuid", msg.getItem("username").getString());
             }
+            dataMap.put("status", result ? '1' : '2');
+            System.out.println("emil =======>>" + msg.getItem("temp").getString());
+            dataMap.put("summary",msg.getItem("temp").getString());
             Map<String , Object> para = new HashMap<>();
             para.put("msgid",parajson.get("msgid").toString());
             para.put("sendtime",System.currentTimeMillis());
@@ -83,7 +84,7 @@ public class SendMessage {
             ssmService.updateMessageListSendStatusByMsgid(para);
         } catch (Exception e) {
             JzbTools.logError(e);
-            dataMap.put("msgtype", 2);
+            dataMap.put("status",2);
         } finally {
             // 添加日志
             ssmService.saveSendsUserMessage(dataMap);
@@ -156,11 +157,11 @@ public class SendMessage {
             dataMap.put("msgid", msg.getItem("msgid").getString());
             boolean result = JzbSendSys.sendSysMq(msg,mqttGateway);
             //发送状态
-            dataMap.put("msgtype", result ? 1 : 2);
-            if (msg.isItem("userid")) {
-                dataMap.put("receivename", msg.getItem("userid").getString());
-                dataMap.put("receiveuid", msg.getItem("username").getString());
-            }
+            dataMap.put("msgtype", 4);
+            JSONObject ujson =JSONObject.fromObject(msg.getItem("temp").getString());
+            dataMap.put("receiveuid",ujson.getString("uid"));
+            dataMap.put("status", result ? '1' : '2');
+            dataMap.put("summary",msg.getItem("temp").getString());
             Map<String , Object> para = new HashMap<>();
             para.put("msgid",parajson.get("msgid").toString());
             para.put("sendtime",System.currentTimeMillis());
@@ -169,7 +170,7 @@ public class SendMessage {
             ssmService.updateMessageListSendStatusByMsgid(para);
         } catch (Exception e) {
             JzbTools.logError(e);
-            dataMap.put("msgtype", 2);
+            dataMap.put("status",2);
         } finally {
             // 添加日志
             ssmService.saveSendsUserMessage(dataMap);

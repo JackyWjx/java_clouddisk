@@ -32,6 +32,34 @@ public class SendUserMessageService {
         return sendUserMessageMapper.querySendUserMessageCount(map);
     }
 
+    public int updateSendCount(Map<String, Object> map){
+        return sendUserMessageMapper.updateSendCount(map);
+    }
+
+    /**
+     * 查询总数
+     */
+    public int querySendCount(Map<String, Object> map){
+        return sendUserMessageMapper.querySendCount(map);
+    }
+
+    /**
+     * 查询
+     */
+    public List<Map<String, Object>> queryUserMessage(Map<String, Object> map) {
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
+        return sendUserMessageMapper.queryUserMessage(map);
+    }
+
+    /**
+     * 查询总数
+     */
+    public int queryUserMessageCount(Map<String, Object> map) {
+        return sendUserMessageMapper.queryUserMessageCount(map);
+    }
+
     /**
      * 模糊查询
      */

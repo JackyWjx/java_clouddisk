@@ -25,6 +25,24 @@ public interface SendUserMessageMapper {
     int querySendUserMessageCount(Map<String, Object> map);
 
     /**
+     * 查询
+     */
+    List<Map<String, Object>> queryUserMessage(Map<String, Object> map);
+
+    /**
+     * 查询总数
+     */
+    int queryUserMessageCount(Map<String, Object> map);
+
+    /**
+     * 查询总数
+     */
+    int querySendCount(Map<String, Object> map);
+
+
+    int updateSendCount(Map<String, Object> map);
+
+    /**
      * 模糊查询
      */
     List<Map<String, Object>> searchSendUserMessage(Map<String, Object> map);
