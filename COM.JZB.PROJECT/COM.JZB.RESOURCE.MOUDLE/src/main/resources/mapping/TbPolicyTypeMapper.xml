@@ -20,7 +20,8 @@
                 addtime,
                 upduid,
                 updtime,
-                status
+                status,
+                summary
             FROM
                 tb_policy_type
             WHERE
@@ -38,7 +39,8 @@
                 tst.addtime,
                 tst.upduid,
                 tst.updtime,
-                tst.status
+                tst.status,
+                tst.summary
             FROM
                 tb_policy_type tst
                 JOIN moth ON tst.parentid = moth.typeid
