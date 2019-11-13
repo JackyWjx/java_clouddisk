@@ -136,4 +136,15 @@ public class PlatformCompanyService {
         return result;
     }
 
+
+    /**
+     * 根据企业名称或企业cid集合获取cid合集
+     *
+     * @param param
+     * @return java.lang.String
+     * @Author: DingSC
+     */
+    public String searchCidByCidCname(Map<String, Object> param) {
+        return platMapper.searchCidByCidCname(param);
+    }
 }

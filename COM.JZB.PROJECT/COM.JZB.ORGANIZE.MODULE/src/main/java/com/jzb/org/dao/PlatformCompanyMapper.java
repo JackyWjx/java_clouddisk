@@ -36,12 +36,13 @@ public interface PlatformCompanyMapper {
      */
     List<Map<String, Object>> searchPlatformComList(Map<String, Object> param);
 
+
     /**
-     * 根据CIds获取管理员合集
+     * 根据企业名称或企业cid集合获取cid合集
      *
      * @param param
      * @return java.lang.String
      * @Author: DingSC
      */
-    String getUIdsByCIds(Map<String, Object> param);
+    String searchCidByCidCname(Map<String, Object> param);
 }
