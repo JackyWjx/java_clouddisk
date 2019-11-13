@@ -6,6 +6,7 @@
 
 
 
+
     <!--查询产品报价的总数-->
     <select id="getTbProductPriceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
          select
@@ -72,9 +73,148 @@
         group by
         a.id
         ) as num
-        </select>
+    </select>
     <!--添加产品报价表-->
     <insert id="saveProductPrice" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="item" separator=";">
+            insert into
+            tb_product_price(
+            pid,
+            pricetype,
+            itemid,
+            itemname,
+            pricedesc,
+            size,
+            unit,
+            price,
+            weight,
+            idx,
+            addtime,
+            updtime,
+            status,
+            summary
+            )values
+            (
+            <choose>
+                <when test="item.pid != null">
+                    #{item.pid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.pricetype != null">
+                    cast(#{item.pricetype} as integer),
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.itemid != null">
+                    #{item.itemid},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.itemname != null">
+                    #{item.itemname},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.pricedesc != null">
+                    #{item.pricedesc},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.size != null">
+                    cast(#{item.size} as integer),
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.unit != null">
+                    #{item.unit},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose><choose>
+            <when test="item.price != null">
+                cast(#{item.price} as integer),
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+            <choose>
+                <when test="item.weight != null">
+                    #{item.weight},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.idx != null">
+                    cast (#{item.idx} as integer),
+                </when>
+                <otherwise>
+                    (select count(1)+1 from tb_product_price),
+                </otherwise>
+            </choose>
+            #{item.addtime},
+            #{item.updtime},
+            <choose>
+                <when test="item.status != null">
+                    #{item.status},
+                </when>
+                <otherwise>
+                    1,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.summary != null">
+                    #{item.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+    <!--修改时查询数据-->
+    <select id="getTbProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        pid,
+        itemname,
+        pricedesc,
+        size,
+        unit,
+        price,
+        status,
+        itemid
+        from
+        tb_product_price
+        where
+        pid=#{pid} and status != '2'
+    </select>
+
+
+    <insert id="addProductPrice" parameterType="java.util.Map">
         insert into
         tb_product_price(
         pid,
@@ -92,146 +232,148 @@
         status,
         summary
         )values
-        <foreach collection="list" index="index" item="item" separator=",">
         (
         <choose>
-            <when test="item.pid != null">
-                #{item.pid},
+            <when test="pid != null">
+                #{pid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.pricetype != null">
-               cast(#{item.pricetype} as integer),
+            <when test="pricetype != null">
+                cast(#{pricetype} as integer),
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.itemid != null">
-                #{item.itemid},
+            <when test="itemid != null">
+                #{itemid},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.itemname != null">
-                #{item.itemname},
+            <when test="itemname != null">
+                #{itemname},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.pricedesc != null">
-                #{item.pricedesc},
+            <when test="pricedesc != null">
+                #{pricedesc},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.size != null">
-                cast(#{item.size} as integer),
+            <when test="size != null">
+                cast(#{size} as integer),
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.unit != null">
-                #{item.unit},
+            <when test="unit != null">
+                #{unit},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose><choose>
-        <when test="item.price != null">
-            cast(#{item.price} as integer),
+        <when test="price != null">
+            cast(#{price} as integer),
         </when>
         <otherwise>
             null,
         </otherwise>
-       </choose>
+    </choose>
         <choose>
-        <when test="item.weight != null">
-            #{item.weight},
-        </when>
-        <otherwise>
-            null,
-        </otherwise>
-        </choose>
-        <choose>
-            <when test="item.idx != null">
-                cast (#{item.idx} as integer),
-            </when>
-            <otherwise>
-              (select count(1)+1 from tb_product_price),
-            </otherwise>
-        </choose>
-        #{item.addtime},
-        #{item.updtime},
-        <choose>
-            <when test="item.status != null">
-                #{item.status},
+            <when test="weight != null">
+                #{weight},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
         <choose>
-            <when test="item.summary != null">
-                #{item.summary}
+            <when test="idx != null">
+                cast (#{idx} as integer),
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_product_price),
+            </otherwise>
+        </choose>
+        #{addtime},
+        #{updtime},
+        <choose>
+            <when test="status != null">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">
+                #{summary}
             </when>
             <otherwise>
                 null
             </otherwise>
         </choose>
         )
-        </foreach>
     </insert>
 
-    <!--修改产品报价表中的数据-->
-    <update id="updateProductPrice" parameterType="java.util.List">
-        <foreach collection="list" index="index" item="item" separator=";">
+
+    <update id="deleteProductPrice" parameterType="java.util.Map">
         update
         tb_product_price
         set
-        <if test="item.pricetype != null">pricetype=cast(#{item.pricetype} as integer),</if>
-        <if test="item.itemid != null">itemid=#{item.itemid},</if>
-        <if test="item.itemname != null">itemname=#{item.itemname},</if>
-        <if test="item.pricedesc != null">pricedesc=#{item.pricedesc},</if>
-        <if test="item.size != null">size=cast(#{item.size} as integer),</if>
-        <if test="item.unit != null">unit=#{item.unit},</if>
-        <if test="item.price != null">price=cast(#{item.price} as integer),</if>
-        <if test="item.weight != null">weight=#{item.weight},</if>
-        <if test="item.adduid != null">adduid=#{item.adduid},</if>
-        <if test="item.upduid != null">upduid=#{item.upduid},</if>
-        <if test="item.status != null">status=#{item.status},</if>
-        <if test="item.summary != null">summary=#{item.summary},</if>
-        <if test="item.updtime != null">updtime=#{item.updtime}</if>
+        <if test="pricetype != null">pricetype=cast(#{pricetype} as integer),</if>
+        <if test="itemname != null">itemname=#{itemname},</if>
+        <if test="pricedesc != null">pricedesc=#{pricedesc},</if>
+        <if test="size != null">size=cast(#{size} as integer),</if>
+        <if test="unit != null">unit=#{unit},</if>
+        <if test="price != null">price=cast(#{price} as integer),</if>
+        <if test="weight != null">weight=#{weight},</if>
+        <if test="adduid != null">adduid=#{adduid},</if>
+        <if test="upduid != null">upduid=#{upduid},</if>
+        <if test="status != null">status=#{status},</if>
+        <if test="summary != null">summary=#{summary},</if>
+        <if test="updtime != null">updtime=#{updtime}</if>
         where
-        pid=#{item.pid}
-        </foreach>
+        itemid = #{itemid}
     </update>
 
-    <!--修改时查询数据-->
-    <select id="getTbProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
-        select
-        pid,
-        itemname,
-        pricedesc,
-        size,
-        unit,
-        price,
-        status
-        from
-        tb_product_price
-        where
-        pid=#{pid}
-    </select>
+    <!--修改产品报价表中的数据-->
+    <update id="updateProductPrices" parameterType="java.util.Map">
+            update
+            tb_product_price
+            set
+            <if test="pricetype != null">pricetype=cast(#{pricetype} as integer),</if>
+            <if test="itemid != null">itemid=#{itemid},</if>
+            <if test="itemname != null">itemname=#{itemname},</if>
+            <if test="pricedesc != null">pricedesc=#{pricedesc},</if>
+            <if test="size != null">size=cast(#{size} as integer),</if>
+            <if test="unit != null">unit=#{unit},</if>
+            <if test="price != null">price=cast(#{price} as integer),</if>
+            <if test="weight != null">weight=#{weight},</if>
+            <if test="adduid != null">adduid=#{adduid},</if>
+            <if test="upduid != null">upduid=#{upduid},</if>
+            <if test="status != null">status=#{status},</if>
+            <if test="summary != null">summary=#{summary},</if>
+            <if test="updtime != null">updtime=#{updtime}</if>
+            where
+            pid=#{pid}
+    </update>
+    
 </mapper>
