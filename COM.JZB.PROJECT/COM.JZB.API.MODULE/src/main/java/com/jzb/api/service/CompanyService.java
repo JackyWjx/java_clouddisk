@@ -71,7 +71,7 @@ public class CompanyService {
             param.put("list", list);
             roleAuthApi.addUserRole(param);
             //创建默认角色组，资源池角色组合管理员角色组
-            saveInitRoleGroup(param);
+      //      saveInitRoleGroup(param);
 
         }
         return result;
