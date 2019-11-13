@@ -228,7 +228,7 @@ public class RoleService implements Service {
                         //获取子菜单的数据
                         List<Map<String, Object>> children = (List<Map<String, Object>>) midMap.get("children");
                         int mapSize = children == null ? 0 : children.size();
-                        if (mapSize > 1) {
+                        if (mapSize > 0) {
                             //存在子菜单，放入临时list中
                             tempList.add(children);
                         }

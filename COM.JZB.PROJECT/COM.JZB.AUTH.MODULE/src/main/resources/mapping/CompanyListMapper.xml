@@ -8,11 +8,11 @@
     <!--根据用户姓名获取id合集-->
     <select id="searchUidByUidCname" resultType="java.lang.String">
         SELECT COALESCE ( string_agg ( DISTINCT ul.uid, ',' ), '' ) AS uids FROM tb_user_list ul
-        <if test=" uids != null and uids != '' ">
+        <if test=" uids != null  ">
             INNER JOIN (SELECT regexp_split_to_table( #{uids},',' ) AS uid ) sl on sl.uid = ul.uid
         </if>
         WHERE ul.cname ~ #{value}
-
+        LIMIT #{pagesize}  OFFSET #{start}
     </select>
 
 

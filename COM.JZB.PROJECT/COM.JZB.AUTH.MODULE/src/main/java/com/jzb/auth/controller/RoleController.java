@@ -154,7 +154,7 @@ public class RoleController {
     public Response addCRMRoleMenu(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"pid", "list", "ptype", "menu"};
+            String[] str = {"pid", "list", "ptype"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 if (JzbDataType.isCollection(param.get("list"))) {
                     Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
