@@ -9,13 +9,36 @@
         select COALESCE( string_agg ( DISTINCT cid, ',' ), '' ) AS cids,
         COALESCE ( string_agg ( DISTINCT manager, ',' ), '' ) AS uids
         FROM tb_platform_org WHERE status = '1'
-        <if test=" uids != null and uids != '' ">
+        <if test=" uids != null  ">
             and manager in ( SELECT regexp_split_to_table( #{uids},',' ) )
         </if>
     </select>
     <!--开发者列表查询-->
     <select id="searchAppDeveloper" resultType="java.util.Map">
-
+        select oa.cid,ad.uid
+        from tb_app_developer ad
+        left join tb_org_application oa on oa.appid = ad.appid
+        where 1=1
+        <if test=" cid != null and cid != '' ">
+            and oa.cid = #{cid}
+        </if>
+        <if test=" uids != null  ">
+           and  ad.uid in (SELECT regexp_split_to_table( #{uids},',' ) )
+        </if>
+        order by cid,uid LIMIT #{pagesize}  OFFSET #{start}
+    </select>
+    <!--开发者列表查询count-->
+    <select id="searchAppDeveloperCount" resultType="java.lang.Integer">
+        select count(1)
+        from tb_app_developer ad
+        left join tb_org_application oa on oa.appid = ad.appid
+        where 1=1
+        <if test=" cid != null and cid != '' ">
+            and oa.cid = #{cid}
+        </if>
+        <if test=" uids != null  ">
+            and   ad.uid in (SELECT regexp_split_to_table( #{uids},',' ) )
+        </if>
     </select>
     <!--根据cid和集获取管理员信息-->
     <select id="getComAndMan" resultType="java.util.Map">
@@ -29,4 +52,5 @@
             and cid = #{cid}
         </if>
     </select>
+
 </mapper>
