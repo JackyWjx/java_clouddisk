@@ -11,6 +11,7 @@ import com.jzb.base.tree.JzbTree;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 
+import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.message.MessageApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
@@ -43,6 +44,8 @@ public class CompanyService {
     @Autowired
     private DeptMapper deptMapper;
 
+    @Autowired
+    private AuthApi authApi;
 
     /**
      * 查询redis缓存企业对象
@@ -413,35 +416,26 @@ public class CompanyService {
      *
      * @author kuangbin
      */
-    public List<Response> getApplyList(Map<String, Object> param) {
-        List<Response> result;
-        try {
-            // 设置分页数
-            param = setPageSize(param);
-            param.put("status", 1);
-            param.put("reqtype", "1");
-            // 查询所有的被邀请人ID
-            List<Map<String, Object>> uidList = companyMapper.queryApplyList(param);
-            result = new ArrayList<>(uidList.size());
-            if (uidList != null && uidList.size() != 0) {
-                for (int i = 0; i < uidList.size(); i++) {
-                    Map<String, Object> applyMap = uidList.get(i);
-                    // 获取对应的用户ID
-                    String uid = JzbDataType.getString(applyMap.get("resuid"));
+    public List<Map<String, Object>> getApplyList(Map<String, Object> param) {
+        List<Map<String, Object>> result;
+        // 设置分页数
+        param = setPageSize(param);
+        param.put("status", 1);
+        param.put("reqtype", "1");
+        // 查询所有的被邀请人ID
+        result = companyMapper.queryApplyList(param);
+        if (!JzbDataType.isEmpty(result)) {
+            for (int i = 0; i < result.size(); i++) {
+                Map<String, Object> applyMap = result.get(i);
+                // 参数中加入uid信息
+                param.put("uid", JzbDataType.getString(applyMap.get("resuid")));
 
-                    // 参数中加入uid信息
-                    param.put("uid", uid);
+                // 获取缓存中的用户信息
+                Response userData = userRedisServiceApi.getCacheUserInfo(param);
 
-                    // 获取缓存中的用户信息
-                    Response userData = userRedisServiceApi.getCacheUserInfo(param);
-
-                    // 将查询出的结果加入返回值中
-                    result.add(userData);
-                }
+                // 将查询出的结果加入返回值中
+                applyMap.putAll((Map<String, Object>) userData.getResponseEntity());
             }
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
-            result = new ArrayList<>();
         }
         return result;
     }
@@ -452,33 +446,27 @@ public class CompanyService {
      *
      * @author kuangbin
      */
-    public List<Response> getInviteeList(Map<String, Object> param) {
-        List<Response> result;
-        try {
-            // 设置分页数
-            param = setPageSize(param);
-            param.put("status", 2);
-            param.put("reqtype", "2");
-            // 查询所有的被邀请人ID
-            List<Map<String, Object>> uidList = companyMapper.queryApplyList(param);
-            result = new ArrayList<>(uidList.size());
-            if (uidList != null && uidList.size() != 0) {
-                for (int i = 0; i < uidList.size(); i++) {
-                    Map<String, Object> applyMap = uidList.get(i);
-                    // 获取对应的用户ID
-                    String uid = JzbDataType.getString(applyMap.get("resuid"));
-                    // 参数中加入uid信息
-                    param.put("uid", uid);
+    public List<Map<String, Object>> getInviteeList(Map<String, Object> param) {
+        List<Map<String, Object>> result;
+        // 设置分页数
+        param = setPageSize(param);
+        param.put("status", 2);
+        param.put("reqtype", "2");
+        // 查询所有的被邀请人ID
+        result = companyMapper.queryApplyList(param);
+        if (!JzbDataType.isEmpty(result)) {
+            for (int i = 0; i < result.size(); i++) {
+                Map<String, Object> applyMap = result.get(i);
+                // 获取对应的用户ID
+                String uid = JzbDataType.getString(applyMap.get("resuid"));
+                // 参数中加入uid信息
+                param.put("uid", uid);
 
-                    // 获取缓存中的用户信息
-                    Response userData = userRedisServiceApi.getCacheUserInfo(param);
-                    // 将查询出的结果加入返回值中
-                    result.add(userData);
-                }
+                // 获取缓存中的用户信息
+                Response userData = authApi.getUserInfo(param);
+                // 将查询出的结果加入返回值中
+                applyMap.putAll((Map<String, Object>) userData.getResponseEntity());
             }
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
-            result = new ArrayList<>();
         }
         return result;
     }

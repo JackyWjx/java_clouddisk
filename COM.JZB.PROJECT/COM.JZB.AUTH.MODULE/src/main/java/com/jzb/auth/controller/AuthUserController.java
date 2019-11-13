@@ -82,8 +82,9 @@ public class AuthUserController {
                     userRedisApi.cacheUserInfo(resuMap);
                 }
             }
+            Response res = userRedisApi.getCacheUserInfo(resuMap);
             response = Response.getResponseSuccess(userInfo);
-            response.setResponseEntity(resuMap);
+            response.setResponseEntity(res.getResponseEntity());
         } catch (Exception e) {
             JzbTools.logError(e);
             response = Response.getResponseError();

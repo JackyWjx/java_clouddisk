@@ -523,7 +523,7 @@ public class CompanyController {
                 count = companyService.getApplyCount(param);
             }
             // 返回企业下所有的申请成员
-            List<Response> applyList = companyService.getApplyList(param);
+            List<Map<String, Object>> applyList = companyService.getApplyList(param);
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
@@ -556,7 +556,7 @@ public class CompanyController {
                 count = companyService.getInviteeCount(param);
             }
             // 返回企业下所有的查询被邀请成员
-            List<Response> applyList = companyService.getInviteeList(param);
+            List<Map<String, Object>> applyList = companyService.getInviteeList(param);
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
