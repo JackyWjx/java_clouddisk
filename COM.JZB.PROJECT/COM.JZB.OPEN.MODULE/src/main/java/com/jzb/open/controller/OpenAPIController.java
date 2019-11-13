@@ -8,7 +8,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.open.api.org.OpenAuthApi;
 import com.jzb.open.api.org.OpenOrgApi;
-import com.jzb.open.api.org.UserRedisApi;
+import com.jzb.open.api.redis.UserRedisServiceApi;
 import com.jzb.open.service.OpenAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +45,7 @@ public class OpenAPIController {
      * 调用用户信息Redisapi接口对象
      */
     @Autowired
-    private UserRedisApi userRedisApi;
+    private UserRedisServiceApi userRedisApi;
 
     /**
      * 创建文档类型

@@ -1,6 +1,7 @@
 package com.jzb.open.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
  * 数据库处理对象
  */
 @Mapper
+@Repository
 public interface OpenAPIMapper {
     /**
      * 创建文档类型

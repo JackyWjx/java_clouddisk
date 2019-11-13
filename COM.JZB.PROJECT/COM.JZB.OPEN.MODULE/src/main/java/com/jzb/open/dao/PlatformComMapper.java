@@ -36,6 +36,15 @@ public interface PlatformComMapper {
     List<Map<String, Object>> searchAppDeveloper(Map<String, Object> param);
 
     /**
+     * 开发者列表查询count
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int searchAppDeveloperCount(Map<String, Object> param);
+
+    /**
      * 根据cid和集获取管理员信息
      *
      * @param param

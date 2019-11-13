@@ -95,13 +95,21 @@ public class PlatformComController {
             if (page > 0 && rows > 0) {
                 param.put("start", rows * (page - 1));
                 param.put("pagesize", rows);
+
+                if (!JzbTools.isEmpty(param.get("value"))) {
+                    //根据姓名或去用户id
+                    Response userRes = companyApi.searchUidByUidCname(param);
+                    String uIds = JzbDataType.getString(userRes.getResponseEntity());
+                    param.put("uids", uIds);
+                }
+
                 List<Map<String, Object>> deList = platformComService.searchAppDeveloper(param);
                 result = Response.getResponseSuccess(userInfo);
                 Info = new PageInfo();
                 Info.setList(deList);
                 int count = JzbDataType.getInteger(param.get("count"));
                 if (count == 0) {
-                    int size = 0;
+                    int size = platformComService.searchAppDeveloperCount(param);
                     Info.setTotal(size > 0 ? size : deList.size());
                 }
                 result.setPageInfo(Info);
@@ -115,4 +123,57 @@ public class PlatformComController {
         }
         return result;
     }
+
+
+    /**
+     * 产品列表审批查询
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/searchApplicationVerify", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchApplicationVerify(@RequestBody Map<String, Object> param) {
+        Response result;
+        PageInfo Info;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            int rows = JzbDataType.getInteger(param.get("pagesize"));
+            int page = JzbDataType.getInteger(param.get("pageno"));
+            if (page > 0 && rows > 0) {
+                param.put("pagesize", rows);
+                param.put("start", rows * (page - 1));
+
+                //如果传入的value值不为空
+                if (!JzbTools.isEmpty(param.get("value"))) {
+                    //根据value取单位cid
+                    Response comRes = null;
+                    //根据value取用户uid
+                    Response userRes = companyApi.searchUidByUidCname(param);
+                    String uIds = JzbDataType.getString(userRes.getResponseEntity());
+                    param.put("uids", uIds);
+                }
+
+                List<Map<String, Object>> AppVList = null;
+                result = Response.getResponseSuccess(userInfo);
+                Info = new PageInfo();
+                Info.setList(AppVList);
+                int count = JzbDataType.getInteger(param.get("count"));
+                if (count == 0) {
+                    int size = 0;
+                    Info.setTotal(size > 0 ? size : AppVList.size());
+                }
+                result.setPageInfo(Info);
+            } else {
+                result = Response.getResponseError();
+            }
+
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 }
