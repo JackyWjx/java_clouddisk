@@ -32,8 +32,14 @@
         )
         and cl.status = '1'
     </select>
-    <!--根据CIds获取管理员合集-->
-    <select id="getUIdsByCIds" resultType="java.lang.String">
-
+    <!--根据企业名称或企业cid集合获取cid合集-->
+    <select id="searchCidByCidCname" resultType="java.lang.String">
+        SELECT COALESCE ( string_agg ( DISTINCT tcl.cid, ',' ), '' ) AS cids FROM tb_company_list tcl
+        <if test=" cids != null  ">
+            INNER JOIN (SELECT regexp_split_to_table( #{cids},',' ) AS cid ) sl on sl.cid = tcl.cid
+        </if>
+        WHERE tcl.cname ~ #{value}
+        LIMIT #{pagesize}  OFFSET #{start}
     </select>
+
 </mapper>
