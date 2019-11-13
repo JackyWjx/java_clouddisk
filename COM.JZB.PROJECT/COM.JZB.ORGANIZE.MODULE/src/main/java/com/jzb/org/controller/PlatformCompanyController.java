@@ -3,7 +3,6 @@ package com.jzb.org.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
-import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.CompanyControllerApi;
 import com.jzb.org.api.open.PlatformComApi;
@@ -87,6 +86,32 @@ public class PlatformCompanyController {
                 result = Response.getResponseError();
             }
 
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /**
+     * 根据企业名称或企业cid集合获取cid合集
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/searchCidByCidCname", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchCidByCidCname(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("start", 0);
+            param.put("pagesize", 100);
+            String deList = platService.searchCidByCidCname(param);
+            result = Response.getResponseSuccess(userInfo);
+            result.setResponseEntity(deList);
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

@@ -311,6 +311,8 @@ public class CompanyService {
             // 加入系统名称
             param.put("systemname", JzbDataType.getString(map.get("systemname")));
             deptMapper.insertCompanySysConfig(param);
+            //将企业信息加入到Rides中
+            getEnterpriseDept(param);
         }
         Map<String, Object> result = new HashMap<>(2);
         result.put("message", message);
