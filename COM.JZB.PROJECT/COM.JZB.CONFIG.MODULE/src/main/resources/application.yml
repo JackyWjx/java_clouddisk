@@ -1,5 +1,5 @@
 server:
-  port: 8506
+  port: 7506
 spring:
   application:
     name: jzb-config
@@ -34,7 +34,7 @@ mybatis:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8101/eureka/
+      defaultZone: http://localhost:7101/eureka/
   instance:
     prefer-ip-address: true
 
