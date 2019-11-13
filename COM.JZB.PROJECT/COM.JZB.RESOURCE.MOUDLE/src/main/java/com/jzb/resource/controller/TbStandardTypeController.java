@@ -179,12 +179,12 @@ public class TbStandardTypeController {
                 JSONObject node = new JSONObject();
                 node.put("typeid", map.get("typeid").toString());
                 //node.put("typecode", map.get("typecode").toString());
-                if (map.get("cname").toString() != null) {
+                if (map.get("cname") != null) {
                     node.put("cname", map.get("cname").toString());
                 }
                // node.put("typedesc", map.get("typedesc").toString());
                // node.put("adduid", map.get("adduid").toString());
-                if (map.get("summary").toString() != null) {
+                if (map.get("summary") != null) {
                     node.put("summary", map.get("summary").toString());
                 }
                 node.put("parentid", parentId);
