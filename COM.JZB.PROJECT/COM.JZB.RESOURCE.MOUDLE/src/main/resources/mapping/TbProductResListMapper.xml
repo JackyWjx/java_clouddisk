@@ -345,7 +345,7 @@
             <if test="item.datasize !='' and item.datasize !=null">datasize=#{item.datasize},</if>
             <if test="item.ouid !='' and item.ouid !=null">ouid=#{item.ouid},</if>
             <if test="item.updtime !='' and item.updtime !=null">updtime=#{item.updtime}</if>
-            where prodid=#{item.prodid}
+            where paraid=#{item.paraid}
         </foreach>
     </update>
 
