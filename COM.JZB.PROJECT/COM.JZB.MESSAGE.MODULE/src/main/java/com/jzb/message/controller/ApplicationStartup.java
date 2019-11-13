@@ -148,7 +148,7 @@ public class ApplicationStartup implements ApplicationRunner {
         sysThread.start();
         List<SendMessageThread> sysList = new ArrayList<>();
         sysList.add(sysThread);
-        SEND_MESSAGE_POOL.put("sys", sysList);
+        SEND_MESSAGE_POOL.put("SYS", sysList);
 
     }
 }
