@@ -9,3 +9,4 @@ spring:
       backup:
         enable: true
         fallbackLocation: ./config/application-release.yml
+       
