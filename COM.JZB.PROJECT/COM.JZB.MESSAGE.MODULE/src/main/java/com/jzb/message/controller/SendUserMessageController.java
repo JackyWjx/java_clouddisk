@@ -5,6 +5,9 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.message.service.SendUserMessageService;
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,10 @@ public class SendUserMessageController {
             response = Response.getResponseSuccess();
             // 获取所有信息
             list = service.queryUserMessage(map);
+            for (int i = 0 ; i < list.size() ;i++){
+                Map<String , Object> summaryMap  = JSONObject.fromObject( list.get(i).get("summary").toString());
+                list.get(i).put("summary",summaryMap);
+            }
             int count = service.queryUserMessageCount(map);
             // 获取所有未读
             int noCount = service.querySendCount(map);
