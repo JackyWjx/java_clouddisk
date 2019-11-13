@@ -66,6 +66,9 @@ public class TbPolicyTypeService {
                 node.put("idx", record.get("idx").toString());
             }
 
+            if (record.get("summary").toString() != null) {
+                node.put("summary", record.get("summary").toString());
+            }
             node.put("parentid", parentId);
             node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
             node.put("children", new JSONArray());
