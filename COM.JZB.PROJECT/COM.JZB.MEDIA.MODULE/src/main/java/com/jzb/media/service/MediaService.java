@@ -52,8 +52,9 @@ public class MediaService {
                 String fileFullName = MediaProperties.getImageadderss() +  filePath + "." + fileFormat;
                 File resourceInfoFile = new File(fileFullName);
                 resourceInfoFile.getParentFile().mkdirs();
-                resourceInfoFile.setExecutable(true);
                 file.transferTo(resourceInfoFile);
+                resourceInfoFile.setExecutable(true, false);
+                resourceInfoFile.setReadable(true, false);
                 filePath = filePath.replace("\\","/");
                 // 添加文件信息
                 map.put("fileid", fileId);
