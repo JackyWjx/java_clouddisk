@@ -32,4 +32,18 @@ public interface TbScoreActivityListMapper {
      * @return
      */
     Integer getCount(Map<String, Object> paramap);
+
+    /**
+     * 积分列表-新建活动
+     * @param paramp
+     * @return
+     */
+    int addActivityList(Map<String, Object> paramp);
+
+    /**
+     * 积分列表-新建活动-新建图片
+     * @param photoList
+     * @return
+     */
+    int insertActivityPhoto(List<Map<String, Object>> photoList);
 }

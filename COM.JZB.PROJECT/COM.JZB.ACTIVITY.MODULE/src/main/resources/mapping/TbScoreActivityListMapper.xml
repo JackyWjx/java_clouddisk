@@ -24,11 +24,84 @@
            tb_activity_list
         where
             uid=#{uid}
+        <if test="startTime != null and startTime != '' ">
+            and addtime >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and addtime &lt;= #{endTime}
+        </if>
         order by
         id desc
             LIMIT #{pagesize}
             OFFSET #{pageno}
 
     </select>
+
+    <!--新建活动-->
+    <insert id="addActivityList" parameterType="java.util.Map" >
+        insert into
+        tb_activity_list(actid,cname,cid,cdid,context,uid,addtime,status)
+        values
+        (
+        #{actid},
+        #{cname},
+        #{cid},
+        #{cdid},
+        <choose>
+            <when test="context != null and context != '' ">
+                 #{context},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        <choose>
+            <when test="status != null and status != ''">
+              #{status},
+            </when>
+            <otherwise>
+                '1'
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--新建活动-新建图片-->
+    <insert id="insertActivityPhoto" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="item" separator=";">
+        insert into
+        tb_activity_photo(actid, fileid, photo, idx, adduid, addtime, status, summary)
+        values
+            (
+            #{item.actid},
+            #{item.fileid},
+            <if test="item.photo != null and item.photo != ''">
+               #{item.photo},
+            </if>
+            <choose>
+                <when test="item.idx != null and item.idx != ''">
+                    #{item.idx},
+                </when>
+                <otherwise>
+                    (select count (1) + 1 from tb_activity_photo),
+                </otherwise>
+            </choose>
+            #{item.adduid},
+            #{item.addtime},
+            #{item.status},
+            <choose>
+                <when test="item.summary!=null and item.summary!=''">
+                  #{item.summary}
+                </when>
+                <otherwise>
+                    NULL
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+
+    </insert>
 
 </mapper>
