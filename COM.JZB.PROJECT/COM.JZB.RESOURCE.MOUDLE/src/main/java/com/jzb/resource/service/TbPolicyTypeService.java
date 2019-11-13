@@ -66,7 +66,7 @@ public class TbPolicyTypeService {
                 node.put("idx", record.get("idx").toString());
             }
 
-            if (record.get("summary").toString() != null) {
+            if (record.get("summary") != null) {
                 node.put("summary", record.get("summary").toString());
             }
             node.put("parentid", parentId);
