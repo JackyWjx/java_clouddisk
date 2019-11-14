@@ -81,15 +81,14 @@ public class SendUserMessageController {
     public Response upUserMessage(@RequestBody Map<String, Object> map) {
         Response response;
         try {
-            logger.info("==============>>upUserMessage");
+            logger.info("==============>>upUserMessage"+map.toString());
+            response = Response.getResponseSuccess((Map)map.get("userinfo"));
             List<String> list = (List<String>) map.get("list");
             map.clear();
             map.put("msgid",list.toString().replace("[","").replace("]",""));
             int count = service.updateSendCount(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
-            Map<String , Object> para =  new HashMap<>();
-            para.put("count",count);
-            response.setResponseEntity(para);
+            map.put("count",count);
+            response.setResponseEntity(map);
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.getResponseError();
@@ -110,10 +109,10 @@ public class SendUserMessageController {
         try {
             logger.info("==============>>upUserMessage");
             List<String> list = (List<String>) map.get("list");
+            response = Response.getResponseSuccess((Map)map.get("userinfo"));
             map.clear();
             map.put("msgid",list.toString().replace("[","").replace("]",""));
             int count = service.deleteSend(map);
-            response = Response.getResponseSuccess((Map)map.get("userinfo"));
             Map<String , Object> para =  new HashMap<>();
             para.put("count",count);
             response.setResponseEntity(para);
