@@ -100,7 +100,7 @@ public class MediaController {
         Map< String , Object > result =  new HashMap<>();
         try{
             Map< String , Object >  map=   mediaService.saveMedia(upfile,"udetoir");
-            result.put("url",map.get("filepath").toString());
+            result.put("url",MediaProperties.getUeditoraddress()+map.get("filepath").toString());
             result.put("state","SUCCESS");
             result.put("code",0);
             result.put("type",map.get("fileFormat"));

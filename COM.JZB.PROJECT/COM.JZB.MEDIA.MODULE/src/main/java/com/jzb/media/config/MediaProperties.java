@@ -18,10 +18,10 @@ public class MediaProperties {
      */
     private static String imageaddress;
 
-//    /**
-//     * 图片全路径
-//     */
-//    private static String ueditoraddress;
+    /**
+     * 图片全路径
+     */
+    private static String ueditoraddress;
 
 
 
@@ -35,15 +35,14 @@ public class MediaProperties {
         this.imageaddress = imageaddress;
     }
 
+    public static String getUeditoraddress() {
+        JzbTools.logInfo("========>>","getUeditoraddress",ueditoraddress);
+        return ueditoraddress;
+    }
 
-//    public static String getUeditoraddress() {
-//        JzbTools.logInfo("========>>","getUeditoraddress",ueditoraddress);
-//        return ueditoraddress;
-//    }
-//
-//    public  void setUeditoraddress(String ueditoraddress) {
-//        JzbTools.logInfo("========>>","setUeditoraddress",ueditoraddress);
-//        this.ueditoraddress = ueditoraddress;
-//    }
+    public  void setUeditoraddress(String ueditoraddress) {
+        JzbTools.logInfo("========>>","setUeditoraddress",ueditoraddress);
+        this.ueditoraddress = ueditoraddress;
+    }
 }
 
