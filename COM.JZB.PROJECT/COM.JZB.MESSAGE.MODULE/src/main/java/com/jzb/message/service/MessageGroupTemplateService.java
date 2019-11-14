@@ -1,6 +1,7 @@
 package com.jzb.message.service;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.message.dao.MessageGroupTemplateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,17 @@ public class MessageGroupTemplateService {
             map.put("addtime",map.get("ouid"));
         }
         map.put("addtime",System.currentTimeMillis());
+        int msgtype = JzbDataType.getInteger(map.get("msgtype"));
+        if(msgtype == 1){
+            map.put("tempid", "SMS_"+ JzbRandom.getRandom(7));
+            map.put("groupid", "SMS_"+ JzbRandom.getRandom(7));
+        }else if(msgtype == 2){
+            map.put("tempid", "MEIL_"+ JzbRandom.getRandom(6));
+            map.put("groupid", "MEIL_"+ JzbRandom.getRandom(6));
+        }else if(msgtype == 4){
+            map.put("tempid", "SYS_"+ JzbRandom.getRandom(7));
+            map.put("groupid", "SYS_"+ JzbRandom.getRandom(7));
+        }
         return messageGroupTemplateMapper.insertMsgGroupTemplate(map);
     }
 
