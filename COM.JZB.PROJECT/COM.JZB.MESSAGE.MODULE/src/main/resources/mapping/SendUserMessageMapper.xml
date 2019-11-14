@@ -23,7 +23,7 @@
 
     <!-- 查询 -->
     <select id="queryUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
-       SELECT
+            SELECT
 	tsum.msgid,
 	tsum.msgtype,
 	tsum.receiveuid,
@@ -36,9 +36,9 @@ FROM
 	INNER JOIN tb_message_list tml ON tsum.msgid = tml.msgid
 WHERE
 	tsum.msgtype = '4'
-	AND tsum.receiveuid = #{uid}
-	LIMIT 10 OFFSET 0
-        limit  #{pagesize}  offset #{pageno}
+	AND tsum.receiveuid = 'RCBHPFQILATZ'
+	ORDER BY tml.addtime DESC
+            limit  #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
