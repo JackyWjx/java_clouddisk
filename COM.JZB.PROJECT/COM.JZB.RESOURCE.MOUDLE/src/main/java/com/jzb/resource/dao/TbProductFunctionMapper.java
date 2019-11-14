@@ -45,4 +45,19 @@ public interface TbProductFunctionMapper {
      * @return
      */
     int getCount(Map<String, Object> param);
+
+    /**
+     * 根据id查询这个功能存不存在
+     *
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getProductFunctions(Map<String, Object> param);
+
+    /**
+     * 根据id进行功能数据的删除
+     * @param param
+     * @return
+     */
+    int updateProductFunctions(Map<String, Object> param);
 }

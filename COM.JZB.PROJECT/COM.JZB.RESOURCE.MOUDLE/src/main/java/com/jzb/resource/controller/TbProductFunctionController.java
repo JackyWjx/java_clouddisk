@@ -8,11 +8,9 @@ import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
-import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.AdvertService;
 import com.jzb.resource.service.TbProductFunctionService;
-import com.jzb.resource.util.PageConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +31,10 @@ public class TbProductFunctionController {
 
     @Autowired
     private AdvertService advertService;
+
     /**
      * 查询产品功能表对应的资源产品
+     *
      * @param param
      * @return
      */
@@ -48,7 +48,7 @@ public class TbProductFunctionController {
                 result = Response.getResponseError();
             } else {
                 // 设置分页参数
-               param = advertService.setPageSize(param);
+                param = advertService.setPageSize(param);
 
                 List<Map<String, Object>> list = tbProductFunctionService.getTbProductFunction(param);
 
@@ -72,12 +72,13 @@ public class TbProductFunctionController {
 
     /**
      * 添加产品功能
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/saveTbProductFunction",method = RequestMethod.POST)
+    @RequestMapping(value = "/saveTbProductFunction", method = RequestMethod.POST)
     @CrossOrigin
-    public Response saveTbProductFunction(@RequestBody(required = false) Map<String,Object> param) {
+    public Response saveTbProductFunction(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
         try {
             //获取map中的list
@@ -90,14 +91,14 @@ public class TbProductFunctionController {
                 //paramList.get(i).put("funid", JzbRandom.getRandomCharCap(15));
             }
 
-              int count = tbProductFunctionService.saveTbProductFunction(paramList);
-              //如果返回值大于0，表示添加成功,否则就是添加失败
-                if (count > 0) {
-                   // Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                    result = Response.getResponseSuccess();
-                } else {
-                    result = Response.getResponseSuccess();
-                }
+            int count = tbProductFunctionService.saveTbProductFunction(paramList);
+            //如果返回值大于0，表示添加成功,否则就是添加失败
+            if (count > 0) {
+                // Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess();
+            } else {
+                result = Response.getResponseSuccess();
+            }
         } catch (Exception e) {
             //错误信息
             JzbTools.logError(e);
@@ -108,12 +109,13 @@ public class TbProductFunctionController {
 
     /**
      * 修改产品功能
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/updateTbProductFunction",method = RequestMethod.POST)
+    @RequestMapping(value = "/updateTbProductFunction", method = RequestMethod.POST)
     @CrossOrigin
-    public Response updateTbProductFunction(@RequestBody Map<String,Object> param) {
+    public Response updateTbProductFunction(@RequestBody Map<String, Object> param) {
         Response result;
         try {
             //获取map中的list
@@ -140,7 +142,6 @@ public class TbProductFunctionController {
     }
 
 
-
     /**
      * 点击修改时查询产品功能表中的数据
      *
@@ -155,7 +156,7 @@ public class TbProductFunctionController {
             List<Map<String, Object>> list = tbProductFunctionService.getProductFunction(param);
 
             // Result JSON
-            List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
+            List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 
             // record temp json
             JSONObject recordJson = new JSONObject();
@@ -195,18 +196,18 @@ public class TbProductFunctionController {
                     result.add(node);
                     recordJson.put(map.get("funid").toString(), node);
 
-                }else if (recordJson.containsKey(parentId)) {
+                } else if (recordJson.containsKey(parentId)) {
                     // add children
                     recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
                     recordJson.put(map.get("funid").toString(), node);
                     // Unknown relation node
-                }else {
+                } else {
                     String nodeId = map.get("funid").toString();
                     if (unknownRecord.containsKey(parentId)) {
                         // add children
                         unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
                         recordJson.put(nodeId, node);
-                    }else {
+                    } else {
                         // find subnode
                         for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
                             JSONObject tempNode = (JSONObject) entry.getValue();
@@ -245,21 +246,49 @@ public class TbProductFunctionController {
             for (int i = 0; i < result.size(); i++) {
                 if (result.get(i).get("funtype").equals("1")) {
                     list1.add(result.get(i));
-                } else if (result.get(i).get("funtype").equals("2")){
+                } else if (result.get(i).get("funtype").equals("2")) {
                     list2.add(result.get(i));
                 }
             }
-            map.put("pc",list1);
-            map.put("app",list2);
+            map.put("pc", list1);
+            map.put("app", list2);
             response.setResponseEntity(map);
 
 
-          //response.setResponseEntity(result);
+            //response.setResponseEntity(result);
         } catch (Exception e) {
             JzbTools.logError(e);
             response = Response.getResponseError();
         }
 
         return response;
+    }
+
+    /**
+     * 产品功能pc端和移动端的删除
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/delProductFunction",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response delProductFunction(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            List<Map<String, Object>> list = tbProductFunctionService.getProductFunctions(param);
+            //如果这个功能不存在，就说明前端还没有添加过来，那就在前端用js删除就可以了
+            if (list == null || list.size() <= 0) {
+                result = Response.getResponseSuccess();
+                result.setResponseEntity("这个功能没有添加过来");
+            } else {
+                int count = tbProductFunctionService.updateProductFunctions(param);
+                result = count > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
     }
 }
