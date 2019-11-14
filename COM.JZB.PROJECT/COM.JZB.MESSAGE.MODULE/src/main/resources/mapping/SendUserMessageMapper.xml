@@ -53,12 +53,18 @@ WHERE
 
     <!-- 改成已读 -->
     <update id="updateSendCount"  parameterType="java.util.Map">
-        update  tb_send_user_message set  status = '4'  where msgid in (#{msgid}) and  status = '1'
+        update  tb_send_user_message set  status = '4'  where    msgtype  = '4' and msgid in
+        <foreach item="msgid" collection="list" open="(" separator="," close=")">
+            (#{msgid})
+        </foreach>
     </update>
 
     <!-- 改成已读 -->
     <delete id="deleteSend"  parameterType="java.util.Map">
-        delete  from  tb_send_user_message   where msgid in (#{msgid})
+        delete  from  tb_send_user_message   where msgid in
+        <foreach item="msgid" collection="list" open="(" separator="," close=")">
+            (#{msgid})
+        </foreach>
     </delete>
 
     <!-- 模糊查询 -->
