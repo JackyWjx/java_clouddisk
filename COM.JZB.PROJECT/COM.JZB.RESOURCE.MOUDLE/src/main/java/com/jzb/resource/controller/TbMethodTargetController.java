@@ -30,7 +30,7 @@ public class TbMethodTargetController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(TbMethodDataController.class);
+    private final static Logger logger = LoggerFactory.getLogger(TbMethodTargetController.class);
 
     /**
      * 获取方法论目标
