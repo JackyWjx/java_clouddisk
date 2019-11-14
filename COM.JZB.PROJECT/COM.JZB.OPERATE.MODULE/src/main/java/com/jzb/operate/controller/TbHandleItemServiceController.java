@@ -164,7 +164,7 @@ public class TbHandleItemServiceController {
             // 根据项目id去重
             for(int i = 0 ;i <list.size() ;i++){
                 for(int j = i+1 ;j < list.size();j++ ){
-                    if(list.get(i).get("projectid") != null && list.get(i).get("projectid") != "" ||  list.get(j).get("projectid") != null && list.get(j).get("projectid") != ""){
+                    if(list.get(i).get("projectid") != null && list.get(i).get("projectid") != "" &&  list.get(j).get("projectid") != null && list.get(j).get("projectid") != ""){
                         // 去重
                         if(list.get(i).get("projectid").equals(list.get(j).get("projectid"))){
                             list.remove(i);
