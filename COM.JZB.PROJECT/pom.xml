@@ -17,13 +17,13 @@
         <version>2.0.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
     </properties>
-
 
     <dependencyManagement>
         <dependencies>
@@ -39,6 +39,7 @@
 
     <dependencies>
     </dependencies>
+
     <modules>
         <module>COM.JZB.API.MODULE</module>
         <module>COM.JZB.AUTH.MODULE</module>
