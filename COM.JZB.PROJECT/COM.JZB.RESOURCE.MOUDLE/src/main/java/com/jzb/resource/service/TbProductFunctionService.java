@@ -1,5 +1,6 @@
 package com.jzb.resource.service;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.resource.dao.TbProductFunctionMapper;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
@@ -39,7 +40,8 @@ public class TbProductFunctionService {
 
             String funid = JzbRandom.getRandomChar(15);
             if (paramList.get(i).get("funid") != null && paramList.get(i).get("funid") != "") {
-                funid = paramList.get(i).get("funid").toString();
+                funid = paramList.get(i).get("funid").toString()+"00";
+                funid=funid.substring(0, 15);
             }
             paramList.get(i).put("funid", funid);
             paramList.get(i).put("parentid", "000000000000000");
@@ -67,7 +69,8 @@ public class TbProductFunctionService {
         for (int i = 0; i < paramList.size(); i++) {
             String funid = JzbRandom.getRandomChar(15);
             if (paramList.get(i).get("funid") != null && paramList.get(i).get("funid") != "") {
-                funid = paramList.get(i).get("funid").toString();
+                funid = paramList.get(i).get("funid").toString()+"00";
+                funid=funid.substring(0, 15);
             }
             paramList.get(i).put("funid", funid);
             paramList.get(i).put("parentid", paremtid);
@@ -113,5 +116,24 @@ public class TbProductFunctionService {
      */
     public int getCount(Map<String, Object> param) {
         return tbProductFunctionMapper.getCount(param);
+    }
+
+    /**
+     * 根据id查询这个功能存不存在
+     *
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getProductFunctions(Map<String, Object> param) {
+        return tbProductFunctionMapper.getProductFunctions(param);
+    }
+
+    /**
+     * 删除存在的功能，修改状态
+     * @param param
+     * @return
+     */
+    public int updateProductFunctions(Map<String, Object> param) {
+        return tbProductFunctionMapper.updateProductFunctions(param);
     }
 }
