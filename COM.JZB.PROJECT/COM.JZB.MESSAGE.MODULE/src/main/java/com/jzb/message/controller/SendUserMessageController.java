@@ -72,7 +72,7 @@ public class SendUserMessageController {
     }
 
     /**
-     * 查询
+     * 修改
      *
      *  map 用户参数
      */
@@ -96,6 +96,34 @@ public class SendUserMessageController {
         }
         return response;
     }
+
+
+    /**
+     * 删除
+     *
+     *  map 用户参数
+     */
+    @RequestMapping(value = "/reUserMessage", method = RequestMethod.POST)
+    @ResponseBody
+    public Response reUserMessage(@RequestBody Map<String, Object> map) {
+        Response response;
+        try {
+            logger.info("==============>>upUserMessage");
+            List<String> list = (List<String>) map.get("list");
+            map.clear();
+            map.put("msgid",list.toString().replace("[","").replace("]",""));
+            int count = service.deleteSend(map);
+            response = Response.getResponseSuccess((Map)map.get("userinfo"));
+            Map<String , Object> para =  new HashMap<>();
+            para.put("count",count);
+            response.setResponseEntity(para);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
 
     /**
      * 查询

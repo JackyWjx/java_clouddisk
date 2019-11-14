@@ -56,6 +56,11 @@ WHERE
         update  tb_send_user_message set  status = '4'  where msgid in (#{msgid}) and  status = '1'
     </update>
 
+    <!-- 改成已读 -->
+    <delete id="deleteSend"  parameterType="java.util.Map">
+        delete  from  tb_send_user_message   where msgid in (#{msgid})
+    </delete>
+
     <!-- 模糊查询 -->
     <select id="searchSendUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
         select msgid,sendid,msgtype,receiveuid,account,receivename,summary from  tb_send_user_message where status = '1'

@@ -42,6 +42,8 @@ public interface SendUserMessageMapper {
 
     int updateSendCount(Map<String, Object> map);
 
+    int deleteSend(Map<String, Object> map);
+
     /**
      * 模糊查询
      */

@@ -36,6 +36,10 @@ public class SendUserMessageService {
         return sendUserMessageMapper.updateSendCount(map);
     }
 
+    public int deleteSend(Map<String, Object> map){
+        return sendUserMessageMapper.deleteSend(map);
+    }
+
     /**
      * 查询总数
      */
