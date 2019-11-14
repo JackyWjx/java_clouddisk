@@ -23,8 +23,21 @@
 
     <!-- 查询 -->
     <select id="queryUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from  tb_send_user_message where
-        msgtype = '4' and receiveuid = #{uid}
+       SELECT
+	tsum.msgid,
+	tsum.msgtype,
+	tsum.receiveuid,
+	tsum.sendtime,
+	tsum.status,
+	tsum.summary,
+	tml.addtime
+FROM
+	tb_send_user_message tsum
+	INNER JOIN tb_message_list tml ON tsum.msgid = tml.msgid
+WHERE
+	tsum.msgtype = '4'
+	AND tsum.receiveuid = #{uid}
+	LIMIT 10 OFFSET 0
         limit  #{pagesize}  offset #{pageno}
     </select>
 
@@ -40,7 +53,7 @@
 
     <!-- 改成已读 -->
     <update id="updateSendCount"  parameterType="java.util.Map">
-        update  tb_send_user_message set  status = '4'  where receiveuid = #{uid} and  status = '1'
+        update  tb_send_user_message set  status = '4'  where msgid in (#{msgid}) and  status = '1'
     </update>
 
     <!-- 模糊查询 -->

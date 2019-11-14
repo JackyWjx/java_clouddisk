@@ -82,6 +82,9 @@ public class SendUserMessageController {
         Response response;
         try {
             logger.info("==============>>upUserMessage");
+            List<String> list = (List<String>) map.get("list");
+            map.clear();
+            map.put("msgid",list.toString().replace("[","").replace("]",""));
             int count = service.updateSendCount(map);
             response = Response.getResponseSuccess((Map)map.get("userinfo"));
             Map<String , Object> para =  new HashMap<>();

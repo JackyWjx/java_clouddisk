@@ -65,7 +65,7 @@ public class SendMessage {
         try {
             Map<String , Object> parajson = (Map)msg.getItem("para").getObject();
             dataMap.put("sendtime", System.currentTimeMillis());
-            dataMap.put("msgid", msg.getItem("msgid").getString());
+            dataMap.put("msgid", parajson.get("msgid"));
             boolean result = JzbSendMail.sendMime(msg);
             //发送状态
             dataMap.put("msgtype", 2);
@@ -154,7 +154,7 @@ public class SendMessage {
         try {
             Map<String , Object> parajson = (Map)msg.getItem("para").getObject();
             dataMap.put("sendtime", System.currentTimeMillis());
-            dataMap.put("msgid", msg.getItem("msgid").getString());
+            dataMap.put("msgid", parajson.get("msgid"));
             boolean result = JzbSendSys.sendSysMq(msg,mqttGateway);
             //发送状态
             dataMap.put("msgtype", 4);
