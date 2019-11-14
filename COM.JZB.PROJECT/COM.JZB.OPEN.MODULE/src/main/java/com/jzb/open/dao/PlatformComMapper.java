@@ -52,4 +52,39 @@ public interface PlatformComMapper {
      * @Author: DingSC
      */
     List<Map<String, Object>> getComAndMan(Map<String, Object> param);
+
+    /**
+     * 产品列表审批查询
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    List<Map<String, Object>> searchApplicationVerify(Map<String, Object> param);
+
+    /**
+     * 产品列表审批查询count
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int searchApplicationVerifyCount(Map<String, Object> param);
+
+    /**
+     * 审批产品列表
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int updateVerify(Map<String, Object> param);
+
+    /**
+    * 查询应用审批表数据
+    * @Author: DingSC
+    * @param 
+    * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+    */
+    List<Map<String, Object>> queryVerify(Map<String, Object> param);
 }

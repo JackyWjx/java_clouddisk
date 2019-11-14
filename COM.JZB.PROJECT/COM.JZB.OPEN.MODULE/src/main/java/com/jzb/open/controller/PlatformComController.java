@@ -6,6 +6,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.open.api.auth.CompanyControllerApi;
+import com.jzb.open.api.org.PlatformCompanyApi;
 import com.jzb.open.service.PlatformComService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,9 @@ public class PlatformComController {
 
     @Autowired
     private CompanyControllerApi companyApi;
+
+    @Autowired
+    private PlatformCompanyApi platformCompanyApi;
 
     /**
      * 获取所有开放平台的企业id
@@ -148,20 +152,19 @@ public class PlatformComController {
                 //如果传入的value值不为空
                 if (!JzbTools.isEmpty(param.get("value"))) {
                     //根据value取单位cid
-                    Response comRes = null;
-                    //根据value取用户uid
-                    Response userRes = companyApi.searchUidByUidCname(param);
-                    String uIds = JzbDataType.getString(userRes.getResponseEntity());
-                    param.put("uids", uIds);
+                    Response comRes = platformCompanyApi.searchCidByCidCname(param);
+                    String cidS = JzbDataType.getString(comRes.getResponseEntity());
+                    param.put("cids", cidS);
+
                 }
 
-                List<Map<String, Object>> AppVList = null;
+                List<Map<String, Object>> AppVList = platformComService.searchApplicationVerify(param);
                 result = Response.getResponseSuccess(userInfo);
                 Info = new PageInfo();
                 Info.setList(AppVList);
                 int count = JzbDataType.getInteger(param.get("count"));
                 if (count == 0) {
-                    int size = 0;
+                    int size = platformComService.searchApplicationVerifyC(param);
                     Info.setTotal(size > 0 ? size : AppVList.size());
                 }
                 result.setPageInfo(Info);
@@ -169,6 +172,34 @@ public class PlatformComController {
                 result = Response.getResponseError();
             }
 
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 审批产品列表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/modifyVerify", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyVerify(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"status", "appid", "appvsn"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int update = platformComService.updateVerify(param);
+                result = update > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

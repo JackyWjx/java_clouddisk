@@ -53,6 +53,18 @@ public class PlatformComService {
         return platformComMapper.getComAndMan(param);
     }
 
+
+    /**
+     * 开发者列表查询count
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int searchAppDeveloperCount(Map<String, Object> param) {
+        return platformComMapper.searchAppDeveloperCount(param);
+    }
+
     /**
      * 开发者列表查询
      *
@@ -61,11 +73,43 @@ public class PlatformComService {
      * @Author: DingSC
      */
     public List<Map<String, Object>> searchAppDeveloper(Map<String, Object> param) {
-        List<Map<String, Object>> developerList = platformComMapper.searchAppDeveloper(param);
-        int size = developerList == null ? 0 : developerList.size();
+        return addList(platformComMapper.searchAppDeveloper(param));
+    }
+
+    /**
+     * 产品列表审批查询
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    public List<Map<String, Object>> searchApplicationVerify(Map<String, Object> param) {
+        return addList(platformComMapper.searchApplicationVerify(param));
+    }
+
+    /**
+     * 产品列表审批查询总数
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int searchApplicationVerifyC(Map<String, Object> param) {
+        return platformComMapper.searchApplicationVerifyCount(param);
+    }
+
+    /**
+     * 添加企业名称和负责人名称联系电话
+     *
+     * @param list
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    private List<Map<String, Object>> addList(List<Map<String, Object>> list) {
+        int size = list == null ? 0 : list.size();
         List<Map<String, Object>> result = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            Map<String, Object> map = developerList.get(i);
+            Map<String, Object> map = list.get(i);
             String cid = JzbDataType.getString(map.get("cid"));
             Map<String, Object> temp = new HashMap<>(2);
             temp.put("uid", map.get("uid"));
@@ -89,13 +133,24 @@ public class PlatformComService {
     }
 
     /**
-     * 开发者列表查询count
+     * 审批产品列表
      *
      * @param param
      * @return int
      * @Author: DingSC
      */
-    public int searchAppDeveloperCount(Map<String, Object> param) {
-        return platformComMapper.searchAppDeveloperCount(param);
+    public int updateVerify(Map<String, Object> param) {
+        int status = JzbDataType.getInteger(param.get("status"));
+        param.put("updtime", System.currentTimeMillis());
+        int result = platformComMapper.updateVerify(param);
+        //更新成功且审核状态为通过，将数据加入到产品表中
+        if ((result > 0) && (status == 2)) {
+            List<Map<String, Object>> appList = platformComMapper.queryVerify(param);
+            System.out.println("更新成功，新增产品");
+            System.out.println(appList);
+        }
+
+        return result;
     }
+
 }
