@@ -48,7 +48,7 @@ public class SendUserMessageController {
             List<Map<String, Object>> list;
             PageInfo info = new PageInfo();
             info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
-            response = Response.getResponseSuccess();
+            response = Response.getResponseSuccess((Map)map.get("userinfo"));
             // 获取所有信息
             list = service.queryUserMessage(map);
             for (int i = 0 ; i < list.size() ;i++){
@@ -83,7 +83,7 @@ public class SendUserMessageController {
         try {
             logger.info("==============>>upUserMessage");
             int count = service.updateSendCount(map);
-            response = Response.getResponseSuccess();
+            response = Response.getResponseSuccess((Map)map.get("userinfo"));
             Map<String , Object> para =  new HashMap<>();
             para.put("count",count);
             response.setResponseEntity(para);
