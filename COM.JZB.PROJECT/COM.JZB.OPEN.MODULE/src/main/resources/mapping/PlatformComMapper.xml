@@ -3,6 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.open.dao.PlatformComMapper">
+    <!--审批产品列表-->
+    <update id="updateVerify">
+        update tb_application_verify
+        set status = #{status},
+            upduid=#{uid},
+            updtime=#{updtime}
+        where appid=#{appid} and appvsn=#{appvsn};
+    </update>
 
     <!--获取所有开放平台的企业id-->
     <select id="queryPlatformIds" resultType="java.util.Map">
@@ -23,9 +31,9 @@
             and oa.cid = #{cid}
         </if>
         <if test=" uids != null  ">
-           and  ad.uid in (SELECT regexp_split_to_table( #{uids},',' ) )
+            and ad.uid in (SELECT regexp_split_to_table( #{uids},',' ) )
         </if>
-        order by cid,uid LIMIT #{pagesize}  OFFSET #{start}
+        order by cid,uid LIMIT #{pagesize} OFFSET #{start}
     </select>
     <!--开发者列表查询count-->
     <select id="searchAppDeveloperCount" resultType="java.lang.Integer">
@@ -37,7 +45,7 @@
             and oa.cid = #{cid}
         </if>
         <if test=" uids != null  ">
-            and   ad.uid in (SELECT regexp_split_to_table( #{uids},',' ) )
+            and ad.uid in (SELECT regexp_split_to_table( #{uids},',' ) )
         </if>
     </select>
     <!--根据cid和集获取管理员信息-->
@@ -51,6 +59,55 @@
         <if test=" cid != null and cid != '' ">
             and cid = #{cid}
         </if>
+    </select>
+    <!--产品列表审批查询-->
+    <select id="searchApplicationVerify" resultType="java.util.Map">
+        SELECT distinct av.cid,
+        av.appid,
+        av.appname,
+        av.appvsn,
+        av.showvsn,
+        av.apptype,
+        av.appurl,
+        av.status,
+        ad.uid
+        FROM tb_application_verify av
+        LEFT JOIN tb_app_developer ad ON ad.appid = av.appid and ad.devauth = '1'
+        WHERE
+        av.appname ~ #{value}
+        <if test=" cids != null  ">
+            or av.cid in (SELECT regexp_split_to_table(#{cids}, ','))
+        </if>
+        order by av.cid, av.showvsn LIMIT #{pagesize} OFFSET #{start}
+
+    </select>
+    <!--产品列表审批查询count-->
+    <select id="searchApplicationVerifyCount" resultType="java.lang.Integer">
+        select count (1) from (
+        SELECT distinct av.cid,
+        av.appid,
+        av.appname,
+        av.appvsn,
+        av.showvsn,
+        av.apptype,
+        av.appurl,
+        av.status,
+        ad.uid
+        FROM tb_application_verify av
+        LEFT JOIN tb_app_developer ad ON ad.appid = av.appid and ad.devauth = '1'
+        WHERE
+        av.appname ~ #{value}
+        <if test=" cids != null  ">
+            or av.cid in (SELECT regexp_split_to_table(#{cids}, ','))
+        </if>
+        ) as aaa
+    </select>
+    <!--查询应用审批表数据-->
+    <select id="queryVerify" resultType="java.util.Map">
+        select *
+        from tb_application_verify where
+         appid=#{appid}
+        and appvsn=#{appvsn};
     </select>
 
 </mapper>
