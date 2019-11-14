@@ -40,8 +40,7 @@ public class TbScoreManualTypeController {
             }
             PageConvert pageConvert = new PageConvert();
             pageConvert.setPageRows(paramap);
-            Map<String,Object> userinfo = (Map<String, Object>) paramap.get("userinfo");
-
+            // 查询指导手册
             List<Map<String, Object>> list  = scoreManual.getActivity(paramap);
             response = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();
@@ -57,6 +56,86 @@ public class TbScoreManualTypeController {
 
 
 
+    }
+
+    /**
+     * 查询积分规则
+     * @param paramp
+     * @return
+     */
+    @RequestMapping("/getScoreRuleList")
+    public Response getScoreRuleList(@RequestBody Map<String,Object> paramp){
+        Response response;
+        try {
+            int count = JzbDataType.getInteger(paramp.get("count"));
+            count = count < 0 ? 0:count;
+            if (count == 0){
+                // 查询活动总数
+                count = scoreManual.getScoreRuleCount(paramp);
+            }
+            PageConvert pageConvert = new PageConvert();
+            pageConvert.setPageRows(paramp);
+            // 查询积分规则
+            List<Map<String,Object>> list = scoreManual.getScoreRule(paramp);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            pageInfo.setTotal(count > 0 ? count : list.size());
+            response = Response.getResponseSuccess();
+            response.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+
+    @RequestMapping("/addScoreRule")
+    public Response addScoreRuleList(@RequestBody Map<String,Object> paramp){
+        Response response;
+        try {
+            // 获取用户信息
+            Map<String,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
+            paramp.put("ouid",userinfo.get("uid"));
+            // 加入新建积分规则内容
+            int count = scoreManual.insertScoreRule(paramp);
+            response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+    @RequestMapping("/delScoreRule")
+    public Response delScoreRule(@RequestBody Map<String ,Object> paramp){
+        Response response;
+
+        try {
+            Map<String,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
+            // 删除积分规则
+            int count = scoreManual.delScoreRule(paramp);
+            response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+    @RequestMapping("/updScoreRule")
+    public Response modifyScoreRule(@RequestBody Map<String,Object> paramp){
+        Response response;
+        try {
+            Map<String,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
+            paramp.put("ouid",userinfo.get("uid"));
+            int count = scoreManual.updScoreRule(paramp);
+            response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
     }
 
 

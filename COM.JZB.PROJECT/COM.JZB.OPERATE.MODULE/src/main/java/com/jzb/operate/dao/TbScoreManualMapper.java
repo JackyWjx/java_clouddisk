@@ -15,9 +15,24 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface TbScoreManualMapper {
-    //查询指导手册总数
+    // 查询指导手册总数
     Integer getCount(Map<String, Object> paramap);
 
-    //查询指导手册列表
+    // 查询指导手册列表
     List<Map<String, Object>> queryScoreManualList(Map<String, Object> paramap);
+
+    // 查询积分规则总数
+    Integer getScoreRuleCount(Map<String,Object> paramap);
+
+    // 查询积分规则列表
+    List<Map<String, Object>> queryScoreRule(Map<String, Object> paramp);
+
+    // 新建积分规则
+    int addScoreRule(Map<String, Object> paramp);
+
+    // 删除积分规则
+    int delScoreRule(Map<String, Object> paramp);
+
+    // 修改积分规则
+    int updScoreRule(Map<String, Object> paramp);
 }

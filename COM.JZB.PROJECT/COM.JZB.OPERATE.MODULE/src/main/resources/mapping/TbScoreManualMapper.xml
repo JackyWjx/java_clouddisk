@@ -15,9 +15,103 @@
               cname,
               manualcontent
           from tb_score_manual
+          where
+          status = 1
           order by idx
               LIMIT #{pagesize}
               OFFSET #{pageno}
     </select>
+
+    <!--查询积分规则总数-->
+    <select id="getScoreRuleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_score_rule where status = '1'
+    </select>
+
+
+    <!--查询积分规则列表-->
+    <select id="queryScoreRule" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+          ruleid,
+          cname,
+          optid,
+          score,
+          utype,
+          addtime,
+          ouid,
+          status,
+          summary
+          from
+          tb_score_rule
+          where
+          status = '1'
+          ORDER BY
+          id  desc
+           LIMIT #{pagesize}
+           OFFSET #{pageno}
+    </select>
+
+    <!--新建积分规则-->
+    <insert id="addScoreRule" parameterType="java.util.Map">
+        insert into
+        tb_score_rule(ruleid,cname,optid,score,utype,addtime,updtime,ouid,status,summary)
+        values
+        (
+        #{ruleid},
+        #{cname},
+        #{optid},
+        #{score},
+        #{utype},
+        #{addtime},
+        <choose>
+            <when test="updtime != null and updtime != ''">
+                #{updtime},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        #{ouid},
+        #{status},
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--删除积分规则-->
+    <update id="delScoreRule" parameterType="java.lang.String">
+        update tb_score_rule set status=#{status} where ruleid = #{ruleid}
+    </update>
+
+    <!--修改积分规则内容-->
+    <update id="updScoreRule" parameterType="java.util.Map">
+        update tb_score_rule
+        set
+        <if test="cname != null and cname != ''">
+            cname = #{cname},
+        </if>
+        <if test="optid != null and optid != ''">
+            optid = #{optid},
+        </if>
+        <if test="score != null and score != ''">
+            score = #{score},
+        </if>
+        <if test="ouid != null and ouid != ''">
+            ouid = #{ouid},
+        </if>
+        <if test="summary != null and summary != ''">
+            summary = #{summary},
+        </if>
+        <if test="updtime != null and updtime != ''">
+            updtime = #{updtime}
+        </if>
+        where
+        ruleid = #{ruleid}
+    </update>
 
 </mapper>
