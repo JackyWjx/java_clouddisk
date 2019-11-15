@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.CustomInterfaceMapper">
+
+    <!-- 查询自定义界面数据 -->
+    <select id="queryCustomInterface" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        tcp.pageid,
+        tcp.pagename,
+        tcp.fitvalue,
+        tcp.fitconfig,
+        tcp.summary,
+        tucp.idx,
+        tucp.uid,
+        tucp.status
+        from
+        tb_config_page tcp
+        left join
+        tb_user_config_page tucp
+        on
+        tcp.pageid = tucp.pageid
+        where
+        tcp.status = '1'
+        and tucp.uid = #{uid}
+        ORDER BY
+		tucp.idx
+    </select>
+
+    <!-- 查询自定义界面数据 -->
+    <select id="queryConfigPage" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        pageid,
+        fitvalue,
+        idx,
+        status
+        from
+        tb_config_page
+        where
+        status = '1'
+    </select>
+
+    <!--初始化用户自定义数据-->
+    <insert id="insertCustomInterface" parameterType="java.util.List">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+            INSERT INTO
+            tb_user_config_page (uid, pageid, fitvalue, idx, adduid, addtime, status, summary)
+            VALUES
+            (
+            #{item.uid},
+            #{item.pageid},
+            #{item.fitvalue},
+            ${item.idx},
+            #{item.uid},
+            #{item.addtime},
+            #{item.status},
+            #{item.summary}
+            )
+            ON conflict(uid,pageid) DO UPDATE SET
+            updtime = #{item.addtime},
+            upduid = #{item.uid}
+        </foreach>
+    </insert>
+
+    <!-- 修改自定义界面数据 -->
+    <update id="updateCustomInterface" parameterType="java.util.List">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+            update
+            tb_user_config_page
+            set
+            status=#{item.status},
+            idx=${item.idx},
+            upduid= #{item.uid},
+            updtime= #{item.updtime}
+            where
+            pageid=#{item.pageid}
+            and
+            uid = #{item.uid}
+        </foreach>
+    </update>
+</mapper>
+
