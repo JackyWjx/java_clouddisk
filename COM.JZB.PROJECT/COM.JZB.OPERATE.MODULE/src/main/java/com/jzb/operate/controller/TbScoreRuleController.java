@@ -47,6 +47,8 @@ public class TbScoreRuleController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
+            userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid",userInfo.get("uid"));
             if (JzbCheckParam.haveEmpty(param, new String[]{"pageno", "pagesize"})) {
                 result = Response.getResponseError();
             } else {
@@ -60,8 +62,7 @@ public class TbScoreRuleController {
             PageConvert pageConvert = new PageConvert();
             pageConvert.setPageRows(param);
             //获取用户信息
-            userInfo = (Map<String, Object>) param.get("userinfo");
-            param.put("uid",userInfo.get("uid"));
+
             //调用查询的方法进行数据的查询
             List<Map<String,Object>> list = tbScoreRuleService.getScoreRule(param);
 
@@ -69,6 +70,7 @@ public class TbScoreRuleController {
             //设置响应的参数
             pageInfo.setList(list);
             //设置响应成功的结果
+                pageInfo.setTotal(count);
             result = Response.getResponseSuccess(userInfo);
             result.setPageInfo(pageInfo);
             }

@@ -60,16 +60,16 @@
         a.optid = b.optid
         where
         <if test="uid != null and uid != ''">
-            a.uid = #{uid}
+             a.uid = #{uid}
         </if>
         <if test="status != null and status != ''">
             and b.status = #{status}
         </if>
         <if test="startTime != null and startTime != ''">
-            a.opttime  &gt;= #{startTime}
+            and a.opttime  &gt;= #{startTime}
         </if>
         <if test="endTime != null and endTime != ''">
-            a.opttime  &lt;= #{endTime}
+           and a.opttime  &lt;= #{endTime}
         </if>
         ) as num
     </select>
