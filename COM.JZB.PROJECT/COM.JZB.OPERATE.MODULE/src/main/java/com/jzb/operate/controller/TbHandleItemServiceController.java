@@ -167,7 +167,7 @@ public class TbHandleItemServiceController {
                     if(list.get(i).get("projectid") != null && list.get(i).get("projectid") != "" &&  list.get(j).get("projectid") != null && list.get(j).get("projectid") != ""){
                         // 去重
                         if(list.get(i).get("projectid").equals(list.get(j).get("projectid"))){
-                            list.remove(i);
+                                list.remove(i);
                             j--;
                         }
                     }
