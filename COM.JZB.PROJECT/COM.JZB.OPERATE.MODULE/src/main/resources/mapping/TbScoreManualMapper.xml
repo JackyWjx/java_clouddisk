@@ -114,4 +114,66 @@
         ruleid = #{ruleid}
     </update>
 
+    <!--查询我的任务-积分日志表/积分规则表-->
+    <select id="queryScoreLog" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT
+        a.cname,
+        a.score,
+        a.summary,
+        a.optid,
+        (SELECT status FROM tb_score_list b WHERE b.optid = a.optid ORDER BY updtime DESC LIMIT 1),
+        (SELECT updtime FROM tb_score_list b WHERE b.optid = a.optid ORDER BY updtime DESC limit 1)
+        FROM
+        tb_score_rule a
+    </select>
+
+    <!--初始化我的任务-->
+    <select id="initQueryScoreLog" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+          cname,
+          score,
+          ouid,
+          summary,
+        from tb_score_rule
+    </select>
+
+    <!--查询用户登录记录-->
+    <select id="queryLogin" parameterType="java.util.Map" resultType="java.util.Map">
+        select updtime from tb_score_list where uid = #{uid} and optid = #{optid} order by updtime desc limit 5 offset 0
+    </select>
+
+    <!--新增积分日志表-->
+    <insert id="addScoreRuleLog" parameterType="java.util.Map">
+        insert into tb_score_list(uid,optid,updtime,status)
+        values (
+        #{uid},
+        #{optid},
+        <choose>
+            <when test="updtime != null and updtime != ''">
+                #{updtime},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status == null or status == ''">
+                #{status}
+            </when>
+            <otherwise>
+                '2'
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--领取积分/修改积分日志表状态-->
+    <update id="modifyStatus" parameterType="java.util.Map">
+        update tb_score_list
+        set
+        status = #{status}
+        where
+        uid = #{uid} and optid = #{optid} and updtime = #{updtime}
+    </update>
+
 </mapper>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -139,6 +140,44 @@ public class TbScoreManualTypeController {
     }
 
 
+    @RequestMapping("/queryMyTask")
+    public Response queryMyTask(@RequestBody Map<String,Object> paramp){
+        Response response;
+        // 查询用户信息
+        try {
+            Map<String ,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
+            paramp.put("uid",userinfo.get("uid"));
+            // 查询积分值
+            List<Map<String,Object>> list = scoreManual.querySocre(paramp);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            response = Response.getResponseSuccess(userinfo);
+            response.setPageInfo(pageInfo);
 
+        }catch (Exception e){
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
 
+    /**
+     * 领取积分
+     * @param paramp
+     * @return
+     */
+    @RequestMapping("/modifyScoreStatus")
+    public Response modifyScoreStatus(@RequestBody Map<String,Object> paramp){
+        Response response;
+        try {
+            Map<String,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
+            paramp.put("uid",userinfo.get("uid"));
+            int count = scoreManual.modifyStatus(paramp);
+            response =  count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
 }

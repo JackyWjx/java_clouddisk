@@ -35,4 +35,16 @@ public interface TbScoreManualMapper {
 
     // 修改积分规则
     int updScoreRule(Map<String, Object> paramp);
+
+    // 查询我的任务页面
+    List<Map<String, Object>> queryScoreLog(Map<String, Object> paramp);
+
+    // 查询用户登录记录
+    List<Map<String,Object>> queryLogin(Map<String,Object> paramp);
+
+    // 插入积分日志记录（连续登录）
+    int addScoreRuleLog(Map<String, Object> paramp);
+
+    // 领取积分
+    int modifyStatus(Map<String, Object> paramp);
 }
