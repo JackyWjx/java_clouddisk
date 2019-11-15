@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbScoreRuleMapper">
+
+    <!--积分得分记录查询-->
+    <select id="getScoreRule" parameterType="java.util.Map" resultType="java.util.Map">
+           SELECT
+           distinct
+           a.score,
+           a.opttime,
+           b.cname,
+           b.optid,
+           b.summary,
+           a.uid
+           from
+           tb_score_list a
+           LEFT JOIN
+           tb_score_rule b
+           ON
+           a.optid = b.optid
+           where
+           <if test="uid != null and uid != ''">
+               a.uid = #{uid}
+           </if>
+           <if test="status != null and status != ''">
+              and b.status = #{status}
+           </if>
+           <if test="startTime != null and startTime != ''">
+              and a.opttime  &gt;= #{startTime}
+           </if>
+           <if test="endTime != null and endTime != ''">
+               and a.opttime  &lt;= #{endTime}
+           </if>
+           limit
+           #{pagesize}
+           offset
+           #{pageno}
+    </select>
+
+    <select id="getScoreRuleCount" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from
+        (
+        SELECT
+        distinct
+        a.score,
+        a.opttime,
+        b.cname,
+        b.optid,
+        b.summary,
+        a.uid
+        from
+        tb_score_list a
+        LEFT JOIN
+        tb_score_rule b
+        ON
+        a.optid = b.optid
+        where
+        <if test="uid != null and uid != ''">
+            a.uid = #{uid}
+        </if>
+        <if test="status != null and status != ''">
+            and b.status = #{status}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            a.opttime  &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            a.opttime  &lt;= #{endTime}
+        </if>
+        ) as num
+    </select>
+
+</mapper>
