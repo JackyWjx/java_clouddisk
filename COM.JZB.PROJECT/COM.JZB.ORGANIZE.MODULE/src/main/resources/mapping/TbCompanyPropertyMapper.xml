@@ -459,6 +459,6 @@
 
     <!--根据A类 B类  C类进行分页-->
     <select id="GroupCompanyPropert" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT dictvalue,count(1) from tb_company_property where typeid='t111111' GROUP BY dictvalue
+        SELECT dictvalue,count(1) from tb_company_property where typeid='t111111' and status != '2' GROUP BY dictvalue
     </select>
 </mapper>
