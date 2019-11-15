@@ -87,5 +87,4 @@ public class TbScoreRuleController {
         }
         return result;
     }
-
  }

@@ -46,11 +46,13 @@ public class TbScoreManualService {
 
     // 新建积分规则
     public int insertScoreRule(Map<String, Object> paramp) {
-        long addtime = System.currentTimeMillis();
+//        long addtime = System.currentTimeMillis();
         String ruleid = JzbRandom.getRandomCharCap(7);
+        String optid = JzbRandom.getRandomCharCap(6);
         paramp.put("ruleid",ruleid);
-        paramp.put("addtime",addtime);
-        paramp.put("status","1");
+//        paramp.put("addtime",addtime);
+//        paramp.put("status","1");
+        paramp.put("optid",optid);
         return scoreManual.addScoreRule(paramp);
     }
     // 删除一条积分规则
@@ -69,7 +71,7 @@ public class TbScoreManualService {
     // 查询我的任务
     public List<Map<String, Object>> querySocre(Map<String, Object> paramp) {
         List<Map<String, Object>> maps = scoreManual.queryScoreLog(paramp);
-        paramp.put("optid","123");
+        paramp.put("optid","NOGMFJ");
         // 获取登录时间
         List<Map<String, Object>> loginTime = scoreManual.queryLogin(paramp);
 
@@ -88,7 +90,7 @@ public class TbScoreManualService {
             try {
                 long updtime = System.currentTimeMillis();
                 Map<String,Object> map1 = new HashMap<>();
-                map1.put("optid","222");
+                map1.put("optid","LBVKKP");
                 map1.put("uid",paramp.get("uid"));
                 map1.put("updtime",updtime);
                 map1.put("status","2");

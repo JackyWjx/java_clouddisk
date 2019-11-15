@@ -90,14 +90,17 @@ public class TbScoreManualTypeController {
         return response;
     }
 
-
+    /**
+     * 新建积分规则
+     * @param paramp
+     * @return
+     */
     @RequestMapping("/addScoreRule")
     public Response addScoreRuleList(@RequestBody Map<String,Object> paramp){
         Response response;
         try {
             // 获取用户信息
             Map<String,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
-            paramp.put("ouid",userinfo.get("uid"));
             // 加入新建积分规则内容
             int count = scoreManual.insertScoreRule(paramp);
             response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
