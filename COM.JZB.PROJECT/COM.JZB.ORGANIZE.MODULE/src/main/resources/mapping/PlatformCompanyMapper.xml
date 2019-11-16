@@ -39,7 +39,22 @@
             INNER JOIN (SELECT regexp_split_to_table( #{cids},',' ) AS cid ) sl on sl.cid = tcl.cid
         </if>
         WHERE tcl.cname ~ #{value}
-        LIMIT #{pagesize}  OFFSET #{start}
+        LIMIT #{pagesize} OFFSET #{start}
     </select>
 
+    <!--开放平台添加产品-->
+    <insert id="insertProductByOpen">
+        insert into tb_product_list (pid, cid, plid, cname, apptype, appid,
+                             appname, version, showvsn, ouid, addtime,upduid,
+                             updtime, status)
+         values (#{appid},#{cid},#{appline},#{appname},#{apptype},#{appid},
+                #{appname},#{appvsn},#{showvsn},#{uid},#{time},#{uid},
+                #{time},#{status})
+         on conflict(pid) do
+         update set version=#{appvsn},
+                    showvsn=#{showvsn},
+                    updtime=#{time},
+                    upduid=#{uid},
+                    status=#{status};
+    </insert>
 </mapper>
