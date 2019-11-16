@@ -147,4 +147,15 @@ public class PlatformCompanyService {
     public String searchCidByCidCname(Map<String, Object> param) {
         return platMapper.searchCidByCidCname(param);
     }
+
+    /**
+     * 开放平台添加产品
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int insertProductByOpen(Map<String, Object> param) {
+        return platMapper.insertProductByOpen(param);
+    }
 }

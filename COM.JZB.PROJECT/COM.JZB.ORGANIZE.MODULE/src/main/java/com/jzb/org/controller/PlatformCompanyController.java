@@ -119,4 +119,30 @@ public class PlatformCompanyController {
         return result;
     }
 
+    /**
+     * 开放平台添加产品
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/addProductByOpen", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addProductByOpen(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", userInfo.get("uid"));
+            param.put("time", System.currentTimeMillis());
+            param.put("status","1");
+            int add = platService.insertProductByOpen(param);
+            result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 }

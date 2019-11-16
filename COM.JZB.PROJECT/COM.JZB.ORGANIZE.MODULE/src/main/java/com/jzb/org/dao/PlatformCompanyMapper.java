@@ -45,4 +45,12 @@ public interface PlatformCompanyMapper {
      * @Author: DingSC
      */
     String searchCidByCidCname(Map<String, Object> param);
+
+    /**
+    * 开放平台添加产品
+    * @Author: DingSC
+    * @param param
+    * @return int
+    */
+    int insertProductByOpen(Map<String, Object> param);
 }
