@@ -3,13 +3,57 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.open.dao.PlatformComMapper">
+    <!--新增平台开发文档表-->
+    <insert id="insertPlatformHelper">
+        insert into tb_platform_helper
+        (helpid, appline, title, context, ouid,
+        addtime, upduid, updtime, status, summary)
+        values (#{helpid},#{appline},#{title},#{context},#{uid},
+        #{time},#{uid},#{time},#{status},#{summary});
+    </insert>
+    <!--新增开放文档类型-->
+    <insert id="insertOpenApiType">
+        insert into tb_open_api_type(otid, cname, potid, idx, ouid,
+        addtime, upduid, updtime, status, summary)
+        values (#{otid},#{cname},#{potid},
+        <choose>
+            <when test="idx != null and idx !=''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1) +1
+                from tb_open_api_type where potid = #{potid} and status = '1'),
+            </otherwise>
+        </choose>
+        #{uid},
+        #{time},#{uid},#{time},#{status},#{summary});
+
+    </insert>
     <!--审批产品列表-->
     <update id="updateVerify">
         update tb_application_verify
         set status = #{status},
             upduid=#{uid},
             updtime=#{updtime}
-        where appid=#{appid} and appvsn=#{appvsn};
+        where appid=#{appid} and appvsn=#{appvsn} and status = '1';
+    </update>
+    <!--平台开发文档表-->
+    <update id="updatePlatformHelper">
+        update tb_platform_helper
+        set updtime=#{time},upduid=#{uid}
+        <if test=" title != null and title !='' ">,title=#{title}</if>
+        <if test=" context != null and context !='' ">,context=#{context}</if>
+        <if test=" status != null and status !='' ">,status=#{status}</if>
+        where helpid=#{helpid};
+    </update>
+    <!--修改开放文档类型-->
+    <update id="updateOpenApiType">
+        update tb_open_api_type
+        set upduid=#{uid},
+            updtime=#{time},
+            cname = #{cname},
+            status=#{status}
+        where otid = #{otid}
     </update>
 
     <!--获取所有开放平台的企业id-->
@@ -108,6 +152,19 @@
         from tb_application_verify where
          appid=#{appid}
         and appvsn=#{appvsn};
+    </select>
+    <!--查询平台开发文档表-->
+    <select id="searchPlatformHelper" resultType="java.util.Map">
+        select helpid, title, context, to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd') as addtime
+        from tb_platform_helper
+        where status = '1' and title ~ #{value}
+        order by helpid  LIMIT #{pagesize}  OFFSET #{start}
+    </select>
+    <!--查询平台开发文档表总数-->
+    <select id="searchPlatformHelperCount" resultType="java.lang.Integer">
+        select count(1)
+        from tb_platform_helper
+        where status = '1' and title ~ #{value}
     </select>
 
 </mapper>
