@@ -29,4 +29,15 @@ public interface PlatformCompanyApi {
     @RequestMapping(value = "/searchCidByCidCname", method = RequestMethod.POST)
     @CrossOrigin
     public Response searchCidByCidCname(@RequestBody Map<String, Object> param);
+
+    /**
+     * 开放平台添加产品
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/addProductByOpen", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addProductByOpen(@RequestBody Map<String, Object> param);
 }

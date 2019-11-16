@@ -193,6 +193,7 @@ public class PlatformComController {
         try {
             String[] str = {"status", "appid", "appvsn"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
+                param.put("appvsn", JzbDataType.getInteger(param.get("appvsn")));
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("uid", userInfo.get("uid"));
                 int update = platformComService.updateVerify(param);
@@ -206,5 +207,190 @@ public class PlatformComController {
         }
         return result;
     }
+
+    /**
+     * 新增平台开发文档表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/addPlatformHelper", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addPlatformHelper(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"title", "context"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int add = platformComService.insertPlatformHelper(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 修改平台开发文档表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/modifyPlatformHelper", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyPlatformHelper(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"helpid", "title", "context"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int update = platformComService.updatePlatformHelper(param);
+                result = update > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 移除平台开发文档表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/removePlatformHelper", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response removePlatformHelper(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"helpid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("status", "2");
+                param.put("uid", userInfo.get("uid"));
+                int update = platformComService.updatePlatformHelper(param);
+                result = update > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 查询平台开发文档表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/searchPlatformHelper", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchPlatformHelper(@RequestBody Map<String, Object> param) {
+        Response result;
+        PageInfo Info;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            int rows = JzbDataType.getInteger(param.get("pagesize"));
+            int page = JzbDataType.getInteger(param.get("pageno"));
+            if (page > 0 && rows > 0) {
+                param.put("pagesize", rows);
+                param.put("start", rows * (page - 1));
+                List<Map<String, Object>> AppVList = platformComService.searchPlatformHelper(param);
+                result = Response.getResponseSuccess(userInfo);
+                Info = new PageInfo();
+                Info.setList(AppVList);
+                int count = JzbDataType.getInteger(param.get("count"));
+                if (count == 0) {
+                    int size = platformComService.searchPlatformHelperCount(param);
+                    Info.setTotal(size > 0 ? size : AppVList.size());
+                }
+                result.setPageInfo(Info);
+            } else {
+                result = Response.getResponseError();
+            }
+
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 新增开放文档类型
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/addOpenApiType", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addOpenApiType(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"cname"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                if (JzbTools.isEmpty(param.get("potid"))) {
+                    param.put("potid", "00000");
+                }
+                int add = platformComService.insertOpenApiType(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 修改开放文档类型
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/modifyOpenApiType", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyOpenApiType(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"otid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int add = platformComService.updateOpenApiType(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 
 }

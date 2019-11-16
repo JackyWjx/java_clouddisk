@@ -81,10 +81,65 @@ public interface PlatformComMapper {
     int updateVerify(Map<String, Object> param);
 
     /**
-    * 查询应用审批表数据
-    * @Author: DingSC
-    * @param 
-    * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
-    */
+     * 查询应用审批表数据
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
     List<Map<String, Object>> queryVerify(Map<String, Object> param);
+
+    /**
+     * 新增平台开发文档表
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int insertPlatformHelper(Map<String, Object> param);
+
+    /**
+     * 修改平台开发文档表
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int updatePlatformHelper(Map<String, Object> param);
+
+    /**
+     * 查询平台开发文档表
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    List<Map<String, Object>> searchPlatformHelper(Map<String, Object> param);
+
+    /**
+     * 查询平台开发文档表总数
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int searchPlatformHelperCount(Map<String, Object> param);
+
+    /**
+     * 新增开放文档类型
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int insertOpenApiType(Map<String, Object> param);
+
+    /**
+     * 修改开放文档类型
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int updateOpenApiType(Map<String, Object> param);
 }

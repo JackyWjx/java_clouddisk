@@ -2,6 +2,9 @@ package com.jzb.open.service;
 
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbRandom;
+import com.jzb.base.util.JzbTools;
+import com.jzb.open.api.org.PlatformCompanyApi;
 import com.jzb.open.api.redis.OrgRedisServiceApi;
 import com.jzb.open.api.redis.UserRedisServiceApi;
 import com.jzb.open.dao.PlatformComMapper;
@@ -30,6 +33,9 @@ public class PlatformComService {
 
     @Autowired
     private OrgRedisServiceApi orgRedisServiceApi;
+
+    @Autowired
+    private PlatformCompanyApi platformCompanyApi;
 
     /**
      * 获取所有开放平台的企业id
@@ -146,11 +152,90 @@ public class PlatformComService {
         //更新成功且审核状态为通过，将数据加入到产品表中
         if ((result > 0) && (status == 2)) {
             List<Map<String, Object>> appList = platformComMapper.queryVerify(param);
-            System.out.println("更新成功，新增产品");
-            System.out.println(appList);
-        }
+            if (appList != null && appList.size() > 0) {
+                Map<String, Object> appMap = appList.get(0);
+                appMap.put("userinfo", param.get("userinfo"));
+                Response response = platformCompanyApi.addProductByOpen(appMap);
+            }
 
+        }
         return result;
     }
 
+    /**
+     * 新增平台开发文档表
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int insertPlatformHelper(Map<String, Object> param) {
+        param.put("helpid", JzbRandom.getRandomCharCap(5));
+        param.put("time", System.currentTimeMillis());
+        if (!JzbTools.isEmpty(param.get("appline"))) {
+            param.put("appline", JzbDataType.getInteger(param.get("appline")));
+        }
+        param.put("status", '1');
+        return platformComMapper.insertPlatformHelper(param);
+    }
+
+    /**
+     * 修改平台开发文档表信息
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int updatePlatformHelper(Map<String, Object> param) {
+        param.put("time", System.currentTimeMillis());
+        return platformComMapper.updatePlatformHelper(param);
+    }
+
+    /**
+     * 查询平台开发文档表
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    public List<Map<String, Object>> searchPlatformHelper(Map<String, Object> param) {
+        return platformComMapper.searchPlatformHelper(param);
+    }
+
+    /**
+     * 查询平台开发文档表总数
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int searchPlatformHelperCount(Map<String, Object> param) {
+        return platformComMapper.searchPlatformHelperCount(param);
+    }
+
+    /**
+     * 新增开放文档类型
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int insertOpenApiType(Map<String, Object> param) {
+        param.put("time", System.currentTimeMillis());
+        param.put("otid", JzbRandom.getRandomCharCap(5));
+        param.put("status", "1");
+        return platformComMapper.insertOpenApiType(param);
+    }
+
+    /**
+     * 修改开放文档类型
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int updateOpenApiType(Map<String, Object> param) {
+        param.put("time", System.currentTimeMillis());
+        return platformComMapper.updateOpenApiType(param);
+    }
 }
