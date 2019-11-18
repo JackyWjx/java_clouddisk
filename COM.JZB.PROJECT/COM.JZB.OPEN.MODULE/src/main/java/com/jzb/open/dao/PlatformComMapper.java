@@ -142,4 +142,13 @@ public interface PlatformComMapper {
      * @Author: DingSC
      */
     int updateOpenApiType(Map<String, Object> param);
+
+    /**
+     * 获取开放文档类型
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    List<Map<String, Object>> getOpenApiType(Map<String, Object> param);
 }
