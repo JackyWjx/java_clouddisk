@@ -589,6 +589,9 @@
         tb_company_service
         where
         cid = #{cid}
+        <if test="projectid != null and projectid != ''">
+            and projectid = #{projectid}
+        </if>
     </select>
 
     <!--CRM-销售业主-我服务的业主-服务记录1-显示我服务的所有记录-->
@@ -615,6 +618,9 @@
         tb_company_service
         where
         cid = #{cid}
+        <if test="projectid != null and projectid != ''">
+            and projectid = #{projectid}
+        </if>
         limit
         #{pagesize}
         offset
