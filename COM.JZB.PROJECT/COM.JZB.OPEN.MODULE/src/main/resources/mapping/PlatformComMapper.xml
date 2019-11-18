@@ -166,5 +166,10 @@
         from tb_platform_helper
         where status = '1' and title ~ #{value}
     </select>
+    <!--获取开放文档类型-->
+    <select id="getOpenApiType" resultType="java.util.Map">
+        select otid,cname,potid
+        from tb_open_api_type where status ='1';
+    </select>
 
 </mapper>
