@@ -7,7 +7,7 @@
     <!-- 添加系统属性配置 二级域名 -->
     <insert id="addCompanySysconfig" parameterType="java.util.Map">
         insert into tb_company_sysconfig
-        (cid,curl,systemname,tempid,tempname,logo,compname,favicon,background,keys,website,power,adduid,addtime,upduid,updtime,status,summary)
+        (cid,curl,systemname,tempid,tempname,logo,compname,subfavicon,subtitle,righticon,favicon,background,keys,website,power,logintag,loginurl,bottombig,bottomsmall,adduid,addtime,upduid,updtime,status,summary)
         values (
         <choose>
             <when test="cid!=null and cid!=''">
@@ -67,6 +67,30 @@
             </otherwise>
         </choose>
         <choose>
+            <when test="subfavicon!=null and subfavicon!=''">
+                #{subfavicon},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="subtitle!=null and subtitle!=''">
+                #{subtitle},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="righticon!=null and righticon!=''">
+                #{righticon},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
             <when test="favicon!=null and favicon!=''">
                 #{favicon},
             </when>
@@ -101,6 +125,38 @@
         <choose>
             <when test="power!=null and power!=''">
                 #{power},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="logintag!=null and logintag!=''">
+                #{logintag},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="loginurl!=null and loginurl!=''">
+                #{loginurl},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="bottombig!=null and bottombig!=''">
+                #{bottombig},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="bottomsmall!=null and bottomsmall!=''">
+                #{bottomsmall},
             </when>
             <otherwise>
                 null,
@@ -163,6 +219,13 @@
             <if test="tempname !=null and tempname!=''">tempname=#{tempname},</if>
             <if test="logo !=null and logo!=''">logo=#{logo},</if>
             <if test="compname !=null and compname!=''">compname=#{compname},</if>
+            <if test="subfavicon !=null and subfavicon!=''">subfavicon=#{subfavicon},</if>
+            <if test="subtitle !=null and subtitle!=''">subtitle=#{subtitle},</if>
+            <if test="righticon !=null and righticon!=''">righticon=#{righticon},</if>
+            <if test="logintag !=null and logintag!=''">logintag=#{logintag},</if>
+            <if test="loginurl !=null and loginurl!=''">loginurl=#{loginurl},</if>
+            <if test="loginurl !=null and loginurl!=''">loginurl=#{loginurl},</if>
+            <if test="bottomsmall !=null and bottomsmall!=''">bottomsmall=#{bottomsmall},</if>
             <if test="favicon !=null and favicon!=''">favicon=#{favicon},</if>
             <if test="background !=null and background!=''">background=#{background},</if>
             <if test="keys !=null and keys!=''">keys=#{keys},</if>
