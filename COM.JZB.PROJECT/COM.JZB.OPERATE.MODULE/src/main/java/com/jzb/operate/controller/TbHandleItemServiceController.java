@@ -135,17 +135,19 @@ public class TbHandleItemServiceController {
                         bblist.add(uidMap.get("uid").toString());
                     }
                 }
-                map.put("cuid",list.toString().replace("[","").replace("]",""));
+                map.put("list",list);
+                list  = service.queryTbCompanyService(map);
+            }else{
+                list  = service.selectCompanyService(map);
             }
-            // 是否有传项目名称 单位名称
+            // 模糊查询项目名称 单位名称
             if(!JzbTools.isEmpty(map.get("cname")) || !JzbTools.isEmpty(map.get("projectname"))){
-                list = service.selectCompanyService(new HashMap<>());
                 Map<String , Object>  paraMap =  new HashMap<>();
                 paraMap.put("list",list);
                 // 添加分页数据 进行手动分页
                 paraMap.put("pageno",map.get("pageno"));
                 paraMap.put("pagesize",map.get("pagesize"));
-                if(map.containsKey("cname")){
+                if(!JzbTools.isEmpty(map.get("cname"))){
                     paraMap.put("cname",map.get("cname"));
                 }else {
                     paraMap.put("projectname",map.get("projectname"));
@@ -158,20 +160,13 @@ public class TbHandleItemServiceController {
                 isCount = false;
                 list.clear();
                 list.addAll(apiList);
-            }else{
-                list  = service.queryTbCompanyService(map);
-            }
-            // 根据项目id去重
-            for(int i = 0 ;i <list.size() ;i++){
-                for(int j = i+1 ;j < list.size();j++ ){
-                    if(list.get(i).get("projectid") != null && list.get(i).get("projectid") != "" &&  list.get(j).get("projectid") != null && list.get(j).get("projectid") != ""){
-                        // 去重
-                        if(list.get(i).get("projectid").equals(list.get(j).get("projectid"))){
-                                list.remove(i);
-                            j--;
-                        }
-                    }
-                }
+            }else if(!JzbTools.isEmpty(map.get("person")) ){
+                // 人员查询
+                map.put("list",list);
+                Response user = authUserApi.getPersionByName(map);
+                list.clear();
+                List ulist = (List)user.getResponseEntity();
+                list.addAll(ulist);
             }
             for(int i =  0 ; i< list.size() ;i++){
                 Map<String , Object> para = list.get(i);

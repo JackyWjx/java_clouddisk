@@ -49,6 +49,15 @@ public class AuthUserService {
     private AuthUserController authUserController;
 
     /**
+     * 根据uid uname 模糊匹配是否是我需要的数据
+     *
+     * @author hanbin
+     */
+    public Boolean queryPersionByName(Map<String, Object> param) {
+        return userMapper.queryPersionByName(param) > 0 ? true : false;
+    }
+
+    /**
      * 认证修改用户数据
      *
      * @author kuangbin

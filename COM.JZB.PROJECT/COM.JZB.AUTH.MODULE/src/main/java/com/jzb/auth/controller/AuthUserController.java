@@ -56,6 +56,35 @@ public class AuthUserController {
     @Autowired
     private AuthConfigProperties authConfig;
 
+
+    /**
+     * 模糊查询用户名
+     *
+     * @author hanbin
+     */
+    @PostMapping(value = "/getPersionByName")
+    @CrossOrigin
+    public Response getPersionByName(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            List<Map<String , Object>> list  = (List<Map<String, Object>>) param.get("list");
+            for(int  i = 0 ;i < list.size();i++){
+                Map<String, Object> umap =  new HashMap<>();
+                umap.put("person",param.get("person"));
+                umap.put("uid",list.get(i).get("uid"));
+                if(!userService.queryPersionByName(umap)){
+                    list.remove(i);
+                }
+            }
+            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            response.setResponseEntity(list);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
     /**
      * 主页获取用户信息
      *

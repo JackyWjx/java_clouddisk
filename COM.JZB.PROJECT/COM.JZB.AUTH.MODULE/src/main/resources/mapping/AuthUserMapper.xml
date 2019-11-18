@@ -3,6 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.auth.dao.AuthUserMapper">
+
+    <select id="queryPersionByName" parameterType="java.util.Map"  resultType="java.lang.Integer">
+        select count(1) from tb_user_list where uid = #{uid} and cname like CONCAT('%',#{person},'%')
+    </select>
+
     <!--获取用户基础数据-->
     <select id="queryUserInfo" parameterType="java.util.Map"
             resultType="java.util.Map">

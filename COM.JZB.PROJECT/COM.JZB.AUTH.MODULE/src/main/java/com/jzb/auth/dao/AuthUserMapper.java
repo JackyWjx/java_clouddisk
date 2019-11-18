@@ -21,6 +21,13 @@ public interface AuthUserMapper {
     Map<String, Object> queryUserInfo(Map<String, Object> param);
 
     /**
+     * 根据用户名 uid 模糊匹配是否是我所需要的数据
+     *
+     * hanbin
+     */
+    int queryPersionByName(Map<String, Object> param);
+
+    /**
      * 认证用户user_list表信息修改
      */
     int updateIdentityList(Map<String, Object> param);
