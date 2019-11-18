@@ -6,13 +6,22 @@
 
     <!--  查询用户积分   -->
     <select id="qureyUserScore" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_user_score where status = '1'
-        <choose><when test="recharge != null">and recharge = #{recharge}</when></choose>
-        <choose><when test="consume != null">and consume = #{consume}</when></choose>
-        <choose><when test="sumscore != null">and sumscore =  #{sumscore}</when></choose>
-        <choose><when test="freezes != null">and freezes = #{freezes}</when></choose>
-        <choose><when test="score != null">and score = #{score}</when></choose>
-        <choose><when test="uid != null">and uid = #{uid}</when></choose>
+        select
+        recharge,
+        consume,
+        sumscore,
+        freezes,
+        score
+        from tb_user_score
+        where
+        uid = #{uid}
+        <!--<choose><when test="recharge != null">and recharge = #{recharge}</when></choose>-->
+        <!--<choose><when test="consume != null">and consume = #{consume}</when></choose>-->
+        <!--<choose><when test="sumscore != null">and sumscore =  #{sumscore}</when></choose>-->
+        <!--<choose><when test="freezes != null">and freezes = #{freezes}</when></choose>-->
+        <!--<choose><when test="score != null">and score = #{score}</when></choose>-->
+        <!--<choose><when test="uid != null">and uid = #{uid}</when></choose>-->
+        <!---->
         limit #{rows}  offset #{page}
     </select>
 
@@ -135,7 +144,7 @@
         <choose><when test="recharge != null">,recharge  = #{recharge}</when></choose>
         <choose><when test="freezes != null">,freezes  = #{freezes}</when></choose>
         <choose><when test="score != null">,score  = #{score}</when></choose>
-        where  id = #{id}
+        where  uid = #{uid}
     </update>
 
     <!--  修改用户积分月报    -->

@@ -23,6 +23,9 @@ public class TbScoreManualService {
     @Autowired
     TbScoreManualMapper scoreManual;
 
+    @Autowired
+    TbScoreService scoreService;
+
     // 查询积分指导手册总数
     public Integer getCount(Map<String, Object> paramap) {
         return scoreManual.getCount(paramap);
@@ -99,7 +102,22 @@ public class TbScoreManualService {
                 JzbTools.logError(e);
             }
         }
-        return scoreManual.queryScoreLog(paramp);
+
+        Map<String, Object> map = methodTime(System.currentTimeMillis());
+        map.put("optid","ZYCBDP");
+        map.put("uid",paramp.get("uid"));
+        int pubCount = scoreManual.getPubCount(map);
+        List<Map<String,Object>> list = scoreManual.queryScoreLog(paramp);
+        for (int i = 0; i < list.size(); i++) {
+            if ("LBVKKP".equals(list.get(i).get("optid") )){
+                list.get(i).put("day",day);
+            }
+            if ("ZYCBDP".equals(list.get(i).get("optid"))){
+                list.get(i).put("count",pubCount);
+                list.get(i).put("max",10);
+            }
+        }
+        return list;
     }
 
     public boolean method(Long current,int day){
@@ -109,12 +127,34 @@ public class TbScoreManualService {
         return current >= zero  && current <= twelve;
 
     }
+    public Map<String,Object> methodTime(Long current){
+        Map<String ,Object> map = new HashMap<>();
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        long twelve=zero+24*60*60*1000-1;//今天23点59分59秒的毫秒数
+        map.put("zero",zero);
+        map.put("twelve",twelve);
+        return map;
+    }
 
     // 领取积分
     public int modifyStatus(Map<String, Object> paramp) {
         paramp.put("status","1");
         Long updtime = JzbDataType.getLong(paramp.get("updtime"));
         paramp.put("updtime",updtime);
+        // 用户涨积分
+        scoreService.saveUserIntegration(paramp);
+
         return scoreManual.modifyStatus(paramp);
+    }
+
+    // 查询消费明细总记录数
+    public int getConsumeCount(Map<String, Object> parmp) {
+        return scoreManual.getConsumeCount(parmp);
+    }
+
+    // 查询消费明细记录
+    public List<Map<String, Object>> getConsumeList(Map<String, Object> parmp) {
+
+        return scoreManual.getConsumeList(parmp);
     }
 }

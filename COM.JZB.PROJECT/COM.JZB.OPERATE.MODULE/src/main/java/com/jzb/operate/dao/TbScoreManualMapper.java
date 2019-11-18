@@ -47,4 +47,13 @@ public interface TbScoreManualMapper {
 
     // 领取积分
     int modifyStatus(Map<String, Object> paramp);
+
+    // 查询消费明细总记录数
+    int getConsumeCount(Map<String, Object> parmp);
+
+    // 查询消费明细记录
+    List<Map<String, Object>> getConsumeList(Map<String, Object> parmp);
+
+    // 查询发布记录数
+    int getPubCount(Map<String, Object> paramp);
 }

@@ -9,6 +9,7 @@ import com.jzb.operate.util.PageConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -182,5 +183,41 @@ public class TbScoreManualTypeController {
             response = Response.getResponseError();
         }
         return response;
+    }
+
+    /**
+     * 查询消费明细
+     * @param parmp
+     * @return
+     */
+    @RequestMapping("/getConsumeList")
+    public Response getConsumeList(@RequestBody Map<String ,Object> parmp){
+        Response response;
+        try {
+            Map<String,Object> userinfo = (Map<String, Object>) parmp.get("userinfo");
+            parmp.put("uid",userinfo.get("uid"));
+
+            // 查询消费明细总记录数
+            int count = JzbDataType.getInteger(parmp.get("count"));
+            count = count < 0 ? 0:count;
+            if (count == 0){
+                count = scoreManual.getConsumeCount(parmp);
+            }
+            PageConvert pageConvert = new PageConvert();
+            pageConvert.setPageRows(parmp);
+
+            // 查询消费明细
+            List<Map<String,Object>> counsumeList = scoreManual.getConsumeList(parmp);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setTotal(count);
+            pageInfo.setList(counsumeList);
+            response = Response.getResponseSuccess(userinfo);
+            response.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+
     }
 }

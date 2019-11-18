@@ -125,6 +125,8 @@ public class TbUserScoreController {
     public Response saveUserScore(@RequestBody Map<String, Object> map){
         Response response;
         try{
+            Map<String ,Object> userinfo = (Map<String, Object>) map.get("userinfo");
+            map.put("uid",userinfo.get("uid"));
             response = scoreService.saveUserScore(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();
@@ -157,6 +159,8 @@ public class TbUserScoreController {
     public Response upUserScore(@RequestBody Map<String, Object> map){
         Response response;
         try{
+            Map<String ,Object> userinfo = (Map<String, Object>) map.get("userinfo");
+            map.put("uid",userinfo.get("uid"));
             response = scoreService.upUserScore(map) > 0 ? Response.getResponseSuccess((Map)map.get("userinfo")) : Response.getResponseError();
         }catch (Exception e){
             e.printStackTrace();

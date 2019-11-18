@@ -44,52 +44,51 @@ public class TbScoreService {
     /**
      *  添加积分
      */
-    public  boolean saveUserIntegration(Map<String , Object> map){
+    public  boolean saveUserIntegration(Map<String , Object> paraMap){
         boolean result;
         try{
-            Map<String ,Object> paraMap  =  new HashMap<>();
-            // 查询触发那个积分规则
-            paraMap.put("optid",map.get("optid"));
-            paraMap.put("page",1);
-            paraMap.put("rows",10);
-            List<Map<String , Object>> list  = mapper.qureyScoreRule(paraMap);
-            // 如果未找到积分规则 则是错误的一次添加积分操作
-            if(list.size() > 0){
-                paraMap.put("uid",map.get("uid"));
-                paraMap.put("pid",map.get("pid"));
-                if(map.containsKey("cid")){
-                    paraMap.put("cid",map.get("cid"));
-                }
-                paraMap.put("score",list.get(0).get("score"));
-                paraMap.put("opttime",System.currentTimeMillis());
-                // 积分日志
-                mapper.insertScortList(paraMap);
+//            Map<String ,Object> paraMap  =  new HashMap<>();
+//            // 查询触发那个积分规则
+//            paraMap.put("optid",map.get("optid"));
+//            paraMap.put("page",1);
+//            paraMap.put("rows",10);
+//            List<Map<String , Object>> list  = mapper.qureyScoreRule(paraMap);
+//            // 如果未找到积分规则 则是错误的一次添加积分操作
+//            if(list.size() > 0){
+//                paraMap.put("uid",map.get("uid"));
+//                paraMap.put("pid",map.get("pid"));
+//                if(map.containsKey("cid")){
+//                    paraMap.put("cid",map.get("cid"));
+//                }
+//                paraMap.put("score",list.get(0).get("score"));
+//                paraMap.put("opttime",System.currentTimeMillis());
+//                // 积分日志
+//                mapper.insertScortList(paraMap);
                 // 判断是否存在用户积分信息
                 List<Map<String , Object>> ruleList = scoreMapper.qureyUserScore(paraMap);
                 if(ruleList.size() > 0){
-                    paraMap.clear();
+//                    paraMap.clear();
                     // 添加积分
-                    paraMap.put("sumscore", JzbDataType.getInteger(map.get("money")) + JzbDataType.getInteger(ruleList.get(0).get("sumscore")));
-                    paraMap.put("consume", JzbDataType.getInteger(map.get("money")) + JzbDataType.getInteger(ruleList.get(0).get("consume")));
-                    paraMap.put("recharge", JzbDataType.getInteger(map.get("money")) + JzbDataType.getInteger(ruleList.get(0).get("recharge")));
-                    paraMap.put("score", JzbDataType.getInteger(list.get(0).get("score")) + JzbDataType.getInteger(ruleList.get(0).get("score")));
-                    paraMap.put("id",ruleList.get(0).get("id"));
+                    paraMap.put("sumscore", JzbDataType.getInteger(paraMap.get("sumscore")) + JzbDataType.getInteger(ruleList.get(0).get("sumscore")));
+                    paraMap.put("consume", JzbDataType.getInteger(paraMap.get("consume")) + JzbDataType.getInteger(ruleList.get(0).get("consume")));
+                    paraMap.put("score", JzbDataType.getInteger(paraMap.get("score")) + JzbDataType.getInteger(ruleList.get(0).get("score")));
+//                    paraMap.put("id",ruleList.get(0).get("id"));
                     paraMap.put("uptime",System.currentTimeMillis());
                     scoreMapper.upUserScore(paraMap);
                 }else{
                     // 创建用户积分表
-                    paraMap.put("sumscore",map.get("money"));
-                    paraMap.put("consume",map.get("money"));
-                    paraMap.put("recharge",map.get("money"));
+                    paraMap.put("sumscore",paraMap.get("score"));
+                    paraMap.put("consume",0);
+                    paraMap.put("recharge",0);
                     paraMap.put("freezes",0);
                     paraMap.put("updtime",System.currentTimeMillis());
                     paraMap.put("status","1");
                     scoreMapper.insertUserScore(paraMap);
                 }
                 result = true;
-            }else{
-                result = false;
-            }
+//            }else{
+//                result = false;
+//            }
         }catch (Exception e){
             JzbTools.logError(e);
             result = false;

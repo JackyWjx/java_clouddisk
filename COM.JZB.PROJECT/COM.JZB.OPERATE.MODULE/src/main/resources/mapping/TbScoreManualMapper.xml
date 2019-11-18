@@ -16,7 +16,7 @@
               manualcontent
           from tb_score_manual
           where
-          status = 1
+          status = '1'
           order by idx
               LIMIT #{pagesize}
               OFFSET #{pageno}
@@ -175,5 +175,40 @@
         where
         uid = #{uid} and optid = #{optid} and updtime = #{updtime}
     </update>
+
+    <!--查询消费明细总记录数-->
+    <select id="getConsumeCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_score_list where uid = #{uid} and  score &lt; 0
+    </select>
+
+    <!-- 查询消费明细记录-->
+    <select id="getConsumeList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        optid,
+        optvalue,
+        updtime,
+        summary,
+        score,
+        uid
+        from  tb_score_list
+        where
+        uid = #{uid} and score &lt; 0
+        <if test="startTime != null and startTime != '' ">
+            and updtime >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and updtime &lt;= #{endTime}
+        </if>
+        limit #{pagesize} offset #{pageno}
+    </select>
+
+    <!--查询积分日志发布记录当日总数-->
+    <select id="getPubCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_score_list
+        where uid = #{uid}
+        and optid = #{optid}
+        and updtime &gt;= #{zero}
+        and updtime &lt;= #{twelve}
+    </select>
 
 </mapper>
