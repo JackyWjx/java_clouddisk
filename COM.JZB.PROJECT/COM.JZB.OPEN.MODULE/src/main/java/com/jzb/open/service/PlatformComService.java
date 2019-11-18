@@ -2,6 +2,7 @@ package com.jzb.open.service;
 
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
+import com.jzb.base.tree.JzbTree;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.open.api.org.PlatformCompanyApi;
@@ -237,5 +238,19 @@ public class PlatformComService {
     public int updateOpenApiType(Map<String, Object> param) {
         param.put("time", System.currentTimeMillis());
         return platformComMapper.updateOpenApiType(param);
+    }
+    /**
+    * 获取开放文档类型树
+    * @Author: DingSC
+    * @param param
+    * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+    */
+    public List<Map<String, Object>> getOpenApiType(Map<String, Object> param) {
+        List<Map<String, Object>> list = platformComMapper.getOpenApiType(param);
+        String id ="otid";
+        String pid = "potid";
+        String first = "00000";
+        List<Map<String, Object>> result = JzbTree.getTreeMap(list,id,pid,first);
+        return result;
     }
 }

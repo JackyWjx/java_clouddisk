@@ -18,10 +18,10 @@ public class JzbTree {
      * 获取树形结构map
      *
      * @param data        需要处理的数据(字段data是子级保留字段，传入的数据包含的字段不可命名为data)
-     * @param id          单条数据的id
-     * @param pid         单条数据的父id
-     * @param firstParent 根节点，第一个父id
-     * @return java.util.Map<java.lang.String, java.lang.Object>
+     * @param id          单条数据的id字段名称
+     * @param pid         单条数据的父id字段名称
+     * @param firstParent 根节点，第一个父id的值
+     * @return List<Map<String, Object>>
      * @Author: DingSC
      * @DateTime: 2019/9/4 10:29
      */

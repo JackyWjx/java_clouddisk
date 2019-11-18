@@ -392,5 +392,29 @@ public class PlatformComController {
         return result;
     }
 
+    /**
+     * 获取开放文档类型树
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/getOpenApiType", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getOpenApiType(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", userInfo.get("uid"));
+            List<Map<String, Object>> list = platformComService.getOpenApiType(param);
+            result = Response.getResponseSuccess(userInfo);
+            result.setResponseEntity(list);
+
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 
 }
