@@ -151,4 +151,40 @@ public interface PlatformComMapper {
      * @Author: DingSC
      */
     List<Map<String, Object>> getOpenApiType(Map<String, Object> param);
+
+    /**
+     * 新增文档类型接口表
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int insertOpenApiList(Map<String, Object> param);
+
+    /**
+     * 修改文档类型接口表
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int updateOpenApiList(Map<String, Object> param);
+
+    /**
+     * 模糊查询文档类型接口
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    List<Map<String, Object>> searchOpenApiList(Map<String, Object> param);
+
+    /**
+     * 查询文档类型接口总数
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int searchOpenApiListCou(Map<String, Object> param);
 }

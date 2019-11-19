@@ -393,6 +393,35 @@ public class PlatformComController {
     }
 
     /**
+     * 移除开放文档类型
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/removeOpenApiType", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response removeOpenApiType(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"otid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("status", "2");
+                param.put("uid", userInfo.get("uid"));
+                int add = platformComService.updateOpenApiType(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
      * 获取开放文档类型树
      *
      * @param param
@@ -417,4 +446,137 @@ public class PlatformComController {
         return result;
     }
 
+
+    /**
+     * 添加文档类型接口表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/addOpenApiList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addOpenApiList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"curl", "cname", "otid", "apidesc", "reqtype", "apibody"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int add = platformComService.insertOpenApiList(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 修改文档类型接口表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/modifyOpenApiList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyOpenApiList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"apiid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int upd = platformComService.updateOpenApiList(param);
+                result = upd > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 移除文档类型接口表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/removeOpenApiList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response removeOpenApiList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"apiid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("status", "2");
+                param.put("uid", userInfo.get("uid"));
+                int upd = platformComService.updateOpenApiList(param);
+                result = Response.getResponseSuccess(userInfo);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 模糊查询文档类型接口
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/searchOpenApiList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchOpenApiList(@RequestBody Map<String, Object> param) {
+        Response result;
+        PageInfo Info;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            int rows = JzbDataType.getInteger(param.get("pagesize"));
+            int page = JzbDataType.getInteger(param.get("pageno"));
+            if (page > 0 && rows > 0) {
+                param.put("pagesize", rows);
+                param.put("start", rows * (page - 1));
+                String start = "starttime";
+                if (!JzbTools.isEmpty(param.get(start))) {
+                    param.put(start, JzbDataType.getLong(param.get(start)));
+                }
+                String end = "endtime";
+                if (!JzbTools.isEmpty(param.get(end))) {
+                    param.put(end, JzbDataType.getLong(param.get(end)));
+                }
+                List<Map<String, Object>> openApiList = platformComService.searchOpenApiList(param);
+                result = Response.getResponseSuccess(userInfo);
+                Info = new PageInfo();
+                Info.setList(openApiList);
+                int count = JzbDataType.getInteger(param.get("count"));
+                if (count == 0) {
+                    int size = platformComService.searchOpenApiListCou(param);
+                    Info.setTotal(size > 0 ? size : openApiList.size());
+                }
+                result.setPageInfo(Info);
+            } else {
+                result = Response.getResponseError();
+            }
+
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }

@@ -239,18 +239,68 @@ public class PlatformComService {
         param.put("time", System.currentTimeMillis());
         return platformComMapper.updateOpenApiType(param);
     }
+
     /**
-    * 获取开放文档类型树
-    * @Author: DingSC
-    * @param param
-    * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
-    */
+     * 获取开放文档类型树
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
     public List<Map<String, Object>> getOpenApiType(Map<String, Object> param) {
         List<Map<String, Object>> list = platformComMapper.getOpenApiType(param);
-        String id ="otid";
+        String id = "otid";
         String pid = "potid";
         String first = "00000";
-        List<Map<String, Object>> result = JzbTree.getTreeMap(list,id,pid,first);
+        List<Map<String, Object>> result = JzbTree.getTreeMap(list, id, pid, first);
         return result;
+    }
+
+    /**
+     * 新增文档类型接口表
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int insertOpenApiList(Map<String, Object> param) {
+        param.put("time", System.currentTimeMillis());
+        param.put("apiid", JzbRandom.getRandomCharCap(7));
+        param.put("status", "1");
+        return platformComMapper.insertOpenApiList(param);
+    }
+
+    /**
+     * 修改文档类型接口表
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int updateOpenApiList(Map<String, Object> param) {
+        param.put("time", System.currentTimeMillis());
+        return platformComMapper.updateOpenApiList(param);
+    }
+
+    /**
+     * 查询文档类型接口总数
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int searchOpenApiListCou(Map<String, Object> param) {
+        return platformComMapper.searchOpenApiListCou(param);
+    }
+
+    /**
+     * 模糊查询文档类型接口
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    public List<Map<String, Object>> searchOpenApiList(Map<String, Object> param) {
+        return platformComMapper.searchOpenApiList(param);
     }
 }
