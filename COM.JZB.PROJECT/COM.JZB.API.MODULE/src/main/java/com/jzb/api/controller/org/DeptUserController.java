@@ -179,8 +179,9 @@ public class DeptUserController {
                         //创建伙伴单位表数据
                         param.put("send", send);
                         param.put("cid", cid);
-                        result = companyOrgApi.addCompanyFriend(param);
+                        companyOrgApi.addCompanyFriend(param);
                         authService.addAdmin(param);
+                        result = comRes;
                     }
                 } else {
                     result = Response.getResponseError();
