@@ -298,6 +298,9 @@
         <if test=" pid != null and pid != ''">
             AND ma.pid =#{pid}
         </if>
+        <if test=" cid != null and cid != ''">
+            AND ma.cid =#{cid}
+        </if>
         AND exists(select 1
         from tb_role_relation rr
         where (
