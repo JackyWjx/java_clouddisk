@@ -29,6 +29,25 @@
         #{time},#{uid},#{time},#{status},#{summary});
 
     </insert>
+    <!--新增文档类型接口表-->
+    <insert id="insertOpenApiList">
+        insert into tb_open_api_list (otid, apiid, cname, idx, apidesc,
+        reqtype, curl, descfile, apibody,ouid,
+        addtime, upduid, updtime, status, summary)
+        values (#{otid},#{apiid},#{cname},
+        <choose>
+            <when test="idx != null and idx !=''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1
+                from tb_open_api_list where status ='1' and otid = #{otid}),
+            </otherwise>
+        </choose>
+        #{apidesc},
+        #{reqtype},#{curl},#{descfile},#{apibody},#{uid},
+        #{time},#{uid},#{time},#{status},#{summary});
+    </insert>
     <!--审批产品列表-->
     <update id="updateVerify">
         update tb_application_verify
@@ -50,10 +69,22 @@
     <update id="updateOpenApiType">
         update tb_open_api_type
         set upduid=#{uid},
-            updtime=#{time},
-            cname = #{cname},
-            status=#{status}
+        updtime=#{time}
+        <if test=" cname != null and cname !='' ">,cname = #{cname}</if>
+        <if test=" status != null and status !='' ">,status=#{status}</if>
         where otid = #{otid}
+    </update>
+    <!--修改文档类型接口表-->
+    <update id="updateOpenApiList">
+        update tb_open_api_list
+        set upduid=#{uid},updtime =#{time}
+        <if test=" cname != null and cname !='' ">,cname=#{cname}</if>
+        <if test=" curl != null and curl !='' ">,curl=#{curl}</if>
+        <if test=" apidesc != null and apidesc !='' ">,apidesc=#{apidesc}</if>
+        <if test=" reqtype != null and reqtype !='' ">,reqtype=#{reqtype}</if>
+        <if test=" apibody != null and apibody !='' ">,apibody=#{apibody}</if>
+        <if test=" status != null and status !='' ">,status=#{status}</if>
+        where apiid=#{apiid};
     </update>
 
     <!--获取所有开放平台的企业id-->
@@ -170,6 +201,52 @@
     <select id="getOpenApiType" resultType="java.util.Map">
         select otid,cname,potid
         from tb_open_api_type where status ='1';
+    </select>
+    <!--查询文档类型接口-->
+    <select id="searchOpenApiList" resultType="java.util.Map">
+        SELECT distinct toal.apiid,
+        toat.cname AS TYPE,
+        toal.cname,
+        to_char( to_timestamp( toal.addtime / 1000 ), 'yyyy-MM-dd' ) AS uploadtime,toal.idx
+        FROM
+        tb_open_api_list toal
+        LEFT JOIN tb_open_api_type toat ON toat.otid = toal.otid
+        WHERE
+        toal.status = '1'
+        <if test=" start != null and start != ''">
+            AND toal.addtime >= #{start}
+        </if>
+        <if test=" end != null and end != ''">
+            AND #{end} >= toal.addtime
+        </if>
+        <if test=" value != null and value != ''">
+            AND toal.cname ~ #{value}
+        </if>
+        <if test=" otid != null and otid != ''">
+            AND toal.otid = #{otid}
+        </if>
+        order by toal.idx LIMIT #{pagesize} OFFSET #{start}
+    </select>
+    <!--查询文档类型接口总数-->
+    <select id="searchOpenApiListCou" resultType="java.lang.Integer">
+        SELECT distinct count(toal.apiid)
+        FROM
+        tb_open_api_list toal
+        LEFT JOIN tb_open_api_type toat ON toat.otid = toal.otid
+        WHERE
+        toal.status = '1'
+        <if test=" starttime != null and starttime != ''">
+            AND toal.addtime >= #{starttime}
+        </if>
+        <if test=" endtime != null and endtime != ''">
+            AND #{endtime} >= toal.addtime
+        </if>
+        <if test=" value != null and value != ''">
+            AND toal.cname ~ #{value}
+        </if>
+        <if test=" otid != null and otid != ''">
+            AND toal.otid = #{otid}
+        </if>
     </select>
 
 </mapper>
