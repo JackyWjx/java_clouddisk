@@ -282,11 +282,17 @@ public class ExportConfirmService {
             }else{
                 //加入邀请
                 String newUser = JzbDataType.getString(uidMap.get("uid"));
+                 int code = JzbDataType.getInteger(uidMap.get("code"));
                 if (!JzbTools.isEmpty(newUser)) {
                     Map<String, Object> param = new HashMap<>(5);
                     String company = "计支宝";
                     param.put("relphone", map.get("phone"));
-                    param.put("groupid", config.getInvite());
+                    if (code == 3) {
+                        param.put("groupid", config.getTemplate());
+                    }else{
+                        param.put("groupid", config.getInvite());
+                    }
+
                     param.put("companyname", company);
                     param.put("username", map.get("name"));
                     param.put("password", pass);
