@@ -9,6 +9,8 @@
         select
         tcp.pageid,
         tcp.pagename,
+        tcp.pagedesc,
+        tcp.icon,
         tcp.fitvalue,
         tcp.fitconfig,
         tcp.summary,
