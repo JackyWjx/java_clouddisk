@@ -8,6 +8,7 @@ import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
+import com.jzb.org.dao.DeptMapper;
 import com.jzb.org.dao.TbCompanyCommonMapper;
 import com.jzb.org.dao.TbCompanyListMapper;
 import net.sf.json.JSONArray;
@@ -39,7 +40,7 @@ public class TbCompanyCommonService {
     private RegionBaseApi regionBaseApi;
 
     @Autowired
-    private TbCompanyListMapper tbCompanyListMapper;
+    private DeptMapper deptMapper;
 
     @Autowired
     private OrgConfigProperties config;
@@ -249,6 +250,9 @@ public class TbCompanyCommonService {
      * @DateTime: 2019/10/11
      */
     public int modifyCompanyCommon(Map<String, Object> param) {
+        long updtime = System.currentTimeMillis();
+        param.put("updtime", updtime);
+        param.put("status", "1");
         if (!JzbDataType.isEmpty(JzbDataType.getString("oldphone"))) {
             param.put("companyname", JzbDataType.getString(param.get("cname")));
             if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("password")))) {
@@ -263,6 +267,10 @@ public class TbCompanyCommonService {
                 param.put("senduid", "addCommon1013");
                 param.put("msgtag", "addCommon1013");
                 companyService.sendRemind(param);
+                // 加入企业部门
+                param.put("cdid", JzbDataType.getString(param.get("cid")) + "0000");
+                param.put("time", updtime);
+                deptMapper.insertDeptUser(param);
             }
             // 将要发送的手机号改为旧管理员手机号
             param.put("relphone", JzbDataType.getString(param.get("oldphone")));
@@ -272,8 +280,6 @@ public class TbCompanyCommonService {
             param.put("msgtag", "addCommon1013");
             companyService.sendRemind(param);
         }
-        long updtime = System.currentTimeMillis();
-        param.put("updtime", updtime);
         return tbCompanyCommonMapper.updateCompanyListInfo(param);
     }
 }
