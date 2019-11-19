@@ -15,4 +15,6 @@ public interface TbCompanyDeptMapper {
      * @return
      */
     List<Map<String,Object>> getDeptUser(Map<String, Object> param);
+
+    int getDeptUserCount(Map<String, Object> param);
 }

@@ -257,6 +257,7 @@ public class TbCompanyPropertyController {
            List<Object> list1 = new ArrayList<>();
             Map<String, Object> hashMap = new HashMap<>();
             Map<String, Object> hashMap1 = new HashMap<>();
+            Map<String, Object> hashMap2 = new HashMap<>();
             //遍历结果拿到查询出来的结果添加到list1集合中
             for (int i = 0; i < list.size(); i++) {
                     String dictvalue = (String) list.get(i).get("dictvalue");
@@ -265,8 +266,8 @@ public class TbCompanyPropertyController {
             }
             //判断集合中是否包含这个分类对应的值,如果不包含则添加对应的分类的数量为0,
             if (!list1.contains("A类")) {
-                hashMap.put("dictvalue", "A类");
-                hashMap.put("count", 0);
+                hashMap2.put("dictvalue", "A类");
+                hashMap2.put("count", 0);
             }
             if (!list1.contains("B类")) {
                 hashMap.put("dictvalue", "B类");
@@ -279,6 +280,7 @@ public class TbCompanyPropertyController {
              //把添加到map中的数据添加到list中去
             list.add(hashMap);
             list.add(hashMap1);
+            list.add(hashMap2);
 
 
             PageInfo pageInfo = new PageInfo();
