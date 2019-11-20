@@ -26,7 +26,10 @@ FROM
 	AND tdu.uid = tcl.manager
 WHERE
 	tcc.status = '2'
-and tcc.uid=#{uid}
+    <if test="uid !='JZBDCDCJZBDC'">
+        and tcc.uid=#{uid}
+    </if>
+        limit #{pagesize} offset #{pageno}
     </select>
 
 
@@ -60,7 +63,7 @@ and tcc.uid=#{uid}
         tcc.status = '2'
         ) a where 1=1
 
-        <if test="uid!=null and uid !=''">
+        <if test="uid!=null and uid !='' and uid!='JZBDCDCJZBDC'">
             and a.uid=#{uid}
         </if>
         <if test="region!=null and region !=''">
@@ -72,6 +75,7 @@ and tcc.uid=#{uid}
         <if test="keyword!=null and keyword !=''">
             and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
         </if>
+        limit #{pagesize} offset #{pageno}
     </select>
 
 
