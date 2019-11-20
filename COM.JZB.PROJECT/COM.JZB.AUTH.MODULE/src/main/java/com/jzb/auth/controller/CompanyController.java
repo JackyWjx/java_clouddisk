@@ -1,10 +1,13 @@
 package com.jzb.auth.controller;
 
 import com.jzb.auth.service.CompanyListService;
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
 /***
@@ -46,4 +49,32 @@ public class CompanyController {
     }
 
 
+    /**
+     * 获取认证类型数据
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/getAuthTypeList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getAuthTypeList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("start", 0);
+            param.put("pagesize", 100);
+            String key = "utype";
+            if (!JzbTools.isEmpty(param.get(key))) {
+                param.put(key, JzbDataType.getInteger(param.get(key)));
+            }
+            List<Map<String, Object>> deList = service.getAuthTypeList(param);
+            result = Response.getResponseSuccess(userInfo);
+            result.setResponseEntity(deList);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }

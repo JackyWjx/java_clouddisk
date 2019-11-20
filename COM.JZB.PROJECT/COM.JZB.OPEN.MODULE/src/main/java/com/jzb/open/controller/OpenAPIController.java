@@ -274,6 +274,10 @@ public class OpenAPIController {
     public Response getOrgApplication(@RequestBody Map<String, Object> param) {
         Response result;
         try {
+            String key = "apptype";
+            if (!JzbTools.isEmpty(param.get(key))) {
+                param.put(key, JzbDataType.getInteger(param.get(key)));
+            }
             // 获取前台传过来的总数
             int count = JzbDataType.getInteger(param.get("count"));
             count = count < 0 ? 0 : count;
@@ -372,7 +376,7 @@ public class OpenAPIController {
             if (!JzbTools.isEmpty(records)) {
                 for (Map<String, Object> map : records) {
                     // 查询缓存中是否存在用户信息
-                    Response userData = userRedisApi.getCacheUserInfo(param);
+                    Response userData = userRedisApi.getCacheUserInfo(map);
 
                     // 加入开发者姓名
                     Object obj = userData.getResponseEntity();
@@ -417,7 +421,7 @@ public class OpenAPIController {
 
             // 去缓存中查询用户信息
             String id = JzbDataType.getString(
-                    userRedisApi.getNameByPhone(JzbDataType.getString(param.get("phone"))).getResponseEntity());
+                    userRedisApi.getPhoneUid(JzbDataType.getString(param.get("phone"))).getResponseEntity());
             param.put("uid", id);
             int count = openAPIService.addDeveloper(param);
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
@@ -438,7 +442,7 @@ public class OpenAPIController {
         try {
             // 去缓存中查询用户信息
             String userID = JzbDataType.getString(
-                    userRedisApi.getNameByPhone(JzbDataType.getString(param.get("phone"))).getResponseEntity());
+                    userRedisApi.getPhoneUid(JzbDataType.getString(param.get("phone"))).getResponseEntity());
             param.put("id", userID);
             // 根据联系方式获取用户id,name
             Object obj = openAuthApi.getUserIdNameByPhone(param).getResponseEntity();
@@ -526,7 +530,7 @@ public class OpenAPIController {
         try {
             // 去缓存中查询用户信息
             String id = JzbDataType.getString(
-                    userRedisApi.getNameByPhone(JzbDataType.getString(param.get("phone"))).getResponseEntity());
+                    userRedisApi.getPhoneUid(JzbDataType.getString(param.get("phone"))).getResponseEntity());
             // 加入开发者ID
             param.put("userId", id);
             // 获取用户资料

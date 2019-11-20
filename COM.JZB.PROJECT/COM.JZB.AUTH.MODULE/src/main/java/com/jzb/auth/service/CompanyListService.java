@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 import java.util.Map;
 
 /***
@@ -29,6 +30,17 @@ public class CompanyListService {
      */
     public String searchUidByUidCname(Map<String, Object> param) {
         return mapper.searchUidByUidCname(param);
+    }
+
+    /**
+     * 获取认证类型数据
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    public List<Map<String, Object>> getAuthTypeList(Map<String, Object> param) {
+        return mapper.getAuthTypeList(param);
     }
 
 }
