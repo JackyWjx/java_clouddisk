@@ -12,7 +12,17 @@
             INNER JOIN (SELECT regexp_split_to_table( #{uids},',' ) AS uid ) sl on sl.uid = ul.uid
         </if>
         WHERE ul.cname ~ #{value}
-        LIMIT #{pagesize}  OFFSET #{start}
+        LIMIT #{pagesize} OFFSET #{start}
+    </select>
+    <!--获取认证类型数据-->
+    <select id="getAuthTypeList" resultType="java.util.Map">
+        select *
+        from tb_auth_type
+        where status = '1'
+        <if test=" utype !=null and utype !=''">
+            and  utype = #{utype}
+        </if>
+        LIMIT #{pagesize} OFFSET #{start}
     </select>
 
 
