@@ -180,8 +180,14 @@ public class CommonRedisController {
     public Response getCityList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String key=param.get("key").toString();
-            String  mapValue = redisService.getRedisService().getMapValue(CommonCacheKeys.JZB_STSTEM_CITY_LIST, key).toString();
+            String key="";
+
+            if(param.get("key")==null||param.get("key").equals("null")){
+                key="error";
+            }else {
+                key=param.get("key").toString();
+            }
+            String  mapValue = JzbDataType.getString(redisService.getRedisService().getMapValue(CommonCacheKeys.JZB_STSTEM_CITY_LIST, key));
             result=Response.getResponseSuccess();
             result.setResponseEntity(mapValue);
         } catch (Exception ex) {
