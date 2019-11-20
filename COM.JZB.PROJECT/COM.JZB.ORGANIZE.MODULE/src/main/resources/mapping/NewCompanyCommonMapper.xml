@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.NewCompanyCommonMapper">
+    <!--点击公海显示所有的单位信息的总数-->
+    <select id="queryCompanyCommonListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_common_company_list
+        where
+        status = #{status}
+        <if test="cid != null and cid != ''">
+            and cid = #{cid}
+        </if>
+        <if test="cname != null and cname != ''">
+            and cname LIKE CONCAT( '%',#{cname},'%')
+        </if>
+        <if test="relperson != null and relperson != ''">
+            and relperson LIKE CONCAT( '%',#{relperson},'%')
+        </if>
+        <if test="province != null and province != ''">
+            and region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+    </select>
+
+    <!--查询所有的企业列表-->
+    <select id="queryCompanyCommonList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        tccl.tcid,
+        tccl.cid,
+        tccl.cname,
+        tccl.region,
+        tccl.uscc,
+        tccl.reluid,
+        tccl.relperson,
+        tccl.relphone,
+        tccl.relmail,
+        tccl.logo,
+        tccl.photo,
+        tccl.curl,
+        tccl.fax,
+        to_char(to_timestamp(tccl.limitday / 1000), 'yyyy-MM-dd HH24:MI') as limitday,
+        to_char(to_timestamp(tccl.birthday / 1000), 'yyyy-MM-dd HH24:MI') as birthday,
+        tci.address,
+        tccl.range,
+        tccl.ctype,
+        tccl.legaleid,
+        tccl.legaler,
+        tccl.cardid,
+        tccl.capital,
+        tccl.content,
+        tcl.authid as authstatus,
+        tccl.supervise,
+        tccl.orgrelation,
+        tccl.prodesc,
+        tccl.prolist,
+        tccl.source
+        FROM
+        tb_common_company_list tccl
+        left join
+        tb_company_list tcl
+        on
+        tccl.cid = tcl.cid
+        left join
+        tb_company_info tci
+        on
+        tccl.cid = tci.cid
+        where
+        tccl.status = #{status}
+        <if test="cid != null and cid != ''">
+            and tccl.cid = #{cid}
+        </if>
+        <if test="cname != null and cname != ''">
+            and tccl.cname LIKE CONCAT( '%',#{cname},'%')
+        </if>
+        <if test="relperson != null and relperson != ''">
+            and tccl.relperson LIKE CONCAT( '%',#{relperson},'%')
+        </if>
+        <if test="province != null and province != ''">
+            and tccl.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        order by tccl.id desc
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--管理员创建公海单位-->
+    <insert id="insertCompanyCommonList" parameterType="java.util.Map">
+        INSERT INTO tb_common_company_list (
+        tcid, cid, cname, nickname, region, uscc, reluid, relperson, relphone, telephone, relmail, logo,
+        photo, cstatus, curl, fax, limitday, address, range, ctype, legaleid, legaler, cardid, capital,
+        birthday, content, authstatus, supervise, orgrelation, prodesc, prolist, source, adduid, addtime,
+        upduid, updtime, status, summary
+        )
+        VALUES
+        (
+        #{tcid},
+        #{cid},
+        #{companyname},
+        #{nickname},
+        #{region},
+        #{uscc},
+        #{manager},
+        #{managername},
+        #{phone},
+        #{telephone},
+        #{relmail},
+        #{logo},
+        #{photo},
+        <choose>
+            <when test=" cstatus != null and cstatus !=''">
+                #{cstatus},
+            </when>
+            <otherwise>
+                '1',
+            </otherwise>
+        </choose>
+        #{curl},
+        #{fax},
+        <choose>
+            <when test=" limitday != null and limitday !=''">
+                cast(#{limitday} as Integer),
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        #{address},
+        #{range},
+        #{ctype},
+        #{legaleid},
+        #{legaler},
+        #{cardid},
+        #{capital},
+        <choose>
+            <when test=" birthday != null and birthday !=''">
+                cast(#{birthday} as Integer),
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        #{content},
+        <choose>
+            <when test=" authstatus != null and authstatus !=''">
+                cast(#{authstatus} as Integer),
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        #{supervise},
+        #{orgrelation},
+        #{prodesc},
+        #{prolist},
+        <choose>
+            <when test=" source != null and source !=''">
+                cast(#{source} as Integer),
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        #{uid},
+        #{addtime},
+        #{uid},
+        #{addtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+        ON conflict(cid) DO UPDATE SET
+        updtime = #{addtime}
+    </insert>
+
+    <!-- 点击修改按钮,进行公海单位修改 -->
+    <update id="updateCompanyCommonList" parameterType="java.util.Map">
+        update
+        tb_common_company_list
+        SET
+        <if test="cid != null and cid != ''">region = #{region},</if>
+        <if test="uscc != null and uscc != ''">uscc = #{uscc},</if>
+        <if test="reluid != null and reluid != ''">reluid = #{reluid},</if>
+        <if test="phone != null and phone != ''">relphone = #{phone},</if>
+        <if test="telephone != null and telephone != ''">telephone = #{telephone},</if>
+        <if test="relmail != null and relmail != ''">relmail = #{relmail},</if>
+        <if test="logo != null and logo != ''">logo = #{logo},</if>
+        <if test="photo != null and photo != ''">photo = #{photo},</if>
+        <if test="curl != null and curl != ''">curl = #{curl},</if>
+        <if test="fax != null and fax != ''">fax = #{fax},</if>
+        <if test="limitday != null and limitday != ''">limitday = ${limitday},</if>
+        <if test="address != null and address != ''">address = #{address},</if>
+        <if test="range != null and range != ''">range = #{range},</if>
+        <if test="ctype != null and ctype != ''">ctype = #{ctype},</if>
+        <if test="legaleid != null and legaleid != ''">legaleid = #{legaleid},</if>
+        <if test="legaler != null and legaler != ''">legaler = #{legaler},</if>
+        <if test="cardid != null and cardid != ''">cardid = #{cardid},</if>
+        <if test="capital != null and capital != ''">capital = #{capital},</if>
+        <if test="birthday != null and birthday != ''">birthday = ${birthday},</if>
+        <if test="content != null and content != ''">content = #{content},</if>
+        <if test="supervise != null and supervise != ''">supervise = #{supervise},</if>
+        <if test="orgrelation != null and orgrelation != ''">orgrelation = #{orgrelation},</if>
+        <if test="prodesc != null and prodesc != ''">prodesc = #{prodesc},</if>
+        <if test="prolist != null and prolist != ''">prolist = #{prolist},</if>
+        <if test="source != null and source != ''">source = ${source},</if>
+        <if test="summary != null and summary != ''">summary = #{summary},</if>
+        upduid = #{upduid},
+        updtime = #{updtime}
+        WHERE
+        cid=#{cid}
+        and
+        tcid = #{tcid}
+    </update>
+
+    <!--点击删除按钮,进行公海单位删除-->
+    <update id="deleteCompanyCommonList" parameterType="java.util.Map">
+        update
+        tb_common_company_list
+        SET
+        status = #{status}
+        WHERE
+        cid=#{cid}
+        and
+        tcid = #{tcid}
+    </update>
+</mapper>
