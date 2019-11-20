@@ -154,7 +154,7 @@ public class TbCompanyCommonController {
 
                 pageInfo.setList(list);
                 // 如果前端传的count 大于0 则返回list大小
-                pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
+                pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? tbCompanyCommonService.queryCompanyCommonCount(param) : 0);
                 // 获取用户信息返回
                 result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
                 result.setPageInfo(pageInfo);
@@ -233,7 +233,7 @@ public class TbCompanyCommonController {
 
                 pageInfo.setList(list);
                 // 如果前端传的count 大于0 则返回list大小
-                pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
+                pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? tbCompanyCommonService.queryCompanyCommonByKeyWordCount(param) : 0);
                 // 获取用户信息返回
                 result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
                 result.setPageInfo(pageInfo);

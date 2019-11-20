@@ -22,11 +22,26 @@ public interface TbCompanyCommonMapper {
 
 
     /**
+     * 查询不带条件的业主单位全部（zongshu ）
+     * @param param
+     * @return
+     */
+    int queryCompanyCommonCount(Map<String, Object> param);
+
+
+    /**
      * 查询带条件的业主单位全部（带条件）
      * @param param
      * @return
      */
     List<Map<String, Object>> queryCompanyCommonByKeyWord(Map<String, Object> param);
+
+    /**
+     * 查询带条件的业主单位全部（带条件）
+     * @param param
+     * @return
+     */
+    int queryCompanyCommonByKeyWordCount(Map<String, Object> param);
 
     /**
      * 查询单位名称

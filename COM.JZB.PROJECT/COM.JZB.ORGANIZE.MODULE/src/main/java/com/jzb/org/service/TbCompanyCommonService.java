@@ -58,6 +58,14 @@ public class TbCompanyCommonService {
         return tbCompanyCommonMapper.queryCompanyCommon(param);
     }
 
+    /**
+     * 查询不带条件的业主单位全部（zongshu ）
+     * @param param
+     * @return
+     */
+    public int queryCompanyCommonCount(Map<String, Object> param) {
+        return tbCompanyCommonMapper.queryCompanyCommonCount(param);
+    }
 
     /**
      * 查询带条件的业主单位全部（带条件）
@@ -69,6 +77,14 @@ public class TbCompanyCommonService {
         return tbCompanyCommonMapper.queryCompanyCommonByKeyWord(param);
     }
 
+    /**
+     * 查询带条件的业主单位全部（带条件）
+     * @param param
+     * @return
+     */
+    public int queryCompanyCommonByKeyWordCount(Map<String, Object> param){
+        return tbCompanyCommonMapper.queryCompanyCommonByKeyWordCount(param);
+    }
 
     /**
      * 查询单位名称
