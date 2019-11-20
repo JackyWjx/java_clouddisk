@@ -60,13 +60,5 @@ public interface UserRedisServiceApi {
     @RequestMapping(value = "/getTokenUser", method = RequestMethod.POST)
     public Response getTokenUser(@RequestBody Map<String, Object> param);
 
-    /**
-     * 根据联系方式获取用户ID
-     * @param phone
-     * @return
-     */
-    @RequestMapping(value = "/getPhoneUid")
-    public Response getNameByPhone(@RequestParam String phone);
-
 
 } // End interface UserRedisServiceApi

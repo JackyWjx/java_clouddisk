@@ -557,7 +557,7 @@ public class PlatformComController {
                 }
                 String end = "endtime";
                 if (!JzbTools.isEmpty(param.get(end))) {
-                    param.put(end, JzbDataType.getLong(param.get(end)));
+                    param.put(end, JzbDataType.getLong(param.get(end))+86400000);
                 }
                 List<Map<String, Object>> openApiList = platformComService.searchOpenApiList(param);
                 result = Response.getResponseSuccess(userInfo);

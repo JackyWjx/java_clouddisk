@@ -237,6 +237,10 @@ public class OpenAPIService {
             param.put("appsecret", JzbRandom.getRandomCharCap(32));
             param.put("addtime", authtime);
             param.put("updtime", authtime);
+            String key = "apptype";
+            if (!JzbTools.isEmpty(param.get(key))) {
+                param.put(key,JzbDataType.getInteger(param.get(key)));
+            }
             count = mapper.insertApp(param);
         } catch (Exception ex) {
             JzbTools.logError(ex);
