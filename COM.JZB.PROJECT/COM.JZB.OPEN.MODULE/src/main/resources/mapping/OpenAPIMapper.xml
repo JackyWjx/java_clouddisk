@@ -172,7 +172,7 @@
             resultType="java.util.Map">
         SELECT
         helpid,
-        htitle as title
+        title
         from
         tb_platform_helper
         <where>
@@ -197,7 +197,7 @@
     <select id="queryHelperContent" parameterType="java.util.Map"
             resultType="java.util.Map">
         SELECT
-        hcontent as content
+        context
         from
         tb_platform_helper
         <where>
@@ -585,7 +585,7 @@
         <if test="apptype!= null and apptype!= ''">
             and apptype = #{apptype}
         </if>
-        <if test="devtype!= null and apptype!= ''">
+        <if test="devtype!= null and devtype!= ''">
             and devtype = #{devtype}
         </if>
     </select>

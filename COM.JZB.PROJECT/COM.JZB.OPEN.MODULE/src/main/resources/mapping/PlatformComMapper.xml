@@ -207,17 +207,18 @@
         SELECT distinct toal.apiid,
         toat.cname AS TYPE,
         toal.cname,
-        to_char( to_timestamp( toal.addtime / 1000 ), 'yyyy-MM-dd' ) AS uploadtime,toal.idx
+        to_char( to_timestamp( toal.addtime / 1000 ), 'yyyy-MM-dd' ) AS uploadtime,
+        toal.idx,curl,reqtype,apidesc,apibody
         FROM
         tb_open_api_list toal
         LEFT JOIN tb_open_api_type toat ON toat.otid = toal.otid
         WHERE
         toal.status = '1'
-        <if test=" start != null and start != ''">
-            AND toal.addtime >= #{start}
+        <if test=" starttime != null and starttime != ''">
+            AND toal.addtime >= #{starttime}
         </if>
-        <if test=" end != null and end != ''">
-            AND #{end} >= toal.addtime
+        <if test=" endtime != null and endtime != ''">
+            AND #{endtime} >= toal.addtime
         </if>
         <if test=" value != null and value != ''">
             AND toal.cname ~ #{value}
