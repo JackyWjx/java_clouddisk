@@ -111,6 +111,7 @@ public class CompanyService {
                 String pass = "*jzb" + JzbRandom.getRandomNum(3);
                 userMap.put("passwd", JzbDataCheck.Md5(pass).toLowerCase(Locale.ENGLISH));
                 userMap.put("status", "8");
+                userMap.put("userinfo", param.get("userinfo"));
                 Response userRes = userAuthApi.addRegistration(userMap);
                 Map<String, Object> uidMap = (Map<String, Object>) userRes.getResponseEntity();
                 //加入邀请
