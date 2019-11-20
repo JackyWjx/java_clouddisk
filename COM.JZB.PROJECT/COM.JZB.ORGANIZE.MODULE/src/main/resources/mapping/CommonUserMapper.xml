@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.CommonUserMapper">
+
+     <!--新建公海用户-->
+    <insert id="addCommUser" parameterType="java.util.Map">
+        insert into tb_common_user_list(source,areaid,uid,uname,phone,cardid,sex,age,job,mail,cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary)
+        values (
+        <choose>
+            <when test="source != null and source != ''">
+                #{source},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        #{areaid},
+        #{uid},
+        #{uname},
+        #{phone},
+        #{cardid},
+        #{sex},
+        <choose>
+            <when test="age != null and age != ''">
+                #{age},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        #{job},
+        #{mail},
+        #{cname},
+        #{native},
+        #{graduated},
+        #{education},
+        #{likes},
+        #{marriage},
+        #{works},
+        #{generate},
+        #{adduid},
+        <choose>
+            <when test="addtime != null and addtime != ''">
+                cast(#{addtime} as Integer),
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null and updtime != ''">
+                cast(#{updtime} as Integer),
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        #{status},
+        #{summary}
+        )
+    </insert>
+
+    <!--修改公海用户-->
+    <update id="updComUser" parameterType="java.util.Map">
+        update tb_common_user_list
+        set
+
+        <if test="source != null and source != ''">
+            source = #{source},
+        </if>
+        <if test="areaid != null and areaid != ''">
+            areaid = #{areaid},
+        </if>
+        <if test="uname != null and uname != ''">
+            uname = #{uname},
+        </if>
+        <if test="phone != null and phone != ''">
+            phone = #{phone},
+        </if>
+        <if test="cardid != null and cardid != ''">
+            cardid = #{cardid},
+        </if>
+        <if test="sex != null and sex != ''">
+            sex = #{sex},
+        </if>
+        <if test="age != null and age != ''">
+            age = #{age},
+        </if>
+        <if test="job != null and job != ''">
+            job = #{job},
+        </if>
+        <if test="mail != null and mail != ''">
+            mail = #{mail},
+        </if>
+        <if test="cname != null and cname != ''">
+            cname = #{cname},
+        </if>
+        <if test="native != null and native != ''">
+            native = #{native},
+        </if>
+        <if test="graduated != null and graduated != ''">
+            graduated = #{graduated},
+        </if>
+        <if test="education != null and education != ''">
+            education = #{education},
+        </if>
+        <if test="likes != null and likes != ''">
+            likes = #{likes},
+        </if>
+        <if test="marriage != null and marriage != ''">
+            marriage = #{marriage},
+        </if>
+        <if test="works != null and works != ''">
+            works = #{works},
+        </if>
+        <if test="generate != null and generate != ''">
+            generate = #{generate},
+        </if>
+        <if test="adduid != null and adduid != ''">
+            adduid = #{adduid},
+        </if>
+        <if test="addtime != null and addtime != ''">
+            addtime = #{addtime},
+        </if>
+
+        <if test="status != null and status != ''">
+            status = #{status},
+        </if>
+        <if test="summary != null and summary != ''">
+            summary = #{summary},
+        </if>
+        <if test="updtime != null and updtime != ''">
+            updtime = #{updtime}
+        </if>
+        where uid = #{uid}
+
+    </update>
+
+    <!--查询公海用户-->
+    <select id="queryComUser" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        source,areaid,uid,uname,phone,cardid,sex,age,job,mail,
+        cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary
+        from tb_common_user_list where status = '1'
+    </select>
+
+    <!--查询公海用户总数-->
+    <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_common_user_list
+    </select>
+
+    <!--删除公海用户-->
+    <update id="delUser" parameterType="java.util.Map">
+        update tb_common_user_list  set status = #{status}  where uid = #{uid} ;
+    </update>
+</mapper>
