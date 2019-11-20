@@ -1,5 +1,7 @@
 package com.jzb.operate.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
@@ -104,9 +106,14 @@ public class TbScoreManualService {
         }
 
         Map<String, Object> map = methodTime(System.currentTimeMillis());
+        // 获取当日文章发布数量
         map.put("optid","ZYCBDP");
         map.put("uid",paramp.get("uid"));
         int pubCount = scoreManual.getPubCount(map);
+        // 获取当日活动发布数量
+        map.put("optid","QWEWER");
+        int actCount = scoreManual.getPubCount(map);
+
         List<Map<String,Object>> list = scoreManual.queryScoreLog(paramp);
         for (int i = 0; i < list.size(); i++) {
             if ("LBVKKP".equals(list.get(i).get("optid") )){
@@ -114,6 +121,10 @@ public class TbScoreManualService {
             }
             if ("ZYCBDP".equals(list.get(i).get("optid"))){
                 list.get(i).put("count",pubCount);
+                list.get(i).put("max",10);
+            }
+            if ("QWEWER".equals(list.get(i).get("optid"))){
+                list.get(i).put("count",actCount);
                 list.get(i).put("max",10);
             }
         }
@@ -136,7 +147,7 @@ public class TbScoreManualService {
         return map;
     }
 
-    // 领取积分
+         // 领取积分
     public int modifyStatus(Map<String, Object> paramp) {
         paramp.put("status","1");
         Long updtime = JzbDataType.getLong(paramp.get("updtime"));
@@ -154,7 +165,22 @@ public class TbScoreManualService {
 
     // 查询消费明细记录
     public List<Map<String, Object>> getConsumeList(Map<String, Object> parmp) {
+        if (!JzbTools.isEmpty(parmp.get("endTime"))){
+            parmp.put("endTime", JzbDataType.getLong(parmp.get("endTime")) + 86400);
+        }
 
         return scoreManual.getConsumeList(parmp);
+    }
+
+    // 获取已完成任务总数
+    public int getSucCount(Map<String, Object> paramp) {
+        Map<String, Object> map = methodTime(System.currentTimeMillis());
+        map.put("uid",paramp.get("uid"));
+
+        return scoreManual.getSucCount(map);
+    }
+
+    public int queryTaskCount(Map<String, Object> paramp) {
+        return scoreManual.queryTaskCount(paramp);
     }
 }

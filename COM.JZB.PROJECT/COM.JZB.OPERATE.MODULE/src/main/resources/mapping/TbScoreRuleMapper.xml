@@ -9,11 +9,12 @@
            SELECT
            distinct
            a.score,
-           a.opttime,
+           a.updtime,
            b.cname,
            b.optid,
            b.summary,
-           a.uid
+           a.uid,
+           b.status
            from
            tb_score_list a
            LEFT JOIN
@@ -28,11 +29,13 @@
               and b.status = #{status}
            </if>
            <if test="startTime != null and startTime != ''">
-              and a.opttime  &gt;= #{startTime}
+              and a.updtime  &gt;= #{startTime}
            </if>
            <if test="endTime != null and endTime != ''">
-               and a.opttime  &lt;= #{endTime}
+               and a.updtime  &lt;= #{endTime}
            </if>
+           and a.score &gt; 0
+           order by updtime desc
            limit
            #{pagesize}
            offset
@@ -66,10 +69,10 @@
             and b.status = #{status}
         </if>
         <if test="startTime != null and startTime != ''">
-            and a.opttime  &gt;= #{startTime}
+            and a.updtime  &gt;= #{startTime}
         </if>
         <if test="endTime != null and endTime != ''">
-           and a.opttime  &lt;= #{endTime}
+           and a.updtime  &lt;= #{endTime}
         </if>
         ) as num
     </select>

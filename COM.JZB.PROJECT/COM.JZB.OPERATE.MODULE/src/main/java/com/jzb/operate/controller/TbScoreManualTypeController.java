@@ -1,5 +1,7 @@
 package com.jzb.operate.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,6 +147,11 @@ public class TbScoreManualTypeController {
     }
 
 
+    /**
+     * 查询我的任务
+     * @param paramp
+     * @return
+     */
     @RequestMapping("/queryMyTask")
     public Response queryMyTask(@RequestBody Map<String,Object> paramp){
         Response response;
@@ -153,12 +161,37 @@ public class TbScoreManualTypeController {
             paramp.put("uid",userinfo.get("uid"));
             // 查询积分值
             List<Map<String,Object>> list = scoreManual.querySocre(paramp);
+
+            // 获取已完成任务总数
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(list);
             response = Response.getResponseSuccess(userinfo);
             response.setPageInfo(pageInfo);
 
         }catch (Exception e){
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+    @RequestMapping("/queryTaskCount")
+    public Response queryTaskCount(@RequestBody Map<String,Object> paramp){
+        Response response;
+        try {
+            Map<String ,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
+            paramp.put("uid",userinfo.get("uid"));
+            // 获取已完成任务总数
+            int sucCont =  scoreManual.getSucCount(paramp);
+            int allCont = scoreManual.queryTaskCount(paramp);
+            response = Response.getResponseSuccess(userinfo);
+//            response = sucCont > 0 ? Response.getResponseSuccess(userinfo) : Response.getResponseError();
+            // 任务已完成数与目标完成数
+            Map<String,Object> countMap = new HashMap<>();
+            countMap.put("count",sucCont);
+            countMap.put("max",allCont);
+            response.setResponseEntity(countMap);
+        } catch (Exception e) {
             JzbTools.logError(e);
             response = Response.getResponseError();
         }
@@ -208,6 +241,13 @@ public class TbScoreManualTypeController {
 
             // 查询消费明细
             List<Map<String,Object>> counsumeList = scoreManual.getConsumeList(parmp);
+            for (int i = 0; i < counsumeList.size(); i++) {
+                if (!JzbTools.isEmpty(counsumeList.get(i).get("optvalue"))){
+                    String optvalue = (String) counsumeList.get(i).get("optvalue");
+                    Map<String,Object> parse = (Map<String, Object>) JSON.parse(optvalue);
+                    counsumeList.get(i).put("optvalue",parse);
+                }
+            }
             PageInfo pageInfo = new PageInfo();
             pageInfo.setTotal(count);
             pageInfo.setList(counsumeList);

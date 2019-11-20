@@ -39,6 +39,9 @@ public interface TbScoreManualMapper {
     // 查询我的任务页面
     List<Map<String, Object>> queryScoreLog(Map<String, Object> paramp);
 
+    // 查询我的任务总数
+    int queryTaskCount (Map<String, Object> paramp);
+
     // 查询用户登录记录
     List<Map<String,Object>> queryLogin(Map<String,Object> paramp);
 
@@ -56,4 +59,7 @@ public interface TbScoreManualMapper {
 
     // 查询发布记录数
     int getPubCount(Map<String, Object> paramp);
+
+    // 获取已完成任务总数
+    int getSucCount(Map<String, Object> map);
 }

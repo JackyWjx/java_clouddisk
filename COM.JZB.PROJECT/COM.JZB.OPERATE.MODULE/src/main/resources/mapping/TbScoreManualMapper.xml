@@ -121,10 +121,24 @@
         a.score,
         a.summary,
         a.optid,
-        (SELECT status FROM tb_score_list b WHERE b.optid = a.optid ORDER BY updtime DESC LIMIT 1),
-        (SELECT updtime FROM tb_score_list b WHERE b.optid = a.optid ORDER BY updtime DESC limit 1)
+        (SELECT status FROM tb_score_list b WHERE  uid = #{uid} and  b.optid = a.optid ORDER BY updtime DESC LIMIT 1),
+        (SELECT updtime FROM tb_score_list b WHERE uid = #{uid} and  b.optid = a.optid ORDER BY updtime DESC limit 1)
         FROM
         tb_score_rule a
+    </select>
+
+    <!--查询我的任务总数-->
+    <select id="queryTaskCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from
+        (  SELECT
+        a.cname,
+        a.score,
+        a.summary,
+        a.optid,
+        (SELECT status FROM tb_score_list b WHERE  uid = #{uid} and  b.optid = a.optid ORDER BY updtime DESC LIMIT 1),
+        (SELECT updtime FROM tb_score_list b WHERE uid = #{uid} and  b.optid = a.optid ORDER BY updtime DESC limit 1)
+        FROM
+        tb_score_rule a) as a
     </select>
 
     <!--初始化我的任务-->
@@ -199,16 +213,29 @@
         <if test="endTime != null and endTime != ''">
             and updtime &lt;= #{endTime}
         </if>
+        order  by updtime desc
         limit #{pagesize} offset #{pageno}
     </select>
 
-    <!--查询积分日志发布记录当日总数-->
+    <!--查询发布记录当日总数-->
     <select id="getPubCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_score_list
         where uid = #{uid}
         and optid = #{optid}
         and updtime &gt;= #{zero}
         and updtime &lt;= #{twelve}
+    </select>
+
+    <!--查询已完成任务总数-->
+    <select id="getSucCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+       SELECT count(1) FROM
+       (
+        select DISTINCT(optid) from tb_score_list
+        where uid = #{uid} and score &gt; 0
+
+        ) as a
+
+
     </select>
 
 </mapper>
