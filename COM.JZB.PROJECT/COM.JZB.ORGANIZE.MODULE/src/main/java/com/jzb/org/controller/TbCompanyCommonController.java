@@ -129,13 +129,19 @@ public class TbCompanyCommonController {
                 Map<String, Object> map = new HashMap<>();
 
                 for (int i = 0, l = list.size(); i < l; i++) {
+
                     map.put("key", list.get(i).get("region"));
                     Response cityList = tbCityRedisApi.getCityList(map);
                     // 获取地区map
                     Map<String, Object> resultParam = null;
                     if (cityList.getResponseEntity() != null) {
                         resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
-                        resultParam.put("region", resultParam.get("creaid"));
+                        if(resultParam!=null){
+                            resultParam.put("region", resultParam.get("creaid"));
+                        }else {
+                            resultParam=new HashMap<>();
+                            resultParam.put("region",null);
+                        }
                     }
                     // 转map
                     if (resultParam != null) {
