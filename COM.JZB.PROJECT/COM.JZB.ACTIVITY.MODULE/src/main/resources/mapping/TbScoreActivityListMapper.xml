@@ -24,6 +24,8 @@
            tb_activity_list
         where
             uid=#{uid}
+            and
+            status = '1'
         <if test="startTime != null and startTime != '' ">
             and addtime >= #{startTime}
         </if>
@@ -59,7 +61,7 @@
         #{addtime},
         <choose>
             <when test="status != null and status != ''">
-              #{status},
+              #{status}
             </when>
             <otherwise>
                 '1'

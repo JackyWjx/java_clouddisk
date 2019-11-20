@@ -3,6 +3,7 @@ package com.jzb.activity.service;
 import com.jzb.activity.dao.TbScoreActivityListMapper;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbRandom;
+import com.jzb.base.util.JzbTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,9 @@ public class TbScoreActivityListService {
      * @return
      */
     public List<Map<String, Object>> getActivity(Map<String, Object> paramap) {
-
-
+        if (!JzbTools.isEmpty(paramap.get("endTime"))){
+            paramap.put("endTime", JzbDataType.getLong(paramap.get("endTime")) + 86400);
+        }
         return scoreMapper.queryActivityList(paramap);
     }
 
