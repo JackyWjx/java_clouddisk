@@ -26,5 +26,12 @@ public interface TbCompanySysconfigMapper {
      * @return
      */
     String queryCompanySysconfig(Map<String, Object> param);
+
+    /**
+     * 根据二级域名查询当前所有记录
+     * @param param
+     * @return
+     */
+    Map<String, Object> querySysconfig(Map<String, Object> param);
 }
 

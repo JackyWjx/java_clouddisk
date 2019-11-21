@@ -240,4 +240,11 @@
     <select id="queryCompanySysconfig" parameterType="java.util.Map" resultType="java.lang.String">
         select curl from tb_company_sysconfig where cid=#{cid} and status='1' and curl is not null
     </select>
+
+    <!-- 根据二级域名查询记录 -->
+    <select id="querySysconfig" parameterType="java.util.Map" resultType="java.util.Map">
+        select curl,systemname,tempid,tempname,logo,compname,subfavicon,subtitle,righticon,favicon,
+        background,keys,website,power,logintag,loginurl,bottombig,bottomsmall from tb_company_sysconfig
+        where status='1' and curl=#{curl}
+    </select>
 </mapper>

@@ -32,4 +32,13 @@ public class TbCompanySysconfigService {
     public String queryCompanySysconfig(Map<String, Object> param){
         return tbCompanySysconfigMapper.queryCompanySysconfig(param);
     }
+
+    /**
+     * 根据二级域名查询当前所有记录
+     * @param param
+     * @return
+     */
+    public Map<String, Object> querySysconfig(Map<String, Object> param){
+        return tbCompanySysconfigMapper.querySysconfig(param);
+    }
 }
