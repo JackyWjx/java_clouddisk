@@ -1,5 +1,6 @@
 package com.jzb.org.controller;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -62,6 +63,7 @@ public class TbCompanySysconfigController {
                 userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("adduid",userInfo.get("uid").toString());
                 param.put("upduid",userInfo.get("uid").toString());
+                param.put("logintag", JzbDataType.getInteger(param.get("logintag")));
                 response = tbCompanySysconfigService.addCompanySysconfig(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
             }
         } catch (Exception ex) {
