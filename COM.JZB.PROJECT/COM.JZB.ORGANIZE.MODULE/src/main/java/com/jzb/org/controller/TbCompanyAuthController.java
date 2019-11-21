@@ -50,10 +50,12 @@ public class TbCompanyAuthController {
                 int count = tbCompanyProductService.queryCompanyProductIsExists(param);
                 String curl = tbCompanySysconfigService.queryCompanySysconfig(param);
                 Response companyIsAuth1 = tbUserControlAuthApi.theCidIsExists(param);
+                Map<String, Object> map1 = tbCompanySysconfigService.queryCompanySysconfigInfo(param);
                 Map<String, Object> map=new HashMap<>();
                 map.put("temp",companyIsAuth.getResponseEntity());
                 map.put("computerAuth",count);
                 map.put("levelTwo",curl);
+                map.put("levelTwoInfo",map1);
                 map.put("memo","");
                 map.put("auth",companyIsAuth1.getResponseEntity());
                 result=Response.getResponseSuccess();

@@ -241,6 +241,12 @@
         select curl from tb_company_sysconfig where cid=#{cid} and status='1' and curl is not null
     </select>
 
+    <!-- 查询该单位是否授权电脑端授权 -->
+    <select id="queryCompanySysconfigInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        select curl,systemname,tempid,tempname,logo,compname,subfavicon,subtitle,righticon,favicon,
+        background,keys,website,power,logintag,loginurl,bottombig,bottomsmall from tb_company_sysconfig where cid=#{cid} and status='1' and curl is not null
+    </select>
+
     <!-- 根据二级域名查询记录 -->
     <select id="querySysconfig" parameterType="java.util.Map" resultType="java.util.Map">
         select curl,systemname,tempid,tempname,logo,compname,subfavicon,subtitle,righticon,favicon,
