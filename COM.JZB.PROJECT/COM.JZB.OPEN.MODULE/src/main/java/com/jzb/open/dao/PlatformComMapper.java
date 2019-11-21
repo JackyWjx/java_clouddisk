@@ -187,4 +187,31 @@ public interface PlatformComMapper {
      * @Author: DingSC
      */
     int searchOpenApiListCou(Map<String, Object> param);
+
+    /**
+     * 新增开发者应用
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int insertOrgApplication(Map<String, Object> param);
+
+    /**
+     * 修改开发者应用
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int updateOrgApplication(Map<String, Object> param);
+
+    /**
+     * 根据AppId查询应用审批表存在的个数
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int queryVerifyCount(Map<String, Object> param);
 }

@@ -11,6 +11,7 @@ import com.jzb.open.service.PlatformComService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -557,7 +558,7 @@ public class PlatformComController {
                 }
                 String end = "endtime";
                 if (!JzbTools.isEmpty(param.get(end))) {
-                    param.put(end, JzbDataType.getLong(param.get(end))+86400000);
+                    param.put(end, JzbDataType.getLong(param.get(end)) + 86400000);
                 }
                 List<Map<String, Object>> openApiList = platformComService.searchOpenApiList(param);
                 result = Response.getResponseSuccess(userInfo);
@@ -573,6 +574,94 @@ public class PlatformComController {
                 result = Response.getResponseError();
             }
 
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 新增开发者应用
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/addOrgApplication", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addOrgApplication(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"devtype", "appname", "apptype", "cid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int add = platformComService.insertOrgApplication(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 修改开发者应用
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/modifyOrgApplication", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyOrgApplication(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"appid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int upd = platformComService.updateOrgApplication(param);
+                result = upd > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 移除开发者应用
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/removeOrgApplication", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response removeOrgApplication(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"appid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                param.put("status", "2");
+                int upd = platformComService.updateOrgApplication(param);
+                result = upd == 3 ? Response.getResponseError() : Response.getResponseSuccess(userInfo);
+                Map<String, Object> map = new HashMap<>(2);
+                map.put("code", upd);
+                result.setResponseEntity(map);
+            } else {
+                result = Response.getResponseError();
+            }
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

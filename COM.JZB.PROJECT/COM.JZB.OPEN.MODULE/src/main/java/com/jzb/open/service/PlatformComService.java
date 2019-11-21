@@ -303,4 +303,72 @@ public class PlatformComService {
     public List<Map<String, Object>> searchOpenApiList(Map<String, Object> param) {
         return platformComMapper.searchOpenApiList(param);
     }
+
+    /**
+     * 新增开发者应用
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int insertOrgApplication(Map<String, Object> param) {
+        int dev = JzbDataType.getInteger(param.get("devtype"));
+        if (dev != 1) {
+            param.put("devtype", "2");
+        }
+        int app = JzbDataType.getInteger(param.get("apptype"));
+        if (app != 2) {
+            param.put("apptype", 1);
+        }
+        String key = "appline";
+        if (!JzbTools.isEmpty(param.get(key))) {
+            param.put(key, JzbDataType.getInteger(param.get(key)));
+        }
+        param.put("appid", JzbRandom.getRandomCharCap(11));
+        param.put("time", System.currentTimeMillis());
+        param.put("status", "1");
+        return platformComMapper.insertOrgApplication(param);
+    }
+
+    /**
+     * 修改开发者应用
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int updateOrgApplication(Map<String, Object> param) {
+        param.put("time", System.currentTimeMillis());
+        int result = 1;
+        if (JzbDataType.getInteger(param.get("status")) == 2) {
+            int verify = platformComMapper.queryVerifyCount(param);
+            if (verify > 0) {
+                result = 3;
+            } else {
+                platformComMapper.updateOrgApplication(param);
+            }
+        } else {
+            String key = "appline";
+            if (!JzbTools.isEmpty(param.get(key))) {
+                param.put(key, JzbDataType.getInteger(param.get(key)));
+            }
+            String key1 = "devtype";
+            if (!JzbTools.isEmpty(param.get(key1))) {
+                int dev = JzbDataType.getInteger(param.get(key1));
+                if (dev != 1) {
+                    param.put(key1, "2");
+                }
+            }
+            String key2 = "apptype";
+            if (!JzbTools.isEmpty(param.get(key2))) {
+                int app = JzbDataType.getInteger(param.get(key2));
+                if (app != 2) {
+                    param.put(key2, 1);
+                }
+            }
+            result = platformComMapper.updateOrgApplication(param);
+        }
+
+        return result;
+    }
 }

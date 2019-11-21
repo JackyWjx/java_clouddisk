@@ -201,18 +201,18 @@
     <!--根据企业id获取部门信息-->
     <select id="queryDeptListByCid" resultType="java.util.Map">
         SELECT
-        cdid,
-        cname,
-        pcdid
+        cd.cdid,
+        cd.cname,
+        cd.pcdid,cl.cname as company
         FROM
-        tb_company_dept
+        tb_company_dept cd  LEFT JOIN tb_company_list cl on cd.cid= cl.cid
         WHERE
-        cid =#{cid}
+        cd.cid =#{cid}
         <if test="pcdid !=null and pcdid !=''">
-            AND pcdid= #{pcdid}
+            AND cd.pcdid= #{pcdid}
         </if>
-        AND status='1'
-        ORDER BY idx LIMIT #{pagesize} OFFSET #{start}
+        AND cd.status='1'
+        ORDER BY cd.idx LIMIT #{pagesize} OFFSET #{start}
     </select>
 
     <!--根据名称查询产品信息-->

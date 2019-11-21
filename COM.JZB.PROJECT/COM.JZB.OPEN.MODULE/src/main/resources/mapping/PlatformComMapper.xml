@@ -48,6 +48,13 @@
         #{reqtype},#{curl},#{descfile},#{apibody},#{uid},
         #{time},#{uid},#{time},#{status},#{summary});
     </insert>
+    <!--新增开发者应用-->
+    <insert id="insertOrgApplication">
+        insert into tb_org_application (appid, appline, devtype, apptype, cid,
+                                        appname,ouid,addtime,upduid,updtime,status)
+        values (#{appid},#{appline},#{devtype},#{apptype},#{cid},
+            #{appname},#{uid},#{time},#{uid},#{time},#{status});
+    </insert>
     <!--审批产品列表-->
     <update id="updateVerify">
         update tb_application_verify
@@ -86,6 +93,19 @@
         <if test=" status != null and status !='' ">,status=#{status}</if>
         where apiid=#{apiid};
     </update>
+    <!--修改开发者应用-->
+    <update id="updateOrgApplication">
+        update tb_org_application
+        set upduid=#{uid},updtime =#{time}
+        <if test=" appline != null and appline !='' ">,appline=#{appline}</if>
+        <if test=" devtype != null and devtype !='' ">,devtype=#{devtype}</if>
+        <if test=" apptype != null and apptype !='' ">,apptype=#{apptype}</if>
+        <if test=" cid != null and cid !='' ">,cid=#{cid}</if>
+        <if test=" appname != null and appname !='' ">,appname=#{appname}</if>
+        <if test=" status != null and status !='' ">,status=#{status}</if>
+        where appid=#{appid};
+    </update>
+
 
     <!--获取所有开放平台的企业id-->
     <select id="queryPlatformIds" resultType="java.util.Map">
@@ -248,6 +268,12 @@
         <if test=" otid != null and otid != ''">
             AND toal.otid = #{otid}
         </if>
+    </select>
+    <!--根据AppId查询应用审批表存在的个数-->
+    <select id="queryVerifyCount" resultType="java.lang.Integer">
+        select count(1)
+        from tb_application_verify where
+         appid=#{appid}
     </select>
 
 </mapper>
