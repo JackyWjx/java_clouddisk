@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbCommonProjectListMapper">
+
+
+    <!--销售/业主-公海-项目-新建-->
+    <insert id="saveCommonProjectList" parameterType="java.util.Map">
+        insert into
+        tb_common_project_list
+        (projectid,cname,projectname,region,tendertime,tendername,tenderphone,projecttype,wincname,agentcname
+        ,agentuname,agentphone,bussuname,bussphone,summary,adduid,idx,updtime,status,addtime)
+        values (
+        #{projectid},
+        <choose>
+            <when test="cname != null and cname != ''">
+                #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{projectname},
+        <choose>
+            <when test="region != null and region != ''">
+                #{region},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tendertime != null and tendertime != ''">
+                #{tendertime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tendername != null and tendername != ''">
+                #{tendername},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tenderphone != null and tenderphone != ''">
+                #{tenderphone},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="projecttype != null and projecttype != ''">
+                #{projecttype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="wincname != null and wincname != ''">
+                #{wincname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="agentcname != null and agentcname != ''">
+                #{agentcname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="agentuname != null and agentuname != ''">
+                #{agentuname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="agentphone != null and agentphone != ''">
+                #{agentphone},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="bussuname != null and bussuname != ''">
+                #{bussuname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="bussphone != null and bussphone != ''">
+                #{bussphone},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{adduid},
+        <choose>
+            <when test="idx != null and idx != ''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_common_project_list),
+            </otherwise>
+        </choose>
+        #{updtime},
+        <choose>
+            <when test="status != null and status != ''">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        #{addtime}
+        )
+    </insert>
+
+    <!--销售/业主-公海-项目-修改-->
+    <update id="updateCommonProjectList" parameterType="java.util.Map">
+        update
+        tb_common_project_list
+        set
+        <if test="cname != null and cname != null">cname = #{cname},</if>
+        <if test="projectname != null and projectname != null">projectname = #{projectname},</if>
+        <if test="projecttype != null and projecttype != null">projecttype = #{projecttype},</if>
+        <if test="region != null and region != null">region = #{region},</if>
+        <if test="tendertime != null and tendertime != null">tendertime = #{tendertime},</if>
+        <if test="tendername != null and tendername != null">tendername = #{tendername},</if>
+        <if test="tenderphone != null and tenderphone != null">tenderphone = #{tenderphone},</if>
+        <if test="projecttype != null and projecttype != null">projecttype = #{projecttype},</if>
+        <if test="wincname != null and wincname != null">wincname = #{wincname},</if>
+        <if test="agentcname != null and agentcname != null">agentcname = #{agentcname},</if>
+        <if test="agentuname != null and agentuname != null">agentuname = #{agentuname},</if>
+        <if test="agentphone != null and agentphone != null">agentphone = #{agentphone},</if>
+        <if test="bussuname != null and bussuname != null">bussuname = #{bussuname},</if>
+        <if test="bussphone != null and bussphone != null">bussphone = #{bussphone},</if>
+        <if test="upduid != null and upduid != null">upduid = #{upduid},</if>
+        <if test="status != null and status != null">status = #{status},</if>
+        <if test="updtime != null and updtime != null">updtime = #{updtime}</if>
+        where
+        projectid = #{projectid}
+    </update>
+
+
+    <!--销售/业主-公海-项目-查询总数量-->
+    <select id="getCommonProjectList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        cid,projectid,cname,projectname,projecttype,region,tendertime,tendername,tenderphone,projecttype,wincname,agentcname
+        ,agentuname,agentphone,bussuname,bussphone,summary
+        from
+        tb_common_project_list
+        where
+        status = '1'
+        <if test="projecttype != null and projecttype != ''">
+            and projecttype = #{projecttype}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and projectname ~ #{keyword}
+        </if>
+        <if test="province != null and province != ''">
+            and a.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <!--销售/业主-公海-项目-查询总数量-->
+    <select id="getCommonProjectListCount" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from(
+        select
+        cid,projectid,cname,projectname,projecttype,region,tendertime,tendername,tenderphone,projecttype,wincname,agentcname
+        ,agentuname,agentphone,bussuname,bussphone,summary
+        from
+        tb_common_project_list
+        where
+        status = '1'
+        <if test="projecttype != null and projecttype != ''">
+            and projecttype = #{projecttype}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and projectname ~ #{keyword}
+        </if>
+        <if test="province != null and province != ''">
+            and a.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        )as num
+    </select>
+
+    <!--销售业主-公海-项目-关联单位-->
+    <update id="updateCommonProject" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            update
+            tb_common_project_list
+            set
+            <if test="item.cid != null and item.cid != ''">cid = #{item.cid},</if>
+            <if test="item.projectname != null and item.projectname != ''">projectname = #{item.projectname},</if>
+            <if test="item.cname != null and item.cname != ''">cname = #{item.cname},</if>
+            <if test="item.updtime != null and item.updtime != ''">updtime = #{item.updtime}</if>
+            where
+            projectid = #{projectid}
+        </foreach>
+    </update>
+
+
+    <!--销售业主-公海-项目-取消关联单位-->
+    <update id="updateCommonProjects" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            update
+            tb_common_project_list
+            set
+            <if test="item.cid != null and item.cid != ''">cid = 321123,</if>
+            <if test="item.projectname != null and item.projectname != ''">projectname = #{item.projectname},</if>
+            <if test="item.cname != null and item.cname != ''">cname = #{item.cname},</if>
+            <if test="item.updtime != null and item.updtime != ''">updtime = #{item.updtime}</if>
+            where
+            projectid = #{item.projectid} and cid = #{item.cid}
+        </foreach>
+    </update>
+
+</mapper>
