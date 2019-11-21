@@ -225,6 +225,7 @@
             <if test="logintag !=null and logintag!=''">logintag=#{logintag},</if>
             <if test="loginurl !=null and loginurl!=''">loginurl=#{loginurl},</if>
             <if test="bottombig !=null and bottombig!=''">bottombig=#{bottombig},</if>
+            <if test="power !=null and power!=''">power=#{power},</if>
             <if test="bottomsmall !=null and bottomsmall!=''">bottomsmall=#{bottomsmall},</if>
             <if test="favicon !=null and favicon!=''">favicon=#{favicon},</if>
             <if test="background !=null and background!=''">background=#{background},</if>
