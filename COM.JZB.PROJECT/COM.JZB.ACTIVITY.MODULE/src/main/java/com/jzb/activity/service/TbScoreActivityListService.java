@@ -1,12 +1,15 @@
 package com.jzb.activity.service;
 
+import com.jzb.activity.api.org.OrgCompanyDpt;
 import com.jzb.activity.dao.TbScoreActivityListMapper;
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +24,9 @@ public class TbScoreActivityListService {
     @Autowired
     TbScoreActivityListMapper scoreMapper;
 
+    @Autowired
+    OrgCompanyDpt orgCompanyDpt;
+
     /**
      * 查询活动列表
      * @param paramap
@@ -30,7 +36,23 @@ public class TbScoreActivityListService {
         if (!JzbTools.isEmpty(paramap.get("endTime"))){
             paramap.put("endTime", JzbDataType.getLong(paramap.get("endTime")) + 86400);
         }
-        return scoreMapper.queryActivityList(paramap);
+       List<Map<String,Object>> list =  scoreMapper.queryActivityList(paramap);
+//        Map<String ,Object> map = new HashMap<>();
+        if (list != null && list.size() > 0){
+            for (int i = 0; i < list.size(); i++) {
+                Map<String ,Object> map =  list.get(i);
+                map.put("userinfo",paramap.get("userinfo"));
+                Response deptList = orgCompanyDpt.getDeptList(map);
+                List<Map<String,Object>> Dlist =  deptList.getPageInfo().getList();
+                for (int j = 0; j < Dlist.size(); j++) {
+                    Map<String ,Object> Dmap =  Dlist.get(j);
+                    if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("cdid"))) && map.get("cdid").toString().trim().equals(Dmap.get("cdid")) ){
+                        map.putAll(Dmap);
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     /**

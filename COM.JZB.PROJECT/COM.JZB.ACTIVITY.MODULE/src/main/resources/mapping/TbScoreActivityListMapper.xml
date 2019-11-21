@@ -11,9 +11,11 @@
     <!--查询活动列表-->
     <select id="queryActivityList" parameterType="java.util.Map" resultType="java.util.Map">
         select
+            votes,
+            comments,
             actid,
             addtime,
-            cname,
+            cname as activtyname,
             actdesc,
             cid,
             cdid,
