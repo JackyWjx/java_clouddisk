@@ -30,7 +30,7 @@ public class TbCommonProjectListController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(TbProjectTenderingListController.class);
+    private final static Logger logger = LoggerFactory.getLogger(TbCommonProjectListController.class);
 
     /**
      * 销售/业主-公海-项目-新建
