@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbScoreListMapper">
+
+    <!--查询该操作类型最近一次的更新时间-->
+    <select id="getTimeByOptid" parameterType="java.util.Map" resultType="java.util.Map">
+        select updtime from tb_score_list where uid = #{uid} and optid = #{optid}
+        and updtime &lt;= #{twelve}
+        and updtime &gt;= #{zero}
+    </select>
+
+    <!--往积分日志表新建数据-->
+    <insert id="addScoreList" parameterType="java.util.Map">
+        insert into tb_score_list (uid,optid,score,updtime,status,optvalue)
+        values (
+        #{uid},
+        #{optid},
+        #{score},
+        #{updtime},
+        #{status},
+        <choose>
+            <when test="optvalue != null and optvalue != ''">
+                #{optvalue}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--查询当日已发表数量-->
+    <select id="getAmount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(1) from tb_score_list where optid = #{optid} and uid = #{uid}
+        and updtime &lt;= #{twelve}
+        and updtime &gt;= #{zero}
+    </select>
+
+</mapper>

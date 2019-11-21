@@ -3,16 +3,16 @@ package com.jzb.operate.controller;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.service.TbScoreManualService;
 import com.jzb.operate.util.PageConvert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +30,11 @@ import java.util.Map;
 public class TbScoreManualTypeController {
     @Autowired
     TbScoreManualService scoreManual;
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbScoreManualTypeController.class);
 
     @RequestMapping("/getScoreManualList")
     public Response getScoreManual(@RequestBody Map<String ,Object> paramap){
@@ -152,25 +157,42 @@ public class TbScoreManualTypeController {
      * @param paramp
      * @return
      */
-    @RequestMapping("/queryMyTask")
+    @RequestMapping(value = "/queryMyTask",method = RequestMethod.POST)
     public Response queryMyTask(@RequestBody Map<String,Object> paramp){
         Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/score/queryMyTask";
+        boolean flag = true;
         // 查询用户信息
         try {
-            Map<String ,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
-            paramp.put("uid",userinfo.get("uid"));
+            if (paramp.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) paramp.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            paramp.put("uid",userInfo.get("uid"));
             // 查询积分值
             List<Map<String,Object>> list = scoreManual.querySocre(paramp);
 
             // 获取已完成任务总数
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(list);
-            response = Response.getResponseSuccess(userinfo);
+            response = Response.getResponseSuccess(userInfo);
             response.setPageInfo(pageInfo);
 
         }catch (Exception e){
+            flag = false;
             JzbTools.logError(e);
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryMyTask Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return response;
     }

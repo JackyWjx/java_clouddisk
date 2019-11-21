@@ -75,15 +75,14 @@ public class TbScoreManualService {
 
     // 查询我的任务
     public List<Map<String, Object>> querySocre(Map<String, Object> paramp) {
-        List<Map<String, Object>> maps = scoreManual.queryScoreLog(paramp);
-        paramp.put("optid","NOGMFJ");
+        paramp.put("optid","LOGIN");
         // 获取登录时间
         List<Map<String, Object>> loginTime = scoreManual.queryLogin(paramp);
 
         // 登录累计天数
         int day = 0;
         for (int i = 1; i <= loginTime.size() ; i++) {
-            boolean flag = method((Long) loginTime.get(i-1).get("updtime"), i);
+            boolean flag = method((Long) loginTime.get(i-1).get("updtime"));
             if (flag){
                 day ++;
             }else {
@@ -95,7 +94,7 @@ public class TbScoreManualService {
             try {
                 long updtime = System.currentTimeMillis();
                 Map<String,Object> map1 = new HashMap<>();
-                map1.put("optid","LBVKKP");
+                map1.put("optid","ELOGIN");
                 map1.put("uid",paramp.get("uid"));
                 map1.put("updtime",updtime);
                 map1.put("status","2");
@@ -107,23 +106,23 @@ public class TbScoreManualService {
 
         Map<String, Object> map = methodTime(System.currentTimeMillis());
         // 获取当日文章发布数量
-        map.put("optid","ZYCBDP");
+        map.put("optid","ARTPUB");
         map.put("uid",paramp.get("uid"));
         int pubCount = scoreManual.getPubCount(map);
         // 获取当日活动发布数量
-        map.put("optid","QWEWER");
+        map.put("optid","ACTPUB");
         int actCount = scoreManual.getPubCount(map);
 
         List<Map<String,Object>> list = scoreManual.queryScoreLog(paramp);
         for (int i = 0; i < list.size(); i++) {
-            if ("LBVKKP".equals(list.get(i).get("optid") )){
+            if ("ELOGIN".equals(list.get(i).get("optid") )){
                 list.get(i).put("day",day);
             }
-            if ("ZYCBDP".equals(list.get(i).get("optid"))){
+            if ("ARTPUB".equals(list.get(i).get("optid"))){
                 list.get(i).put("count",pubCount);
                 list.get(i).put("max",10);
             }
-            if ("QWEWER".equals(list.get(i).get("optid"))){
+            if ("ACTPUB".equals(list.get(i).get("optid"))){
                 list.get(i).put("count",actCount);
                 list.get(i).put("max",10);
             }
@@ -131,13 +130,13 @@ public class TbScoreManualService {
         return list;
     }
 
-    public boolean method(Long current,int day){
+    public boolean method(Long current){
 
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         long twelve=zero+24*60*60*1000-1;//今天23点59分59秒的毫秒数
         return current >= zero  && current <= twelve;
-
     }
+
     public Map<String,Object> methodTime(Long current){
         Map<String ,Object> map = new HashMap<>();
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数

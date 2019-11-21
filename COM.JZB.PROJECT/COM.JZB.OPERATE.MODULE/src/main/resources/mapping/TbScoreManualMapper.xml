@@ -24,7 +24,7 @@
 
     <!--查询积分规则总数-->
     <select id="getScoreRuleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
-        select count(1) from tb_score_rule where status = '1'
+        select count(1) from tb_score_rule where status != '4'
     </select>
 
 
@@ -43,7 +43,7 @@
           from
           tb_score_rule
           where
-          status = '1'
+          status  != '4'
           ORDER BY
           id  desc
            LIMIT #{pagesize}
