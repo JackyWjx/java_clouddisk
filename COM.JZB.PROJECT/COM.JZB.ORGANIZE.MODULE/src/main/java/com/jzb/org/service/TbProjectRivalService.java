@@ -10,6 +10,7 @@ import java.util.Map;
 @Service
 public class TbProjectRivalService {
 
+
     @Autowired
     private TbProjectRivalMapper tbProjectRivalMapper;
 

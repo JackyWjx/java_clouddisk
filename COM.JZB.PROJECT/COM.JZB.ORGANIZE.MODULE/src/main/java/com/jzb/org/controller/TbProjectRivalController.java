@@ -21,6 +21,7 @@ public class TbProjectRivalController {
     @Autowired
     private TbProjectRivalService tbProjectRivalService;
 
+    
     /**
      * 日志记录对象
      */
