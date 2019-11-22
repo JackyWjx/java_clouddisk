@@ -24,7 +24,7 @@ public class TbProjectRivalController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(TbProjectTenderingListController.class);
+    private final static Logger logger = LoggerFactory.getLogger(TbProjectRivalController.class);
 
     /**
      * 项目竞争对手的添加

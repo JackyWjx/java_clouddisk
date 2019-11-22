@@ -24,7 +24,7 @@ public class TbCommonProjectInfoController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(TbProjectTenderingListController.class);
+    private final static Logger logger = LoggerFactory.getLogger(TbCommonProjectInfoController.class);
 
     /**
      * 项目情报的新增

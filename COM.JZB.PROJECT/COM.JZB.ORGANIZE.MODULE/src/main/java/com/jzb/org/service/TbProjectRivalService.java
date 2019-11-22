@@ -27,7 +27,6 @@ public class TbProjectRivalService {
         return tbProjectRivalMapper.saveProjectRiva(param);
     }
 
-    
     /**
      * 项目竞争对手的修改
      * @param param
