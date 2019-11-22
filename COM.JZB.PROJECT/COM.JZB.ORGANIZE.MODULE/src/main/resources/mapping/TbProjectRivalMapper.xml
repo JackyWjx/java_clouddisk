@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbProjectRivalMapper">
+
+    <!--项目竞争对手的添加-->
+    <insert id="saveProjectRiva" parameterType="java.util.Map">
+        insert into
+        tb_project_rival
+        (projectid,cname,reluname,relphone,brandname,contrast,reluname,relphone,idx,adduid,addtime,updtime,status,summary)
+        values(
+        #{projectid},
+        <choose>
+            <when test="cname != null and cname != ''">
+             #{cname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="reluname != null and reluname != ''">
+                #{reluname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="relphone != null and relphone != ''">
+                #{relphone},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="brandname != null and brandname != ''">
+                #{brandname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="contrast != null and contrast != ''">
+                #{contrast},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="reluname != null and reluname != ''">
+                #{reluname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="relphone != null and relphone != ''">
+                #{relphone},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null and idx != ''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_project_rival),
+            </otherwise>
+        </choose>
+        #{adduid},
+        #{addtime},
+        #{updtime},
+        <choose>
+            <when test="status != null and status != ''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--项目竞争对手的修改-->
+    <update id="updateProjectRiva" parameterType="java.util.Map">
+        update
+        tb_project_rival
+        set
+        <if test="cname != null and cname != ''">cname = #{cname},</if>
+        <if test="reluname != null and reluname != ''">reluname = #{reluname},</if>
+        <if test="relphone != null and relphone != ''">relphone = #{relphone},</if>
+        <if test="brandname != null and brandname != ''">brandname = #{brandname},</if>
+        <if test="contrast != null and contrast != ''">contrast = #{contrast},</if>
+        <if test="reluname != null and reluname != ''">reluname = #{reluname},</if>
+        <if test="relphone != null and relphone != ''">relphone = #{relphone},</if>
+        <if test="upduid != null and upduid != ''">upduid = #{upduid},</if>
+        <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+        where
+        projectid = #{projectid}
+    </update>
+
+    <!--项目竞争对手的查询-->
+    <select id="getProjectRiva" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        projectid,
+        cname,
+        reluname,
+        relphone,
+        brandname,
+        contrast,
+        reluname,
+        relphone,
+        idx,
+        adduid,
+        addtime,
+        updtime,
+        status,
+        summary
+        from
+        tb_project_rival
+        where
+        projectid = #{projectid}
+    </select>
+</mapper>

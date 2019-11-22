@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbProjectRivalMapper">
+
+  <insert id="saveCommonProjectInfo" parameterType="java.util.Map">
+      insert into
+      tb_common_project_info
+      (projectid,lineuname,linephone,age,sex,job,desc,idx,adduid,addtime,updtime,status)
+      values
+      (
+      #{projectid},
+      <choose>
+          <when test="lineuname != null and lineuname != ''">
+              #{lineuname},
+          </when>
+          <otherwise>
+              null,
+          </otherwise>
+      </choose>
+      <choose>
+          <when test="linephone != null and linephone != ''">
+              #{linephone},
+          </when>
+          <otherwise>
+              null,
+          </otherwise>
+      </choose>
+      <choose>
+          <when test="age != null and age != ''">
+              #{age},
+          </when>
+          <otherwise>
+              null,
+          </otherwise>
+      </choose>
+      <choose>
+          <when test="sex != null and sex != ''">
+              #{sex},
+          </when>
+          <otherwise>
+              null,
+          </otherwise>
+      </choose>
+      <choose>
+          <when test="job != null and job != ''">
+              #{job},
+          </when>
+          <otherwise>
+              null,
+          </otherwise>
+      </choose>
+      <choose>
+          <when test="desc != null and desc != ''">
+              #{desc},
+          </when>
+          <otherwise>
+              null,
+          </otherwise>
+      </choose>
+      <choose>
+          <when test="idx != null and idx != ''">
+              #{idx},
+          </when>
+          <otherwise>
+              (select count(1) from tb_common_project_info),
+          </otherwise>
+      </choose>
+      #{adduid},
+      #{addtime},
+      #{updtime},
+      <choose>
+          <when test="status != null and status != ''">
+              #{status},
+          </when>
+          <otherwise>
+              1,
+          </otherwise>
+      </choose>
+      )
+
+  </insert>
+
+    <!--项目情报的修改-->
+    <update id="updateCommonProjectInfo" parameterType="java.util.Map">
+        update
+        tb_common_project_info
+        set
+        <if test="lineuname != null and lineuname != ''">lineuname = #{lineuname},</if>
+        <if test="linephone != null and linephone != ''">linephone = #{linephone},</if>
+        <if test="age != null and age != ''">age = #{age},</if>
+        <if test="sex != null and sex != ''">sex = #{sex},</if>
+        <if test="job != null and job != ''">job = #{job},</if>
+        <if test="desc != null and desc != ''">desc = #{desc},</if>
+        <if test="upduid != null and upduid != ''">upduid = #{upduid},</if>
+        <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+        where
+        projectid = #{projectid}
+    </update>
+
+
+    <!--项目情报的查询-->
+    <select id="getCommonProjectInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        projectid,
+        lineuname,
+        linephone,
+        age,
+        sex,
+        job,
+        desc
+        from
+        tb_common_project_info
+        where
+        projectid = #{projectid}
+    </select>
+</mapper>
