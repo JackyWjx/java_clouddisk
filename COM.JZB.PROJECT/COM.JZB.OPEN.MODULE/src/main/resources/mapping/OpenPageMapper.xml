@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.open.dao.OpenPageMapper">
+    <!--新增应用菜单表-->
+    <insert id="insertApplicationMenu">
+        insert into tb_application_menu (appid, mid, parentid, cname, menupath,
+        idx, adduid, addtime, upduid,updtime,
+        status)
+        values (#{appid},#{mid},#{parentid},#{cname},#{menupath},
+        <choose>
+            <when test="idx != null and idx !=''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(mid) + 1
+                from tb_application_menu
+                where status = '1' and parentid =#{parentid}),
+            </otherwise>
+        </choose>
+        #{uid},#{time},#{uid},#{time},#{status});
+    </insert>
+    <!--模糊查询开发者应用表-->
+    <select id="searchOrgApplication" resultType="java.util.Map">
+        select appid,
+       appline,
+       devtype,
+       apptype,
+       cid,
+       appname
+        from tb_org_application
+        where status = '1'
+          and appname ~ #{value}
+          order by addtime desc LIMIT #{pagesize}  OFFSET #{start};
+    </select>
+    <!--模糊查询开发者应用表总数-->
+    <select id="searchOrgApplicationCount" resultType="java.lang.Integer">
+        select count(appid)
+        from tb_org_application
+        where status = '1'
+          and appname ~ '';
+    </select>
+</mapper>
