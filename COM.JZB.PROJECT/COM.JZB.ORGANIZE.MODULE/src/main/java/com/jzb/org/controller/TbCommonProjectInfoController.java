@@ -81,6 +81,7 @@ public class TbCommonProjectInfoController {
      * @param param
      * @return
      */
+
     @RequestMapping(value = "/updateCommonProjectInfo", method = RequestMethod.POST)
     @CrossOrigin
     public Response updateCommonProjectInfo(@RequestBody Map<String, Object> param) {
@@ -125,11 +126,13 @@ public class TbCommonProjectInfoController {
     }
 
 
+
     /**
      * 项目情报的查询
      * @param param
      * @return
      */
+
     @RequestMapping(value = "/getCommonProjectInfo", method = RequestMethod.POST)
     @CrossOrigin
     public Response getCommonProjectInfo(@RequestBody Map<String, Object> param) {

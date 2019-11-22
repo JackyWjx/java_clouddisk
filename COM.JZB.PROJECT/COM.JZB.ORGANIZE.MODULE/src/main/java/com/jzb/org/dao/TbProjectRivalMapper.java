@@ -24,6 +24,7 @@ public interface TbProjectRivalMapper {
      */
     int updateProjectRiva(Map<String, Object> param);
 
+
     /**
      * 项目竞争对手的查询
      * @param param

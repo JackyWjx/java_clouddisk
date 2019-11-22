@@ -30,4 +30,5 @@ public interface TbCommonProjectInfoMapper {
      * @return
      */
     List<Map<String, Object>> getCommonProjectInfo(Map<String, Object> param);
+
 }
