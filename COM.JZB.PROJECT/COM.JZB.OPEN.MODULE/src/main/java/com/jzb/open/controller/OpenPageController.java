@@ -95,4 +95,63 @@ public class OpenPageController {
         }
         return result;
     }
+
+    /**
+     * 应用页面表新增
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/addApplicationPage", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addApplicationPage(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"appid", "mid", "cname", "pagepath"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int add = openPageService.insertApplicationPage(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 查询子菜单和页面
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/getApplicationMenu", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getApplicationMenu(@RequestBody Map<String, Object> param) {
+        Response result;
+        PageInfo Info;
+        try {
+            String[] str = {"appid", "parentid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("start", 0);
+                param.put("pagesize", 2147483647);
+                List<Map<String, Object>> menuList = openPageService.getApplicationMenuPage(param);
+                result = Response.getResponseSuccess(userInfo);
+                result.setResponseEntity(menuList);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
 }

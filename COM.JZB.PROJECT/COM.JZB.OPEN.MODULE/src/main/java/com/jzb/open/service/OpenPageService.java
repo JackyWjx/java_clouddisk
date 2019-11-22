@@ -57,4 +57,23 @@ public class OpenPageService {
         param.put("mid", mid);
         return openPageMapper.insertApplicationMenu(param);
     }
+
+    /**
+     * 应用页面表新增
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    public int insertApplicationPage(Map<String, Object> param) {
+        param.put("time", System.currentTimeMillis());
+        param.put("status", "1");
+        String pageId = JzbDataType.getString(param.get("mid")) + JzbRandom.getRandomNum(2);
+        param.put("pageid", pageId);
+        return openPageMapper.insertApplicationPage(param);
+    }
+
+    public List<Map<String, Object>> getApplicationMenuPage(Map<String, Object> param){
+        return openPageMapper.getApplicationMenuPage(param);
+    }
 }

@@ -43,4 +43,22 @@ public interface OpenPageMapper {
      * @Author: DingSC
      */
     int insertApplicationMenu(Map<String, Object> param);
+
+    /**
+     * 应用页面表新增
+     *
+     * @param param
+     * @return int
+     * @Author: DingSC
+     */
+    int insertApplicationPage(Map<String, Object> param);
+
+    /**
+     * 应用菜单表查询
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    List<Map<String, Object>> getApplicationMenuPage(Map<String, Object> param);
 }
