@@ -21,6 +21,24 @@
         </choose>
         #{uid},#{time},#{uid},#{time},#{status});
     </insert>
+    <!--应用页面表新增-->
+    <insert id="insertApplicationPage">
+        insert into tb_application_page (pageid, appid, mid, cname, pagepath,
+        idx, ouid, addtime, upduid,
+        updtime, status)
+        values (#{pageid},#{appid},#{mid},#{cname},#{pagepath},
+        <choose>
+            <when test="idx != null and idx !=''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(pageid) + 1
+                from tb_application_page
+                where status = '1' and mid =#{mid}),
+            </otherwise>
+        </choose>
+        #{uid},#{time},#{uid},#{time},#{status});
+    </insert>
     <!--模糊查询开发者应用表-->
     <select id="searchOrgApplication" resultType="java.util.Map">
         select appid,
@@ -40,5 +58,36 @@
         from tb_org_application
         where status = '1'
           and appname ~ '';
+    </select>
+    <!--应用菜单表查询-->
+    <select id="getApplicationMenuPage" resultType="java.util.Map">
+        SELECT
+            appid,
+            mid,
+            '' AS pageid,
+            cname,
+            menupath AS path,
+            parentid,
+            '1' AS status
+        FROM
+            tb_application_menu
+        WHERE
+            status = '1'
+            AND appid = #{ appid }
+            AND parentid = #{ parentid } UNION
+        SELECT
+            appid,
+            mid,
+            pageid,
+            cname,
+            pagepath AS path,
+            '',
+            '2' AS status
+        FROM
+            tb_application_page
+        WHERE
+            status = '1'
+            AND mid = #{ parentid }
+            AND appid = #{ appid }
     </select>
 </mapper>
