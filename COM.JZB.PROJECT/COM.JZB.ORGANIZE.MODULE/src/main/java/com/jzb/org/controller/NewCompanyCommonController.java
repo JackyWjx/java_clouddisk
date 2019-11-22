@@ -1,17 +1,21 @@
 package com.jzb.org.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.service.CompanyService;
 import com.jzb.org.service.NewCompanyCommonService;
 import com.jzb.org.service.TbCompanyCommonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +36,7 @@ public class NewCompanyCommonController {
 
     @Autowired
     private CompanyController companyController;
+
     /**
      * CRM-销售业主-公海-单位1
      * 点击公海显示所有的单位信息
@@ -111,7 +116,7 @@ public class NewCompanyCommonController {
             param.put("upduid", JzbDataType.getString(userInfo.get("uid")));
             if (count >= 1) {
                 result = Response.getResponseSuccess(userInfo);
-                Map<String, Object> map= companyService.getEnterpriseData(param);
+                Map<String, Object> map = companyService.getEnterpriseData(param);
                 companyController.comHasCompanyKey(map);
                 // 修改公海单位信息
                 newCompanyCommonService.modifyCompanyCommonList(param);
@@ -128,7 +133,7 @@ public class NewCompanyCommonController {
 
     /**
      * CRM-销售业主-公海-单位4
-     * 点击删除按钮,进行公海单位删除
+     * 点击删除按钮,进行公海单位删除(私海,联系表没出来  ,暂时没实现)
      *
      * @author kuangbin
      */
@@ -147,4 +152,5 @@ public class NewCompanyCommonController {
         }
         return result;
     }
+
 }
