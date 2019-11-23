@@ -11,23 +11,25 @@
     <!--查询活动列表-->
     <select id="queryActivityList" parameterType="java.util.Map" resultType="java.util.Map">
         select
-            votes,
-            comments,
-            actid,
-            addtime,
-            cname as activtyname,
-            actdesc,
-            cid,
-            cdid,
-            comments,
-            reads,
-            shares
+        votes,
+        comments,
+        actid,
+        addtime,
+        cname as activtyname,
+        actdesc,
+        cid,
+        cdid,
+        context,
+        comments,
+        reads,
+        shares,
+        status
         from
-           tb_activity_list
+        tb_activity_list
         where
-            uid=#{uid}
-            and
-            status = '1'
+        uid=#{uid}
+        and
+        status = '1'
         <if test="startTime != null and startTime != '' ">
             and addtime >= #{startTime}
         </if>
@@ -36,15 +38,15 @@
         </if>
         order by
         id desc
-            LIMIT #{pagesize}
-            OFFSET #{pageno}
+        LIMIT #{pagesize}
+        OFFSET #{pageno}
 
     </select>
 
     <!--新建活动-->
-    <insert id="addActivityList" parameterType="java.util.Map" >
+    <insert id="addActivityList" parameterType="java.util.Map">
         insert into
-        tb_activity_list(actid,cname,cid,cdid,context,uid,addtime,status)
+        tb_activity_list(actid,cname,cid,cdid,context,votes,comments,reads,uid,addtime,status)
         values
         (
         #{actid},
@@ -53,17 +55,18 @@
         #{cdid},
         <choose>
             <when test="context != null and context != '' ">
-                 #{context},
+                #{context},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
+        0,0,0,
         #{uid},
         #{addtime},
         <choose>
             <when test="status != null and status != ''">
-              #{status}
+                #{status}
             </when>
             <otherwise>
                 '1'
@@ -75,14 +78,14 @@
     <!--新建活动-新建图片-->
     <insert id="insertActivityPhoto" parameterType="java.util.List">
         <foreach collection="list" index="index" item="item" separator=";">
-        insert into
-        tb_activity_photo(actid, fileid, photo, idx, adduid, addtime, status, summary)
-        values
+            insert into
+            tb_activity_photo(actid, fileid, photo, idx, adduid, addtime, status, summary)
+            values
             (
             #{item.actid},
             #{item.fileid},
             <if test="item.photo != null and item.photo != ''">
-               #{item.photo},
+                #{item.photo},
             </if>
             <choose>
                 <when test="item.idx != null and item.idx != ''">
@@ -97,7 +100,7 @@
             #{item.status},
             <choose>
                 <when test="item.summary!=null and item.summary!=''">
-                  #{item.summary}
+                    #{item.summary}
                 </when>
                 <otherwise>
                     NULL
@@ -105,7 +108,6 @@
             </choose>
             );
         </foreach>
-
     </insert>
 
 </mapper>
