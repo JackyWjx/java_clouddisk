@@ -36,23 +36,23 @@ public class TbScoreActivityListService {
         if (!JzbTools.isEmpty(paramap.get("endTime"))){
             paramap.put("endTime", JzbDataType.getLong(paramap.get("endTime")) + 86400);
         }
-       List<Map<String,Object>> list =  scoreMapper.queryActivityList(paramap);
-//        Map<String ,Object> map = new HashMap<>();
-        if (list != null && list.size() > 0){
-            for (int i = 0; i < list.size(); i++) {
-                Map<String ,Object> map =  list.get(i);
-                map.put("userinfo",paramap.get("userinfo"));
-                Response deptList = orgCompanyDpt.getDeptList(map);
-                List<Map<String,Object>> Dlist =  deptList.getPageInfo().getList();
-                for (int j = 0; j < Dlist.size(); j++) {
-                    Map<String ,Object> Dmap =  Dlist.get(j);
-                    if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("cdid"))) && map.get("cdid").toString().trim().equals(Dmap.get("cdid")) ){
-                        map.putAll(Dmap);
-                    }
-                }
-            }
-        }
-        return list;
+//       List<Map<String,Object>> list =  scoreMapper.queryActivityList(paramap);
+//        if (list != null && list.size() > 0){
+//            for (int i = 0; i < list.size(); i++) {
+//                Map<String ,Object> map =  list.get(i);
+//
+//                map.put("userinfo",paramap.get("userinfo"));
+//                Response deptList = orgCompanyDpt.getDeptList(map);
+//                List<Map<String,Object>> Dlist =  deptList.getPageInfo().getList();
+//                for (int j = 0; j < Dlist.size(); j++) {
+//                    Map<String ,Object> Dmap =  Dlist.get(j);
+//                    if (!JzbDataType.isEmpty(JzbDataType.getString(map.get("cdid"))) && map.get("cdid").toString().trim().equals(Dmap.get("cdid")) ){
+//                        map.putAll(Dmap);
+//                    }
+//                }
+//            }
+//        }
+        return scoreMapper.queryActivityList(paramap);
     }
 
     /**
@@ -79,10 +79,8 @@ public class TbScoreActivityListService {
         // 加入活动信息
         int count = scoreMapper.addActivityList(paramp);
         if (count > 0){
-            if (!JzbDataType.isEmpty(paramp.get("photo"))){
-                Object photo = paramp.get("photo");
-                if (JzbDataType.isCollection(photo)){
-                    List<Map<String ,Object>> photoList = (List<Map<String, Object>>) photo;
+            if (!JzbDataType.isEmpty(paramp.get("photoList"))){
+                    List<Map<String ,Object>> photoList = (List<Map<String, Object>>) paramp.get("photoList");
                     for (int i = photoList.size() - 1; i >= 0; i--) {
                         Map<String,Object> photoMap = photoList.get(i);
                         if (!JzbDataType.isEmpty(photoMap)){
@@ -97,13 +95,30 @@ public class TbScoreActivityListService {
                             photoList.remove(i);
                         }
                     }
-                    // 加入活动图片
+                    // 加入证明图片
                     count = scoreMapper.insertActivityPhoto(photoList);
-                }else {
+                }else  if(!JzbDataType.isEmpty(paramp.get("photoList2"))) {
+                 List<Map<String ,Object>> photoList = (List<Map<String, Object>>) paramp.get("photoList2");
+                for (int i = photoList.size() - 1; i >= 0; i--) {
+                    Map<String,Object> photoMap = photoList.get(i);
+                    if (!JzbDataType.isEmpty(photoMap)){
+                        long addtim = System.currentTimeMillis();
+                        photoMap.put("actid",actid);
+                        photoMap.put("status","4");
+                        photoMap.put("photo",photoList.get(i).get("photo"));
+                        photoMap.put("fileid",JzbRandom.getRandomCharLow(15));
+                        photoMap.put("adduid",paramp.get("uid"));
+                        photoMap.put("addtime",addtim);
+                    }else {
+                        photoList.remove(i);
+                    }
+                }
+            }
+                else{
                     count = 0;
                 }
             }
-        }
+
         return count;
     }
 }

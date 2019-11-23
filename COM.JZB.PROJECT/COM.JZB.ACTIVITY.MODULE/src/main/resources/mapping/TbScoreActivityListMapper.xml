@@ -103,7 +103,7 @@
                     NULL
                 </otherwise>
             </choose>
-            )
+            );
         </foreach>
 
     </insert>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +51,14 @@ public class TbScoreActivityListController {
             paramap.put("uid", userinfo.get("uid"));
             // 获取活动列表
             List<Map<String, Object>> list = scoreService.getActivity(paramap);
+
             response = Response.getResponseSuccess(userinfo);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(list);
+            Object cname = userinfo.get("cname");
+            Map<String,Object> cmap = new HashMap<>();
+            cmap.put("cname",cname);
+            response.setResponseEntity(cmap);
             pageInfo.setTotal(count > 0 ? count : list.size());
             response.setPageInfo(pageInfo);
 
