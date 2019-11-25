@@ -269,6 +269,27 @@ public class CompanyUserController {
     }
 
     /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中删除项目
+     *
+     * @author chenhui
+     */
+    @RequestMapping(value = "/delCompanyProject", method = RequestMethod.POST)
+    public Response delCompanyProject(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            int count = companyUserService.delCompanyProject(param);
+            Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            response = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+
+    }
+
+    /**
      * CRM-销售业主-公海-业主下的项目8
      * 点击业主下的项目中的修改项目按钮
      *

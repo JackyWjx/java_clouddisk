@@ -84,9 +84,14 @@
             (
             #{item.actid},
             #{item.fileid},
-            <if test="item.photo != null and item.photo != ''">
-                #{item.photo},
-            </if>
+            <choose>
+                <when test="item.photo != null and item.photo != ''">
+                    #{item.photo}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
             <choose>
                 <when test="item.idx != null and item.idx != ''">
                     #{item.idx},

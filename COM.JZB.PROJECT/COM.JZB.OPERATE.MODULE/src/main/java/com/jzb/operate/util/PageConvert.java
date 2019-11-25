@@ -1,11 +1,13 @@
 package com.jzb.operate.util;
 
 import com.jzb.base.data.JzbDataType;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.util.Map;
 
+
 public class PageConvert {
-    public PageConvert(){}
 
     /**
      * 设置好分页参数
@@ -17,4 +19,5 @@ public class PageConvert {
         params.put("pageno", JzbDataType.getInteger(page * rows - rows < 0 ? 0 : page * rows - rows));
         params.put("pagesize", rows);
     }
+
 }

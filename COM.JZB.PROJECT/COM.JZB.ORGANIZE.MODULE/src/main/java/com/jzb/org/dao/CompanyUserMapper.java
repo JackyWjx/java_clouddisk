@@ -101,6 +101,15 @@ public interface CompanyUserMapper {
     int insertCompanyProject(Map<String, Object> param);
 
     /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中删除项目
+     *
+     * @author chenhui
+     */
+    int delCompanyProject(Map<String, Object> param);
+
+
+    /**
      * CRM-销售业主-公海-业主下的项目8
      * 点击业主下的项目中的修改项目按钮
      *
