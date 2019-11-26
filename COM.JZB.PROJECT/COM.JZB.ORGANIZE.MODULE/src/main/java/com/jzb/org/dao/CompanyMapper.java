@@ -332,6 +332,17 @@ public interface CompanyMapper {
     int insertCompanyCommon(Map<String, Object> param);
 
     /**
+     * 管理员创建公海单位
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/9/20 18:00
+     */
+    int insertCommonCompany(Map<String, Object> param);
+
+
+    /**
      * CRM-销售业主-公海-供应商5
      * 点击新建供应商建立单位下供应商
      * @Author: Kuang Bin

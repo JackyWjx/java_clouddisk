@@ -330,7 +330,42 @@ public class CompanyUserService {
         param.put("status", "1");
         param.put("projectid", JzbRandom.getRandomCharCap(19));
         param.put("addtime", System.currentTimeMillis());
-        return companyUserMapper.insertCompanyProject(param);
+        // 添加项目
+        return  companyUserMapper.insertCompanyProject(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中新建项目
+     *
+     * @author kuangbin
+     */
+    public int addCompanyProjectInfo(Map<String, Object> param) {
+        param.put("status", "1");
+        param.put("addtime", System.currentTimeMillis());
+        return   companyUserMapper.insertCompanyProjectInfo(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中新建项目
+     *
+     * @author kuangbin
+     */
+    public int upCompanyProject(Map<String, Object> param) {
+        param.put("updtime", System.currentTimeMillis());
+        return   companyUserMapper.upcompanyProject(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中新建项目
+     *
+     * @author kuangbin
+     */
+    public int upCompanyProjectInfo(Map<String, Object> param) {
+        param.put("updtime", System.currentTimeMillis());
+        return   companyUserMapper.upcompanyProjectInfo(param);
     }
 
     /**

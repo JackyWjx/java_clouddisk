@@ -38,11 +38,14 @@
         tb_company_project
         where
         status = '1'
+        <if test="province != null and province != ''">
+            and region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
         <if test="keyword != null and keyword != ''">
             and tendername ~ #{keyword} or tenderphone ~ #{keyword}
-        </if>
-        <if test="region != null and region != ''">
-            and region  = #{region}
         </if>
         <if test="projectname != null and projectname != ''">
             and projectname  ~ #{projectname}
@@ -62,8 +65,11 @@
         <if test="keyword != null and keyword != ''">
             and tendername ~ #{keyword} or tenderphone ~ #{keyword}
         </if>
-        <if test="region != null and region != ''">
-            and region = #{region}
+        <if test="province != null and province != ''">
+            and region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
         </if>
         <if test="projectname != null and projectname != ''">
             and projectname  ~ #{projectname}

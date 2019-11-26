@@ -288,7 +288,7 @@
     <insert id="insertCompanyProject" parameterType="java.util.Map">
         INSERT INTO tb_company_project
         (cid, projectid, projectname, region, address, tendertime, tenderuid,
-        tendername, tenderphone, wintime, idx, adduid, addtime, status, summary)
+        tendername, tenderphone,podeperson , podephone , podejob ,podenature ,  tendercompany , projecttype , mail ,tenderresultcompany ,  tenderagent , agent ,agentphone ,relation, wintime, idx, adduid, addtime, status, summary)
         VALUES
         (
         #{cid},
@@ -321,6 +321,18 @@
         </choose>
         #{tendername},
         #{tenderphone},
+        <choose><when test=" podeperson != null and podeperson !=''">#{podeperson},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" podephone != null and podephone !=''">#{podephone},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" podejob != null and podejob !=''">#{podejob},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" podenature != null and podenature !=''">#{podenature},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" tendercompany != null and tendercompany !=''">#{tendercompany},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" projecttype != null and projecttype !=''">#{projecttype},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" mail != null and mail !=''">#{mail},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" tenderresultcompany != null and tenderresultcompany !=''">#{tenderresultcompany},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" tenderagent != null and tenderagent !=''">#{tenderagent},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" agent != null and agent !=''">#{agent},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" agentphone != null and agentphone !=''">#{agentphone},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" relation != null and relation !=''">#{relation},</when><otherwise>null,</otherwise></choose>
         <choose>
             <when test=" wintime != null and wintime !=''">
                 ${wintime},
@@ -350,6 +362,86 @@
         </choose>
         )
     </insert>
+
+    <!--CRM公海 项目添加项目信息表-->
+    <insert id="insertCompanyProjectInfo" parameterType="java.util.Map">
+        INSERT INTO tb_common_project_info
+        ( projectid, index ,lineuid, lineuname, linephone,
+        job, linenature, cname , reluname,
+        relphone ,brandname, contrast, reluid, reluname, relphone, addtime, status, summary)
+        VALUES
+        (
+        #{projectid},
+        <choose>
+            <when test=" idx != null and idx !=''">
+                ${idx},
+            </when>
+            <otherwise>
+                (SELECT count(1)+1 FROM tb_common_project_info),
+            </otherwise>
+        </choose>
+        <choose><when test=" lineuid != null and lineuid !=''">#{lineuid},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" lineuname != null and lineuname !=''">#{lineuname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" linephone != null and linephone !=''">#{linephone},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" job != null and job !=''">#{job},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" linenature != null and linenature !=''">#{linenature},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" cname != null and cname !=''">#{cname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" reluname != null and reluname !=''">#{reluname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" brandname != null and brandname !=''">#{brandname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" contrast != null and contrast !=''">#{contrast},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" reluid != null and reluid !=''">#{reluid},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" reluname != null and reluname !=''">#{reluname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" relphone != null and relphone !=''">#{relphone},</when><otherwise>null,</otherwise></choose>
+        #{addtime},s
+        #{status},
+        <choose><when test=" summary != null and summary !=''">#{summary}</when><otherwise>null</otherwise></choose>
+        )
+    </insert>
+
+    <!--修改项目详情表-->
+    <update id="upcompanyProject" parameterType="java.util.Map">
+        update  tb_company_project set
+        updtime = #{updtime} , upduid = #{uid}
+        <choose><when test=" tendername != null and tendername !=''">,#{tendername}</when></choose>
+        <choose><when test=" tenderphone != null and tenderphone !=''">,#{tenderphone}</when></choose>
+        <choose><when test=" projectname != null and projectname !=''">,#{projectname}</when></choose>
+        <choose><when test=" region != null and region !=''">,#{region}</when></choose>
+        <choose><when test=" address != null and address !=''">,#{address}</when></choose>
+        <choose><when test=" tendertime != null and tendertime !=''">,#{tendertime}</when></choose>
+        <choose><when test=" tenderuid != null and tenderuid !=''">,#{tenderuid}</when></choose>
+        <choose><when test=" podeperson != null and podeperson !=''">,#{podeperson}</when></choose>
+        <choose><when test=" podephone != null and podephone !=''">,#{podephone}</when></choose>
+        <choose><when test=" podejob != null and podejob !=''">,#{podejob}</when></choose>
+        <choose><when test=" podenature != null and podenature !=''">,#{podenature}</when></choose>
+        <choose><when test=" tendercompany != null and tendercompany !=''">,#{tendercompany}</when></choose>
+        <choose><when test=" projecttype != null and projecttype !=''">,#{projecttype}</when></choose>
+        <choose><when test=" mail != null and mail !=''">,#{mail}</when></choose>
+        <choose><when test=" tenderresultcompany != null and tenderresultcompany !=''">,#{tenderresultcompany}</when></choose>
+        <choose><when test=" tenderagent != null and tenderagent !=''">,#{tenderagent}</when></choose>
+        <choose><when test=" agent != null and agent !=''">,#{agent}</when></choose>
+        <choose><when test=" agentphone != null and agentphone !=''">,#{agentphone}</when></choose>
+        <choose><when test=" relation != null and relation !=''">,#{relation}</when></choose>
+        where  projectid = #{projectid}
+    </update>
+
+    <!--修改项目详情表-->
+    <update id="upcompanyProjectInfo" parameterType="java.util.Map">
+          update  tb_common_project_info set
+          updtime = #{updtime} , upduid = #{uid}
+        <choose><when test=" lineuid != null and lineuid !=''">,#{lineuid}</when></choose>
+        <choose><when test=" lineuname != null and lineuname !=''">,#{lineuname}</when></choose>
+        <choose><when test=" linephone != null and linephone !=''">,#{linephone}</when></choose>
+        <choose><when test=" job != null and job !=''">,#{job}</when></choose>
+        <choose><when test=" linenature != null and linenature !=''">,#{linenature}</when></choose>
+        <choose><when test=" cname != null and cname !=''">,#{cname}</when></choose>
+        <choose><when test=" reluname != null and reluname !=''">,#{reluname}</when></choose>
+        <choose><when test=" brandname != null and brandname !=''">,#{brandname}</when></choose>
+        <choose><when test=" contrast != null and contrast !=''">,#{contrast}</when></choose>
+        <choose><when test=" reluid != null and reluid !=''">,#{reluid}</when></choose>
+        <choose><when test=" reluname != null and reluname !=''">,#{reluname}</when></choose>
+        <choose><when test=" relphone != null and relphone !=''">,#{relphone}</when></choose>
+        where  projectid = #{projectid}
+    </update>
 
     <!--主页中单位设置基本资料进行企业系统配置表修改-->
     <update id="updateCompanyProject" parameterType="java.util.Map">

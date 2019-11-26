@@ -101,6 +101,28 @@ public interface CompanyUserMapper {
     int insertCompanyProject(Map<String, Object> param);
 
     /**
+     * 项目详情表
+     * @param param
+     * @return
+     */
+    int insertCompanyProjectInfo(Map<String , Object> param);
+
+    /**
+     * 项目详情表
+     * @param param
+     * @return
+     */
+    int upcompanyProjectInfo(Map<String , Object> param);
+
+    /**
+     * 项目详情表
+     * @param param
+     * @return
+     */
+    int upcompanyProject(Map<String , Object> param);
+
+
+    /**
      * CRM-销售业主-公海-业主下的项目8
      * 点击业主下的项目中的修改项目按钮
      *

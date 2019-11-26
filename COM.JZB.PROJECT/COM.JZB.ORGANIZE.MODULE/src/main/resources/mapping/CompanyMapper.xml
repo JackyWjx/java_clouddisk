@@ -899,6 +899,34 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         updtime = #{addtime}
     </insert>
 
+    <!--管理员创建公海单位-->
+    <insert id="insertCommonCompany" parameterType="java.util.Map">
+        INSERT INTO tb_common_company_list (cid, supervise, orgrelation, prodesc, prolist, address,  addtime, adduid,updtime, status, summary)
+        VALUES
+        (
+        #{cid},
+        <choose> <when test="supervise != null">#{supervise},</when><otherwise>null,</otherwise></choose>
+        <choose> <when test="orgrelation != null">#{orgrelation},</when><otherwise>null,</otherwise></choose>
+        <choose> <when test="prodesc != null">#{prodesc},</when><otherwise>null,</otherwise></choose>
+        <choose> <when test="prolist != null">#{prolist},</when><otherwise>null,</otherwise></choose>
+        <choose> <when test="address != null">#{address},</when><otherwise>null,</otherwise></choose>
+        #{addtime},
+        #{uid},
+        #{addtime},
+        #{status},
+        <choose>
+            <when test=" summary != null and summary !=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+        ON conflict(cid) DO UPDATE SET
+        updtime = #{addtime}
+    </insert>
+
     <!--管理员创建供应商单位-->
     <insert id="insertCompanySupplier" parameterType="java.util.Map">
         INSERT INTO tb_company_supplier (cid, supid, idx, adduid, addtime, updtime, status, summary)
