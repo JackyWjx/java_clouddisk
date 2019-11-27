@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbConnectionPubMapper">
+
+    <!--查询发帖总数-->
+    <select id="getConnectionCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_connection_publish_list where adduid = #{adduid} and status = '1';
+    </select>
+
+    <!--查询发帖信息-->
+    <select id="getConnectionList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        pubid,
+        adduid,
+        uname,
+        type,
+        link,
+        addtime,
+        updtime,
+        photoinfo,
+        status,
+        summary
+        from tb_connection_publish_list
+        where status = #{status} and adduid = #{adduid}
+        <if test="type != null and type != ''">
+        and type = #{type}
+        </if>
+        <if test="endtime != null and endtime != ''">
+        and addtime &lt;= #{endtime}
+        </if>
+        <if test="startTime != null and startTime != ''">
+        and addtime &gt;= #{endtime}
+        </if>
+        <if test="type != null and type != ''">
+        and type = #{type}
+        </if>
+        order by id desc
+        <if test="pagesize != null and pagesize != ''">
+        limit #{pagesize}
+        </if>
+        <if test="pageno != null and pageno != ''">
+        offset #{pageno}
+        </if>
+    </select>
+
+    <!--新建发帖信息-->
+    <insert id="insertConnectionList" parameterType="java.util.Map">
+        insert into tb_connection_publish_list (pubid,adduid,uname,type,link,addtime,updtime,photoinfo,status,summary
+        )
+         values (
+        #{pubid},
+        #{adduid},
+         <choose>
+             <when test="uname != null and uname != ''">
+                 #{uname},
+             </when>
+             <otherwise>
+                 null,
+             </otherwise>
+         </choose>
+        <choose>
+            <when test="type != null and type != ''">
+                #{type},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="link != null and link != ''">
+                #{link},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null and addtime != ''">
+                #{addtime},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null and updtime != ''">
+                #{updtime},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="photoinfo != null and photoinfo != ''">
+                #{photoinfo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{status},
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+
+    <!--修改发帖信息-->
+    <update id="modifyConnectionList" parameterType="java.util.Map">
+        update tb_connection_publish_list set
+        <if test="uname != null and uname != ''">
+            uname = #{uname},
+        </if>
+        <if test="type != null and type != ''">
+            type = #{type},
+        </if>
+        <if test="link != null and link != ''">
+            link = #{link},
+        </if>
+        <if test="photoinfo != null and photoinfo != ''">
+            photoinfo = #{photoinfo},
+        </if>
+        <if test="summary != null and summary != ''">
+            summary = #{summary},
+        </if>
+        updtime = #{updtime}
+           where
+           pubid = #{pubid}
+    </update>
+
+    <!--删除发帖信息-->
+    <update id="removeConnectionList" parameterType="java.util.Map">
+        update  tb_connection_publish_list set status = #{status} where pubid = #{pubid};
+    </update>
+
+
+</mapper>
