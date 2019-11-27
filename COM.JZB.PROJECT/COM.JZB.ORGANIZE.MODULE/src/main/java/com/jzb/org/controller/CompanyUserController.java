@@ -258,9 +258,13 @@ public class CompanyUserController {
         try {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("projectid", JzbRandom.getRandomCharCap(19));
             // 返回所有的企业列表
             int count = companyUserService.addCompanyProject(param);
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            Map<String , Object> map = new HashMap<>();
+            map.put("projectid",param.get("projectid"));
+            result.setResponseEntity(map);
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();

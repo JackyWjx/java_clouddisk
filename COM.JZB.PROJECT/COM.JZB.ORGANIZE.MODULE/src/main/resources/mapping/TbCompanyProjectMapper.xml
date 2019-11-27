@@ -14,43 +14,61 @@
 
     <!--查询项目下的数据-->
     <select id="getComProject" parameterType="java.util.Map" resultType="java.util.Map">
-        select
+        SELECT
         cid,
-        Projectid,
+        tcp.projectid,
         projectname,
         region,
         address,
         plantime,
         verifytime,
-        to_char(to_timestamp(tendertime / 1000), 'yyyy-MM-dd HH24:MI') as tendertime,
+        to_char( to_timestamp( tendertime / 1000 ), 'yyyy-MM-dd HH24:MI' ) AS tendertime,
         tenderuid,
         tendername,
         tenderphone,
         wintime,
         buildstime,
         buildetime,
-        adduid,
-        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
-        upduid,
-        status,
-        summary
-        from
-        tb_company_project
-        where
-        status = '1'
+        tcp.adduid,
+        to_char( to_timestamp( tcp.addtime / 1000 ), 'yyyy-MM-dd HH24:MI' ) AS addtime,
+        tcp.upduid,
+        tcp.status,
+        tcp.summary,
+        lineuid,
+        lineuname,
+        linephone,
+        linenature,
+        job,
+        cname,
+        reluname,
+        relphone,
+        brandname,
+        contrast,
+        reshid,
+        reshname,
+        reshphone
+        FROM
+        tb_company_project tcp
+        LEFT JOIN
+        tb_common_project_info tcpi
+        on tcp.projectid = tcpi.projectid
+        WHERE tcp.status = '1'
         <if test="province != null and province != ''">
-            and region IN
+            and tcp.region IN
             <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
                 #{item.region}
             </foreach>
         </if>
         <if test="keyword != null and keyword != ''">
-            and tendername ~ #{keyword} or tenderphone ~ #{keyword}
+            and tcp.tendername ~ #{keyword} or tcp.tenderphone ~ #{keyword}
+        </if>
+        <if test="projecttype != null and projecttype!= ''">
+            and tcp.projecttype  #{projecttype}
         </if>
         <if test="projectname != null and projectname != ''">
-            and projectname  ~ #{projectname}
+            and tcp.projectname  ~ #{projectname}
         </if>
-        order by idx asc
+        ORDER BY tcp.addtime DESC
         LIMIT #{pagesize} offset #{pageno}
     </select>
 

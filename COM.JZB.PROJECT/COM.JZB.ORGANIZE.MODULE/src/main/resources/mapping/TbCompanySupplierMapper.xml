@@ -6,9 +6,50 @@
 
     <!-- 已分配的业主下 新建供应商-->
     <insert id="addCompanySupplier" parameterType="java.util.Map">
-        insert into tb_company_supplier (cid,supid,idx,adduid,addtime,upduid,updtime,status,summary) values
+        insert into tb_company_supplier (relphone,region,mail,relperson,supname,address,cid,supid,idx,adduid,addtime,upduid,updtime,status,summary) values
         (
+        <choose>
+            <when test="relphone!=null and relphone!=''">
+                #{relphone},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="region!=null and region!=''">
+                #{region},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="relperson!=null and relperson!=''">
+                #{relperson},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="supname!=null and supname!=''">
+                #{supname},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="address!=null and address!=''">
+                #{address},
+            </when>
+            <otherwise>
+                NULL ,
+            </otherwise>
+        </choose>
         #{cid},
+        #{supid},
         <choose>
             <when test="idx!=null and idx!=''">
                 #{idx},
@@ -77,12 +118,25 @@
     　　　　<if test="upduid != null and upduid!=''"> upduid=#{upduid} ,</if>
     　　　　<if test="updtime != null and updtime!=''"> updtime=#{updtime} ,</if>
     　　　　<if test="summary != null and summary!=''"> summary=#{summary} ,</if>
+    　　　　<if test="relphone != null and relphone!=''"> relphone=#{relphone} ,</if>
+    　　　　<if test="region != null and region!=''"> region=#{region} ,</if>
+    　　　　<if test="mail != null and mail!=''"> mail=#{mail} ,</if>
+    　　　　<if test="relperson != null and relperson!=''"> relperson=#{relperson} ,</if>
+    　　　　<if test="supname != null and supname!=''"> supname=#{supname} ,</if>
+    　　　　<if test="address != null and address!=''"> address=#{address} ,</if>
+
         </trim>
     </update>
 
     <!-- 已分配业主下查询供应商-->
     <select id="queryCompanySupplier" parameterType="java.util.Map">
         SELECT
+            tcs.relphone,
+            tcs,region,
+            tcs.mail,
+            tcs.relperson,
+            tcs.supname,
+            tcs.address,
             tcs.cid,
             tcs.supid,
             tcs.idx,

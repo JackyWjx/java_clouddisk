@@ -144,6 +144,12 @@
         source,areaid,uid,uname,phone,cardid,sex,age,job,mail,
         cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary
         from tb_common_user_list where status = '1'
+        <if test="pagesize != null and pagesize != ''">
+            limit #{pagesize}
+        </if>
+        <if test="pageno != null and pagesize != ''">
+            offset #{pageno}
+        </if>
     </select>
 
     <!--查询公海用户总数-->

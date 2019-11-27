@@ -366,9 +366,9 @@
     <!--CRM公海 项目添加项目信息表-->
     <insert id="insertCompanyProjectInfo" parameterType="java.util.Map">
         INSERT INTO tb_common_project_info
-        ( projectid, index ,lineuid, lineuname, linephone,
+        ( projectid, idx ,lineuid, lineuname, linephone,
         job, linenature, cname , reluname,
-        relphone ,brandname, contrast, reluid, reluname, relphone, addtime, status, summary)
+        relphone ,reshname , reshphone , brandname, contrast, addtime, status, summary)
         VALUES
         (
         #{projectid},
@@ -387,12 +387,12 @@
         <choose><when test=" linenature != null and linenature !=''">#{linenature},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" cname != null and cname !=''">#{cname},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" reluname != null and reluname !=''">#{reluname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" relphone != null and relphone !=''">#{relphone},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" reshname != null and reshname !=''">#{reshname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" reshphone != null and reshphone !=''">#{reshphone},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" brandname != null and brandname !=''">#{brandname},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" contrast != null and contrast !=''">#{contrast},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" reluid != null and reluid !=''">#{reluid},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" reluname != null and reluname !=''">#{reluname},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" relphone != null and relphone !=''">#{relphone},</when><otherwise>null,</otherwise></choose>
-        #{addtime},s
+        #{addtime},
         #{status},
         <choose><when test=" summary != null and summary !=''">#{summary}</when><otherwise>null</otherwise></choose>
         )

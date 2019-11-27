@@ -115,7 +115,6 @@ public class TbCompanyProjectController {
     @CrossOrigin
     public Response getComProject(@RequestBody Map<String, Object> param) {
         Response result;
-        int count = 0 ;
         //判断请求参数如果为空则返回404
         try {
             if (JzbCheckParam.haveEmpty(param, new String[]{"pageno","pagesize"})) {
@@ -218,9 +217,7 @@ public class TbCompanyProjectController {
                 //查询项目模块下的数据
                 List<Map<String, Object>> list = tbCompanyProjectService.getComProject(param);
                 //判断前端传过来的分页总数
-                if (JzbDataType.getInteger(param.get("count")) >  0) {
-                    count = tbCompanyProjectService.getCount(param);
-                }
+                int count = tbCompanyProjectService.getCount(param);
                 //获取用户信息
                 for (int i = 0; i < list.size(); i++) {
                     Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
@@ -230,7 +227,7 @@ public class TbCompanyProjectController {
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(list);
                 //设置分页总数
-                pageInfo.setTotal(count > 0 ? count : list.size());
+                pageInfo.setTotal(count);
                 result = Response.getResponseSuccess(userInfo);
                 result.setPageInfo(pageInfo);
             }

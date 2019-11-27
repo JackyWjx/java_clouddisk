@@ -328,7 +328,6 @@ public class CompanyUserService {
      */
     public int addCompanyProject(Map<String, Object> param) {
         param.put("status", "1");
-        param.put("projectid", JzbRandom.getRandomCharCap(19));
         param.put("addtime", System.currentTimeMillis());
         // 添加项目
         return  companyUserMapper.insertCompanyProject(param);
@@ -366,6 +365,17 @@ public class CompanyUserService {
     public int upCompanyProjectInfo(Map<String, Object> param) {
         param.put("updtime", System.currentTimeMillis());
         return   companyUserMapper.upcompanyProjectInfo(param);
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中删除项目
+     *
+     * @author chenhui
+     */
+    public int delCompanyProject(Map<String, Object> param) {
+        param.put("status",'2');
+        return companyUserMapper.delCompanyProject(param);
     }
 
     /**
