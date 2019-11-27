@@ -64,6 +64,9 @@
         <if test="projecttype != null and projecttype!= ''">
             and projecttype =  #{projecttype}
         </if>
+        <if test="isrelation != null and isrelation != ''">
+            and isrelation = #{isrelation}
+        </if>
         <if test="province != null and province != ''">
             and tcp.region IN
             <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
@@ -73,7 +76,6 @@
         <if test="keyword != null and keyword != ''">
             and tcp.tendername ~ #{keyword} or tcp.tenderphone ~ #{keyword}
         </if>
-
         <if test="projectname != null and projectname != ''">
             and tcp.projectname  ~ #{projectname}
         </if>
@@ -289,14 +291,15 @@
         update
         tb_company_project
         set
-        <if test="item.cid != null and item.cid != ''">cid = #{item.cid},</if>
-        <if test="item.projectname != null and item.projectname != ''">projectname = #{item.projectname},</if>
-        <if test="item.region != null and item.region != ''">region = #{item.region},</if>
-        <if test="item.address != null and item.address != ''">address = #{item.address},</if>
-        <if test="item.plantime != null and item.plantime != ''">plantime = #{item.plantime},</if>
-        <if test="item.verifytime != null and item.verifytime != ''">verifytime = #{item.verifytime},</if>
-        <if test="item.tendertime != null and item.tendertime != ''">tendertime = #{item.tendertime},</if>
-        <if test="item.updtime != null and item.updtime != ''">updtime = #{item.updtime}</if>
+        isrelation = 1
+        <if test="item.cid != null and item.cid != ''">,cid = #{item.cid}</if>
+        <if test="item.projectname != null and item.projectname != ''">,projectname = #{item.projectname}</if>
+        <if test="item.region != null and item.region != ''">,region = #{item.region},</if>
+        <if test="item.address != null and item.address != ''">,address = #{item.address},</if>
+        <if test="item.plantime != null and item.plantime != ''">,plantime = #{item.plantime},</if>
+        <if test="item.verifytime != null and item.verifytime != ''">,verifytime = #{item.verifytime},</if>
+        <if test="item.tendertime != null and item.tendertime != ''">,tendertime = #{item.tendertime},</if>
+        <if test="item.updtime != null and item.updtime != ''">,updtime = #{item.updtime}</if>
         where
         projectid = #{item.projectid}
         </foreach>
