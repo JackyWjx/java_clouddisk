@@ -18,6 +18,14 @@
         cid,
         tcp.projectid,
         projectname,
+        projecttype,
+        podephone,
+        podenature,
+        podeperson,
+        mail,
+        tenderagent,
+        agent,
+        relation,
         region,
         address,
         plantime,
@@ -53,6 +61,9 @@
         tb_common_project_info tcpi
         on tcp.projectid = tcpi.projectid
         WHERE tcp.status = '1'
+        <if test="projecttype != null and projecttype!= ''">
+            and projecttype =  #{projecttype}
+        </if>
         <if test="province != null and province != ''">
             and tcp.region IN
             <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
@@ -62,9 +73,7 @@
         <if test="keyword != null and keyword != ''">
             and tcp.tendername ~ #{keyword} or tcp.tenderphone ~ #{keyword}
         </if>
-        <if test="projecttype != null and projecttype!= ''">
-            and tcp.projecttype  #{projecttype}
-        </if>
+
         <if test="projectname != null and projectname != ''">
             and tcp.projectname  ~ #{projectname}
         </if>
