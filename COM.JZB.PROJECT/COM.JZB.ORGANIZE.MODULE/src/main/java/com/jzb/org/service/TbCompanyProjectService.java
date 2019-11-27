@@ -59,6 +59,7 @@ public class TbCompanyProjectService {
      * @return
      */
     public List<Map<String, Object>> getComProject(Map<String, Object> param) {
+        param.put("isrelation",JzbDataType.getInteger(param.get("isrelation")));
         return tbCompanyProjectMapper.getComProject(param);
     }
 
