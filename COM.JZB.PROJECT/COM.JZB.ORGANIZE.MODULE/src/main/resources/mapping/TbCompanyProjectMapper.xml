@@ -37,6 +37,7 @@
         wintime,
         buildstime,
         buildetime,
+        isrelation,
         tcp.adduid,
         to_char( to_timestamp( tcp.addtime / 1000 ), 'yyyy-MM-dd HH24:MI' ) AS addtime,
         tcp.upduid,

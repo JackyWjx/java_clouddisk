@@ -158,7 +158,11 @@
         du.cname AS uname,
         du.phone,
         ci.address,
-        cl.authid
+        cl.authid,
+        prolist,
+        tccl.prodesc,
+        tccl.orgrelation,
+        tccl.supervise
         FROM
         tb_company_common cc
         LEFT JOIN
@@ -169,6 +173,7 @@
         AND du.uid = cl.manager
         left join
         tb_company_info ci on ci.cid = cl.cid
+        LEFT JOIN tb_common_company_list tccl on cc.cid = tccl.cid
         where
         cl.status = #{status}
         and
