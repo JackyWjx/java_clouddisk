@@ -195,10 +195,31 @@
         mid = #{mid}
     </select>
 
+    <!--电脑端-全界面-记支宝电脑端下全界面显示菜单下的所有页面-->
+    <select id="queryProductPageLists" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        pid,
+        mid,
+        icon,
+        pageid,
+        pagecode,
+        cname,
+        pagepath,
+        summary
+        from
+        tb_product_pages
+        where
+        status = #{status}
+        and
+        pid = #{pid}
+        and
+        mid = #{mid}
+    </select>
+
     <!--电脑端-全界面-记支宝电脑端下全界面修改页面或者删除页面-->
     <update id="updateProductPage" parameterType="java.util.Map">
         UPDATE
-        tb_product_page
+        tb_product_pages
         SET
         ouid = #{uid},
         updtime = #{updtime}
@@ -360,7 +381,7 @@
     <!--加入产品页面表-->
     <insert id="insertProductPage" parameterType="java.util.Map">
         INSERT INTO
-        tb_product_page (pageid, pid, mid, pagecode, cname, icon, pagepath, idx, ouid, addtime, updtime, status,
+        tb_product_pages (pageid, pid, mid, pagecode, cname, icon, pagepath, idx, ouid, addtime, updtime, status,
         summary)
         VALUES
         (
@@ -790,7 +811,7 @@
     <!--点击从页面添加按钮,将页面加入当前菜单中-->
     <insert id="insertExistingPage" parameterType="java.util.List">
         INSERT INTO
-        tb_product_page (pageid, pid, mid, pagecode, cname, icon, pagepath, idx, ouid, addtime, updtime, status,
+        tb_product_pages (pageid, pid, mid, pagecode, cname, icon, pagepath, idx, ouid, addtime, updtime, status,
         summary)
         VALUES
         <foreach separator="," close="" open="" index="index" item="item" collection="list">

@@ -51,10 +51,96 @@
                 #{appname},#{appvsn},#{showvsn},#{uid},#{time},#{uid},
                 #{time},#{status})
          on conflict(pid) do
-         update set version=#{appvsn},
+         update set
+                    cname=#{appname},
+                    appname=#{appname},
+                    version=#{appvsn},
                     showvsn=#{showvsn},
                     updtime=#{time},
                     upduid=#{uid},
                     status=#{status};
     </insert>
+
+    <insert id="insertProductByOpens">
+        insert into tb_company_product (ptype,pid, cid, plid,
+                              ouid, addtime,upduid,
+                             updtime, status)
+         values (#{ptype},#{appid},#{cid},#{plid},
+                #{uid},#{time},#{uid},
+                #{time},#{status})
+         on conflict(pid) do
+         update set
+                    updtime=#{time},
+                    upduid=#{uid},
+                    status=#{status};
+    </insert>
+
+    <!--添加菜单-->
+    <insert id="saveMune" parameterType="java.util.List">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+        insert into
+        tb_product_menu
+        (pid,mid,parentid,cname,menupath,icon,addtime,updtime,status,idx)
+        values(
+        #{item.appid},#{item.mid},#{item.parentid},#{item.cname},#{item.menupath},#{item.icon},#{item.addtime},#{item.updtime},#{item.status},
+        <choose>
+            <when test="item.idx != null and item.idx != ''">#{item.idx}</when>
+            <otherwise>
+                (select count(1)+1 from tb_product_menu)
+            </otherwise>
+        </choose>
+        )
+        </foreach>
+    </insert>
+
+    <!--添加页面-->
+    <insert id="savepage" parameterType="java.util.List">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+      insert into
+      tb_product_page
+      (pageid,pid,mid,cname,pagepath,addtime,updtime,status,idx)
+      values (
+      #{item.pageid},#{item.appid},#{item.mid},#{item.cname},#{item.path},#{item.addtime},#{item.updtime},#{item.status},
+      <choose>
+          <when test="item.idx != null and item.idx != ''">#{item.idx}</when>
+          <otherwise>
+              (select count(1)+1 from tb_product_page)
+          </otherwise>
+      </choose>
+      )
+        </foreach>
+    </insert>
+
+    <select id="getMune" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from
+        tb_product_menu
+        where
+        pid = #{pid} and status = '1'
+    </select>
+    <update id="updateMune" parameterType="java.util.Map">
+        update
+        tb_product_menu
+        set
+        status = '2'
+        where
+        pid = #{pid} and status = '1'
+    </update>
+    <select id="getPage" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from
+        tb_product_page
+        where
+        pid = #{pid} and status = '1'
+    </select>
+    <update id="updatePage" parameterType="java.util.Map">
+        update
+        tb_product_page
+        set
+        status = '2'
+        where
+        pid = #{pid} and status = '1'
+    </update>
 </mapper>
