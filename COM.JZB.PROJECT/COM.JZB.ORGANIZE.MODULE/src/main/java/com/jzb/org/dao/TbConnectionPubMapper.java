@@ -27,4 +27,21 @@ public interface TbConnectionPubMapper {
 
     // 删除发帖信息
     int removeConnectionList(Map<String, Object> param);
+
+    // 查询任务参数
+    List<Map<String,Object>> getTask(Map<String ,Object> param);
+
+    // 新建任务目标参数
+    int insertTask(Map<String, Object> param);
+
+    // 修改任务目标参数
+    int modifyTask(Map<String, Object> param);
+
+    // 查询朋友圈发帖记录数
+    int getWechatCount(Map<String, Object> param);
+
+    // 查询百度发文记录数
+    int getBaiDuCount(Map<String, Object> param);
+
+
 }

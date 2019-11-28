@@ -28,4 +28,8 @@ public interface TbTrackUserMapper {
 
     // 修改跟进人员记录信息
     int updTrackUser(Map<String, Object> param);
+
+    int getQCount(Map<String, Object> param);
+
+    int getPCount(Map<String, Object> param);
 }

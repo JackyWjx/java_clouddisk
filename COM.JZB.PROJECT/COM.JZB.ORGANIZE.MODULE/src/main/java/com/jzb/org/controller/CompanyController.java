@@ -983,13 +983,15 @@ public class CompanyController {
             String[] str = {"cid"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                String uid = JzbDataType.getString(userInfo.get("uid"));
-                long time = System.currentTimeMillis();
-                param.put("addtime", time);
+                param.put("addtime", System.currentTimeMillis());
                 param.put("status", "1");
-                param.put("uid", uid);
+                param.put("uid", userInfo.get("uid"));
                 int add = companyService.addCompanyCommon(param);
                 result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                // 返回用户手填公司地址
+                Map<String , Object> paMap =  new HashMap<>();
+                paMap.put("adderss",param.get("adderss"));
+                result.setResponseEntity(paMap);
             } else {
                 result = Response.getResponseError();
             }

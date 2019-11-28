@@ -258,8 +258,35 @@ public class CompanyUserController {
         try {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("projectid", JzbRandom.getRandomCharCap(19));
             // 返回所有的企业列表
             int count = companyUserService.addCompanyProject(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            Map<String , Object> map = new HashMap<>();
+            map.put("projectid",param.get("projectid"));
+            result.setResponseEntity(map);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中新建项目
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/addCompanyProjectInfo", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyProjectInfo(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回所有的企业列表
+            int count = companyUserService.addCompanyProjectInfo(param);
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception ex) {
             JzbTools.logError(ex);
@@ -270,23 +297,48 @@ public class CompanyUserController {
 
     /**
      * CRM-销售业主-公海-业主下的项目7
-     * 点击业主下的项目中删除项目
+     * 点击业主下的项目中修改项目详情
      *
-     * @author chenhui
+     * @author kuangbin
      */
-    @RequestMapping(value = "/delCompanyProject", method = RequestMethod.POST)
-    public Response delCompanyProject(@RequestBody Map<String, Object> param) {
-        Response response;
+    @RequestMapping(value = "/upCompanyProjectInfo", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response upCompanyProjectInfo(@RequestBody Map<String, Object> param) {
+        Response result;
         try {
-            int count = companyUserService.delCompanyProject(param);
-            Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            response = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
-        } catch (Exception e) {
-            JzbTools.logError(e);
-            response = Response.getResponseError();
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回所有的企业列表
+            int count = companyUserService.upCompanyProjectInfo(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
         }
-        return response;
+        return result;
+    }
 
+    /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中修改
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/upCompanyProject", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response upCompanyProject(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回所有的企业列表
+            int count = companyUserService.upCompanyProject(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
     }
 
     /**

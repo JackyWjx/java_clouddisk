@@ -45,6 +45,20 @@
         </if>
     </select>
 
+
+
+    <!--查询朋友圈/百度发文记录-->
+    <select id="getBaiDuCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_connection_publish_list where adduid = #{adduid} and status = '1'
+        and type = #{type}
+        <if test="zero != null and zero != ''">
+            and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
+    </select>
+
     <!--新建发帖信息-->
     <insert id="insertConnectionList" parameterType="java.util.Map">
         insert into tb_connection_publish_list (pubid,adduid,uname,type,link,addtime,updtime,photoinfo,status,summary
@@ -139,6 +153,52 @@
     <!--删除发帖信息-->
     <update id="removeConnectionList" parameterType="java.util.Map">
         update  tb_connection_publish_list set status = #{status} where pubid = #{pubid};
+    </update>
+    
+    <!--新建任务目标参数-->
+    <insert id="insertTask" parameterType="java.util.Map">
+        insert into tb_task_target (taskid,tname,target,adduid,addtime,status,summary)
+        values (
+        #{taskid},
+        #{tname},
+        #{target},
+        #{adduid},
+        #{addtime},
+        #{status},
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--查询任务目标参数-->
+    <select id="getTask" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        addtime,
+        taskid,
+        tname,
+        target
+        from tb_task_target
+        where status = '1';
+    </select>
+
+    <!--修改任务目标参数-->
+    <update id="modifyTask" parameterType="java.util.Map">
+        update tb_task_target set
+         <if test="tname != null and tname != ''">
+             tname = #{tname},
+         </if>
+        <if test="target != null and target != ''">
+            target = #{target},
+        </if>
+        upduid = #{upduid},
+        updtime = #{updtime}
+        WHERE status = '1'  ;
     </update>
 
 

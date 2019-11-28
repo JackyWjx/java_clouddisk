@@ -848,6 +848,9 @@ public class CompanyService {
             param.put("senduid", "addCommon1013");
             sendRemind(param);
         }
+        // 新公海单位表
+        companyMapper.insertCommonCompany(param);
+        // 旧公海单位表
         return companyMapper.insertCompanyCommon(param);
     }
 

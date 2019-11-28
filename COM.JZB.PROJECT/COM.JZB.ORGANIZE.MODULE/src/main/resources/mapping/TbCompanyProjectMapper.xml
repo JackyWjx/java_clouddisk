@@ -14,40 +14,73 @@
 
     <!--查询项目下的数据-->
     <select id="getComProject" parameterType="java.util.Map" resultType="java.util.Map">
-        select
+        SELECT
         cid,
-        Projectid,
+        tcp.projectid,
         projectname,
+        projecttype,
+        podephone,
+        podenature,
+        podeperson,
+        mail,
+        tenderagent,
+        agent,
+        relation,
         region,
         address,
         plantime,
         verifytime,
-        to_char(to_timestamp(tendertime / 1000), 'yyyy-MM-dd HH24:MI') as tendertime,
+        to_char( to_timestamp( tendertime / 1000 ), 'yyyy-MM-dd HH24:MI' ) AS tendertime,
         tenderuid,
         tendername,
         tenderphone,
         wintime,
         buildstime,
         buildetime,
-        adduid,
-        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
-        upduid,
-        status,
-        summary
-        from
-        tb_company_project
-        where
-        status = '1'
-        <if test="keyword != null and keyword != ''">
-            and tendername ~ #{keyword} or tenderphone ~ #{keyword}
+        isrelation,
+        tcp.adduid,
+        to_char( to_timestamp( tcp.addtime / 1000 ), 'yyyy-MM-dd HH24:MI' ) AS addtime,
+        tcp.upduid,
+        tcp.status,
+        tcp.summary,
+        lineuid,
+        lineuname,
+        linephone,
+        linenature,
+        job,
+        cname,
+        reluname,
+        relphone,
+        brandname,
+        contrast,
+        reshid,
+        reshname,
+        reshphone
+        FROM
+        tb_company_project tcp
+        LEFT JOIN
+        tb_common_project_info tcpi
+        on tcp.projectid = tcpi.projectid
+        WHERE tcp.status = '1'
+        <if test="projecttype != null and projecttype!= ''">
+            and projecttype =  #{projecttype}
         </if>
-        <if test="region != null and region != ''">
-            and region  = #{region}
+        <if test="isrelation != null and isrelation != ''">
+            and isrelation = #{isrelation}
+        </if>
+        <if test="province != null and province != ''">
+            and tcp.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and tcp.tendername ~ #{keyword} or tcp.tenderphone ~ #{keyword}
         </if>
         <if test="projectname != null and projectname != ''">
-            and projectname  ~ #{projectname}
+            and tcp.projectname  ~ #{projectname}
         </if>
-        order by idx asc
+        ORDER BY tcp.addtime DESC
         LIMIT #{pagesize} offset #{pageno}
     </select>
 
@@ -62,8 +95,11 @@
         <if test="keyword != null and keyword != ''">
             and tendername ~ #{keyword} or tenderphone ~ #{keyword}
         </if>
-        <if test="region != null and region != ''">
-            and region = #{region}
+        <if test="province != null and province != ''">
+            and region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
         </if>
         <if test="projectname != null and projectname != ''">
             and projectname  ~ #{projectname}
@@ -256,14 +292,15 @@
         update
         tb_company_project
         set
-        <if test="item.cid != null and item.cid != ''">cid = #{item.cid},</if>
-        <if test="item.projectname != null and item.projectname != ''">projectname = #{item.projectname},</if>
-        <if test="item.region != null and item.region != ''">region = #{item.region},</if>
-        <if test="item.address != null and item.address != ''">address = #{item.address},</if>
-        <if test="item.plantime != null and item.plantime != ''">plantime = #{item.plantime},</if>
-        <if test="item.verifytime != null and item.verifytime != ''">verifytime = #{item.verifytime},</if>
-        <if test="item.tendertime != null and item.tendertime != ''">tendertime = #{item.tendertime},</if>
-        <if test="item.updtime != null and item.updtime != ''">updtime = #{item.updtime}</if>
+        isrelation = 1
+        <if test="item.cid != null and item.cid != ''">,cid = #{item.cid}</if>
+        <if test="item.projectname != null and item.projectname != ''">,projectname = #{item.projectname}</if>
+        <if test="item.region != null and item.region != ''">,region = #{item.region},</if>
+        <if test="item.address != null and item.address != ''">,address = #{item.address},</if>
+        <if test="item.plantime != null and item.plantime != ''">,plantime = #{item.plantime},</if>
+        <if test="item.verifytime != null and item.verifytime != ''">,verifytime = #{item.verifytime},</if>
+        <if test="item.tendertime != null and item.tendertime != ''">,tendertime = #{item.tendertime},</if>
+        <if test="item.updtime != null and item.updtime != ''">,updtime = #{item.updtime}</if>
         where
         projectid = #{item.projectid}
         </foreach>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbTypeMapper">
+
+    <select id="queryTbTypeList" parameterType="java.util.Map" resultType="java.util.Map">
+        select tid,tname,addtime,adduid,updtime,upduid from tb_type_list
+        where status = '1'
+        order by addtime desc
+        LIMIT #{pagesize} OFFSET #{pageno}
+    </select>
+
+    <select id="queryTbTypeListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+           select count(1) from tb_type_list      where status = '1'
+    </select>
+
+    <select id="queryTbTypeInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        select tid,paraid,paraname,addtime,adduid,updtime,upduid from tb_type_info
+        where status = '1'
+        <choose><when test="tid != null and tid != ''">and tid = #{tid} </when></choose>
+        order by addtime desc
+        LIMIT #{pagesize} OFFSET #{pageno}
+    </select>
+
+    <select id="queryTbTypeInfoCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+           select count(1) from tb_type_info      where status = '1'
+    </select>
+
+</mapper>

@@ -21,7 +21,7 @@ public class TbProjectRivalController {
     @Autowired
     private TbProjectRivalService tbProjectRivalService;
 
-    
+
     /**
      * 日志记录对象
      */
@@ -41,6 +41,7 @@ public class TbProjectRivalController {
         String api = "/org/ProjectRival/saveProjectRiva";
         boolean flag = true;
         try {
+
             // 如果获取参数userinfo不为空的话
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");

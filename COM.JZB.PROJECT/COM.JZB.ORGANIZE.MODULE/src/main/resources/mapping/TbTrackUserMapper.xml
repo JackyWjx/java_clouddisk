@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.org.dao.TbTrackUserMapper">
-    <!--新建跟进人员激励-->
+    <!--新建跟进人员记录-->
     <insert id="addTrackUser" parameterType="java.util.Map" >
         insert into tb_track_user_list (trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
         adduid,status,summary,addtime)
@@ -49,6 +49,34 @@
         order by id desc
     </select>
 
+    <!--查询qq/微信联系记录数-->
+    <select id="getQCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_track_user_list
+        where tracktype in (1,2)
+        <if test="zero != null and zero != ''">
+           and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
+        and status = '1'
+        and adduid = #{adduid}
+    </select>
+
+    <!--查询电话联系记录数-->
+    <select id="getPCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_track_user_list
+        where tracktype = 3
+        <if test="zero != null and zero != ''">
+            and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
+        and status = '1'
+        and adduid = #{adduid}
+    </select>
+
     <!--查询跟进人员记录总数-->
     <select id="getTrackCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_track_user_list where status = '1' and adduid = #{adduid}
@@ -61,8 +89,6 @@
     </update>
 
     <!--修改跟进人员记录信息-->
-    <!--trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,addtime,
-        adduid,status,summary)-->
     <update id="updTrackUser" parameterType="java.util.Map">
         update tb_track_user_list
         set
