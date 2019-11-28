@@ -214,4 +214,11 @@ public interface PlatformComMapper {
      * @Author: DingSC
      */
     int queryVerifyCount(Map<String, Object> param);
+
+    /**
+     * 根据appid查询页面
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getApplicationPage(Map<String, Object> param);
 }

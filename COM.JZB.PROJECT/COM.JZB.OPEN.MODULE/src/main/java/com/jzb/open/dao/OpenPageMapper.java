@@ -16,7 +16,6 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface OpenPageMapper {
-
     /**
      * 模糊查询开发者应用表
      *
@@ -61,4 +60,40 @@ public interface OpenPageMapper {
      * @Author: DingSC
      */
     List<Map<String, Object>> getApplicationMenuPage(Map<String, Object> param);
+
+    /**
+     * 菜单页面的查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> serachApplicationMenu(Map<String, Object> param);
+
+    /**
+     * 产寻菜单下面对应的页面
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getApplicationPage(Map<String, Object> param);
+
+    /**
+     * 修改菜单
+     * @param param
+     * @return
+     */
+    int updateMenu(Map<String, Object> param);
+
+    /**
+     * 修改页面
+     * @param param
+     * @return
+     */
+    int updatePage(Map<String, Object> param);
+
+    /**
+     * 应用菜单的修改
+     * @param param
+     * @return
+     */
+    int updateOrgApplication(Map<String, Object> param);
+
 }

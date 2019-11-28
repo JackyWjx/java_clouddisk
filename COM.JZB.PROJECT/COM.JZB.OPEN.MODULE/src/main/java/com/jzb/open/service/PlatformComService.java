@@ -38,6 +38,8 @@ public class PlatformComService {
     @Autowired
     private PlatformCompanyApi platformCompanyApi;
 
+    @Autowired
+    private OpenPageService openPageService;
     /**
      * 获取所有开放平台的企业id
      *
@@ -156,7 +158,13 @@ public class PlatformComService {
             if (appList != null && appList.size() > 0) {
                 Map<String, Object> appMap = appList.get(0);
                 appMap.put("userinfo", param.get("userinfo"));
+                //查询应用菜单的数据
+                List<Map<String,Object>> list =  openPageService.serachApplicationMenu(param);
+                List<Map<String,Object>> list1 = getApplicationPage(param);
+                appMap.put("list", list);
+                appMap.put("list1", list1);
                 Response response = platformCompanyApi.addProductByOpen(appMap);
+                System.out.println(response);
             }
 
         }
@@ -370,5 +378,9 @@ public class PlatformComService {
         }
 
         return result;
+    }
+
+    public List<Map<String, Object>> getApplicationPage(Map<String, Object> param) {
+        return platformComMapper.getApplicationPage(param);
     }
 }

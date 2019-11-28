@@ -73,7 +73,77 @@ public class OpenPageService {
         return openPageMapper.insertApplicationPage(param);
     }
 
-    public List<Map<String, Object>> getApplicationMenuPage(Map<String, Object> param){
-        return openPageMapper.getApplicationMenuPage(param);
+    /**
+     * 应用页面的查询
+     *
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getApplicationMenuPage(Map<String, Object> param) {
+
+        List<Map<String, Object>> list = openPageMapper.getApplicationMenuPage(param);
+        return list;
     }
+
+    /**
+     * 菜单页面的查询
+     *
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> serachApplicationMenu(Map<String, Object> param) {
+        return openPageMapper.serachApplicationMenu(param);
+    }
+
+    /**
+     * 查询菜单下面对应的页面
+     *
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getApplicationPage(Map<String, Object> param) {
+        return openPageMapper.getApplicationPage(param);
+    }
+
+    /**
+     * 修改菜单
+     *
+     * @param param
+     * @return
+     */
+    public int updateMenu(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("updtime", time);
+        if (param.get("delete") != null && param.get("delete") != "" && param.get("delete").toString().length() != 0) {
+            param.put("status", "2");
+        }
+        return openPageMapper.updateMenu(param);
+    }
+
+    /**
+     * 修改页面
+     *
+     * @param param
+     * @return
+     */
+    public int updatePage(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("updtime", time);
+        if (param.get("delete") != null && param.get("delete") != "" && param.get("delete").toString().length() != 0) {
+            param.put("status", "2");
+        }
+        return openPageMapper.updatePage(param);
+    }
+
+    /**
+     * 应用列表的修改
+     * @param param
+     * @return
+     */
+    public int updateOrgApplication(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("updtime", time);
+        return openPageMapper.updateOrgApplication(param);
+    }
+
 }
