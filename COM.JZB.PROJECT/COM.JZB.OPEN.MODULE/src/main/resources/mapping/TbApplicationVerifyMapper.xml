@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.open.dao.TbApplicationVerifyMapper">
+
+    <insert id="saveApplicationVerify" parameterType="java.util.Map">
+        insert into
+        tb_application_verify
+        (appid,appline,devtype,apptype,cid,appname,appvsn,showvsn,applogo,appdesc,appurl,appips,manurl,adduid,addtime,updtime,status,summary)
+        values (
+        #{appid},
+        <choose>
+            <when test="appline != null and appline != ''">#{appline},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="devtype != null and devtype != ''">#{devtype},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="apptype != null and apptype != ''">#{apptype},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="cid != null and cid != ''">#{cid},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="appname != null and appname != ''">#{appname},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="appvsn != null and appvsn != ''">#{appvsn},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="showvsn != null and showvsn != ''">#{showvsn},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="applogo != null and applogo != ''">#{applogo},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="appdesc != null and appdesc != ''">#{appdesc},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="appurl != null and appurl != ''">#{appurl},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="appips != null and appips != ''">#{appips},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="manurl != null and manurl != ''">#{manurl},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="adduid != null and adduid != ''">#{adduid},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null and addtime != ''">#{addtime},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="updtime != null and updtime != ''">#{updtime},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="status != null and status != ''">#{status},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null and summary != ''">#{summary}</when>
+            <otherwise>null</otherwise>
+        </choose>
+        )
+    </insert>
+
+    <!--查询这个应用在审批表中存不存在-->
+    <select id="getApplicationVerify" parameterType="java.util.Map" resultType="int">
+        select
+        count(appid)
+        from
+        tb_application_verify
+        where
+        appid = #{appid}
+    </select>
+
+    <!--进行审批表的修改，修改的同时也要把状态修改成未审批的状态-->
+   <update id="updateApplicationVerify" parameterType="java.util.Map">
+       update
+       tb_application_verify
+       set
+       <if test="appline != null and appline != ''">appline = #{appline},</if>
+       <if test="devtype != null and devtype != ''">devtype = #{devtype},</if>
+       <if test="apptype != null and apptype != ''">apptype = #{apptype},</if>
+       <if test="cid != null and cid != ''">cid = #{cid},</if>
+       <if test="appname != null and appname != ''">appname = #{appname},</if>
+       <if test="appvsn != null and appvsn != ''">appvsn = #{appvsn},</if>
+       <if test="showvsn != null and showvsn != ''">showvsn = #{showvsn},</if>
+       <if test="applogo != null and applogo != ''">applogo = #{applogo},</if>
+       <if test="appdesc != null and appdesc != ''">appdesc = #{appdesc},</if>
+       <if test="appurl != null and appurl != ''">appurl = #{appurl},</if>
+       <if test="appips != null and appips != ''">appips = #{appips},</if>
+       <if test="manurl != null and manurl != ''">manurl = #{manurl},</if>
+       <if test="status != null and status != ''">status = #{status},</if>
+       <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+       where
+       appid = #{appid}
+   </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

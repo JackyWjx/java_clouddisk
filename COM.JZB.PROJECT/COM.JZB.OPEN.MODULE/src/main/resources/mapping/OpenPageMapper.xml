@@ -59,6 +59,20 @@
         where status = '1'
           and appname ~ '';
     </select>
+
+    <!--修改开发者应用列表-->
+    <update id="updateOrgApplication" parameterType="java.util.Map">
+        update
+        tb_org_application
+        set
+        <if test="appname != null and appname != ''">appname = #{appname},</if>
+        <if test="appline != null and appline != ''">appline = #{appline},</if>
+        <if test="status != null and status != ''">status = #{status},</if>
+        <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+        where
+        appid = #{appid}
+    </update>
+
     <!--应用菜单表查询-->
     <select id="getApplicationMenuPage" resultType="java.util.Map">
         SELECT
@@ -90,4 +104,68 @@
             AND mid = #{ parentid }
             AND appid = #{ appid }
     </select>
+
+  <!--查询菜单的子父级-->
+    <select id="serachApplicationMenu" parameterType="java.util.Map" resultType="java.util.Map">
+         WITH RECURSIVE modt AS (
+        select
+        appid,mid,parentid,cname,menupath,'1' as statuss
+        from
+        tb_application_menu
+        where parentid = '000000000000000'
+        and status = '1' and appid = #{appid}
+        UNION ALL
+        SELECT
+        a.appid,a.mid,a.parentid,a.cname,a.menupath,'1' as status
+        from
+        tb_application_menu a
+        join modt on a.parentid = modt.mid
+        and a.status = '1' and a.appid = #{appid}
+        )
+        select
+        modt.*
+        from
+        modt
+    </select>
+
+  <!--查询页面-->
+    <select id="getApplicationPage" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        appid,
+        mid,
+        pageid,
+        cname,
+        pagepath AS path,
+        '2' AS statuss
+        from
+        tb_application_page
+        where
+        mid = #{mid} and status = '1'
+    </select>
+
+    <!--修改菜单-->
+    <update id="updateMenu" parameterType="java.util.Map">
+        update
+        tb_application_menu
+        set
+        <if test="cname != null and cname != ''">cname = #{cname},</if>
+        <if test="menupath != null and menupath != ''">menupath = #{path},</if>
+        <if test="status != null and status != ''">status = #{status},</if>
+        <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+        where
+        mid = #{mid}
+    </update>
+
+    <!--修改页面-->
+    <update id="updatePage" parameterType="java.util.Map">
+        update
+        tb_application_page
+        set
+        <if test="cname != null and cname != ''">cname = #{cname},</if>
+        <if test="pagepath != null and pagepath != ''">pagepath = #{path},</if>
+        <if test="status != null and status != ''">status = #{status},</if>
+        <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+        where
+        pageid = #{pageid}
+    </update>
 </mapper>

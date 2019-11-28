@@ -59,9 +59,11 @@
     <update id="updateVerify">
         update tb_application_verify
         set status = #{status},
-            upduid=#{uid},
-            updtime=#{updtime}
-        where appid=#{appid} and appvsn=#{appvsn} and status = '1';
+        upduid=#{uid},
+        updtime=#{updtime}
+        where appid=#{appid}
+        <if test="appvsn != null and appvsn != ''">and appvsn=#{appvsn}</if>
+        and status = '1';
     </update>
     <!--平台开发文档表-->
     <update id="updatePlatformHelper">
@@ -201,8 +203,8 @@
     <select id="queryVerify" resultType="java.util.Map">
         select *
         from tb_application_verify where
-         appid=#{appid}
-        and appvsn=#{appvsn};
+        appid=#{appid}
+        <if test="appvsn != null and appvsn != ''">and appvsn=#{appvsn};</if>
     </select>
     <!--查询平台开发文档表-->
     <select id="searchPlatformHelper" resultType="java.util.Map">
@@ -274,6 +276,21 @@
         select count(1)
         from tb_application_verify where
          appid=#{appid}
+    </select>
+
+    <!--根据appid查询页面-->
+    <select id="getApplicationPage" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        appid,
+        mid,
+        pageid,
+        cname,
+        pagepath AS path,
+        '2' AS statuss
+        from
+        tb_application_page
+        where
+        appid = #{appid} and status = '1'
     </select>
 
 </mapper>
