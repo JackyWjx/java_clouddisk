@@ -53,4 +53,28 @@ public interface PlatformCompanyMapper {
     * @return int
     */
     int insertProductByOpen(Map<String, Object> param);
+
+    int insertProductByOpens(Map<String, Object> param);
+
+    /**
+     * 添加菜单数据
+     * @param list
+     * @return
+     */
+    int saveMune(List<Map<String, Object>> list);
+
+    /**
+     * 添加页面
+     * @param list1
+     * @return
+     */
+    int savepage(List<Map<String, Object>> list1);
+
+    int getMune(Map<String, Object> map);
+
+    int updateMune(Map<String, Object> map);
+
+    int getPage(Map<String, Object> map);
+
+    int updatePage(Map<String, Object> map);
 }

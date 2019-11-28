@@ -135,7 +135,27 @@ public class PlatformCompanyController {
             param.put("uid", userInfo.get("uid"));
             param.put("time", System.currentTimeMillis());
             param.put("status","1");
+            param.put("ptype", "1");
             int add = platService.insertProductByOpen(param);
+             int count = platService.insertProductByOpens(param);
+
+             //往页面和菜单表中间添加数据
+          List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+            Map<String, Object> map1 = new HashMap<>();
+            map1.put("pid", param.get("appid"));
+            int count1 = platService.getMune(map1);
+            if (count > 0) {
+                int add1 = platService.updateMune(map1);
+            }
+             count =  platService.saveMune(list);
+          List<Map<String,Object>> list1 = (List<Map<String, Object>>) param.get("list1");
+            Map<String, Object> map = new HashMap<>();
+            map.put("pid", param.get("appid"));
+            int counts = platService.getPage(map);
+            if (counts > 0) {
+                int adds = platService.updatePage(map);
+            }
+             count= platService.savepage(list1);
             result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
 
         } catch (Exception e) {

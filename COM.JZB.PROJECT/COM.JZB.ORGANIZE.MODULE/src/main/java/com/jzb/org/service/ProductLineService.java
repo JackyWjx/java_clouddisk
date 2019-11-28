@@ -423,4 +423,10 @@ public class ProductLineService {
         }
         return count;
     }
+
+    public List<Map<String, Object>> getProductPageLists(Map<String, Object> param) {
+        // 加入查询状态
+        param.put("status", "1");
+        return productLineMapper.queryProductPageLists(param);
+    }
 }

@@ -412,7 +412,7 @@ public class ProductLineController {
             List<Map<String, Object>> productMenuList = productLineService.getProductMenuList(param);
             List<Map<String, Object>> productPageList = productLineService.getCompanyPageList(param);
             // 设置树结构
-            response = setTreeStructure(productPageList, productMenuList, param);
+            response = setTreeStructures(productPageList, productMenuList, param);
         } catch (Exception ex) {
             JzbTools.logError(ex);
             response = Response.getResponseError();
@@ -477,6 +477,139 @@ public class ProductLineController {
         }
         return result;
     }
+
+
+    /**
+     * 处理树结构,得到结果集
+     *
+     * @param list  要处理的树对象
+     * @param param 顶级父级,map包含parentid
+     * @return Response
+     * @author kuang Bin
+     */
+    public Response setTreeStructures(List<Map<String, Object>> pageList, List<Map<String, Object>> list, Map<String, Object> param) {
+        Response response;
+        // 结果集 JSON
+        JSONArray result = new JSONArray();
+
+        // 记录临时json
+        JSONObject recordJson = new JSONObject();
+
+        // Unknown json
+        JSONObject unknownRecord = new JSONObject();
+
+        // 定义根目录ID
+        String firstParent = JzbDataType.getString(param.get("parentid")).equals("") ?
+                "000000000000000" : JzbDataType.getString(param.get("parentid"));
+
+        // 定义层级,从1级开始
+        int level = 1;
+        for (int i = 0, l = list.size(); i < l; i++) {
+            Map<String, Object> record = list.get(i);
+            String parentId;
+            if (JzbDataType.getString(record.get("parentid")) == null) {
+                // TODO
+                parentId = "000000000000000";
+            } else {
+                parentId = JzbDataType.getString(record.get("parentid"));
+            }
+            // 建立一个json数组
+            JSONObject node = new JSONObject();
+            node.put("children", new JSONArray());
+            node.put("parentid", parentId);
+            // 加入对象类型,1代表菜单,2代表页面
+            node.put("type", "1");
+            node.put("mid", JzbDataType.getString(record.get("mid")));
+            node.put("pid", JzbDataType.getString(record.get("pid")));
+            node.put("cname", JzbDataType.getString(record.get("cname")));
+            node.put("menupath", JzbDataType.getString(record.get("menupath")));
+            node.put("idx", JzbDataType.getString(record.get("idx")));
+            node.put("icon", JzbDataType.getString(record.get("icon")));
+            node.put("photo", JzbDataType.getString(record.get("photo")));
+            node.put("summary", JzbDataType.getString(record.get("summary")));
+            if ("000000000000000".equals(parentId) && pageList.size() != 0) {
+                for (int b = pageList.size() - 1; b >= 0; b--) {
+                    Map<String, Object> productPage = pageList.get(b);
+                    if (productPage.get("pid").equals(JzbDataType.getString(record.get("pid")))) {
+                        // type为2代表是页面
+                        productPage.put("type", "2");
+                        result.add(productPage);
+                        pageList.remove(b);
+                    }
+                }
+            }
+            // 查询每级菜单下的页面
+            List<Map<String, Object>> productPageList = productLineService.getProductPageLists(record);
+            for (int p = 0; p < productPageList.size(); p++) {
+                Map<String, Object> productPageMap = productPageList.get(p);
+                // type为2代表是页面
+                productPageMap.put("type", "2");
+
+                // 将菜单下的页面加入children中并标记为2
+                node.getJSONArray("children").add(productPageMap);
+            }
+            // 判断firstParent是否存在
+            if (parentId.equals(firstParent)) {
+                // 加入一级菜单到结果集
+                result.add(node);
+
+                // 加入当前层级
+                node.put("level", level);
+                recordJson.put(JzbDataType.getString(record.get("mid")), node);
+            } else if (recordJson.containsKey(parentId)) {
+                // 如果此对象的父级不是根级,则添加在对象父id存在的node对象中的children中
+                recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
+
+                // 加入父级children对象之后加入当前子级的层级
+                node.put("level", JzbDataType.getInteger(recordJson.getJSONObject(parentId).get("level")) + 1);
+                recordJson.put(JzbDataType.getString(record.get("mid")), node);
+            } else {
+                String nodeId = JzbDataType.getString(record.get("mid"));
+                if (unknownRecord.containsKey(parentId)) {
+                    // add children
+                    unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
+
+                    // 加入父级children对象之后加入当前子级的层级
+                    node.put("level", JzbDataType.getInteger(unknownRecord.getJSONObject(parentId).get("level")) + 1);
+                    recordJson.put(nodeId, node);
+                } else {
+                    // 找到节点
+                    for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                        JSONObject tempNode = (JSONObject) entry.getValue();
+                        if (tempNode.getString("parentid").equals(nodeId)) {
+                            node.getJSONArray("children").add(tempNode);
+                            recordJson.put(JzbDataType.getString(tempNode.get("mid")), tempNode);
+                            unknownRecord.remove(JzbDataType.getString(tempNode.get("mid")));
+                            break;
+                        }
+                    }
+                    unknownRecord.put(nodeId, node);
+                }
+            }
+        }
+        // 将unknownRecord添加到结果中
+        // 找到节点
+        for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+            JSONObject tempNode = (JSONObject) entry.getValue();
+            String tempNodeId = tempNode.getString("parentid");
+            if (recordJson.containsKey(tempNodeId)) {
+                // add children
+                recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
+
+                // 加入父级的children对象之后加入当前子级的层级
+                tempNode.put("level", JzbDataType.getInteger(recordJson.getJSONObject(tempNodeId).get("level")) + 1);
+            }
+        }
+        // 分页对象
+        PageInfo pageInfo = new PageInfo();
+        pageInfo.setList(result);
+        // 获取用户信息
+        Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+        response = Response.getResponseSuccess(userInfo);
+        response.setPageInfo(pageInfo);
+        return response;
+    }
+
 
     /**
      * 处理树结构,得到结果集

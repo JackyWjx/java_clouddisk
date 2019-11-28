@@ -191,4 +191,6 @@ public interface ProductLineMapper {
      * @author kuang Bin
      */
     int insertExistingPage(List<Map<String, Object>> list);
+
+    List<Map<String, Object>> queryProductPageLists(Map<String, Object> param);
 } // End interface CompanyMapper

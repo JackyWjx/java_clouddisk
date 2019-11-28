@@ -158,4 +158,60 @@ public class PlatformCompanyService {
     public int insertProductByOpen(Map<String, Object> param) {
         return platMapper.insertProductByOpen(param);
     }
+
+    /**
+     * 开放平台数据的添加
+     * @param param
+     * @return
+     */
+    public int insertProductByOpens(Map<String, Object> param) {
+        return platMapper.insertProductByOpens(param);
+    }
+
+    /**
+     * 添加菜单数据
+     * @param list
+     * @return
+     */
+    public int saveMune(List<Map<String, Object>> list) {
+            for (int i = 0; i < list.size(); i++) {
+                long time = System.currentTimeMillis();
+                list.get(i).put("status", "1");
+                list.get(i).put("addtime", time);
+                list.get(i).put("updtime", time);
+            }
+        return platMapper.saveMune(list);
+    }
+
+    /**
+     * 添加页面
+     * @param list1
+     * @return
+     */
+    public int savepage(List<Map<String, Object>> list1) {
+
+        for (int i = 0; i < list1.size(); i++) {
+            long time = System.currentTimeMillis();
+            list1.get(i).put("status", "1");
+            list1.get(i).put("addtime", time);
+            list1.get(i).put("updtime", time);
+        }
+        return platMapper.savepage(list1);
+    }
+
+    public int getPage(Map<String, Object> map) {
+        return platMapper.getPage(map);
+    }
+
+    public int updatePage(Map<String, Object> map) {
+        return platMapper.updatePage(map);
+    }
+
+    public int getMune(Map<String, Object> map1) {
+        return platMapper.getMune(map1);
+    }
+
+    public int updateMune(Map<String, Object> map1) {
+        return platMapper.updateMune(map1);
+    }
 }
