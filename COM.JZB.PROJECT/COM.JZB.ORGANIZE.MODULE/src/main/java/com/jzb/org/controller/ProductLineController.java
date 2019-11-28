@@ -212,7 +212,7 @@ public class ProductLineController {
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             // 修改页面或者删除页面
             int count = productLineService.modifyProductPage(param);
-            if (count == 1) {
+            if (count != 0) {
                 // 判断缓存中是否存在产品数并删除
                 comHasMenuTree(param);
                 result = Response.getResponseSuccess(userInfo);

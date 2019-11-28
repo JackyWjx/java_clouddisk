@@ -388,6 +388,8 @@ public class ProductLineService {
             long addtime = System.currentTimeMillis();
             for (int i = 0; i < list.size(); i++) {
                 Map<String, Object> map = list.get(i);
+                map.put("newpageid", list.get(i).get("pageid"));
+                map.put("pageid", JzbRandom.getRandomChar(17));
                 map.put("addtime", addtime);
                 map.put("updtime", addtime);
                 map.put("status", "1");
