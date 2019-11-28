@@ -84,7 +84,7 @@ public class OpenPageController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"appid"})) {
                 result = Response.getResponseError();
             } else {
-                //进行数据逇修改
+                //进行数据的修改
                 int count = openPageService.updateOrgApplication(param);
                 //int count = 1;
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");

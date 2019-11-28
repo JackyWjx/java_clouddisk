@@ -214,6 +214,13 @@ public class PlatformComController {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("uid", userInfo.get("uid"));
                 int update = platformComService.updateVerify(param);
+                HashMap<String, Object> map = new HashMap<>();
+                if (JzbDataType.getInteger(param.get("status")) == 2 || JzbDataType.getInteger(param.get("status")) == 4) {
+
+                    map.put("appid", param.get("appid"));
+                    map.put("summary", param.get("status"));
+                    openPageService.updateOrgApplication(map);
+                }
                 result = update > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             } else {
                 result = Response.getResponseError();
@@ -642,6 +649,10 @@ public class PlatformComController {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("uid", userInfo.get("uid"));
                 int upd = platformComService.updateOrgApplication(param);
+                Map<String, Object> map = new HashMap<>();
+                map.put("summary", "0");
+                map.put("appid", param.get("appid"));
+                openPageService.updateOrgApplication(map);
                 result = upd > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             } else {
                 result = Response.getResponseError();

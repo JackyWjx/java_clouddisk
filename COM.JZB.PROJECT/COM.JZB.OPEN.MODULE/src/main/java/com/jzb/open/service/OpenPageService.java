@@ -6,6 +6,7 @@ import com.jzb.open.dao.OpenPageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,6 +118,11 @@ public class OpenPageService {
         if (param.get("delete") != null && param.get("delete") != "" && param.get("delete").toString().length() != 0) {
             param.put("status", "2");
         }
+        //提交之后添加一个状态返回给前端
+        Map<String, Object> map = new HashMap<>();
+        map.put("summary", "0");
+        map.put("appid", param.get("appid"));
+        updateOrgApplication(map);
         return openPageMapper.updateMenu(param);
     }
 
@@ -132,6 +138,10 @@ public class OpenPageService {
         if (param.get("delete") != null && param.get("delete") != "" && param.get("delete").toString().length() != 0) {
             param.put("status", "2");
         }
+        Map<String, Object> map = new HashMap<>();
+        map.put("summary", "0");
+        map.put("appid", param.get("appid"));
+        updateOrgApplication(map);
         return openPageMapper.updatePage(param);
     }
 

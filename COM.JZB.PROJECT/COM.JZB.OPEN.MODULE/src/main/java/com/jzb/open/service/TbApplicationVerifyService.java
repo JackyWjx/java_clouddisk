@@ -4,6 +4,7 @@ import com.jzb.open.dao.TbApplicationVerifyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -12,7 +13,8 @@ public class TbApplicationVerifyService {
     @Autowired
     private TbApplicationVerifyMapper tbApplicationVerifyMapper;
 
-
+    @Autowired
+    private OpenPageService openPageService;
 
     /**
      * 提交应用列表到审批列表
@@ -30,8 +32,18 @@ public class TbApplicationVerifyService {
         if (counts > 0) {
             //如果存在在提交审批,则把状态修改成未审批状态,内容也修改成修改后的
             count = tbApplicationVerifyMapper.updateApplicationVerify(param);
+            //修改之后在提交
+            Map<String, Object> map = new HashMap<>();
+            map.put("summary", "1");
+            map.put("appid", param.get("appid"));
+            openPageService.updateOrgApplication(map);
         } else {
             count = tbApplicationVerifyMapper.saveApplicationVerify(param);
+            //提交之后添加一个状态返回给前端
+            Map<String, Object> map = new HashMap<>();
+            map.put("summary", "1");
+            map.put("appid", param.get("appid"));
+            openPageService.updateOrgApplication(map);
         }
 
         return count;
