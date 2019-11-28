@@ -41,12 +41,14 @@
     </insert>
     <!--模糊查询开发者应用表-->
     <select id="searchOrgApplication" resultType="java.util.Map">
-        select appid,
+        select
+        appid,
        appline,
        devtype,
        apptype,
        cid,
-       appname
+       appname,
+       summary
         from tb_org_application
         where status = '1'
           and appname ~ #{value}
@@ -68,6 +70,7 @@
         <if test="appname != null and appname != ''">appname = #{appname},</if>
         <if test="appline != null and appline != ''">appline = #{appline},</if>
         <if test="status != null and status != ''">status = #{status},</if>
+        <if test="summary != null and summary != ''">summary = #{summary},</if>
         <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
         where
         appid = #{appid}
