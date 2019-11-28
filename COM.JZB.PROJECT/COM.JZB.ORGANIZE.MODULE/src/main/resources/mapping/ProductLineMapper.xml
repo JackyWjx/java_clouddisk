@@ -811,11 +811,12 @@
     <!--点击从页面添加按钮,将页面加入当前菜单中-->
     <insert id="insertExistingPage" parameterType="java.util.List">
         INSERT INTO
-        tb_product_pages (pageid, pid, mid, pagecode, cname, icon, pagepath, idx, ouid, addtime, updtime, status,
+        tb_product_pages (newpageid,pageid, pid, mid, pagecode, cname, icon, pagepath, idx, ouid, addtime, updtime, status,
         summary)
         VALUES
         <foreach separator="," close="" open="" index="index" item="item" collection="list">
             (
+            #{item.newpageid},
             #{item.pageid},
             #{item.pid},
             #{item.mid},
