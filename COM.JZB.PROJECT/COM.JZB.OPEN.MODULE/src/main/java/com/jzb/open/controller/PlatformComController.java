@@ -1,5 +1,6 @@
 package com.jzb.open.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -7,6 +8,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.open.api.auth.CompanyControllerApi;
 import com.jzb.open.api.org.PlatformCompanyApi;
+import com.jzb.open.service.OpenPageService;
 import com.jzb.open.service.PlatformComService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,11 @@ public class PlatformComController {
     @Autowired
     private PlatformCompanyApi platformCompanyApi;
 
+    @Autowired
+    private OpenPageController openPageController;
+
+    @Autowired
+    private OpenPageService openPageService;
     /**
      * 获取所有开放平台的企业id
      *
@@ -160,6 +167,15 @@ public class PlatformComController {
                 }
 
                 List<Map<String, Object>> AppVList = platformComService.searchApplicationVerify(param);
+                //获取这个应用下面的页面和菜单
+                for (int i = 0; i < AppVList.size(); i++) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("appid", AppVList.get(i).get("appid"));
+                    Response response = openPageController.serachApplicationMenu(map);
+                    AppVList.get(i).put("children", response.getResponseEntity());
+
+                }
+
                 result = Response.getResponseSuccess(userInfo);
                 Info = new PageInfo();
                 Info.setList(AppVList);
@@ -192,7 +208,7 @@ public class PlatformComController {
     public Response modifyVerify(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"status", "appid", "appvsn"};
+            String[] str = {"status", "appid"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 param.put("appvsn", JzbDataType.getInteger(param.get("appvsn")));
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
