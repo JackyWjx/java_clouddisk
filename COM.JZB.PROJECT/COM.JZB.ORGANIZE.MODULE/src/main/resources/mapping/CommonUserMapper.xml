@@ -86,7 +86,7 @@
             sex = #{sex},
         </if>
         <if test="age != null and age != ''">
-            age = #{age},
+            age =  #{age},
         </if>
         <if test="job != null and job != ''">
             job = #{job},
@@ -144,13 +144,25 @@
         source,areaid,uid,uname,phone,cardid,sex,age,job,mail,
         cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary
         from tb_common_user_list where status = '1'
-        <if test="pagesize != null and pagesize != ''">
-            limit #{pagesize}
+        <if test="province != null and province != ''">
+            and tcp.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
         </if>
-        <if test="pageno != null and pagesize != ''">
+        <if test="phone != null and phone != ''">
+           and  phone = #{phone}
+        </if>
+        <if test="uname != null and uname != ''">
+            and  uname  like CONCAT('%',#{uname},'%')
+        </if>
+        <if test="pagesize != null and pagesize != '' and pagesize != 0 ">
+            limit #{pagesize}
             offset #{pageno}
         </if>
     </select>
+
+    <!--模糊查询公海用户-->
 
     <!--查询公海用户总数-->
     <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">

@@ -1,6 +1,8 @@
 package com.jzb.org.service;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbRandom;
+import com.jzb.base.util.JzbTools;
 import com.jzb.org.dao.CommonUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class CommonUserService {
     public int addCommUser(Map<String, Object> paramp) {
         paramp.put("uid", JzbRandom.getRandomCharCap(12));
         paramp.put("status",'1');
+        paramp.put("age", JzbDataType.getInteger(paramp.get("age")));
         return userMapper.addCommUser(paramp);
     }
 
@@ -30,8 +33,18 @@ public class CommonUserService {
     public int getCount(Map<String, Object> paramp) {
         return userMapper.getCount(paramp);
     }
+
     // 获取公海用户信息
     public List<Map<String, Object>> queryCommonUser(Map<String, Object> paramp) {
+
+        if (!JzbTools.isEmpty(paramp.get("searchtext"))){
+            String searchtext = (String) paramp.get("searchtext");
+            if (searchtext.length() == 11){
+                paramp.put("phone",searchtext);
+            }else {
+                paramp.put("uname",searchtext);
+            }
+        }
         return userMapper.queryComUser(paramp);
     }
     // 修改公海用户信息

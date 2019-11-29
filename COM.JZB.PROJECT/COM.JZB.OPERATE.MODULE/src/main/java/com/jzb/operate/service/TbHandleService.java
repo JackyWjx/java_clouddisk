@@ -10,8 +10,7 @@ import com.jzb.operate.dao.TbHandleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class TbHandleService {
@@ -96,5 +95,47 @@ public class TbHandleService {
         param.put("pageno", (pageno - 1) * pagesize);
         param.put("pagesize", pagesize);
         return param;
+    }
+
+    /**
+     * 查询意向数目
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getHandleCount(Map<String, Object> param) {
+        param.put("handlestage",1);
+        Map<String, Object> map = methodTime(System.currentTimeMillis());
+        param.putAll(map);
+        // 愿意见
+        int willCount = tbHandleMapper.getHandleCount(param);
+
+        param.put("handlestage",2);
+        // 深度见
+        int deepCount = tbHandleMapper.getHandleCount(param);
+
+        param.put("handlestage",3);
+        // 上会
+        int meetCount = tbHandleMapper.getHandleCount(param);
+
+        param.put("handlestage",4);
+        // 上会
+        int signCount = tbHandleMapper.getHandleCount(param);
+        Map<String,Object> cmap = new HashMap<>();
+        cmap.put("willCount",willCount);
+        cmap.put("deepCount",deepCount);
+        cmap.put("meetCount",meetCount);
+        cmap.put("signCount",signCount);
+        List<Map<String,Object>> list = new ArrayList<>();
+        list.add(cmap);
+        return list;
+    }
+
+    public Map<String,Object> methodTime(Long current){
+        Map<String ,Object> map = new HashMap<>();
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        long twelve=zero+24*60*60*1000-1;//今天23点59分59秒的毫秒数
+        map.put("zero",zero);
+        map.put("twelve",twelve);
+        return map;
     }
 }

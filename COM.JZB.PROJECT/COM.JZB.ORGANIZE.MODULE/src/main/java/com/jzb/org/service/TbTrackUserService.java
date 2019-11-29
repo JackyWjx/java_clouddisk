@@ -107,6 +107,40 @@ public class TbTrackUserService {
         mapList.add(map2);
         return mapList;
     }
+
+    /**
+     * 查询意向数目
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getHandleCount(Map<String, Object> param) {
+        param.put("handlestage",1);
+        Map<String, Object> map = methodTime(System.currentTimeMillis());
+        param.putAll(map);
+        // 愿意见
+        int willCount = userMapper.getHandleCount(param);
+
+        param.put("handlestage",2);
+        // 深度见
+        int deepCount = userMapper.getHandleCount(param);
+
+        param.put("handlestage",4);
+        // 上会
+        int meetCount = userMapper.getHandleCount(param);
+
+        param.put("handlestage",8);
+        // 上会
+        int signCount = userMapper.getHandleCount(param);
+        Map<String,Object> cmap = new HashMap<>();
+        cmap.put("willCount",willCount);
+        cmap.put("deepCount",deepCount);
+        cmap.put("meetCount",meetCount);
+        cmap.put("signCount",signCount);
+        List<Map<String,Object>> list = new ArrayList<>();
+        list.add(cmap);
+        return list;
+    }
+
     public Map<String,Object> methodTime(Long current){
         Map<String ,Object> map = new HashMap<>();
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数

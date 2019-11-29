@@ -32,4 +32,11 @@ public interface TbTrackUserMapper {
     int getQCount(Map<String, Object> param);
 
     int getPCount(Map<String, Object> param);
+
+    /**
+     * 查询意向数目
+     * @param param
+     * @return
+     */
+    int getHandleCount(Map<String, Object> param);
 }

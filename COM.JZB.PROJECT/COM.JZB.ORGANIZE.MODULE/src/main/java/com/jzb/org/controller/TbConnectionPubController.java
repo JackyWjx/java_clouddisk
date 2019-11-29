@@ -319,7 +319,7 @@ public class TbConnectionPubController {
         return result;
     }
 
-    // 查询百度发帖信息
+    // 查询百度/朋友圈发帖信息
     @RequestMapping("/getInfo")
     public Response getInfo(@RequestBody Map<String,Object> param){
         Response result;

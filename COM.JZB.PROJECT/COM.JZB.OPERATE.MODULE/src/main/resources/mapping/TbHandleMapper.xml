@@ -18,6 +18,10 @@
     <!--点击业主/项目/跟进信息获取项目下的跟进信息-->
     <select id="queryHandlecItem" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        handlestage,
+        dialogue,
+        photo,
+        conclusion,
         planid,
         typeid,
         cid,
@@ -53,10 +57,14 @@
     <!--CRM-销售业主-公海-业主下的人员14-点击业主/项目/跟进信息中点击添加跟进信息-->
     <insert id="insertHandlecItem" parameterType="java.util.Map">
         INSERT INTO tb_handle_item
-        (planid, typeid, cid, projectid, uid, region, handletime, personid, person, context, needres,
+        (handlestage,dialogue,photo,conclusion,planid, typeid, cid, projectid, uid, region, handletime, personid, person, context, needres,
         invest, output, planendtime, planoutput, attach, travelid, nexttime, ouid, addtime, status)
         VALUES
         (
+        #{handlestage},
+        #{dialogue},
+        #{photo},
+        #{conclusion},
         #{planid},
         #{typeid},
         #{cid},
@@ -127,6 +135,18 @@
         UPDATE
         tb_handle_item
         SET
+        <if test="handlestage != null and handlestage != ''">
+            handlestage = #{handlestage},
+        </if>
+        <if test="dialogue != null and dialogue != ''">
+            dialogue = #{dialogue},
+        </if>
+        <if test="photo != null and photo != ''">
+            photo = #{photo},
+        </if>
+        <if test="conclusion != null and conclusion != ''">
+            conclusion = #{conclusion},
+        </if>
         context =#{context},
         <if test="attach!=null and attach!=''">attach =#{attach},</if>
         updtime = #{updtime},
@@ -138,4 +158,18 @@
         and
         planid = #{planid}
     </update>
+
+    <!--查询跟进记录愿意见数目-->
+    <select id="getHandleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_handle_item
+          where uid = #{uid}
+          and handlestage = #{handlestage}
+          <if test="zero != null and zero != ''">
+              and addtime &gt;= #{zero}
+          </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
+    </select>
+
 </mapper>

@@ -27,6 +27,8 @@ public interface TbHandleMapper {
      */
     List<Map<String, Object>> queryHandlecItem(Map<String, Object> param);
 
+
+
     /**
      * CRM-销售业主-公海-业主下的人员14
      * 点击业主/项目/跟进信息中点击添加跟进信息
@@ -44,4 +46,11 @@ public interface TbHandleMapper {
      * @DateTime: 2019/10/19
      */
     int updateHandlecItem(Map<String, Object> param);
+
+    /**
+     * 查询意向数目
+     * @param param
+     * @return
+     */
+    int getHandleCount(Map<String, Object> param);
 }

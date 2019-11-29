@@ -12,10 +12,7 @@ import com.jzb.org.util.SetPageSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -143,6 +140,50 @@ public class TbTrackUserController {
             JzbTools.logError(e);
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getInfo Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+
+    /**
+     *CRM-销售业主-联系-个人看板-
+     * 愿意见-深度见-上会-签约数量
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getHandleCount", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getHandleCount(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/connction/getHandleCount";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            param.put("uid",userInfo.get("uid"));
+            List<Map<String, Object>> List = userService.getHandleCount(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(List);
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getHandleCount Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),

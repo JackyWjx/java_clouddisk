@@ -52,7 +52,7 @@
     <!--查询qq/微信联系记录数-->
     <select id="getQCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_track_user_list
-        where tracktype in (1,2)
+        where tracktype in (4,8)
         <if test="zero != null and zero != ''">
            and addtime &gt;= #{zero}
         </if>
@@ -66,7 +66,7 @@
     <!--查询电话联系记录数-->
     <select id="getPCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_track_user_list
-        where tracktype = 3
+        where tracktype = 16
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
         </if>
@@ -77,6 +77,18 @@
         and adduid = #{adduid}
     </select>
 
+    <!--查询跟进记录愿意见数目-->
+    <select id="getHandleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_track_user_list
+        where adduid = #{uid}
+        and handlestage = #{handlestage}
+        <if test="zero != null and zero != ''">
+            and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
+    </select>
     <!--查询跟进人员记录总数-->
     <select id="getTrackCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_track_user_list where status = '1' and adduid = #{adduid}
