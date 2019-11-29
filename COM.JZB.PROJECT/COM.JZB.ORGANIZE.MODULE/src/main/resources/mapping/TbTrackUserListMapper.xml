@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbTrackUserListMapper">
+
+    <!-- 查找跟进记录不带条件 -->
+    <select id="findTrackList" parameterType="java.util.Map">
+        SELECT
+            trackid,
+            tracktag,
+            tracktime,
+            trackuname,
+            trackuid,
+            tracktype,
+            trackvalue,
+            isservice,
+            customer,
+            trackcid,
+            (select cname from tb_company_list where cid=tvv.trackcid) trackcname,
+            trackproid,
+            trackcontent,
+            trackoutput,
+            abdialogue,
+            nextadvance,
+            image,
+            excontent,
+            trackdesc,
+            trackres,
+            addtime
+        FROM
+            tb_track_user_list
+        WHERE
+            status = '1'
+        limit #{pagesize} offset #{pageno}
+    </select>
+
+    <!-- 查找跟进记录总数不带条件 -->
+    <select id="findTrackListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_track_user_list where status='1'
+    </select>
+
+
+    <!-- 查找跟进记录带条件 -->
+    <select id="findTrackListByKeywords" parameterType="java.util.Map">
+        SELECT
+        trackid,
+        tracktag,
+        tracktime,
+        trackuname,
+        tracktype,
+        trackvalue,
+        isservice,
+        trackuid,
+        customer,
+        trackcid,
+        trackproid,
+        trackcontent,
+        trackoutput,
+        abdialogue,
+        nextadvance,
+        image,
+        excontent,
+        trackdesc,
+        trackres
+        FROM
+        tb_track_user_list
+        WHERE
+        status = '1'
+        <if test="list!=null and list!=''">
+
+            and trackuid in
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                #{item.value}
+            </foreach>
+
+            or trackcid in
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                #{item.value}
+            </foreach>
+
+        </if>
+
+        <if test="beginTime!=null and beginTime !=''">
+            and addtime &lt; #{beginTime}
+        </if>
+
+        <if test="endTime!=null and endTime !=''">
+            and addtime &gt; #{beginTime}
+        </if>
+
+        limit #{pagesize} offset #{pageno}
+    </select>
+
+
+    <!-- 查找跟进记录总数带条件 -->
+    <select id="findTrackListCountByKeywords" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) FROM tb_track_user_list
+        WHERE status='1'
+        <if test="list!=null and list!=''">
+
+            and trackuid in
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                trackcid=#{item.value}
+            </foreach>
+
+            or trackcid in
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                trackcid=#{item.value}
+            </foreach>
+
+        </if>
+
+        <if test="beginTime!=null and beginTime !=''">
+            and addtime &lt; #{beginTime}
+        </if>
+
+        <if test="endTime!=null and endTime !=''">
+            and addtime &gt; #{beginTime}
+        </if>
+    </select>
+
+    <!-- 模糊查询用户名 -->
+    <select id="findUnameLike" parameterType="java.util.Map" resultType="java.util.Map">
+        select uid,cname from tb_dpet_user where cname ~ #{keyword}
+    </select>
+
+    <!-- 模糊查询单位名称 -->
+    <select id="findCnameLike" parameterType="java.util.Map" resultType="java.util.Map">
+        select cid,cname from tb_company_list where cname ~ #{keyword}
+    </select>
+
+</mapper>
