@@ -5,7 +5,7 @@
 <mapper namespace="com.jzb.org.dao.TbTrackUserListMapper">
 
     <!-- 查找跟进记录不带条件 -->
-    <select id="findTrackList" parameterType="java.util.Map">
+    <select id="findTrackList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
             trackid,
             tracktag,
@@ -29,15 +29,18 @@
             trackres,
             addtime
         FROM
-            tb_track_user_list
+            tb_track_user_list tvv
         WHERE
             status = '1'
-        limit #{pagesize} offset #{pageno}
+            and isservice='0'
+        <if test="page!=null and page!=''">
+            limit #{pagesize} offset #{pageno}
+        </if>
     </select>
 
     <!-- 查找跟进记录总数不带条件 -->
     <select id="findTrackListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
-        select count(1) from tb_track_user_list where status='1'
+        select count(1) from tb_track_user_list where status='1' and isservice='0'
     </select>
 
 
@@ -64,9 +67,10 @@
         trackdesc,
         trackres
         FROM
-        tb_track_user_list
+        tb_track_user_list tvv
         WHERE
         status = '1'
+        and isservice='0'
         <if test="list!=null and list!=''">
 
             and trackuid in
@@ -88,8 +92,9 @@
         <if test="endTime!=null and endTime !=''">
             and addtime &gt; #{beginTime}
         </if>
-
-        limit #{pagesize} offset #{pageno}
+        <if test="page!=null and page!=''">
+            limit #{pagesize} offset #{pageno}
+        </if>
     </select>
 
 
@@ -97,6 +102,7 @@
     <select id="findTrackListCountByKeywords" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) FROM tb_track_user_list
         WHERE status='1'
+        and isservice='0'
         <if test="list!=null and list!=''">
 
             and trackuid in

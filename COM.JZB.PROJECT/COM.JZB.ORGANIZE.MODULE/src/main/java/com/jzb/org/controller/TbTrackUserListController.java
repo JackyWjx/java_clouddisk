@@ -11,12 +11,20 @@ import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.service.TbTrackUserListService;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +77,8 @@ public class TbTrackUserListController {
             } else {
                 // 配置分页参数
                 JzbPageConvert.setPageRows(param);
-
+                // 告诉sql  要分页
+                param.put("page", 1);
                 // 获取结果集
                 List<Map<String, Object>> trackList = tbTrackUserListService.findTrackList(param);
                 for (int i = 0; i < trackList.size(); i++) {
@@ -77,9 +86,14 @@ public class TbTrackUserListController {
                     Response region = userRedisServiceApi.getCacheUserInfo(param);
                     trackList.get(i).put("userInfo", region.getResponseEntity());
                     trackList.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(trackList.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                    trackList.get(i).put("tracktime", JzbDateUtil.toDateString(JzbDataType.getLong(trackList.get(i).get("tracktime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
                 }
-                // 定义返回结果
-                response = Response.getResponseSuccess(userInfo);
+                if (userInfo == null) {
+                    // 定义返回结果
+                    response = Response.getResponseSuccess();
+                } else {
+                    response = Response.getResponseSuccess(userInfo);
+                }
                 // 定义分页对象
                 PageInfo pageInfo = new PageInfo();
                 // 设置list
@@ -106,6 +120,7 @@ public class TbTrackUserListController {
 
     /**
      * 查询所有跟进记录 (带条件)
+     *
      * @param param
      * @return
      */
@@ -127,7 +142,6 @@ public class TbTrackUserListController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-
             // 如果获取参数userinfo不为空的话
             if (JzbCheckParam.haveEmpty(param, new String[]{"keyword"})) {
                 response = Response.getResponseError();
@@ -136,21 +150,32 @@ public class TbTrackUserListController {
                 // 定义list放uid和cid
                 List<Map<String, Object>> list = new ArrayList<>();
                 // 定义map便于list添加对象
-                Map<String, Object> map=new HashMap<>();
+                Map<String, Object> map = new HashMap<>();
+                // 配置参数
+                if (JzbCheckParam.haveEmpty(param, new String[]{"beginTime"})) {
+                    param.put("beginTime", JzbDateUtil.getDate(param.get("beginTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
+                }
+                // 配置参数
+                if (JzbCheckParam.haveEmpty(param, new String[]{"endTime"})) {
+                    param.put("endTime", JzbDateUtil.getDate(param.get("endTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
+                }
                 // 根据关键字查询出来的单位id
                 List<Map<String, Object>> cnameLike = tbTrackUserListService.findCnameLike(param);
                 for (int i = 0, l = cnameLike.size(); i < l; i++) {
-                    map.put("value",cnameLike.get(i).get("cid"));
+                    map.put("value", cnameLike.get(i).get("cid"));
                     list.add(map);
                 }
                 // 根据关键字查询出来的用户id
                 List<Map<String, Object>> unameLike = tbTrackUserListService.findUnameLike(param);
                 for (int i = 0, l = unameLike.size(); i < l; i++) {
-                    map.put("value",unameLike.get(i).get("uid"));
+                    map.put("value", unameLike.get(i).get("uid"));
                     list.add(map);
                 }
                 // 把list放到参数中用于查询数据
-                param.put("list",list);
+                param.put("list", list);
+                JzbPageConvert.setPageRows(param);
+                // 告诉sql  要分页
+                param.put("page", 1);
                 List<Map<String, Object>> trackListByKeywords = tbTrackUserListService.findTrackListByKeywords(param);
                 // 处理返回数据
                 for (int i = 0; i < trackListByKeywords.size(); i++) {
@@ -161,6 +186,9 @@ public class TbTrackUserListController {
                     trackListByKeywords.get(i).put("userInfo", region.getResponseEntity());
                     // 转换时间
                     trackListByKeywords.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(trackListByKeywords.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+
+                    trackListByKeywords.get(i).put("tracktime", JzbDateUtil.toDateString(JzbDataType.getLong(trackListByKeywords.get(i).get("tracktime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+
                 }
 
                 // 定义返回结果
@@ -190,4 +218,86 @@ public class TbTrackUserListController {
         }
         return response;
     }
+
+    /**
+     * 导出Excel
+     *
+     * @param response
+     * @param param
+     */
+    @RequestMapping(value = "/getTrackExcel", method = RequestMethod.POST)
+    @CrossOrigin
+    public void getExcel(HttpServletResponse response, @RequestBody(required = false) Map<String, Object> param) {
+        try {
+            List<Map<String, Object>> trackList = null;
+            if (param==null||JzbCheckParam.haveEmpty(param, new String[]{"keyword"})) {
+                param=param==null?new HashMap<>():param;
+                trackList = tbTrackUserListService.findTrackList(param);
+            } else {
+                trackList = tbTrackUserListService.findTrackListByKeywords(param);
+            }
+            for (int i = 0; i < trackList.size(); i++) {
+                param.put("uid", trackList.get(i).get("trackuid"));
+                Response region = userRedisServiceApi.getCacheUserInfo(param);
+                trackList.get(i).put("userInfo", region.getResponseEntity());
+                trackList.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(trackList.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+            }
+            // 模板路径
+            String srcFilePath = "static/excel/trackMessage.xlsx";
+            // 资源路径
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            // 创建输入流
+            InputStream in = resource.getInputStream();
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            for (int i = 0, l = trackList.size(); i < l; i++) {
+                Map<String, Object> userMap = trackList.get(i).get("userInfo") == null ? new HashMap<>() : (Map<String, Object>) trackList.get(i).get("userInfo");
+                for (int j = 0; j < 8; j++) {
+                    String value = "";
+                    switch (j) {
+                        case 0:
+                            value = i+1 + "";
+                            break;
+                        case 1:
+                            value = userMap.get("cname") == null ? "" : userMap.get("cname").toString();
+                            break;
+                        case 2:
+                            value = trackList.get(i).get("trackcname") == null ? "" : trackList.get(i).get("trackcname").toString();
+                            break;
+                        case 3:
+                            value = JzbDateUtil.toDateString(JzbDataType.getLong(trackList.get(i).get("tracktime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss);
+                            break;
+                        case 4:
+                            value = trackList.get(i).get("trackcontent") == null ? "" : trackList.get(i).get("trackcontent").toString();
+                            break;
+                        case 5:
+                            value = trackList.get(i).get("trackoutput") == null ? "" : trackList.get(i).get("trackoutput").toString();
+                            break;
+                        case 6:
+                            value = trackList.get(i).get("abdialogue") == null ? "" : trackList.get(i).get("abdialogue").toString();
+                            break;
+                        case 7:
+                            value = trackList.get(i).get("nextadvance") == null ? "" : trackList.get(i).get("nextadvance").toString();
+                            break;
+                    }
+                    sheet.getRow(i + 1).createCell(j).setCellValue(value);
+                }
+            }
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setCharacterEncoding("UTF-8");
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename*=UTF-8''" + URLEncoder.encode("总结统计.xlsx", "UTF-8"));
+            // 将excel写入到输出流中
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            // 释放资源
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+        }
+    }
+
 }
