@@ -6,6 +6,7 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.CommonUserService;
 import com.jzb.org.util.SetPageSize;
@@ -37,6 +38,9 @@ public class CommonUserController {
      */
     @Autowired
     private TbCityRedisApi tbCityRedisApi;
+
+    @Autowired
+    private RegionBaseApi RegionBaseApi;
 
 
 
@@ -161,6 +165,11 @@ public class CommonUserController {
             }
             // 查询用户
             List<Map<String,Object>> list = userService.queryCommonUser(param);
+            //获取用户信息
+            for (int i = 0; i < list.size(); i++) {
+                Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
+                list.get(i).put("region",cityList.getResponseEntity());
+            }
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(list);
             pageInfo.setTotal(count);
@@ -206,6 +215,38 @@ public class CommonUserController {
         }
         return response;
     }
+    // 公海用户关联单位
+    @RequestMapping("/relCompanyUser")
+    public Response relUser(@RequestBody Map<String,Object> param){
+        Response response;
+        try {
+            Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
+            // 公海用户关联单位
+           int count = userService.relCompanyUser(param);
+            response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+    // 公海用户取消关联单位
+    @RequestMapping("/cancelCompanyUser")
+    public Response cancelCompanyUser(@RequestBody Map<String,Object> param){
+        Response response;
+        try {
+            Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
+            // 公海用户关联单位
+            int count = userService.cancelCompanyUser(param);
+            response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
 
 
 

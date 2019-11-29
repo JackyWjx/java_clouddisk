@@ -67,12 +67,16 @@ public class TbTrackUserController {
             param.put("count",count);
             SetPageSize.setPagenoSize(param);
             // 查询跟进人员记录信息
-            List<Map<String,Object>> list = userService.queryTrackUserList(param);
-            response = Response.getResponseSuccess(userInfo);
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setTotal(count);
-            pageInfo.setList(list);
-            response.setPageInfo(pageInfo);
+            List<Map<String,Object>> list = null;
+            if (!JzbTools.isEmpty(param.get("trackvalue"))){
+                 list = userService.queryTrackUserList(param);
+            }
+                response = Response.getResponseSuccess(userInfo);
+                PageInfo pageInfo = new PageInfo();
+                pageInfo.setTotal(count);
+                pageInfo.setList(list);
+                response.setPageInfo(pageInfo);
+
         } catch (Exception e) {
             JzbTools.logError(e);
             response = Response.getResponseError();

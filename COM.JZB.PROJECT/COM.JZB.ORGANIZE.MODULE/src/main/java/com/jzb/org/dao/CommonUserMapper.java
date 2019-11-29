@@ -27,4 +27,10 @@ public interface CommonUserMapper {
 
     // 删除公海用户信息
     int delUser(Map<String,Object> map);
+
+    // 用户关联单位
+    int relCompanyUser(Map<String, Object> param);
+
+    // 用户取消关联单位
+    int cancelCompanyUser(Map<String, Object> param);
 }

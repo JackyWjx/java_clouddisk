@@ -30,7 +30,7 @@ public class TbTrackUserService {
         param.put("addtime",System.currentTimeMillis());
         param.put("tracktime",JzbDataType.getLong(param.get("tracktime")));
         param.put("trackid", JzbRandom.getRandomCharCap(17));
-        param.put("customer",JzbRandom.getRandomCharCap(12));
+        param.put("customer",param.get("adduid"));
         param.put("status",'1');
         param.put("image",param.get("image").toString());
         return userMapper.addTrackUser(param);
@@ -39,9 +39,9 @@ public class TbTrackUserService {
     public int getTrackCount(Map<String, Object> param) {
         return userMapper.getTrackCount(param);
     }
+
     // 查询跟进人员记录信息
     public List<Map<String, Object>> queryTrackUserList(Map<String, Object> param) {
-
         return userMapper.queryTrackUserList(param);
     }
 

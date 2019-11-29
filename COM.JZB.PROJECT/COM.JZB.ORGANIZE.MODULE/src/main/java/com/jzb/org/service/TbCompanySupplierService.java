@@ -14,6 +14,9 @@ public class TbCompanySupplierService {
     @Autowired
     private TbCompanySupplierMapper tbCompanySupplierMapper;
 
+    @Autowired
+    private NewCompanyCommonService commonService;
+
     /**
      * 添加供应商
      *
@@ -55,5 +58,21 @@ public class TbCompanySupplierService {
         param.put("status", "2");
         param.put("updtime", System.currentTimeMillis());
         return tbCompanySupplierMapper.deleteCompanySupplier(param);
+    }
+
+    /**
+     * 一键认证
+     * 公海添加单位信息
+     */
+    public List<Map<String,Object>> authCompanySupplier(Map<String, Object> param) {
+
+        // 调用认证接口返回供应商信息
+        //Map<String,Object> pmap = 认证接口
+
+        // 将供应商加入公海企业信息表
+//        commonService.addCompanyCommonList(pmap);
+
+
+        return null;
     }
 }

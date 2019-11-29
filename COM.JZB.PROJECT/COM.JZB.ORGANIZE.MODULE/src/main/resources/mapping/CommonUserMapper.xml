@@ -6,7 +6,7 @@
 
      <!--新建公海用户-->
     <insert id="addCommUser" parameterType="java.util.Map">
-        insert into tb_common_user_list(source,areaid,uid,uname,phone,cardid,sex,age,job,mail,cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary)
+        insert into tb_common_user_list(source,region,uid,uname,phone,cardid,sex,age,job,mail,cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary)
         values (
         <choose>
             <when test="source != null and source != ''">
@@ -16,7 +16,7 @@
                 null ,
             </otherwise>
         </choose>
-        #{areaid},
+        #{region},
         #{uid},
         #{uname},
         #{phone},
@@ -43,7 +43,7 @@
         #{adduid},
         <choose>
             <when test="addtime != null and addtime != ''">
-                cast(#{addtime} as Integer),
+                #{addtime},
             </when>
             <otherwise>
                 null ,
@@ -70,8 +70,8 @@
         <if test="source != null and source != ''">
             source = #{source},
         </if>
-        <if test="areaid != null and areaid != ''">
-            areaid = #{areaid},
+        <if test="region != null and region != ''">
+            region = #{region},
         </if>
         <if test="uname != null and uname != ''">
             uname = #{uname},
@@ -138,14 +138,23 @@
 
     </update>
 
+    <!--用户取消关联单位-->
+    <update id="cancelCompanyUser" parameterType="java.util.Map">
+        UPDATE tb_common_user_list
+        SET
+        cid = null ,
+        isrelation = 0
+        where uid = #{uid}
+    </update>
+
     <!--查询公海用户-->
     <select id="queryComUser" parameterType="java.util.Map" resultType="java.util.Map">
         select
-        source,areaid,uid,uname,phone,cardid,sex,age,job,mail,
+        source,region,uid,uname,phone,cardid,sex,age,job,mail,
         cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary
         from tb_common_user_list where status = '1'
         <if test="province != null and province != ''">
-            and tcp.region IN
+            and region IN
             <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
                 #{item.region}
             </foreach>
@@ -166,11 +175,20 @@
 
     <!--查询公海用户总数-->
     <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
-        select count(1) from tb_common_user_list
+        select count(1) from tb_common_user_list where status = '1'
     </select>
 
     <!--删除公海用户-->
     <update id="delUser" parameterType="java.util.Map">
         update tb_common_user_list  set status = #{status}  where uid = #{uid} ;
+    </update>
+
+    <!--用户关联单位-->
+    <update id="relCompanyUser" parameterType="java.util.Map" >
+        update tb_common_user_list
+         set
+         cid =  #{cid},
+         isrelation = 1
+        where uid = #{uid}
     </update>
 </mapper>
