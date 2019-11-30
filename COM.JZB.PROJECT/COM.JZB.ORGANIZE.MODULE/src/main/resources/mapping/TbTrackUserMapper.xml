@@ -5,9 +5,10 @@
 <mapper namespace="com.jzb.org.dao.TbTrackUserMapper">
     <!--新建跟进人员记录-->
     <insert id="addTrackUser" parameterType="java.util.Map" >
-        insert into tb_track_user_list (trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
+        insert into tb_track_user_list (trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
         adduid,status,summary,addtime)
         values (
+        #{trackvalue},
         #{trackid},
         <choose>
             <when test="tracktime != null and tracktime != ''">
@@ -38,8 +39,9 @@
     
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
-        select trackid,tracktime,trackuname,tracktype,trackcid,trackcontent,image,summary
+        select trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
         from tb_track_user_list where status = '1'
+        and trackvalue = #{trackvalue}
         <if test="startTime != null and startTime!= ''">
             and addtime &gt;= startTime
         </if>

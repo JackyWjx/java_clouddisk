@@ -1,5 +1,6 @@
 package com.jzb.org.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -162,4 +163,39 @@ public class TbCompanySupplierController {
         }
         return result;
     }
+
+    /**
+     * CRM-销售业主-单位-供应商
+     * 一键认证
+     *
+     * @author chenhui
+     */
+    @RequestMapping(value = "/authCompanySupplier", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response authCompanySupplier(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+
+                // 设置参数
+                JzbPageConvert.setPageRows(param);
+
+
+                // 将供应商部分信息存入供应商表
+                // int count =  tbCompanySupplierService.addCompanySupplier(pmap);
+
+                PageInfo pageInfo = new PageInfo();
+
+                // 获取用户信息返回
+                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+                result.setPageInfo(pageInfo);
+
+
+
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 }

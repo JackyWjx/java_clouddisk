@@ -7,6 +7,10 @@ import com.jzb.org.dao.CommonUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +27,16 @@ public class CommonUserService {
 
     // 添加公海用户
     public int addCommUser(Map<String, Object> paramp) {
+        Calendar c = Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        long addtime= 0;
+        try {
+            addtime = df.parse(df.format(c.getTime())).getTime();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+        paramp.put("addtime",addtime);
+        paramp.put("age",JzbDataType.getInteger(paramp.get("age")));
         paramp.put("uid", JzbRandom.getRandomCharCap(12));
         paramp.put("status",'1');
         paramp.put("age", JzbDataType.getInteger(paramp.get("age")));
@@ -58,5 +72,13 @@ public class CommonUserService {
         map.put("updtime",System.currentTimeMillis());
         map.put("status",'2');
         return userMapper.delUser(map);
+    }
+    // 用户关联单位
+    public int relCompanyUser(Map<String, Object> param) {
+        return userMapper.relCompanyUser(param);
+    }
+    // 用户取消关联单位
+    public int cancelCompanyUser(Map<String, Object> param) {
+        return userMapper.cancelCompanyUser(param);
     }
 }
