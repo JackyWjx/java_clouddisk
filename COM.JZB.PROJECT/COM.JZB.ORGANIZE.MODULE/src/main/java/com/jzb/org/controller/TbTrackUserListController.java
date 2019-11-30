@@ -42,6 +42,7 @@ public class TbTrackUserListController {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
     /**
      * 日志记录对象
      */
@@ -173,6 +174,7 @@ public class TbTrackUserListController {
                 }
                 // 把list放到参数中用于查询数据
                 param.put("list", list);
+                // 设置分页参数
                 JzbPageConvert.setPageRows(param);
                 // 告诉sql  要分页
                 param.put("page", 1);
@@ -186,11 +188,9 @@ public class TbTrackUserListController {
                     trackListByKeywords.get(i).put("userInfo", region.getResponseEntity());
                     // 转换时间
                     trackListByKeywords.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(trackListByKeywords.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
-
+                    // 跟进时间
                     trackListByKeywords.get(i).put("tracktime", JzbDateUtil.toDateString(JzbDataType.getLong(trackListByKeywords.get(i).get("tracktime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
-
                 }
-
                 // 定义返回结果
                 response = Response.getResponseSuccess(userInfo);
                 // 定义分页对象
@@ -201,10 +201,9 @@ public class TbTrackUserListController {
                 pageInfo.setTotal(tbTrackUserListService.findTrackListCountByKeywords(param));
                 // 返回分页对象
                 response.setPageInfo(pageInfo);
-
             }
-
         } catch (Exception ex) {
+            // 异常信息
             flag = false;
             JzbTools.logError(ex);
             response = Response.getResponseError();
@@ -229,17 +228,22 @@ public class TbTrackUserListController {
     @CrossOrigin
     public void getExcel(HttpServletResponse response, @RequestBody(required = false) Map<String, Object> param) {
         try {
+            // 定义跟进记录数据源
             List<Map<String, Object>> trackList = null;
-            if (param==null||JzbCheckParam.haveEmpty(param, new String[]{"keyword"})) {
-                param=param==null?new HashMap<>():param;
+            // 根据参数是否为空来处理数据源
+            if (param == null || JzbCheckParam.haveEmpty(param, new String[]{"keyword"})) {
+                param = param == null ? new HashMap<>() : param;
                 trackList = tbTrackUserListService.findTrackList(param);
             } else {
                 trackList = tbTrackUserListService.findTrackListByKeywords(param);
             }
+            // 处理好数据准备导入EXCEL
             for (int i = 0; i < trackList.size(); i++) {
                 param.put("uid", trackList.get(i).get("trackuid"));
+                // 获取用户信息
                 Response region = userRedisServiceApi.getCacheUserInfo(param);
                 trackList.get(i).put("userInfo", region.getResponseEntity());
+                // 修改一下添加时间
                 trackList.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(trackList.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
             }
             // 模板路径
@@ -257,8 +261,9 @@ public class TbTrackUserListController {
                 for (int j = 0; j < 8; j++) {
                     String value = "";
                     switch (j) {
+
                         case 0:
-                            value = i+1 + "";
+                            value = i + 1 + "";
                             break;
                         case 1:
                             value = userMap.get("cname") == null ? "" : userMap.get("cname").toString();
@@ -282,10 +287,13 @@ public class TbTrackUserListController {
                             value = trackList.get(i).get("nextadvance") == null ? "" : trackList.get(i).get("nextadvance").toString();
                             break;
                     }
+
+                    // 设置值
                     sheet.getRow(i + 1).createCell(j).setCellValue(value);
                 }
             }
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 设置编码为中文
             response.setCharacterEncoding("UTF-8");
             // 响应到客户端
             response.addHeader("Content-Disposition", "attachment;filename*=UTF-8''" + URLEncoder.encode("总结统计.xlsx", "UTF-8"));
