@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.EvaluationMethodMapper">
+    <select id="queryEvaluationMethod" resultType="java.util.Map">
+        select * from tb_tendering_judge where status = '1' ORDER BY id
+        <choose>
+            <when test="pagesize!=null and pagesize!=''">
+                LIMIT #{pagesize} OFFSET #{start}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+
+    </select>
+
+
+    <insert id="addEvaluationMethod" useGeneratedKeys="true">
+        insert into tb_tendering_judge(typeid,cname,typedesc,idx,adduid,addtime,upduid,updtime,status,summary)
+         values (#{typeid},#{cname},
+        <choose>
+            <when test="typedesc!=null and typedesc!=''">
+                #{typedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        (select count(1)+1 from tb_tendering_judge),#{adduid},#{addtime},null,null,#{status},
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <delete id="delEvaluationMethod">
+        delete  from tb_tendering_judge where typeid = #{typeId}
+    </delete>
+
+    <update id="putEvaluationMethod">
+        update  tb_tendering_judge set cname=#{cname} ,upduid = #{upduid},updtime=#{updtime} where typeid = #{typeid}
+    </update>
+</mapper>

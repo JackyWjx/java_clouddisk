@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TenderTypeMapper">
+    <select id="queryTenderType" resultType="java.util.Map">
+        select * from tb_tendering_notice_type where status = '1' ORDER BY id
+        <choose>
+            <when test="pagesize!=null and pagesize!=''">
+                LIMIT #{pagesize} OFFSET #{start}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+
+    </select>
+
+    <select id="selectMaxNum" resultType="int">
+        select MAX(id)  from tb_tendering_notice_type
+    </select>
+
+    <insert id="addTenderType" useGeneratedKeys="true">
+        insert into tb_tendering_notice_type(typeid,cname,typedesc,idx,adduid,addtime,upduid,updtime,status,summary)
+         values (#{typeid},#{cname},
+        <choose>
+            <when test="typedesc!=null and typedesc!=''">
+                #{typedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        (select count(1)+1 from tb_tendering_notice_type),#{adduid},#{addtime},null,null,#{status},
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+        )
+    </insert>
+
+    <delete id="delTenderType">
+        delete  from tb_tendering_notice_type where typeid = #{typeId}
+    </delete>
+
+    <update id="putTenderType">
+        update  tb_tendering_notice_type set cname=#{cname} ,upduid = #{upduid},updtime=#{updtime} where typeid = #{typeid}
+    </update>
+</mapper>
