@@ -50,6 +50,12 @@ public class CommonUserController {
     @Autowired
     CommonUserService userService;
 
+    /**
+     * 查询地区信息
+     */
+    @Autowired
+    private RegionBaseApi regionBaseApi;
+
     @Autowired
     private OrgToken orgToken;
 
@@ -343,15 +349,19 @@ public class CommonUserController {
      */
     @RequestMapping(value = "/createCommonUser", method = RequestMethod.POST)
     @CrossOrigin
-    public void createCompanyProject(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+    public void createCommonUser(HttpServletResponse response, @RequestBody Map<String, Object> param) {
         try {
+            // 模板路径
             String srcFilePath = "static/excel/importCommonuser.xlsx";
+            // 资源路径
             ClassPathResource resource = new ClassPathResource(srcFilePath);
+            // 创建输入流
             InputStream in = resource.getInputStream();
             // 读取excel模板
             XSSFWorkbook wb = new XSSFWorkbook(in);
             // 读取了模板内所有sheet内容
             XSSFSheet sheet = wb.getSheetAt(0);
+
             // 响应到客户端
             response.addHeader("Content-Disposition", "attachment;filename=importCommonuser.xlsx");
             OutputStream os = new BufferedOutputStream(response.getOutputStream());
@@ -374,14 +384,14 @@ public class CommonUserController {
      */
     @RequestMapping(value = "/ImportCommonUser", method = RequestMethod.POST)
     @CrossOrigin
-    public Response importCompanyProject(@RequestBody MultipartFile file,
+    public Response ImportCommonUser(@RequestBody MultipartFile file,
                                          @RequestHeader(value = "token") String token) {
         Response result = new Response();
         try {
             // 获取用户信息token
             Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
             Map<String, Object> param = new HashMap<>();
-            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("adduid", JzbDataType.getString(userInfo.get("uid")));
             param.put("userinfo", userInfo);
             // 获取文件名
             String fileName = file.getOriginalFilename();
@@ -395,7 +405,7 @@ public class CommonUserController {
             param.put("batchid", batchId);
             param.put("address", filepath);
             param.put("status", "2");
-            param.put("cname", fileName);
+//            param.put("cname", fileName);
             try {
                 // 保存文件到本地
                 File intoFile = new File(filepath);
@@ -505,12 +515,74 @@ public class CommonUserController {
                 }
 
                 // 获取模板中的身份证号
-                String cardid = JzbDataType.getString(map.get(5));
+                String cardid = JzbDataType.getString(map.get(3));
                 param.put("cardid", cardid);
 
                 // 获取模板中的邮箱
-                String mail = JzbDataType.getString(map.get(6));
+                String mail = JzbDataType.getString(map.get(4));
                 param.put("mail",mail);
+
+              // 获取模板中的用户地区
+                String regionName = JzbDataType.getString(map.get(5));
+                param.put("regionName", regionName);
+                if (JzbDataType.isEmpty(regionName)) {
+                    summary += "用户所属地区不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                // 调用获取地区ID的接口
+                Response regionID = regionBaseApi.getRegionID(param);
+                Object obj = regionID.getResponseEntity();
+                // 定义地区ID
+                String region = "";
+                if (JzbDataType.isMap(obj)) {
+                    Map<Object, Object> regionMap = (Map<Object, Object>) obj;
+                    region = JzbDataType.getString(regionMap.get("creaid"));
+                }
+                param.put("region", region);
+
+                // 获取模板中的用户单位名称
+                String cname = JzbDataType.getString(map.get(6));
+                param.put("cname", cname);
+
+                // 获取模板中的用户年龄
+                int age = JzbDataType.getInteger(map.get(7));
+                param.put("age", age);
+
+                // 获取模板中的用户职务
+                String job = JzbDataType.getString(map.get(8));
+                param.put("job", job);
+                // 获取模板中的用户籍贯
+                String address = JzbDataType.getString(map.get(9));
+                param.put("native", address);
+                // 获取模板中的用户毕业院校
+                String graduated = JzbDataType.getString(map.get(10));
+                param.put("graduated", graduated);
+                // 获取模板中的用户学历
+                String education = JzbDataType.getString(map.get(11));
+                param.put("education", education);
+                // 获取模板中的用户爱好
+                String likes = JzbDataType.getString(map.get(12));
+                param.put("likes", likes);
+                // 获取模板中的用户婚姻状态
+                String marriage = JzbDataType.getString(map.get(13));
+                if (!JzbDataType.isEmpty(marriage)) {
+                    if ("已婚".equals(marriage)) {
+                        marriage = "1";
+                    } else if ("未婚".equals(marriage)) {
+                        marriage = "2";
+                    } else {
+                        marriage = "";
+                    }
+                }
+                param.put("marriage", marriage);
+
+                // 获取模板中的用户工作经历
+                String works = JzbDataType.getString(map.get(14));
+                param.put("works", works);
+                // 调用接口
                 int count = userService.addCommUser(param);
                 if (count == 0) {
                     exportMap.put("status", "2");
@@ -521,6 +593,7 @@ public class CommonUserController {
                     exportMap.put("status", "1");
                     userInfoList.add(exportMap);
                 }
+
             }
             int export = 0;
             //保存用户导入信息表

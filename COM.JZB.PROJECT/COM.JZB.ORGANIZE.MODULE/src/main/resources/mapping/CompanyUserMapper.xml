@@ -379,21 +379,14 @@
     <!--CRM公海 项目添加项目信息表-->
     <insert id="insertCompanyProjectInfo" parameterType="java.util.Map">
         INSERT INTO tb_common_project_info
-        ( projectid, idx ,lineuid, lineuname, linephone,lineage,linesex.linejob,linenature,des,podeperson,npodeperson,
-          podephone,npodephone,podejob,npodejob,podenature,npodenature,setb,sepr,seli,relation,recname,reluname,relphone,brandname,contrast,mail,
+        ( projectid, idx ,lineuid, lineuname, linephone,lineage,linesex,linejob,linenature,des,podeperson,npodeperson,
+          podephone,npodephone,podejob,npodejob,podenature,npodenature,setb,sepr,setli,relation,recname,reluname,relphone,brandname,contrast,mail,
           nreluname,nrelphone,nbrandname,ncontrast,nmail,reshid,reshname,reshphone,adduid,
           addtime, status, summary)
         VALUES
         (
         #{projectid},
-        <choose>
-            <when test=" idx != null and idx !=''">
-                ${idx},
-            </when>
-            <otherwise>
-                (SELECT count(1)+1 FROM tb_common_project_info),
-            </otherwise>
-        </choose>
+        <choose><when test=" idx != null and idx !=''"> </when><otherwise>(SELECT count(1)+1 FROM tb_common_project_info),</otherwise></choose>
         <choose><when test=" lineuid != null and lineuid !=''">#{lineuid},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" lineuname != null and lineuname !=''">#{lineuname},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" linephone != null and linephone !=''">#{linephone},</when><otherwise>null,</otherwise></choose>
@@ -412,7 +405,7 @@
         <choose><when test=" npodenature != null and npodenature !=''">#{npodenature},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" setb != null and setb !=''">#{setb},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" sepr != null and sepr !=''">#{sepr},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" seli != null and seli !=''">#{seli},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" setli != null and setli !=''">#{setli},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" relation != null and relation !=''">#{relation},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" recname != null and recname !=''">#{recname},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" reluname != null and reluname !=''">#{reluname},</when><otherwise>null,</otherwise></choose>
