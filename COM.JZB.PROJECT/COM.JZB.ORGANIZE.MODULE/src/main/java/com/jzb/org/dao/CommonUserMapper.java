@@ -33,4 +33,7 @@ public interface CommonUserMapper {
 
     // 用户取消关联单位
     int cancelCompanyUser(Map<String, Object> param);
+
+    // 查询已关联单位用户
+    List<Map<String, Object>> queryRelCommonUser(Map<String, Object> param);
 }

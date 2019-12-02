@@ -25,6 +25,9 @@ public class CommonUserService {
     @Autowired
     CommonUserMapper userMapper;
 
+    @Autowired
+    private CompanyService companyService;
+
     // 添加公海用户
     public int addCommUser(Map<String, Object> paramp) {
         Calendar c = Calendar.getInstance();
@@ -37,8 +40,8 @@ public class CommonUserService {
         }
         paramp.put("addtime",addtime);
         paramp.put("age",JzbDataType.getInteger(paramp.get("age")));
-        paramp.put("uid", JzbRandom.getRandomCharCap(12));
         paramp.put("status",'1');
+        paramp.put("uid",JzbRandom.getRandomCharCap(12));
         paramp.put("age", JzbDataType.getInteger(paramp.get("age")));
         return userMapper.addCommUser(paramp);
     }
@@ -63,6 +66,7 @@ public class CommonUserService {
     }
     // 修改公海用户信息
     public int updComUser(Map<String, Object> paramp) {
+        paramp.put("age",JzbDataType.getInteger(paramp.get("age")));
         paramp.put("updtime",System.currentTimeMillis());
         return userMapper.updComUser(paramp);
     }
@@ -75,10 +79,16 @@ public class CommonUserService {
     }
     // 用户关联单位
     public int relCompanyUser(Map<String, Object> param) {
+        param.put("uid",param.get("resuid"));
         return userMapper.relCompanyUser(param);
     }
     // 用户取消关联单位
     public int cancelCompanyUser(Map<String, Object> param) {
         return userMapper.cancelCompanyUser(param);
+    }
+
+    public List<Map<String, Object>> queryRelCommonUser(Map<String, Object> param) {
+        param.put("isrelation",1);
+        return userMapper.queryRelCommonUser(param);
     }
 }
