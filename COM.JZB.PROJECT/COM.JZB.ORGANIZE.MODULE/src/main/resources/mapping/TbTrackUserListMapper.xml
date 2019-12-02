@@ -94,7 +94,7 @@
         </if>
 
         <if test="endTime!=null and endTime !=''">
-            and addtime &lt; #{beginTime}
+            and addtime &lt; #{endTime}
         </if>
 
         <if test="page!=null and page!=''">
