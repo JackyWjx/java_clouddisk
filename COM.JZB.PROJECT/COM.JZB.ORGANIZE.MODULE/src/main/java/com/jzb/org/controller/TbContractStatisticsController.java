@@ -1,5 +1,6 @@
 package com.jzb.org.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
@@ -9,6 +10,9 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.base.RegionBaseApi;
+import com.jzb.org.api.redis.TbCityRedisApi;
+import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.service.TbContractStatisticsService;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -41,6 +45,14 @@ public class TbContractStatisticsController {
     @Autowired
     private TbContractStatisticsService tbContractStatisticsService;
 
+    @Autowired
+    private UserRedisServiceApi userRedisServiceApi;
+
+    @Autowired
+    private TbCityRedisApi tbCityRedisApi;
+
+    @Autowired
+    private RegionBaseApi regionBaseApi;
     /**
      * 日志记录对象
      */
@@ -141,6 +153,8 @@ public class TbContractStatisticsController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"staid"})) {
                 response = Response.getResponseError();
             } else {
+                param.put("upduid", userInfo.get("uid").toString());
+                param.put("updtime", System.currentTimeMillis());
                 int count = tbContractStatisticsService.setDeleteStatus(param);
                 response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
@@ -161,6 +175,7 @@ public class TbContractStatisticsController {
 
     /**
      * 修改
+     *
      * @param param
      * @return
      */
@@ -174,6 +189,14 @@ public class TbContractStatisticsController {
         String api = "/org/contractStatistics/updateContractStatistics";
         boolean flag = true;
         try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             param = param == null ? new HashMap<>() : param;
             param.put("updtime", System.currentTimeMillis());
             param.put("upduid", userInfo.get("uid").toString());
@@ -193,8 +216,6 @@ public class TbContractStatisticsController {
         }
         return response;
     }
-
-
 
     /**
      * 导出Excel
@@ -217,7 +238,15 @@ public class TbContractStatisticsController {
 
             // 获取结果集
             List<Map<String, Object>> contractList = tbContractStatisticsService.findContractStatisticsList(param);
-
+            for (int i = 0, l = contractList.size(); i < l; i++) {
+                param.put("uid", contractList.get(i).get("sales"));
+                // 获取用户信息
+                Response region = userRedisServiceApi.getCacheUserInfo(param);
+                contractList.get(i).put("userInfo", region.getResponseEntity());
+                // 修改一下添加时间
+                contractList.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(contractList.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                contractList.get(i).put("signdate", JzbDateUtil.toDateString(JzbDataType.getLong(contractList.get(i).get("signdate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+            }
 
             // 模板路径
             String srcFilePath = "static/excel/contractStatistics.xlsx";
@@ -234,7 +263,28 @@ public class TbContractStatisticsController {
             XSSFCell cell;
             for (int i = 0, l = contractList.size(); i < l; i++) {
                 Map<String, Object> userMap = contractList.get(i).get("userInfo") == null ? new HashMap<>() : (Map<String, Object>) contractList.get(i).get("userInfo");
-                for (int j = 0; j < 8; j++) {
+                Map<String, Object> regionMap = new HashMap<>();
+                regionMap.put("key", contractList.get(i).get("region"));
+                Response cityList = tbCityRedisApi.getCityList(regionMap);
+                // 获取地区map
+                Map<String, Object> resultParam = null;
+                if (cityList.getResponseEntity() != null) {
+                    resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
+                    if (resultParam != null) {
+                        resultParam.put("region", resultParam.get("creaid"));
+                    } else {
+                        resultParam = new HashMap<>();
+                        resultParam.put("region", null);
+                    }
+                }
+                // 转map
+                if (resultParam != null) {
+                    Response response1 = regionBaseApi.getRegionInfo(resultParam);
+                    contractList.get(i).put("region", response1.getResponseEntity());
+                }
+                Map<String, Object> map = (Map<String, Object>) contractList.get(i).get("region");
+
+                for (int j = 0; j < 20; j++) {
                     String value = "";
                     switch (j) {
 
@@ -242,30 +292,69 @@ public class TbContractStatisticsController {
                             value = i + 1 + "";
                             break;
                         case 1:
-                            value = userMap.get("cname") == null ? "" : userMap.get("cname").toString();
+                            value = contractList.get(i).get("conid") == null ? "" : contractList.get(i).get("conid").toString();
                             break;
                         case 2:
-                            value = contractList.get(i).get("trackcname") == null ? "" : contractList.get(i).get("trackcname").toString();
+                            String province = map.get("province") == null ? null : map.get("province").toString();
+                            String city = map.get("city") == null ? "" : "/" + map.get("city").toString();
+                            String county = map.get("county") == null ? "" : "/" + map.get("county").toString();
+                            value = province + city + county;
                             break;
                         case 3:
-                            value = JzbDateUtil.toDateString(JzbDataType.getLong(contractList.get(i).get("tracktime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss);
+                            value = userMap.get("cname") == null ? "" : userMap.get("cname").toString();
                             break;
                         case 4:
-                            value = contractList.get(i).get("trackcontent") == null ? "" : contractList.get(i).get("trackcontent").toString();
+                            value = contractList.get(i).get("conname") == null ? "" : contractList.get(i).get("conname").toString();
                             break;
                         case 5:
-                            value = contractList.get(i).get("trackoutput") == null ? "" : contractList.get(i).get("trackoutput").toString();
+                            value = contractList.get(i).get("proname") == null ? "" : contractList.get(i).get("proname").toString();
                             break;
                         case 6:
-                            value = contractList.get(i).get("abdialogue") == null ? "" : contractList.get(i).get("abdialogue").toString();
+                            value = contractList.get(i).get("ownname") == null ? "" : contractList.get(i).get("ownname").toString();
                             break;
                         case 7:
-                            value = contractList.get(i).get("nextadvance") == null ? "" : contractList.get(i).get("nextadvance").toString();
+                            value = contractList.get(i).get("projectname") == null ? "" : contractList.get(i).get("projectname").toString();
+                            break;
+                        case 8:
+                            value = contractList.get(i).get("concname") == null ? "" : contractList.get(i).get("concname").toString();
+                            break;
+                        case 9:
+                            value = contractList.get(i).get("conperiod") == null ? "" : contractList.get(i).get("conperiod").toString();
+                            break;
+                        case 10:
+                            value = contractList.get(i).get("amount") == null ? "" : contractList.get(i).get("amount").toString();
+                            break;
+                        case 11:
+                            value = contractList.get(i).get("invoicemoney") == null ? "" : contractList.get(i).get("invoicemoney").toString();
+                            break;
+                        case 12:
+                            value = contractList.get(i).get("returnmoney") == null ? "" : contractList.get(i).get("returnmoney").toString();
+                            break;
+                        case 13:
+                            value = contractList.get(i).get("collectmoney") == null ? "" : contractList.get(i).get("collectmoney").toString();
+                            break;
+                        case 14:
+                            value = contractList.get(i).get("signdate") == null ? "" : contractList.get(i).get("signdate").toString();
+                            break;
+                        case 15:
+                            value = contractList.get(i).get("subcname") == null ? "" : contractList.get(i).get("subcname").toString();
+                            break;
+                        case 16:
+                            value = contractList.get(i).get("conimportant") == null ? "" : contractList.get(i).get("conimportant").toString();
+                            break;
+                        case 17:
+                            value = contractList.get(i).get("contype") == null ? "" : contractList.get(i).get("contype").toString();
+                            break;
+                        case 18:
+                            value = contractList.get(i).get("yntable") == null ? "" : contractList.get(i).get("yntable").toString();
+                            break;
+                        case 19:
+                            value = contractList.get(i).get("condesc") == null ? "" : contractList.get(i).get("condesc").toString();
                             break;
                     }
 
                     // 设置值
-                    cell=sheet.getRow(i + 1).createCell(j);
+                    cell = sheet.getRow(i + 1).createCell(j);
                     cell.setCellValue(value);
                     cell.setCellStyle(contextStyle);
                 }
@@ -274,7 +363,7 @@ public class TbContractStatisticsController {
             // 设置编码为中文
             response.setCharacterEncoding("UTF-8");
             // 响应到客户端
-            response.addHeader("Content-Disposition", "attachment;filename*=UTF-8''" + URLEncoder.encode("总结统计.xlsx", "UTF-8"));
+            response.addHeader("Content-Disposition", "attachment;filename*=UTF-8''" + URLEncoder.encode("合同统计.xlsx", "UTF-8"));
             // 将excel写入到输出流中
             OutputStream os = new BufferedOutputStream(response.getOutputStream());
             // 释放资源
@@ -286,9 +375,8 @@ public class TbContractStatisticsController {
         }
     }
 
-
     // 创建文本样式
-    public static XSSFCellStyle genContextStyle(XSSFWorkbook workbook){
+    public static XSSFCellStyle genContextStyle(XSSFWorkbook workbook) {
         XSSFCellStyle style = workbook.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);//文本水平居中显示
         style.setVerticalAlignment(VerticalAlignment.CENTER);//文本竖直居中显示

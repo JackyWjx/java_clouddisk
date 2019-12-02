@@ -34,10 +34,10 @@
         WHERE
         status = '1'
         <if test="beginTime!=null and beginTime !=''">
-            and signdate &lt; #{beginTime}
+            and signdate &gt; #{beginTime}
         </if>
         <if test="endTime!=null and endTime !=''">
-            and signdate &gt; #{endTime}
+            and signdate &lt; #{endTime}
         </if>
         <if test="page!=null and page!=''">
             limit #{pagesize} offset #{pageno}
@@ -90,7 +90,7 @@
 
     <!-- 设置删除状态 -->
     <update id="setDeleteStatus" parameterType="java.util.Map">
-        update tb_contract_statistics_list set status='2' where staid=#{staid}
+        update tb_contract_statistics_list set status='2',upduid=#{upduid},updtime=#{updtime} where staid=#{staid}
     </update>
 
 </mapper>

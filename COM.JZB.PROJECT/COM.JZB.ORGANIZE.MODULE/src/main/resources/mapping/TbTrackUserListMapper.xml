@@ -90,11 +90,11 @@
             </otherwise>
         </choose>
         <if test="beginTime!=null and beginTime !=''">
-            and addtime &lt; #{beginTime}
+            and addtime &gt; #{beginTime}
         </if>
 
         <if test="endTime!=null and endTime !=''">
-            and addtime &gt; #{beginTime}
+            and addtime &lt; #{beginTime}
         </if>
 
         <if test="page!=null and page!=''">
@@ -127,11 +127,11 @@
         </choose>
 
         <if test="beginTime!=null and beginTime !=''">
-            and addtime &lt; #{beginTime}
+            and addtime &gt; #{beginTime}
         </if>
 
         <if test="endTime!=null and endTime !=''">
-            and addtime &gt; #{beginTime}
+            and addtime &lt; #{beginTime}
         </if>
     </select>
 
