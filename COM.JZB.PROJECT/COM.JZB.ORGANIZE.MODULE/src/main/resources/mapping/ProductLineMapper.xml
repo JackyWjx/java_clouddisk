@@ -72,7 +72,7 @@
         m.idx,
         m.status
         FROM
-        tb_company_product c
+        tb_product_list c
         LEFT JOIN
         tb_product_menu m
         ON
@@ -81,7 +81,7 @@
         m.parentid = '000000000000000'
         AND c.status = #{status}
         AND c.cid = #{cid}
-        AND c.ptype = #{ptype}
+
         UNION ALL
         SELECT
         tpm.pid,
