@@ -4,22 +4,39 @@ import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
+import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbPageConvert;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
+import com.jzb.org.config.OrgConfigProperties;
+import com.jzb.org.dao.DeptMapper;
 import com.jzb.org.service.CommonUserService;
-import com.jzb.org.util.SetPageSize;
+import com.jzb.org.service.CompanyService;
+import com.jzb.org.service.DeptService;
+import com.jzb.org.service.OrgToken;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 
 /**
  * @描述
@@ -33,6 +50,11 @@ public class CommonUserController {
     @Autowired
     CommonUserService userService;
 
+    @Autowired
+    private OrgToken orgToken;
+
+    @Autowired
+    private CompanyService companyService;
     /**
      * 查询redis缓存地区对象
      */
@@ -40,17 +62,26 @@ public class CommonUserController {
     private TbCityRedisApi tbCityRedisApi;
 
     @Autowired
+    private OrgConfigProperties config;
+
+    @Autowired
     private RegionBaseApi RegionBaseApi;
 
+    @Autowired
+    OrgConfigProperties orgConfigProperties;
 
+    @Autowired
+    private DeptService deptService;
 
+    @Autowired
+    private DeptMapper deptMapper;
     // 新建公海用户
     @RequestMapping("/addCommonUser")
     public Response addCommonUser(@RequestBody Map<String,Object> paramp){
         Response response;
         try {
             Map<String,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
-            paramp.put("uid",userinfo.get("uid"));
+            paramp.put("adduid",userinfo.get("uid"));
             // 添加公海用户
             int count = userService.addCommUser(paramp);
             response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
@@ -218,17 +249,46 @@ public class CommonUserController {
     // 公海用户关联单位
     @RequestMapping("/relCompanyUser")
     public Response relUser(@RequestBody Map<String,Object> param){
-        Response response;
+        Response result = null;
         try {
             Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
-            // 公海用户关联单位
-           int count = userService.relCompanyUser(param);
-            response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
+            List<Map<String , Object>> plist = (List<Map<String, Object>>) param.get("list");
+            for (int i = 0; i < plist.size(); i++) {
+                Map<String,Object> paramp = plist.get(i);
+                // 公海用户关联单位
+                int num = userService.relCompanyUser(paramp);
+                result = num > 0 ? Response.getResponseSuccess(userinfo) : Response.getResponseError();
+
+                param.put("ouid", JzbDataType.getString(userinfo.get("uid")));
+                // 返回是否邀请和加入资源池成功
+                int count = companyService.addInvitee(paramp);
+                if (count > 0) {
+                    result = Response.getResponseSuccess();
+                    Response sendResult;
+                    int maybe = JzbDataType.getInteger(param.get("maybe"));
+                    // 1发送邀请加入单位模板,2取消加入单位模板
+                    if (maybe == 1) {
+                        // 发送邀请信息模板
+                        param.put("groupid", orgConfigProperties.getInvitationToJoin());
+                        param.put("msgtag", "addInvitee1014");
+                        param.put("senduid", "addInvitee1014");
+                        sendResult = companyService.sendRemind(param);
+                    } else {
+                        // 发送取消信息模板
+                        param.put("groupid", orgConfigProperties.getDisinvite());
+                        param.put("msgtag", "addInvitee1012");
+                        param.put("senduid", "addInvitee1012");
+                        sendResult = companyService.sendRemind(paramp);
+                    }
+                    result.setResponseEntity(sendResult);
+            }
+
+            }
         } catch (Exception e) {
             JzbTools.logError(e);
-            response = Response.getResponseError();
+            result = Response.getResponseError();
         }
-        return response;
+        return result;
     }
 
     // 公海用户取消关联单位
@@ -237,6 +297,7 @@ public class CommonUserController {
         Response response;
         try {
             Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
+            param.put("ouid", JzbDataType.getString(userinfo.get("uid")));
             // 公海用户关联单位
             int count = userService.cancelCompanyUser(param);
             response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
@@ -248,6 +309,251 @@ public class CommonUserController {
     }
 
 
+    // 查询已关联单位用户
+    @RequestMapping("/queryRelCommonUser")
+    public Response queryRelCommonUser(@RequestBody Map<String,Object> param){
+        Response response;
+        try {
+            Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("adduid",userInfo.get("uid"));
+            List<Map<String,Object>> list = userService.queryRelCommonUser(param);
+            //获取用户信息
+            for (int i = 0; i < list.size(); i++) {
+                Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
+                list.get(i).put("region",cityList.getResponseEntity());
+            }
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            response = Response.getResponseSuccess(userInfo);
+            response.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+    return response;
+    }
 
 
+    /**
+     * CRM-销售业主-公海-用户
+     * 点击用户中的导入Excel表格上传模板
+     *
+     * @param
+     * @author chenhui
+     */
+    @RequestMapping(value = "/createCommonUser", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createCompanyProject(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            String srcFilePath = "static/excel/importCommonuser.xlsx";
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=importCommonuser.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * CRM-销售业主-公海-用户
+     * 点击项目中的导入Excel表格获取模板数据
+     *
+     * @param
+     * @author chenhui
+     */
+    @RequestMapping(value = "/ImportCommonUser", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response importCompanyProject(@RequestBody MultipartFile file,
+                                         @RequestHeader(value = "token") String token) {
+        Response result = new Response();
+        try {
+            // 获取用户信息token
+            Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
+            Map<String, Object> param = new HashMap<>();
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("userinfo", userInfo);
+            // 获取文件名
+            String fileName = file.getOriginalFilename();
+
+            // 生成批次ID
+            String batchId = JzbRandom.getRandomCharCap(11);
+
+            //获取后缀名
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String filepath = config.getImportPath() + "/" + batchId + suffix;
+            param.put("batchid", batchId);
+            param.put("address", filepath);
+            param.put("status", "2");
+            param.put("cname", fileName);
+            try {
+                // 保存文件到本地
+                File intoFile = new File(filepath);
+                intoFile.getParentFile().mkdirs();
+                String address = intoFile.getCanonicalPath();
+                file.transferTo(new File(address));
+            } catch (Exception e) {
+                JzbTools.logError(e);
+                // 保存失败信息到批次表
+                param.put("status", "4");
+                param.put("summary", "保存文件到本地失败");
+            }
+            // 添加批次信息到用户导入批次表
+            deptService.addExportBatch(param);
+            // 创建一个线程池
+            ExecutorService pool = Executors.newFixedThreadPool(1);
+
+            // 创建一个有返回值的任务
+            Callable ImportCommonUser = new ImportCommonUser(filepath, param, result);
+            Future future = pool.submit(ImportCommonUser);
+            // 获取返回值结果
+            result = (Response) future.get();
+            result.setResponseEntity(param);
+            // 关闭线程池
+            pool.shutdown();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+    /***
+     * 读取新建用户模板中的数据时启动线程
+     * @author kuangbin
+     */
+    public class ImportCommonUser implements Callable {
+        // 保存文件的路径
+        private String filepath;
+
+        // 前台传来的参数
+        private Map<String, Object> param;
+
+        // 结果对象
+        Response result;
+
+        public ImportCommonUser(String filepath, Map<String, Object> param, Response result) {
+            this.filepath = filepath;
+            this.param = param;
+            this.result = result;
+        }
+
+        @Override
+        public Response call() {
+            // 读取模板中的数据
+            List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
+
+            // 保存到用户导入信息表
+            List<Map<String, Object>> userInfoList = new ArrayList<>();
+            Map<String, Object> exportMap = new HashMap<>(param);
+            // 遍历结果行,菜单数据从第2行开始
+            for (int i = 1; i < list.size(); i++) {
+                // 设置行信息
+                exportMap.put("idx", i);
+                Map<Integer, String> map = list.get(i);
+                // 获取模板中的用户名称
+                String uname = JzbDataType.getString(map.get(0));
+
+                // 定义批次中的备注
+                String summary = "";
+                exportMap.put("uname", uname);
+                // 在参数中加入用户名称
+                param.put("uname", uname);
+                if (JzbDataType.isEmpty(uname)) {
+                    uname = "用户名称不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                // 获取模板中的用户性别
+                String sex = JzbDataType.getString(map.get(1));
+                param.put("sex", sex);
+                if (JzbDataType.isEmpty(sex)) {
+                    summary += "用户性别不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+                // 获取模板中的用户电话号码
+                String phone = JzbDataType.getString(map.get(2));
+                param.put("phone", phone);
+                if (JzbDataType.isEmpty(phone)) {
+                    summary += "招标人手机号不能为空!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                } else {
+                    if (!toPhone(phone)) {
+                        exportMap.put("status", "2");
+                        summary += "手机号不合规范";
+                        exportMap.put("summary", summary);
+                        userInfoList.add(exportMap);
+                        continue;
+                    }
+                }
+
+                // 获取模板中的身份证号
+                String cardid = JzbDataType.getString(map.get(5));
+                param.put("cardid", cardid);
+
+                // 获取模板中的邮箱
+                String mail = JzbDataType.getString(map.get(6));
+                param.put("mail",mail);
+                int count = userService.addCommUser(param);
+                if (count == 0) {
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", "创建项目失败!");
+                    userInfoList.add(exportMap);
+                    continue;
+                } else {
+                    exportMap.put("status", "1");
+                    userInfoList.add(exportMap);
+                }
+            }
+            int export = 0;
+            //保存用户导入信息表
+            if (userInfoList.size() > 0) {
+                export = deptMapper.insertExportUserInfoList(userInfoList);
+            }
+            //导入完成后修改状态
+            if (export >= 1) {
+                exportMap.put("status", "8");
+            } else if (export == 0) {
+                exportMap.put("status", "4");
+            }
+            deptService.updateExportBatch(exportMap);
+            return result;
+        }
+    }
+
+
+
+    /**
+     * 校验手机号
+     *
+     * @param obj
+     * @return
+     */
+    private boolean toPhone(String obj) {
+        boolean result = true;
+        try {
+            String eg = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
+            result = Pattern.matches(eg, obj);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+        return result;
+    }
 }
