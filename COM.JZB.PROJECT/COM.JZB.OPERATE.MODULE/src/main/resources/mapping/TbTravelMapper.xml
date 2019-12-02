@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbTravelMapper">
+
+    <!--  查询出差记录   -->
+    <select id="queryTravelList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT travelid,uname,fare,expenses,amount,orgtime,endtime,trip,addtime,adduid,aptype,ccuid
+        from tb_travel_record where status='1'and uid = #{uid}
+         limit #{pagesize}  offset #{pageno}
+    </select>
+
+
+    <!--  查询出差详情记录   -->
+    <select id="queryTravelListDeta" resultType="java.util.Map" parameterType="java.util.Map">
+        select deid,travelid,uid,cid,projectid,did,trpeers,trregion,cid,trtime,trtype,trgoal,trdefense,produce,amount,fare,expenses addtime,adduid,updtime,upduid
+        from tb_travel_record_deta where  travelid = #{travelid}
+    </select>
+
+    <select id="queryTravelData" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from  tb_travel_data where deid=#{deid}
+    </select>
+
+    <select id="queryTravelInfo" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from  tb_travel_info where deid=#{deid}
+    </select>
+
+    <update id="updateTravelFare"  parameterType="java.util.Map">
+
+    </update>
+</mapper>
