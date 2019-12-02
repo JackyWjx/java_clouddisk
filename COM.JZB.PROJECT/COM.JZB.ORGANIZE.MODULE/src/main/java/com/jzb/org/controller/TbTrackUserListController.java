@@ -244,8 +244,37 @@ public class TbTrackUserListController {
                 param = param == null ? new HashMap<>() : param;
                 trackList = tbTrackUserListService.findTrackList(param);
             } else {
+                // 定义list放uid和cid
+                List<Map<String, Object>> list = new ArrayList<>();
+                // 定义map便于list添加对象
+                Map<String, Object> map = new HashMap<>();
+                // 配置参数
+                if (!JzbCheckParam.haveEmpty(param, new String[]{"beginTime"})) {
+                    param.put("beginTime", JzbDateUtil.getDate(param.get("beginTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
+                }
+                // 配置参数
+                if (!JzbCheckParam.haveEmpty(param, new String[]{"endTime"})) {
+                    param.put("endTime", JzbDateUtil.getDate(param.get("endTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
+                }
+                // 根据关键字查询出来的单位id
+                List<Map<String, Object>> cnameLike = tbTrackUserListService.findCnameLike(param);
+                for (int i = 0, l = cnameLike.size(); i < l; i++) {
+                    map = new HashMap<>();
+                    map.put("value", cnameLike.get(i).get("cid"));
+                    list.add(map);
+                }
+                // 根据关键字查询出来的用户id
+                List<Map<String, Object>> unameLike = tbTrackUserListService.findUnameLike(param);
+                for (int i = 0, l = unameLike.size(); i < l; i++) {
+                    map = new HashMap<>();
+                    map.put("value", unameLike.get(i).get("uid"));
+                    list.add(map);
+                }
+                // 把list放到参数中用于查询数据
+                param.put("list", list);
                 trackList = tbTrackUserListService.findTrackListByKeywords(param);
             }
+
             // 处理好数据准备导入EXCEL
             for (int i = 0; i < trackList.size(); i++) {
                 param.put("uid", trackList.get(i).get("trackuid"));
