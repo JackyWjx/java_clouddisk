@@ -11,8 +11,10 @@ import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.service.TbTrackUserListService;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -153,22 +156,24 @@ public class TbTrackUserListController {
                 // 定义map便于list添加对象
                 Map<String, Object> map = new HashMap<>();
                 // 配置参数
-                if (JzbCheckParam.haveEmpty(param, new String[]{"beginTime"})) {
+                if (!JzbCheckParam.haveEmpty(param, new String[]{"beginTime"})) {
                     param.put("beginTime", JzbDateUtil.getDate(param.get("beginTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
                 }
                 // 配置参数
-                if (JzbCheckParam.haveEmpty(param, new String[]{"endTime"})) {
+                if (!JzbCheckParam.haveEmpty(param, new String[]{"endTime"})) {
                     param.put("endTime", JzbDateUtil.getDate(param.get("endTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
                 }
                 // 根据关键字查询出来的单位id
                 List<Map<String, Object>> cnameLike = tbTrackUserListService.findCnameLike(param);
                 for (int i = 0, l = cnameLike.size(); i < l; i++) {
+                    map = new HashMap<>();
                     map.put("value", cnameLike.get(i).get("cid"));
                     list.add(map);
                 }
                 // 根据关键字查询出来的用户id
                 List<Map<String, Object>> unameLike = tbTrackUserListService.findUnameLike(param);
                 for (int i = 0, l = unameLike.size(); i < l; i++) {
+                    map = new HashMap<>();
                     map.put("value", unameLike.get(i).get("uid"));
                     list.add(map);
                 }
@@ -191,8 +196,12 @@ public class TbTrackUserListController {
                     // 跟进时间
                     trackListByKeywords.get(i).put("tracktime", JzbDateUtil.toDateString(JzbDataType.getLong(trackListByKeywords.get(i).get("tracktime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
                 }
-                // 定义返回结果
-                response = Response.getResponseSuccess(userInfo);
+                if (userInfo == null) {
+                    // 定义返回结果
+                    response = Response.getResponseSuccess();
+                } else {
+                    response = Response.getResponseSuccess(userInfo);
+                }
                 // 定义分页对象
                 PageInfo pageInfo = new PageInfo();
                 // 设置list
@@ -256,6 +265,9 @@ public class TbTrackUserListController {
             XSSFWorkbook wb = new XSSFWorkbook(in);
             // 读取了模板内所有sheet内容
             XSSFSheet sheet = wb.getSheetAt(0);
+            // 设置样式
+            XSSFCellStyle contextStyle = genContextStyle(wb);//创建文本样式
+            XSSFCell cell;
             for (int i = 0, l = trackList.size(); i < l; i++) {
                 Map<String, Object> userMap = trackList.get(i).get("userInfo") == null ? new HashMap<>() : (Map<String, Object>) trackList.get(i).get("userInfo");
                 for (int j = 0; j < 8; j++) {
@@ -289,7 +301,9 @@ public class TbTrackUserListController {
                     }
 
                     // 设置值
-                    sheet.getRow(i + 1).createCell(j).setCellValue(value);
+                    cell=sheet.getRow(i + 1).createCell(j);
+                    cell.setCellValue(value);
+                    cell.setCellStyle(contextStyle);
                 }
             }
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
@@ -306,6 +320,34 @@ public class TbTrackUserListController {
         } catch (Exception ex) {
             JzbTools.logError(ex);
         }
+    }
+
+    // 创建文本样式
+    public static XSSFCellStyle genContextStyle(XSSFWorkbook workbook){
+        XSSFCellStyle style = workbook.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);//文本水平居中显示
+        style.setVerticalAlignment(VerticalAlignment.CENTER);//文本竖直居中显示
+        style.setWrapText(true);//文本自动换行
+        // 生成Excel表单，需要给文本添加边框样式和颜色
+        /*
+             CellStyle.BORDER_DOUBLE      双边线
+             CellStyle.BORDER_THIN        细边线
+             CellStyle.BORDER_MEDIUM      中等边线
+             CellStyle.BORDER_DASHED      虚线边线
+             CellStyle.BORDER_HAIR        小圆点虚线边线
+             CellStyle.BORDER_THICK       粗边线
+         */
+        style.setBorderBottom(BorderStyle.THIN);//设置文本边框
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        // 设置文本边框颜色
+        style.setTopBorderColor(new XSSFColor(Color.BLACK));
+        style.setBottomBorderColor(new XSSFColor(Color.BLACK));
+        style.setLeftBorderColor(new XSSFColor(Color.BLACK));
+        style.setRightBorderColor(new XSSFColor(Color.BLACK));
+
+        return style;
     }
 
 }
