@@ -6,6 +6,7 @@ import com.jzb.base.constant.JzbStatusConstant;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -527,6 +529,7 @@ public class ProductLineController {
             node.put("icon", JzbDataType.getString(record.get("icon")));
             node.put("photo", JzbDataType.getString(record.get("photo")));
             node.put("summary", JzbDataType.getString(record.get("summary")));
+            node.put("numIdx", JzbRandom.getRandomChar(7));
             if ("000000000000000".equals(parentId) && pageList.size() != 0) {
                 for (int b = pageList.size() - 1; b >= 0; b--) {
                     Map<String, Object> productPage = pageList.get(b);
@@ -544,7 +547,7 @@ public class ProductLineController {
                 Map<String, Object> productPageMap = productPageList.get(p);
                 // type为2代表是页面
                 productPageMap.put("type", "2");
-
+                productPageMap.put("numIdx", JzbRandom.getRandomChar(7));
                 // 将菜单下的页面加入children中并标记为2
                 node.getJSONArray("children").add(productPageMap);
             }
@@ -605,7 +608,7 @@ public class ProductLineController {
         pageInfo.setList(result);
         // 获取用户信息
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-        response = Response.getResponseSuccess(userInfo);
+        response = Response.getResponseSuccess();
         response.setPageInfo(pageInfo);
         return response;
     }

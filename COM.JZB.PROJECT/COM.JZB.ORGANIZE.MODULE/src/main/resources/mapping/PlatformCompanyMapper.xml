@@ -61,6 +61,25 @@
                     status=#{status};
     </insert>
 
+    <select id="getProductByOpens" parameterType="java.util.Map" resultType="int">
+        select
+        count(1)
+        from
+        tb_company_product
+        where
+        pid = #{appid}
+    </select>
+
+    <update id="upsateProductByOpens" parameterType="java.util.Map">
+        update
+        set
+        upduid=#{uid},
+        status=#{status}
+        updtime=#{updtime}
+        where
+        pid = #{appid}
+    </update>
+
     <insert id="insertProductByOpens">
         insert into tb_company_product (ptype,pid, cid, plid,
                               ouid, addtime,upduid,
@@ -68,11 +87,6 @@
          values (#{ptype},#{appid},#{cid},#{plid},
                 #{uid},#{time},#{uid},
                 #{time},#{status})
-         on conflict(pid) do
-         update set
-                    updtime=#{time},
-                    upduid=#{uid},
-                    status=#{status};
     </insert>
 
     <!--添加菜单-->
@@ -143,4 +157,14 @@
         where
         pid = #{pid} and status = '1'
     </update>
+
+    <!--在私海里面的电脑端授权之后在工作台根据cid查询出这个企业下的pid-->
+    <select id="getCompanyProduct" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        pid
+        from
+        tb_company_product
+        where
+        cid = #{cid} and pid is not null and status != '2'
+    </select>
 </mapper>

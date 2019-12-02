@@ -16,7 +16,14 @@
                 null ,
             </otherwise>
         </choose>
-        #{region},
+        <choose>
+            <when test="region != null and region != ''">
+                #{region},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
         #{uid},
         #{uname},
         #{phone},
@@ -33,7 +40,14 @@
         #{job},
         #{mail},
         #{cname},
-        #{native},
+        <choose>
+            <when test="native != null and native != ''">
+                #{native},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
         #{graduated},
         #{education},
         #{likes},
@@ -150,6 +164,7 @@
     <!--查询公海用户-->
     <select id="queryComUser" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        isrelation,
         source,region,uid,uname,phone,cardid,sex,age,job,mail,
         cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary
         from tb_common_user_list where status = '1'
@@ -165,10 +180,12 @@
         <if test="uname != null and uname != ''">
             and  uname  like CONCAT('%',#{uname},'%')
         </if>
+        order by addtime desc
         <if test="pagesize != null and pagesize != '' and pagesize != 0 ">
             limit #{pagesize}
             offset #{pageno}
         </if>
+
     </select>
 
     <!--模糊查询公海用户-->
@@ -188,7 +205,24 @@
         update tb_common_user_list
          set
          cid =  #{cid},
-         isrelation = 1
+         isrelation = #{isrelation}
         where uid = #{uid}
     </update>
+
+    <!--查询已关联单位用户-->
+    <select id="queryRelCommonUser" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        uid,
+        region,
+        uname
+        from tb_common_user_list
+        where isrelation = #{isrelation}
+        and adduid = #{adduid}
+        <if test="cid != null and cid != ''">
+            and cid = #{cid}
+        </if>
+        <if test="uid != null and uid != ''">
+            and uid = #{uid}
+        </if>
+    </select>
 </mapper>

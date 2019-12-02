@@ -77,4 +77,14 @@ public interface PlatformCompanyMapper {
     int getPage(Map<String, Object> map);
 
     int updatePage(Map<String, Object> map);
+    /**
+     * 私海里面的电脑端授权之后根据cid查询出这个企业下的产品pid
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getCompanyProduct(Map<String, Object> param);
+
+    int getProductByOpens(Map<String, Object> param);
+
+    int upsateProductByOpens(Map<String, Object> param);
 }
