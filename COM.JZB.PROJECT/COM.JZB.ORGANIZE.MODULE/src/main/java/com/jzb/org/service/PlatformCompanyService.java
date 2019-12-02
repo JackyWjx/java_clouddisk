@@ -214,4 +214,23 @@ public class PlatformCompanyService {
     public int updateMune(Map<String, Object> map1) {
         return platMapper.updateMune(map1);
     }
+
+    /**
+     * 私海里面的电脑端授权之后根据cid查询出这个企业下的产品pid
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getCompanyProduct(Map<String, Object> param) {
+        return platMapper.getCompanyProduct(param);
+    }
+
+    public int getProductByOpens(Map<String, Object> param) {
+        return platMapper.getProductByOpens(param);
+    }
+
+    public int upsateProductByOpens(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("updtime", time);
+        return platMapper.upsateProductByOpens(param);
+    }
 }
