@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbTravelPlanMapper">
+
+
+    <!-- 添加出差记录-->
+    <insert id="addTravelRecord" parameterType="java.util.List">
+        <foreach collection="list" item="travel" separator=",">
+            insert into tb_travel_record
+            (
+            travelid,
+            uid,
+            uname,
+            fare,
+            expenses,
+            orgtime,
+            endtime,
+            aptype,
+            ccuid,
+            version,
+            addtime,
+            adduid,
+            status,
+            summary
+            )
+            values
+            (
+            #{travel.travelid},
+            <choose>
+                <when test="travel.uid != null and travel.uid!=''">
+                    #{travel.uid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.uname != null and travel.uname!=''">
+                    #{travel.uname},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.fare != null and travel.fare!=''">
+                    #{travel.fare},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.expenses != null and travel.expenses!=''">
+                    #{travel.expenses},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.orgtime != null and travel.orgtime!=''">
+                    #{travel.orgtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.endtime != null and travel.endtime!=''">
+                    #{travel.endtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.aptype != null and travel.aptype!=''">
+                    #{travel.aptype},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.ccuid != null and travel.ccuid!=''">
+                    #{travel.ccuid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.version != null and travel.version!=''">
+                    #{travel.version},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.addtime != null and travel.addtime!=''">
+                    #{travel.addtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.adduid != null and travel.adduid!=''">
+                    #{travel.adduid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.status != null and travel.status!=''">
+                    #{travel.status},
+                </when>
+                <otherwise>
+                    1 ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="travel.summary != null and travel.summary!=''">
+                    #{travel.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+<!--             on conflict(travelid) do update-->
+<!--            <trim prefix="set" suffixOverrides=","-->
+<!--                  suffix=" where travelid=#{travelid} and (status = '1' or status = '4' or status='32')  ">-->
+<!--                <if test="uid!='' and uid !=null">-->
+<!--                    uid=#{uid},-->
+<!--                </if>-->
+<!--                <if test="uname!='' and uname !=null">-->
+<!--                    uname=#{uname},-->
+<!--                </if>-->
+<!--                <if test="fare!='' and fare !=null">-->
+<!--                    fare=#{fare},-->
+<!--                </if>-->
+<!--                <if test="expenses!='' and expenses !=null">-->
+<!--                    expenses=#{expenses},-->
+<!--                </if>-->
+<!--                <if test="orgtime!='' and orgtime !=null">-->
+<!--                    orgtime=#{orgtime},-->
+<!--                </if>-->
+<!--                <if test="endtime!='' and endtime !=null">-->
+<!--                    endtime=#{endtime},-->
+<!--                </if>-->
+<!--                <if test="aptype!='' and aptype !=null">-->
+<!--                    aptype=#{aptype},-->
+<!--                </if>-->
+<!--                <if test="ccuid!='' and ccuid !=null">-->
+<!--                    ccuid=#{ccuid},-->
+<!--                </if>-->
+<!--                <if test="version!='' and version !=null">-->
+<!--                    version=#{version},-->
+<!--                </if>-->
+<!--                <if test="addtime!='' and addtime !=null">-->
+<!--                    addtime=#{addtime},-->
+<!--                </if>-->
+<!--                <if test="adduid!='' and adduid !=null">-->
+<!--                    adduid=#{adduid},-->
+<!--                </if>-->
+<!--                <if test="status!='' and status !=null">-->
+<!--                    status=#{status},-->
+<!--                </if>-->
+<!--                <if test="summary!='' and summary !=null">-->
+<!--                    summary=#{summary},-->
+<!--                </if>-->
+<!--            </trim>-->
+        </foreach>
+
+    </insert>
+
+    <!-- 添加出差详情记录-->
+    <insert id="addTravelDetails" parameterType="java.util.List">
+        <foreach collection="list" item="detials" separator=",">
+            insert into tb_travel_record_deta
+            (
+            deid,
+            travelid,
+            uid,
+            cid,
+            projectid,
+            did,
+            trpeers,
+            trdefense,
+            trtime,
+            trtype,
+            trregion,
+            trgoal,
+            trip,
+            produce,
+            fare,
+            expenses,
+            amount,
+            addtime,
+            adduid,
+            updtime,
+            upduid,
+            status,
+            summary
+            )
+            values
+            (
+            #{detials.deid},
+            <choose>
+                <when test="detials.travelid != null and detials.travelid!=''">
+                    #{detials.travelid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.uid != null and detials.uid!=''">
+                    #{detials.uid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.cid != null and detials.cid!=''">
+                    #{detials.cid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.projectid != null and detials.projectid!=''">
+                    #{detials.projectid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.did != null and detials.did!=''">
+                    #{detials.did},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.trpeers != null and detials.trpeers!=''">
+                    #{detials.trpeers},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.trdefense != null and detials.trdefense!=''">
+                    #{detials.trdefense},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.trtime != null and detials.trtime!=''">
+                    #{detials.trtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.trtype != null and detials.trtype!=''">
+                    #{detials.trtype},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.trregion != null and detials.trregion!=''">
+                    #{detials.trregion},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.trgoal != null and detials.trgoal!=''">
+                    #{detials.trgoal},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.trip != null and detials.trip!=''">
+                    #{detials.trip},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.produce != null and detials.produce!=''">
+                    #{detials.produce},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.fare != null and detials.fare!=''">
+                    #{detials.fare},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.expenses != null and detials.expenses!=''">
+                    #{detials.expenses},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.amount != null and detials.amount!=''">
+                    #{detials.amount},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.addtime != null and detials.addtime!=''">
+                    #{detials.addtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.adduid != null and detials.adduid!=''">
+                    #{detials.adduid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.updtime != null and detials.updtime!=''">
+                    #{detials.updtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.upduid != null and detials.upduid!=''">
+                    #{detials.upduid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.status != null and detials.status!=''">
+                    #{detials.status},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="detials.summary != null and detials.summary!=''">
+                    #{detials.summary}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+            <!--            on conflict(deid) do update-->
+<!--            <trim prefix="set" suffixOverrides=","-->
+<!--                  suffix=" where deid=#{deid} and (status = '1' or status = '3')  ">-->
+<!--                <if test="detialsid!='' and detialsid !=null">-->
+<!--                    detialsid=#{detialsid},-->
+<!--                </if>-->
+<!--                <if test="uid!='' and uid !=null">-->
+<!--                    uid=#{uid},-->
+<!--                </if>-->
+<!--                <if test="cid!='' and cid !=null">-->
+<!--                    cid=#{cid},-->
+<!--                </if>-->
+<!--                <if test="projectid!='' and projectid !=null">-->
+<!--                    projectid=#{projectid},-->
+<!--                </if>-->
+<!--                <if test="did!='' and did !=null">-->
+<!--                    did=#{did},-->
+<!--                </if>-->
+<!--                <if test="trpeers!='' and trpeers !=null">-->
+<!--                    trpeers=#{trpeers},-->
+<!--                </if>-->
+<!--                <if test="trdefense!='' and trdefense !=null">-->
+<!--                    trdefense=#{trdefense},-->
+<!--                </if>-->
+<!--                <if test="trtime!='' and trtime !=null">-->
+<!--                    trtime=#{trtime},-->
+<!--                </if>-->
+<!--                <if test="trtype!='' and trtype !=null">-->
+<!--                    trtype=#{trtype},-->
+<!--                </if>-->
+<!--                <if test="trregion!='' and trregion !=null">-->
+<!--                    trregion=#{trregion},-->
+<!--                </if>-->
+<!--                <if test="trgoal!='' and trgoal !=null">-->
+<!--                    trgoal=#{trgoal},-->
+<!--                </if>-->
+<!--                <if test="trip!='' and trip !=null">-->
+<!--                    trip=#{trip},-->
+<!--                </if>-->
+<!--                <if test="produce!='' and produce !=null">-->
+<!--                    produce=#{produce},-->
+<!--                </if>-->
+<!--                <if test="fare!='' and fare !=null">-->
+<!--                    fare=#{fare},-->
+<!--                </if>-->
+<!--                <if test="expenses!='' and expenses !=null">-->
+<!--                    expenses=#{expenses},-->
+<!--                </if>-->
+<!--                <if test="amount!='' and amount !=null">-->
+<!--                    amount=#{amount},-->
+<!--                </if>-->
+<!--                <if test="addtime!='' and addtime !=null">-->
+<!--                    addtime=#{addtime},-->
+<!--                </if>-->
+<!--                <if test="adduid!='' and adduid !=null">-->
+<!--                    adduid=#{adduid},-->
+<!--                </if>-->
+<!--                <if test="updtime!='' and updtime !=null">-->
+<!--                    updtime=#{updtime},-->
+<!--                </if>-->
+<!--                <if test="upduid!='' and upduid !=null">-->
+<!--                    upduid=#{upduid},-->
+<!--                </if>-->
+<!--                <if test="status!='' and status !=null">-->
+<!--                    status=#{status},-->
+<!--                </if>-->
+<!--                <if test="summary!='' and summary !=null">-->
+<!--                    summary=#{summary},-->
+<!--                </if>-->
+<!--            </trim>-->
+        </foreach>
+    </insert>
+
+    <!-- 设置删除状态-->
+    <update id="setDeleteStatus" parameterType="java.util.Map">
+        update tb_travel_record set status=2  where   travelid=#{travelid}
+    </update>
+
+    <!-- 设置撤回状态-->
+    <update id="setRecallStatus" parameterType="java.util.Map">
+        update tb_travel_record set status=3  where   travelid=#{travelid}
+    </update>
+
+
+    <!-- 修改出差记录 -->
+    <update id="updateTravelRecord" parameterType="java.util.Map">
+        update tb_travel_record
+        <trim prefix="set" suffixOverrides=","
+              suffix=" where travelid=#{travelid} and (status = '1' or status = '3')  ">
+            <if test="uid!='' and uid !=null">
+                uid=#{uid},
+            </if>
+            <if test="uname!='' and uname !=null">
+                uname=#{uname},
+            </if>
+            <if test="fare!='' and fare !=null">
+                fare=#{fare},
+            </if>
+            <if test="expenses!='' and expenses !=null">
+                expenses=#{expenses},
+            </if>
+            <if test="orgtime!='' and orgtime !=null">
+                orgtime=#{orgtime},
+            </if>
+            <if test="endtime!='' and endtime !=null">
+                endtime=#{endtime},
+            </if>
+            <if test="aptype!='' and aptype !=null">
+                aptype=#{aptype},
+            </if>
+            <if test="ccuid!='' and ccuid !=null">
+                ccuid=#{ccuid},
+            </if>
+            <if test="version!='' and version !=null">
+                version=#{version},
+            </if>
+            <if test="addtime!='' and addtime !=null">
+                addtime=#{addtime},
+            </if>
+            <if test="adduid!='' and adduid !=null">
+                adduid=#{adduid},
+            </if>
+            <if test="status!='' and status !=null">
+                status=#{status},
+            </if>
+            <if test="summary!='' and summary !=null">
+                summary=#{summary},
+            </if>
+        </trim>
+    </update>
+
+
+    <!-- 修改出差详情 -->
+    <update id="updateTravelDetials" parameterType="java.util.Map">
+        update tb_travel_record_deta
+        <trim prefix="set" suffixOverrides=","
+              suffix=" where deid=#{deid} and (status = '1' or status = '3')  ">
+            <if test="detialsid!='' and detialsid !=null">
+                detialsid=#{detialsid},
+            </if>
+            <if test="uid!='' and uid !=null">
+                uid=#{uid},
+            </if>
+            <if test="cid!='' and cid !=null">
+                cid=#{cid},
+            </if>
+            <if test="projectid!='' and projectid !=null">
+                projectid=#{projectid},
+            </if>
+            <if test="did!='' and did !=null">
+                did=#{did},
+            </if>
+            <if test="trpeers!='' and trpeers !=null">
+                trpeers=#{trpeers},
+            </if>
+            <if test="trdefense!='' and trdefense !=null">
+                trdefense=#{trdefense},
+            </if>
+            <if test="trtime!='' and trtime !=null">
+                trtime=#{trtime},
+            </if>
+            <if test="trtype!='' and trtype !=null">
+                trtype=#{trtype},
+            </if>
+            <if test="trregion!='' and trregion !=null">
+                trregion=#{trregion},
+            </if>
+            <if test="trgoal!='' and trgoal !=null">
+                trgoal=#{trgoal},
+            </if>
+            <if test="trip!='' and trip !=null">
+                trip=#{trip},
+            </if>
+            <if test="produce!='' and produce !=null">
+                produce=#{produce},
+            </if>
+            <if test="fare!='' and fare !=null">
+                fare=#{fare},
+            </if>
+            <if test="expenses!='' and expenses !=null">
+                expenses=#{expenses},
+            </if>
+            <if test="amount!='' and amount !=null">
+                amount=#{amount},
+            </if>
+            <if test="addtime!='' and addtime !=null">
+                addtime=#{addtime},
+            </if>
+            <if test="adduid!='' and adduid !=null">
+                adduid=#{adduid},
+            </if>
+            <if test="updtime!='' and updtime !=null">
+                updtime=#{updtime},
+            </if>
+            <if test="upduid!='' and upduid !=null">
+                upduid=#{upduid},
+            </if>
+            <if test="status!='' and status !=null">
+                status=#{status},
+            </if>
+            <if test="summary!='' and summary !=null">
+                summary=#{summary},
+            </if>
+        </trim>
+    </update>
+
+
+    <!-- 根据出差id查询出差记录-->
+    <select id="queryTravelRecordByTravelid" parameterType="java.util.List" resultType="java.util.Map">
+        SELECT * FROM tb_travel_record
+                where travelid=#{travelid}
+    </select>
+
+    <!-- 根据出差id查询出差详情-->
+    <select id="queryTravelDetailsByTravelid" parameterType="java.util.List" resultType="java.util.Map">
+        SELECT * FROM tb_travel_record_deta
+        where travelid=#{travelid}
+    </select>
+</mapper>
