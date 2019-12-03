@@ -24,4 +24,6 @@ public interface TbTravelMapper {
     List<Map<String, Object>> queryTravelInfo(Map<String, Object> map);
 
     int  updateTravelFare(Map<String, Object> map);
+
+    List<Map<String, Object>> queryTrackUserList(Map<String, Object> map);
 }

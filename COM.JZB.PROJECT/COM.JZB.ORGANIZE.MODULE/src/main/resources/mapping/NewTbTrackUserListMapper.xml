@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.CommonUserMapper">
+
+    <select id="queryTrackUserListByKey" resultType="java.util.Map" parameterType="java.util.Map">
+        select trackid,trackcontent ,abdialogue,nextadvance from tb_track_user_list where status='1'
+        <choose><when test="uid != null || uid != ''">and trackuid = #{uid}</when></choose>
+        <choose><when test="cid != null || cid != ''">and trackcid = #{cid}</when></choose>
+        <choose><when test="trtime != null || trtime != ''">and tracktime = #{trtime}</when></choose>
+    </select>
+
+</mapper>

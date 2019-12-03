@@ -50,4 +50,11 @@ public class TbTravelService {
     public int  updateTravelFare(Map<String, Object> map) {
         return tbTravelMapper.updateTravelFare(map);
     }
+
+    public List<Map<String, Object>> queryTrackUserList(Map<String, Object> map) {
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
+        return tbTravelMapper.queryTrackUserList(map);
+    }
 }
