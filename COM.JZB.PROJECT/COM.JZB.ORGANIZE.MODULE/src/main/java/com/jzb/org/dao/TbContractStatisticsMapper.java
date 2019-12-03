@@ -37,4 +37,11 @@ public interface TbContractStatisticsMapper {
      * @return
      */
     int setDeleteStatus(Map<String, Object> param);
+
+    /**
+     * 提交到合同库
+     * @param param
+     * @return
+     */
+    int addToContractStatistics(Map<String, Object> param);
 }

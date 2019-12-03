@@ -9,6 +9,7 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
@@ -59,6 +60,58 @@ public class TbContractStatisticsController {
     private final static Logger logger = LoggerFactory.getLogger(TbContractStatisticsController.class);
 
     /**
+     * 提交到合同库
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/addToContractStatistics", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response addToContractStatistics(@RequestBody Map<String, Object> param) {
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/org/contractStatistics/addToContractStatistics";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 验证指定参数为空则返回error
+            if (JzbCheckParam.haveEmpty(param, new String[]{"conid", "conname", "sales", "ownid", "proname"})) {
+                response = Response.getResponseError();
+            } else {
+                param.put("adduid",userInfo.get("uid").toString());
+                param.put("addtime",System.currentTimeMillis());
+                param.put("staid", JzbRandom.getRandomCharLow(7));
+                // 执行添加方法
+                int count = tbContractStatisticsService.addToContractStatistics(param);
+                // 根据添加结果返回结果
+                response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addToContractStatistics Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
+    /**
      * 查询合同统计信息
      *
      * @param param
@@ -102,7 +155,34 @@ public class TbContractStatisticsController {
 
                 // 获取结果集
                 List<Map<String, Object>> list = tbContractStatisticsService.findContractStatisticsList(param);
-
+                for (int i = 0; i < list.size(); i++) {
+                    Map<String, Object> regionMap = new HashMap<>();
+                    regionMap.put("key", list.get(i).get("region"));
+                    Response cityList = tbCityRedisApi.getCityList(regionMap);
+                    // 获取地区map
+                    Map<String, Object> resultParam = null;
+                    if (cityList.getResponseEntity() != null) {
+                        resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
+                        if (resultParam != null) {
+                            resultParam.put("region", resultParam.get("creaid"));
+                        } else {
+                            resultParam = new HashMap<>();
+                            resultParam.put("region", null);
+                        }
+                    }
+                    // 转map
+                    if (resultParam != null) {
+                        Response response1 = regionBaseApi.getRegionInfo(resultParam);
+                        list.get(i).put("region", response1.getResponseEntity());
+                    }
+                    param.put("uid", list.get(i).get("sales"));
+                    // 缓存查询出用户信息
+                    Response region = userRedisServiceApi.getCacheUserInfo(param);
+                    // 放入每一条记录
+                    list.get(i).put("userInfo", region.getResponseEntity());
+                    // 签订时间
+                    list.get(i).put("signdate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("signdate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                }
                 // 设置返回对象
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
