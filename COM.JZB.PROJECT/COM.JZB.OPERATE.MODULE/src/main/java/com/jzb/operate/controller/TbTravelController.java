@@ -3,8 +3,12 @@ package com.jzb.operate.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
+import com.jzb.operate.api.org.OrgCompanyApi;
+import com.jzb.operate.api.org.TbTrackUserListApi;
 import com.jzb.operate.service.TbTravelService;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,16 +24,19 @@ import java.util.Map;
  * @Date 2019/12/2 11:21
  */
 @RestController
-@RequestMapping(value = "/query")
+@RequestMapping(value = "/reimbursementSystem")
 public class TbTravelController {
 
     @Autowired
     private TbTravelService tbTravelService;
 
+    @Autowired
+    TbTrackUserListApi api;
+
     /**
      * 查询出差记录
      */
-    @PostMapping("/list")
+    @PostMapping("/queryList")
     public Response queryTravelList(@RequestBody Map<String, Object> map){
         Response result;
         try{
@@ -72,10 +79,38 @@ public class TbTravelController {
      *  修改出差费用
      */
     @PostMapping("/updateTravelFare")
+    @Transactional
     public Response updateTravelFare(@RequestBody Map<String, Object> map){
         Response result;
         try {
             result =  tbTravelService.updateTravelFare(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 根据申请人id、单位id以及拜访时间获取跟进记录
+     */
+    @PostMapping("/queryTrackUserList")
+    public Response queryTrackUserList(@RequestBody Map<String, Object> map){
+        Response result;
+        try {
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            //获取出差详情记录
+            List<Map<String , Object>> delist = tbTravelService.queryTrackUserList(map);
+            for (int i = 0 ;i < delist.size() ;i++){
+                 // 根据申请人 单位 拜访时间 查询跟进记录
+                 Response res  = api.queryTrackUserByName(delist.get(i));
+                 List<Map<String , Object>>  reList = res.getPageInfo().getList();
+                 delist.get(i).put("reList",reList);
+            }
+            result =  Response.getResponseSuccess();
+            pageInfo.setList(delist);
+            result.setPageInfo(pageInfo);
         }catch (Exception e){
             e.printStackTrace();
             result =  Response.getResponseError();

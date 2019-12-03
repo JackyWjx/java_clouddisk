@@ -8,6 +8,8 @@
     <select id="queryTravelList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT travelid,uname,fare,expenses,amount,orgtime,endtime,trip,addtime,adduid,aptype,ccuid
         from tb_travel_record where status='1'and uid = #{uid}
+        <choose><when test="orgtime != null || orgtime != ''"><![CDATA[orgtime>=#{orgtime} ]]></when></choose>
+        <choose><when test="endtime != null || endtime != ''"><![CDATA[endtime<=#{endtime} ]]></when></choose>
          limit #{pagesize}  offset #{pageno}
     </select>
 
@@ -18,15 +20,33 @@
         from tb_travel_record_deta where  travelid = #{travelid}
     </select>
 
+    <!--查询出差资料-->
     <select id="queryTravelData" resultType="java.util.Map" parameterType="java.util.Map">
         select * from  tb_travel_data where deid=#{deid}
     </select>
 
+    <!--查询出差情报表-->
     <select id="queryTravelInfo" resultType="java.util.Map" parameterType="java.util.Map">
         select * from  tb_travel_info where deid=#{deid}
     </select>
+    
+    <!--查询跟进记录表-->
+    <select id="queryTrackUserList" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_track_user_list where
+        <choose><when test="trackuid != null || trackuid != ''">trackuid=#{trackuid}</when></choose>
+        <choose><when test="trackcid != null || trackcid != ''">trackcid=#{trackcid}</when></choose>
+        <choose><when test="trackproid != null || trackproid != ''">trackproid=#{trackproid}</when></choose>
+        <choose><when test="tracktime != null || tracktime != ''">tracktime=#{tracktime}</when></choose>
+    </select>
 
+    <!--根据出差id修改出差报销金额-->
     <update id="updateTravelFare"  parameterType="java.util.Map">
-
+        update tb_travel_record set
+            <if test="fare != null || fare != '' ">fare=#{fare},</if>
+            <if test="expenses != null || expenses != '' ">expenses=#{expenses}</if>
+        where travelid=#{travelid}
     </update>
+
+
+
 </mapper>
