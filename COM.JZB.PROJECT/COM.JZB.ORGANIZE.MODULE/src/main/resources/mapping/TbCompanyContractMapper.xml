@@ -8,7 +8,7 @@
     <!-- 生成合同 -->
     <insert id="addCompanyContract" parameterType="java.util.Map">
         insert into tb_company_contract
-        (contid,cname,cid,projectid,typeid,tempid,contamount,checkamount,paytype,paydesc,createtime,contstime,contetime,contparam,buildstime,buildetime,accountname,accountbank,accountno,adduid,addtime,upduid,updtime,status,summary)
+        (contid,cname,cid,projectid,typeid,tempid,contamount,checkamount,paytype,paydesc,createtime,contstime,contetime,contparam,buildstime,buildetime,accountname,accountbank,accountno,adduid,addtime,upduid,updtime,status,summary,proname,concname,subcname,constatus)
         values (
         #{contid},
         <choose>
@@ -197,10 +197,42 @@
         </choose>
         <choose>
             <when test="summary!=null and summary!=''">
-                #{summary}
+                #{summary},
             </when>
             <otherwise>
-                NULL
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="proname!=null and proname!=''">
+                #{proname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="concname!=null and concname!=''">
+                #{concname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="subcname!=null and subcname!=''">
+                #{subcname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="constatus!=null and constatus!=''">
+                #{constatus}
+            </when>
+            <otherwise>
+                2
             </otherwise>
         </choose>
         )
@@ -237,7 +269,11 @@
         tcc.upduid,
         tcc.updtime,
         tcc.status,
-        tcc.summary
+        tcc.summary,
+        tcc.proname,
+        tcc.concname,
+        tcc.subcname,
+        tcc.constatus
         FROM
         tb_company_contract tcc
         WHERE

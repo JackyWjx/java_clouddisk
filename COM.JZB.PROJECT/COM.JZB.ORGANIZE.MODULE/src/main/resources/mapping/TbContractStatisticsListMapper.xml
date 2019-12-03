@@ -93,4 +93,178 @@
         update tb_contract_statistics_list set status='2',upduid=#{upduid},updtime=#{updtime} where staid=#{staid}
     </update>
 
+    <!-- 添加到合同库 -->
+    <insert id="addToContractStatistics" parameterType="java.util.Map">
+        insert into tb_contract_statistics_list
+        (staid,conid,conname,sales,ownid,region,proname,projid,concname,conperiod,amount,invoicemoney,returnmoney,collectmoney,signdate,subcname,conimportant,contype,yntable,condesc,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        #{staid},
+        #{conid},
+        #{conname},
+        #{sales},
+        #{ownid},
+        <choose>
+            <when test="region!=null and region!=''">
+                #{region},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        #{proname},
+        <choose>
+            <when test="projid!=null and projid!=''">
+                #{projid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="concname!=null and concname!=''">
+                #{concname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="conperiod!=null and conperiod!=''">
+                #{conperiod},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="amount!=null and amount!=''">
+                #{amount},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="invoicemoney!=null and invoicemoney!=''">
+                #{invoicemoney},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="returnmoney!=null and returnmoney!=''">
+                #{returnmoney},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="collectmoney!=null and collectmoney!=''">
+                #{collectmoney},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="signdate!=null and signdate!=''">
+                #{signdate},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="subcname!=null and subcname!=''">
+                #{subcname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="conimportant!=null and conimportant!=''">
+                #{conimportant},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="contype!=null and contype!=''">
+                #{contype},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="yntable!=null and yntable!=''">
+                #{yntable},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="condesc!=null and condesc!=''">
+                #{condesc},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        );
+    </insert>
+
 </mapper>

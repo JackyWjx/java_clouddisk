@@ -47,4 +47,14 @@ public class TbContractStatisticsService {
     public int setDeleteStatus(Map<String, Object> param){
         return tbContractStatisticsMapper.setDeleteStatus(param);
     }
+
+
+    /**
+     * 提交到合同库
+     * @param param
+     * @return
+     */
+    public int addToContractStatistics(Map<String, Object> param){
+        return tbContractStatisticsMapper.addToContractStatistics(param);
+    }
 }
