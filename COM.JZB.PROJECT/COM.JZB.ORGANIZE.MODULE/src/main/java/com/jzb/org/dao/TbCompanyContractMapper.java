@@ -20,9 +20,24 @@ public interface TbCompanyContractMapper {
     int addCompanyContract(Map<String, Object> param);
 
     /**
+     * 修改合同
+     * @param param
+     * @return
+     */
+    int updateCompanyContract(Map<String, Object> param);
+
+
+    /**
+     * 删除合同
+     * @param param
+     * @return
+     */
+    int updateDeleteStatus(Map<String, Object> param);
+
+    /**
      * 查询合同
      * @param param
      * @return
      */
-    List<Map<String, Object>> quertCompantContract(Map<String, Object> param);
+    List<Map<String, Object>> quertCompanyContract(Map<String, Object> param);
 }
