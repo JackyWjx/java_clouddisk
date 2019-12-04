@@ -46,7 +46,7 @@ public class ProjectTypeController {
             for (Map<String,Object> pt:ProjectType) {
                 Date date = new Date();
                 Long dateNum = (Long) pt.get("addtime");
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 date.setTime(dateNum);//java里面应该是按毫秒
                 pt.put("addtime",sdf.format(date));
             }

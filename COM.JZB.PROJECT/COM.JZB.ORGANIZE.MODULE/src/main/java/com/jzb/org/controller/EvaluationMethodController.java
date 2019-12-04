@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +43,16 @@ public class EvaluationMethodController {
                 param.put("start",pageno*pagesize);
             }
             List<Map<String, Object>> evaluationMethods = evaluationMethodService.queryEvaluationMethod(param);
+            for (Map<String,Object> evaluationMethod:evaluationMethods) {
+                Date date = new Date();
+                Long dateNum = (Long) evaluationMethod.get("addtime");
+                Long dateNum1 = (Long) evaluationMethod.get("updtime");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                date.setTime(dateNum);//java里面应该是按毫秒
+                evaluationMethod.put("addtime",sdf.format(date));
+                date.setTime(dateNum1);//java里面应该是按毫秒
+                evaluationMethod.put("updtime",sdf.format(date));
+            }
             result = Response.getResponseSuccess(userInfo);
             // 定义pageinfo
             PageInfo pi=new PageInfo();

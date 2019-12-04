@@ -6,7 +6,7 @@
 
      <select id="queryTenderResultMessage" resultType="Map">
         select * from tb_tendering_result_list  WHERE
-        status = '1' LIMIT #{pagesize} OFFSET #{start}
+        status = '1' order by opendate desc  LIMIT #{pagesize} OFFSET #{start}
     </select>
 
     <select id="queryTenderResultMessageCount" resultType="int">

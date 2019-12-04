@@ -30,7 +30,7 @@
                 null,
             </otherwise>
         </choose>
-        (select count(1)+1 from tb_tendering_judge),#{adduid},#{addtime},null,null,#{status},
+        (select count(1)+1 from tb_tendering_judge),#{adduid},#{addtime},#{upduid},#{updtime},#{status},
         <choose>
             <when test="summary!=null and summary!=''">
                 #{summary}

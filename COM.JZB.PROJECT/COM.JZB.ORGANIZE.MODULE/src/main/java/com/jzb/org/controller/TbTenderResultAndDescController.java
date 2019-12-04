@@ -80,6 +80,9 @@ public class TbTenderResultAndDescController {
             if (param.get("pageno") == null || param.get("pagesize") == null ) {
                 result = Response.getResponseError();
             } else {
+                int start = (int)param.get("pageno")-1;
+                start *= (int)param.get("pagesize");
+                param.put("start",start);
                 List<Map<String,Object>> tenderMessages = tenderResultAndDescService.queryTenderMessage(param);
                 // 定义返回结果
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
@@ -87,7 +90,7 @@ public class TbTenderResultAndDescController {
                 for (Map<String,Object> tenderMessage:tenderMessages) {
                     Date date = new Date();
                     Long dateNum = (Long) tenderMessage.get("opendate");
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     date.setTime(dateNum);//java里面应该是按毫秒
                     tenderMessage.put("opendate",sdf.format(date));
                 }
