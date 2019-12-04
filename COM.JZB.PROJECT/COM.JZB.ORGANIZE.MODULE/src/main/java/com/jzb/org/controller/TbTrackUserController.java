@@ -121,7 +121,7 @@ public class TbTrackUserController {
     public Response getInfo(@RequestBody Map<String,Object> param){
         Response result;
         Map<String, Object> userInfo = null;
-        String api = "/org/connction/getInfo";
+        String api = "/orgTrack/getInfo";
         boolean flag = true;
         try {
             // 如果获取参数userinfo不为空的话
@@ -153,7 +153,43 @@ public class TbTrackUserController {
         }
         return result;
     }
-
+    // 查询有效客户
+    @RequestMapping("/getClient")
+    public Response getClient(@RequestBody Map<String,Object> param){
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/orgTrack/getClient";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            param.put("adduid",userInfo.get("uid"));
+            userInfo = (Map<String, Object>) param.get("userinfo");
+            List<Map<String ,Object>> list = userService.getClient(param);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            result = Response.getResponseSuccess(userInfo);
+            result.setPageInfo(pageInfo);
+        }catch (Exception e){
+            flag = false;
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getClient Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
 
     /**
      *CRM-销售业主-联系-个人看板-
@@ -166,7 +202,7 @@ public class TbTrackUserController {
     public Response getHandleCount(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String api = "/org/connction/getHandleCount";
+        String api = "/orgTrack/getHandleCount";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -197,6 +233,129 @@ public class TbTrackUserController {
         }
         return result;
     }
+
+
+    /**
+     * 根据用户查询分别查询微信、qq、电话、拜访、的总记录数。与合计
+     */
+    @RequestMapping(value = "/getSingleCount", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getSingleCount(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/orgTrack/getSingleCount";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            param.put("adduid",userInfo.get("uid"));
+            List<Map<String, Object>> List = userService.getSingleCount(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(List);
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getSingleCount Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+
+    /**
+     * 根据跟进人查询 联系客户列表
+     */
+    @RequestMapping(value = "/getContactList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getContactList(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/orgTrack/getContactList";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            param.put("adduid",userInfo.get("uid"));
+            List<Map<String, Object>> List = userService.getContactList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(List);
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getSingleCount Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+    /**
+     * 根据跟进人查询不同跟进阶段客户列表
+     */
+    @RequestMapping(value = "/getHandleStage", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getHandleStage(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/orgTrack/getHandleStage";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            param.put("adduid",userInfo.get("uid"));
+            List<Map<String, Object>> List = userService.getHandleStage(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(List);
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getHandleStage Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 
 
 }

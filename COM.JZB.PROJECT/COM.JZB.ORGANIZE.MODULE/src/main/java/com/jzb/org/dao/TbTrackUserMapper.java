@@ -39,4 +39,15 @@ public interface TbTrackUserMapper {
      * @return
      */
     int getHandleCount(Map<String, Object> param);
+
+    // 分别查询qq/微信/电话沟通数量
+    int  getSingleCount(Map<String, Object> param);
+
+    List<Map<String, Object>> getContactList(Map<String, Object> param);
+
+    // 获取历史有效客户数量
+    int getClient(Map<String, Object> param);
+
+    // 根据跟进人查询 跟进阶段客户列表
+    List<Map<String, Object>> getHandleStage(Map<String, Object> param);
 }

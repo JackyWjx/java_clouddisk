@@ -27,6 +27,9 @@ public class TbConnectionPubService {
 
     // 查询发帖信息
     public List<Map<String, Object>> getConnectionList(Map<String, Object> param) {
+        if (!JzbTools.isEmpty(param.get("type"))){
+            param.put("type",JzbDataType.getInteger(param.get("type")));
+        }
         param.put("status",'1');
         return pubMapper.getConnectionList(param);
     }
@@ -37,6 +40,7 @@ public class TbConnectionPubService {
     }
     // 新建发帖信息
     public int insertConnectionList(Map<String, Object> param) {
+        param.put("type",JzbDataType.getInteger(param.get("type")));
         param.put("status",'1');
         param.put("addtime",System.currentTimeMillis());
         param.put("pubid", JzbRandom.getRandomCharCap(7));
