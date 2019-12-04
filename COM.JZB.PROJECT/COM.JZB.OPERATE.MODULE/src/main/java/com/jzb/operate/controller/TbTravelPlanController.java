@@ -1,10 +1,12 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.service.TbTravelPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,9 @@ public class TbTravelPlanController {
 
     @Autowired
     TbTravelPlanService travelPlanService;
+
+    @Autowired
+    RegionBaseApi regionBaseApi;
 
     /**
      * 添加出差计划
@@ -170,6 +175,30 @@ public class TbTravelPlanController {
             travelMap.put("list",detailsList);
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
             result.setResponseEntity(travelMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * @Author sapientia
+     * @Description 获取省市县列表
+     * @Date  12:49
+     * @Param [param]
+     * @return com.jzb.base.message.Response
+     **/
+    @CrossOrigin
+    @PostMapping("/getCityList")
+    public Response getCityList(@RequestBody Map<String, Object> param){
+        Response result = null;
+        try{
+            PageInfo pageInfo = new PageInfo();
+            Response res  = regionBaseApi.getCityJson(param);
+            List<Map<String , Object>>  cityList = res.getPageInfo().getList();
+            pageInfo.setList(cityList);
+            result.setPageInfo(pageInfo);
         }catch (Exception e){
             e.printStackTrace();
             result =  Response.getResponseError();

@@ -13,18 +13,8 @@ import java.util.Map;
 
 
 @FeignClient(name = "jzb-org")
-@RequestMapping(value = "/org/trackUserList")
+@RequestMapping(value = "/org/taback")
 public interface TbTrackUserListApi {
-
-    /**
-     * 根据获取跟进记录
-     * @param param
-     * @return
-     */
-    @RequestMapping(value = "/getTrackUserList", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response getTrackUserList(@RequestBody Map<String, Object> param);
-
     /**
      * 根据获取跟进记录
      * @param param
