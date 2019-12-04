@@ -331,6 +331,8 @@ public interface CompanyMapper {
      */
     int insertCompanyCommon(Map<String, Object> param);
 
+    int queryCnameIsNot(Map<String, Object> param);
+
     /**
      * 管理员创建公海单位
      *
