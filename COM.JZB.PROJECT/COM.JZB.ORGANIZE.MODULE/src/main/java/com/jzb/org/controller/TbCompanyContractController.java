@@ -241,7 +241,7 @@ public class TbCompanyContractController {
                 response = Response.getResponseError();
             } else {
                 if (param.get("createtime") != null && !param.get("createtime").toString().equals("")) {
-                    param.put("createtime", JzbDateUtil.getDate(param.get("createtime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                    param.put("createtime", JzbDateUtil.getDate(param.get("createtime").toString(), JzbDateStr.yyyy_MM_dd).getTime());
                 }
                 // 执行修改
                 int count = tbCompanyContractService.updateCompanyContract(param);
