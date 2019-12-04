@@ -302,7 +302,9 @@
     <insert id="insertCompanyProject" parameterType="java.util.Map">
         INSERT INTO tb_company_project
         (cid, projectid, projectname, region, address, tendertime, tenderuid,
-        tendername, tenderphone,podeperson , podephone , podejob ,podenature ,  tendercompany , projecttype , mail ,tenderresultcompany ,  tenderagent , agent ,agentphone ,relation, wintime, idx, adduid, addtime, status, summary)
+        tendername, tenderphone,prouname,prouphone,
+        tendercompany , projecttype , mail ,tenderresultcompany ,  tenderagent ,
+        agent ,agentphone , wintime, idx, adduid, addtime, status, summary)
         VALUES
         (
         #{cid},
@@ -335,10 +337,8 @@
         </choose>
         #{tendername},
         #{tenderphone},
-        <choose><when test=" podeperson != null and podeperson !=''">#{podeperson},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" podephone != null and podephone !=''">#{podephone},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" podejob != null and podejob !=''">#{podejob},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" podenature != null and podenature !=''">#{podenature},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" prouname != null and prouname !=''">#{prouname  },</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" prouphone != null and prouphone !=''">#{prouphone},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" tendercompany != null and tendercompany !=''">#{tendercompany},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" projecttype != null and projecttype !=''">#{projecttype},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" mail != null and mail !=''">#{mail},</when><otherwise>null,</otherwise></choose>
@@ -346,7 +346,6 @@
         <choose><when test=" tenderagent != null and tenderagent !=''">#{tenderagent},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" agent != null and agent !=''">#{agent},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" agentphone != null and agentphone !=''">#{agentphone},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" relation != null and relation !=''">#{relation},</when><otherwise>null,</otherwise></choose>
         <choose>
             <when test=" wintime != null and wintime !=''">
                 ${wintime},
@@ -380,32 +379,49 @@
     <!--CRM公海 项目添加项目信息表-->
     <insert id="insertCompanyProjectInfo" parameterType="java.util.Map">
         INSERT INTO tb_common_project_info
-        ( projectid, idx ,lineuid, lineuname, linephone,
-        job, linenature, cname , reluname,
-        relphone ,reshname , reshphone , brandname, contrast, addtime, status, summary)
+        ( projectid, idx ,lineuid, lineuname, linephone,lineage,linesex,linejob,linenature,des,podeperson,npodeperson,
+          podephone,npodephone,podejob,npodejob,podenature,npodenature,setb,sepr,setli,relation,recname,reluname,relphone,brandname,contrast,mail,
+          nreluname,nrelphone,nbrandname,ncontrast,nmail,reshid,reshname,reshphone,adduid,
+          addtime, status, summary)
         VALUES
         (
         #{projectid},
-        <choose>
-            <when test=" idx != null and idx !=''">
-                ${idx},
-            </when>
-            <otherwise>
-                (SELECT count(1)+1 FROM tb_common_project_info),
-            </otherwise>
-        </choose>
+        <choose><when test=" idx != null and idx !=''"> </when><otherwise>(SELECT count(1)+1 FROM tb_common_project_info),</otherwise></choose>
         <choose><when test=" lineuid != null and lineuid !=''">#{lineuid},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" lineuname != null and lineuname !=''">#{lineuname},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" linephone != null and linephone !=''">#{linephone},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" job != null and job !=''">#{job},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" lineage != null and lineage !=''">#{lineage},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" linesex != null and linesex !=''">#{linesex},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" linejob != null and linejob !=''">#{linejob},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" linenature != null and linenature !=''">#{linenature},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" cname != null and cname !=''">#{cname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" des != null and des !=''">#{des},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" podeperson != null and podeperson !=''">#{podeperson},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" npodeperson != null and npodeperson !=''">#{npodeperson},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" podephone != null and podephone !=''">#{podephone},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" npodephone != null and npodephone !=''">#{npodephone},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" podejob != null and podejob !=''">#{podejob},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" npodejob != null and npodejob !=''">#{npodejob},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" podenature != null and podenature !=''">#{podenature},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" npodenature != null and npodenature !=''">#{npodenature},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" setb != null and setb !=''">#{setb},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" sepr != null and sepr !=''">#{sepr},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" setli != null and setli !=''">#{setli},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" relation != null and relation !=''">#{relation},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" recname != null and recname !=''">#{recname},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" reluname != null and reluname !=''">#{reluname},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" relphone != null and relphone !=''">#{relphone},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" reshname != null and reshname !=''">#{reshname},</when><otherwise>null,</otherwise></choose>
-        <choose><when test=" reshphone != null and reshphone !=''">#{reshphone},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" brandname != null and brandname !=''">#{brandname},</when><otherwise>null,</otherwise></choose>
         <choose><when test=" contrast != null and contrast !=''">#{contrast},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" mail != null and mail !=''">#{mail},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" nreluname != null and nreluname !=''">#{nreluname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" nrelphone != null and nrelphone !=''">#{nrelphone},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" nbrandname != null and nbrandname !=''">#{nbrandname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" ncontrast != null and ncontrast !=''">#{ncontrast},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" nmail != null and nmail !=''">#{nmail},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" reshid != null and reshid !=''">#{reshid},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" reshname != null and reshname !=''">#{reshname},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" reshphone != null and reshphone !=''">#{reshphone},</when><otherwise>null,</otherwise></choose>
+        <choose><when test=" adduid != null and adduid !=''">#{adduid},</when><otherwise>null,</otherwise></choose>
         #{addtime},
         #{status},
         <choose><when test=" summary != null and summary !=''">#{summary}</when><otherwise>null</otherwise></choose>

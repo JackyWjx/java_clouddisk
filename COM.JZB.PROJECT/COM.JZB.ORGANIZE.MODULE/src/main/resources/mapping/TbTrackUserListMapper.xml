@@ -7,32 +7,32 @@
     <!-- 查找跟进记录不带条件 -->
     <select id="findTrackList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-            trackid,
-            tracktag,
-            tracktime,
-            trackuname,
-            trackuid,
-            tracktype,
-            trackvalue,
-            isservice,
-            customer,
-            trackcid,
-            (select cname from tb_company_list where cid=tvv.trackcid) trackcname,
-            trackproid,
-            trackcontent,
-            trackoutput,
-            abdialogue,
-            nextadvance,
-            image,
-            excontent,
-            trackdesc,
-            trackres,
-            addtime
+        trackid,
+        tracktag,
+        tracktime,
+        trackuname,
+        trackuid,
+        tracktype,
+        trackvalue,
+        isservice,
+        customer,
+        trackcid,
+        (select cname from tb_company_list where cid=tvv.trackcid) trackcname,
+        trackproid,
+        trackcontent,
+        trackoutput,
+        abdialogue,
+        nextadvance,
+        image,
+        excontent,
+        trackdesc,
+        trackres,
+        addtime
         FROM
-            tb_track_user_list tvv
+        tb_track_user_list tvv
         WHERE
-            status = '1'
-            and isservice='0'
+        status = '1'
+        and isservice='0'
         <if test="page!=null and page!=''">
             limit #{pagesize} offset #{pageno}
         </if>
@@ -45,7 +45,7 @@
 
 
     <!-- 查找跟进记录带条件 -->
-    <select id="findTrackListByKeywords" parameterType="java.util.Map">
+    <select id="findTrackListByKeywords" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
         trackid,
         tracktag,
@@ -57,6 +57,7 @@
         trackuid,
         customer,
         trackcid,
+        (select cname from tb_company_list where cid=tvv.trackcid) trackcname,
         trackproid,
         trackcontent,
         trackoutput,
@@ -71,27 +72,31 @@
         WHERE
         status = '1'
         and isservice='0'
-        <if test="list!=null and list!=''">
+        <choose>
+            <when test="list!=null and list.size()>0">
+                and trackuid in
+                <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                    #{item.value}
+                </foreach>
 
-            and trackuid in
-            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-                #{item.value}
-            </foreach>
+                or trackcid in
+                <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                    #{item.value}
+                </foreach>
+            </when>
 
-            or trackcid in
-            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-                #{item.value}
-            </foreach>
-
-        </if>
-
+            <otherwise>
+                and 1=2
+            </otherwise>
+        </choose>
         <if test="beginTime!=null and beginTime !=''">
-            and addtime &lt; #{beginTime}
+            and addtime &gt; #{beginTime}
         </if>
 
         <if test="endTime!=null and endTime !=''">
-            and addtime &gt; #{beginTime}
+            and addtime &lt; #{endTime}
         </if>
+
         <if test="page!=null and page!=''">
             limit #{pagesize} offset #{pageno}
         </if>
@@ -103,32 +108,36 @@
         select count(1) FROM tb_track_user_list
         WHERE status='1'
         and isservice='0'
-        <if test="list!=null and list!=''">
+        <choose>
+            <when test="list!=null and list.size()>0">
+                and trackuid in
+                <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                    #{item.value}
+                </foreach>
 
-            and trackuid in
-            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-                trackcid=#{item.value}
-            </foreach>
+                or trackcid in
+                <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                    #{item.value}
+                </foreach>
+            </when>
 
-            or trackcid in
-            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-                trackcid=#{item.value}
-            </foreach>
-
-        </if>
+            <otherwise>
+                and 1=2
+            </otherwise>
+        </choose>
 
         <if test="beginTime!=null and beginTime !=''">
-            and addtime &lt; #{beginTime}
+            and addtime &gt; #{beginTime}
         </if>
 
         <if test="endTime!=null and endTime !=''">
-            and addtime &gt; #{beginTime}
+            and addtime &lt; #{beginTime}
         </if>
     </select>
 
     <!-- 模糊查询用户名 -->
     <select id="findUnameLike" parameterType="java.util.Map" resultType="java.util.Map">
-        select uid,cname from tb_dpet_user where cname ~ #{keyword}
+        select uid,cname from tb_dept_user where cname ~ #{keyword}
     </select>
 
     <!-- 模糊查询单位名称 -->

@@ -164,7 +164,6 @@ public class PlatformComService {
                 appMap.put("list", list);
                 appMap.put("list1", list1);
                 Response response = platformCompanyApi.addProductByOpen(appMap);
-                System.out.println(response);
             }
 
         }

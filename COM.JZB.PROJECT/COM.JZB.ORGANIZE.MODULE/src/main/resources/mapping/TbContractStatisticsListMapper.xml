@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbContractStatisticsMapper">
+
+    <!-- 查找合同统计信息 -->
+    <select id="findContractStatisticsList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        staid,
+        conid,
+        conname,
+        sales,
+        ownid,
+        ( SELECT cname FROM tb_company_list WHERE cid = tcsl.ownid ) ownname,
+        region,
+        proname,
+        projid,
+        ( SELECT projectname FROM tb_company_project WHERE projectid = tcsl.projid ) projectname,
+        concname,
+        conperiod,
+        amount,
+        invoicemoney,
+        returnmoney,
+        collectmoney,
+        signdate,
+        subcname,
+        conimportant,
+        contype,
+        yntable,
+        condesc
+        FROM
+        tb_contract_statistics_list tcsl
+        WHERE
+        status = '1'
+        <if test="beginTime!=null and beginTime !=''">
+            and signdate &gt; #{beginTime}
+        </if>
+        <if test="endTime!=null and endTime !=''">
+            and signdate &lt; #{endTime}
+        </if>
+        <if test="page!=null and page!=''">
+            limit #{pagesize} offset #{pageno}
+        </if>
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="findContractCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_contract_statistics_list
+        WHERE
+        status = '1'
+        <if test="beginTime!=null and beginTime !=''">
+            and signdate &lt; #{beginTime}
+        </if>
+        <if test="endTime!=null and endTime !=''">
+            and signdate &gt; #{endTime}
+        </if>
+    </select>
+
+    <!-- 修改合同统计信息 -->
+    <update id="updateContractStatisticsList" parameterType="java.util.Map">
+        update tb_contract_statistics_list
+        <trim prefix="set" suffixOverrides="," suffix="where staid=#{staid}">
+            <if test="contid != null and contid!=''">contid=#{contid} ,</if>
+            <if test="conname != null and conname!=''">conname=#{conname} ,</if>
+            <if test="sales != null and sales!=''">sales=#{sales} ,</if>
+            <if test="ownid != null and ownid!=''">ownid=#{ownid} ,</if>
+            <if test="region != null and region!=''">region=#{region} ,</if>
+            <if test="proname != null and proname!=''">proname=#{proname} ,</if>
+            <if test="projid != null and projid!=''">projid=#{projid} ,</if>
+            <if test="concname != null and concname!=''">concname=#{concname} ,</if>
+            <if test="conperiod != null and conperiod!=''">conperiod=#{conperiod} ,</if>
+            <if test="amount != null and amount!=''">amount=#{amount} ,</if>
+            <if test="invoicemoney != null and invoicemoney!=''">invoicemoney=#{invoicemoney} ,</if>
+            <if test="returnmoney != null and returnmoney!=''">returnmoney=#{returnmoney} ,</if>
+            <if test="collectmoney != null and collectmoney!=''">collectmoney=#{collectmoney} ,</if>
+            <if test="signdate != null and signdate!=''">signdate=#{signdate} ,</if>
+            <if test="subcname != null and subcname!=''">subcname=#{subcname} ,</if>
+            <if test="conimportant != null and conimportant!=''">conimportant=#{conimportant} ,</if>
+            <if test="contype != null and contype!=''">contype=#{contype} ,</if>
+            <if test="yntable != null and yntable!=''">yntable=#{yntable} ,</if>
+            <if test="condesc != null and condesc!=''">condesc=#{condesc} ,</if>
+            <if test="upuid != null and upuid!=''">upuid=#{upuid} ,</if>
+            <if test="updtime != null and updtime!=''">updtime=#{updtime} ,</if>
+        </trim>
+    </update>
+
+    <!-- 设置删除状态 -->
+    <update id="setDeleteStatus" parameterType="java.util.Map">
+        update tb_contract_statistics_list set status='2',upduid=#{upduid},updtime=#{updtime} where staid=#{staid}
+    </update>
+
+    <!-- 添加到合同库 -->
+    <insert id="addToContractStatistics" parameterType="java.util.Map">
+        insert into tb_contract_statistics_list
+        (staid,conid,conname,sales,ownid,region,proname,projid,concname,conperiod,amount,invoicemoney,returnmoney,collectmoney,signdate,subcname,conimportant,contype,yntable,condesc,adduid,addtime,upduid,updtime,status,summary)
+        values (
+        #{staid},
+        #{conid},
+        #{conname},
+        #{sales},
+        #{ownid},
+        <choose>
+            <when test="region!=null and region!=''">
+                #{region},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        #{proname},
+        <choose>
+            <when test="projid!=null and projid!=''">
+                #{projid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="concname!=null and concname!=''">
+                #{concname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="conperiod!=null and conperiod!=''">
+                #{conperiod},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="amount!=null and amount!=''">
+                #{amount},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="invoicemoney!=null and invoicemoney!=''">
+                #{invoicemoney},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="returnmoney!=null and returnmoney!=''">
+                #{returnmoney},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="collectmoney!=null and collectmoney!=''">
+                #{collectmoney},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="signdate!=null and signdate!=''">
+                #{signdate},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="subcname!=null and subcname!=''">
+                #{subcname},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="conimportant!=null and conimportant!=''">
+                #{conimportant},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="contype!=null and contype!=''">
+                #{contype},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="yntable!=null and yntable!=''">
+                #{yntable},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="condesc!=null and condesc!=''">
+                #{condesc},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+        );
+    </insert>
+
+</mapper>

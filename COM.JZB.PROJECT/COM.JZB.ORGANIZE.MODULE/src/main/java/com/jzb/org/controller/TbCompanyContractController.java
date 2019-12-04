@@ -252,6 +252,7 @@ public class TbCompanyContractController {
                 List<Map<String, Object>> list = tbCompanyContractService.quertCompantContract(param);
                 for (int i = 0, l = list.size(); i < l; i++) {
                     list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
+                    list.get(i).put("constatus",list.get(i).get("constatus").toString().equals("2")?"未入库":"已入库");
                 }
                 response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
                 if (JzbCheckParam.allNotEmpty(param, new String[]{"contid"})) {
