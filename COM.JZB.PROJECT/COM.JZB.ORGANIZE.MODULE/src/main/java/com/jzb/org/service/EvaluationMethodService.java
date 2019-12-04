@@ -27,4 +27,8 @@ public class EvaluationMethodService {
     public Integer putEvaluationMethod(Map<String, Object> param) {
         return evaluationMethodMapper.putEvaluationMethod(param);
     }
+
+    public Integer quertTenderTypeCount(Map<String, Object> param) {
+        return evaluationMethodMapper.quertTenderTypeCount(param);
+    }
 }

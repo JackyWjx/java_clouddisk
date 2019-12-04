@@ -32,4 +32,8 @@ public class TenderTypeService {
     public Integer putTenderType(Map<String, Object> param) {
         return tenderTypeMapper.putTenderType(param);
     }
+
+    public Integer quertTenderTypeCount(Map<String, Object> param) {
+        return tenderTypeMapper.quertTenderTypeCount(param);
+    }
 }

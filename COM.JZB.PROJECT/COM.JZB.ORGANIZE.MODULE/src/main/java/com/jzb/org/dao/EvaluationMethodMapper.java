@@ -15,4 +15,5 @@ public interface EvaluationMethodMapper {
 
     Integer putEvaluationMethod(Map<String, Object> param);
 
+    Integer quertTenderTypeCount(Map<String, Object> param);
 }
