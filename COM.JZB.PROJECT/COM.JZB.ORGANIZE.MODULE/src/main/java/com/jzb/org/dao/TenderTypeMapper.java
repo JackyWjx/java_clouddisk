@@ -16,4 +16,6 @@ public interface TenderTypeMapper {
     Integer delTenderType(String typeId);
 
     Integer putTenderType(Map<String, Object> param);
+
+    Integer quertTenderTypeCount(Map<String, Object> param);
 }

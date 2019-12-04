@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TenderResultAndDescMapper">
+
+     <select id="queryTenderResultMessage" resultType="Map">
+        select * from tb_tendering_result_list  WHERE
+        status = '1' LIMIT #{pagesize} OFFSET #{start}
+    </select>
+
+    <select id="queryTenderResultMessageCount" resultType="int">
+        select count(1) from tb_tendering_result_list  WHERE
+        status = '1'
+    </select>
+
+    <insert id="addTenderMessage">
+        insert  into tb_tendering_result_list
+        (tendid,projecttype,certificate,noticetype,title,opendate,type,source,provice,city,
+        pbmode,onename,oneoffer,snatchid,idx,adduid,addtime,upduid,updtime,status,summary)
+        values
+        (#{tendid},#{projecttype},
+        <choose>
+            <when test="certificate!=null and certificate!=''">
+                #{certificate},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="noticetype!=null and noticetype!=''">
+                #{noticetype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{title},
+        <choose>
+            <when test="opendate!=null and opendate!=''">
+                #{opendate},
+            </when>
+            <otherwise>
+                #{addtime},
+            </otherwise>
+        </choose>
+       #{type},#{provice},#{provice},#{city},
+        <choose>
+            <when test="pbmode!=null and pbmode!=''">
+                #{pbmode},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="onename!=null and onename!=''">
+                #{onename},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="oneoffer!=null and oneoffer!=''">
+                #{oneoffer},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="snatchid!=null and snatchid!=''">
+                #{snatchid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        (select count(1)+1 from tb_tendering_result_info WHERE status = '1'),
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+       )
+    </insert>
+
+    <insert id="addTenderInfoMessage">
+        insert  into tb_tendering_result_info
+        (tendid,projecttype,certificate,noticetype,title,opendate,type,infourl,projdq,source,provice,city,
+        onename,oneoffer,block,collected,content,snatchid,adduid,addtime,upduid,updtime,status,summary)
+        values
+        (#{tendid},#{projecttype},
+        <choose>
+            <when test="certificate!=null and certificate!=''">
+                #{certificate},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="noticetype!=null and noticetype!=''">
+                #{noticetype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{title},
+        <choose>
+            <when test="opendate!=null and opendate!=''">
+                #{opendate},
+            </when>
+            <otherwise>
+                #{addtime},
+            </otherwise>
+        </choose>
+       #{type}, #{infourl},#{projdq},#{provice},#{provice},#{city},#{onename},
+        <choose>
+            <when test="oneoffer!=null and oneoffer!=''">
+                #{oneoffer},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="block!=null and block!=''">
+                #{block},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{collected}, #{content},
+        <choose>
+            <when test="snatchid!=null and snatchid!=''">
+                #{snatchid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+
+        <choose>
+            <when test="adduid!=null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="addtime!=null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="upduid!=null and upduid!=''">
+                #{upduid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="updtime!=null and updtime!=''">
+                #{updtime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status!=null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary!=null and summary!=''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+       )
+    </insert>
+
+    <select id="queryTenderType" resultType="java.util.Map">
+        select * from tb_tendering_notice_type
+    </select>
+
+    <update id="updateTenderMessage">
+        update tb_tendering_result_list
+        <set>
+            <if test="projecttype!=null">
+                projecttype=#{projecttype},
+            </if>
+            <if test="certificate!=null">
+                certificate=#{certificate},
+            </if>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="provice!=null">
+                source=#{provice},provice=#{provice},
+            </if>
+            <if test="city!=null">
+                city=#{city},
+            </if>
+            <if test="upduid!=null">
+                upduid=#{upduid},
+            </if>
+              <if test="updtime!=null">
+                updtime=#{updtime},
+            </if>
+
+        </set>
+        where tendid = #{tendid}
+    </update>
+
+    <update id="updateTenderInfoMessage">
+        update tb_tendering_result_info
+        <set>
+            <if test="projecttype!=null">
+                projecttype=#{projecttype},
+            </if>
+            <if test="certificate!=null">
+                certificate=#{certificate},
+            </if>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="infourl!=null">
+                infourl=#{infourl},
+            </if>
+            <if test="provice!=null">
+                source=#{provice},provice=#{provice},
+            </if>
+            <if test="city!=null">
+                city=#{city},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="upduid!=null">
+                upduid=#{upduid},
+            </if>
+              <if test="updtime!=null">
+                updtime=#{updtime},
+            </if>
+        </set>
+        where tendid = #{tendid}
+    </update>
+
+    <delete id="delTenderMessage">
+        delete from tb_tendering_result_list where  tendid = #{tendid}
+    </delete>
+
+    <delete id="delTenderInfoMessage">
+        delete from tb_tendering_result_info where  tendid = #{tendid}
+    </delete>
+</mapper>

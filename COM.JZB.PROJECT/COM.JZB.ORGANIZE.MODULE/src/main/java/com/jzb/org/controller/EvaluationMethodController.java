@@ -2,6 +2,7 @@ package com.jzb.org.controller;
 
 
 import com.jzb.base.log.JzbLoggerUtil;
+import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/org/evaluation")
+@RequestMapping("/org/evaluationMethod")
 public class EvaluationMethodController {
     @Autowired
     private EvaluationMethodService evaluationMethodService;
@@ -41,7 +42,14 @@ public class EvaluationMethodController {
             }
             List<Map<String, Object>> evaluationMethods = evaluationMethodService.queryEvaluationMethod(param);
             result = Response.getResponseSuccess(userInfo);
-            result.setResponseEntity(evaluationMethods);
+            // 定义pageinfo
+            PageInfo pi=new PageInfo();
+
+            pi.setList(evaluationMethods);
+
+            // 如果有一个指定参数不为空，则返回list.size()  否则返回总数
+            pi.setTotal(evaluationMethodService.quertTenderTypeCount(param));
+            result.setPageInfo(pi);
             logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
                     userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User select EvaluationMethod"));
         } catch (Exception e) {
@@ -86,6 +94,7 @@ public class EvaluationMethodController {
             Integer typeId = (Integer) param.get("typeid");
             Integer changeNum = evaluationMethodService.delEvaluationMethod(typeId);
             result = Response.getResponseSuccess(userInfo);
+
             logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
                     userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User del EvaluationMethod"));
         } catch (Exception e) {
