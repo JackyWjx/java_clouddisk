@@ -5,10 +5,17 @@
 <mapper namespace="com.jzb.org.dao.TbTrackUserMapper">
     <!--新建跟进人员记录-->
     <insert id="addTrackUser" parameterType="java.util.Map" >
-        insert into tb_track_user_list (trackcid,trackproid,trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
+        insert into tb_track_user_list (trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackcid,trackproid,
+        trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
         adduid,status,summary,addtime)
         values (
-        #{trackid},
+        #{trackres},
+        #{trackoutput},
+        #{abdialoge},
+        #{nextadvance},
+        #{excontent},
+        #{trackdesc},
+        #{trackcid},
         #{trackproid},
         #{trackvalue},
         #{trackid},
@@ -41,7 +48,7 @@
     
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
-        select trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
+        select trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
         from tb_track_user_list where status = '1'
         and trackvalue = #{trackvalue}
         <if test="startTime != null and startTime!= ''">
@@ -56,7 +63,10 @@
         <if test="customer != null and customer != ''">
             and customer = #{customer}
         </if>
-
+        <if test="pageno != null and pageno != ''">
+            limit pagesize
+            offset pageno
+        </if>
         order by id desc
     </select>
 
@@ -117,6 +127,24 @@
     <update id="updTrackUser" parameterType="java.util.Map">
         update tb_track_user_list
         set
+        <if test="trackres != null and trackres != ''">
+            trackres = #{trackres},
+        </if>
+        <if test="trackoutput != null and trackoutput != ''">
+            trackoutput = #{trackoutput},
+        </if>
+        <if test="abdialogue != null and abdialogue != ''">
+            abdialogue = #{abdialogue},
+        </if>
+        <if test="nextadvance != null and nextadvance != ''">
+            nextadvance = #{nextadvance},
+        </if>
+        <if test="excontent != null and excontent != ''">
+            excontent = #{excontent},
+        </if>
+        <if test="trackdes != null and trackdes != ''">
+            trackdes = #{trackdes},
+        </if>
         <if test="upduid != null and upduid != ''">
             upduid = #{upduid},
         </if>
