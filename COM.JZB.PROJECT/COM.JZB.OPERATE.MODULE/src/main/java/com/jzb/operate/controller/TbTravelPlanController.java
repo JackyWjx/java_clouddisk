@@ -6,19 +6,14 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.service.TbTravelDataService;
 import com.jzb.operate.service.TbTravelInfoService;
-import com.jzb.operate.api.base.RegionBaseApi;
-import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.service.TbTravelPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import java.util.Arrays;
 import java.util.List;
@@ -234,6 +229,7 @@ public class TbTravelPlanController {
         }
         return result;
     }
+
 
     /**
      * @Author sapientia
