@@ -167,4 +167,18 @@
         where
         cid = #{cid} and pid is not null and status != '2'
     </select>
+
+
+    <update id="updatePages" parameterType="java.util.List">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+            update
+            tb_product_page
+            set
+            <if test="item.cname != null and item.cname != ''">cname = #{item.cname},</if>
+            <if test="item.path != null and item.path != ''">pagepath = #{item.path},</if>
+            <if test="item.updtime != null and item.updtime != ''">updtime = #{item.updtime}</if>
+            where
+            pageid = #{item.pageid} and pid != #{item.appid}
+        </foreach>
+    </update>
 </mapper>
