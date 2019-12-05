@@ -50,9 +50,9 @@
     </insert>
     <!--新增开发者应用-->
     <insert id="insertOrgApplication">
-        insert into tb_org_application (appid, appline, devtype, apptype, cid,
+        insert into tb_org_application (applogo,appid, appline, devtype, apptype, cid,
                                         appname,ouid,addtime,upduid,updtime,status)
-        values (#{appid},#{appline},#{devtype},#{apptype},#{cid},
+        values (#{applogo},#{appid},#{appline},#{devtype},#{apptype},#{cid},
             #{appname},#{uid},#{time},#{uid},#{time},#{status});
     </insert>
     <!--审批产品列表-->
@@ -103,6 +103,7 @@
         <if test=" devtype != null and devtype !='' ">,devtype=#{devtype}</if>
         <if test=" apptype != null and apptype !='' ">,apptype=#{apptype}</if>
         <if test=" cid != null and cid !='' ">,cid=#{cid}</if>
+        <if test=" applogo != null and applogo !='' ">,applogo=#{applogo}</if>
         <if test=" appname != null and appname !='' ">,appname=#{appname}</if>
         <if test=" status != null and status !='' ">,status=#{status}</if>
         where appid=#{appid};
