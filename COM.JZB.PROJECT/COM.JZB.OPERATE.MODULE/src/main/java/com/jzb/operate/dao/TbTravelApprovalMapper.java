@@ -16,7 +16,7 @@ import java.util.Map;
 @Repository
 public interface TbTravelApprovalMapper {
 
-	Map<String,Object> get(Integer id);
+	Map<String,Object> get(String id);
 	
 	List<Map<String,Object>> list(Map<String, Object> map);
 	
@@ -26,7 +26,9 @@ public interface TbTravelApprovalMapper {
 	
 	int update(Map<String,Object> travelApproval);
 	
-	int remove(Integer id);
+	int remove(String id);
 	
-	int batchRemove(Integer[] ids);
+	int batchRemove(String[] ids);
+
+	String getMaxApid(String travelId);
 }

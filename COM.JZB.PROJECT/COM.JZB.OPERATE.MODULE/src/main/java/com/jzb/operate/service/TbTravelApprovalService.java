@@ -19,7 +19,7 @@ public class TbTravelApprovalService {
 	private TbTravelApprovalMapper travelApprovalDao;
 	
 	
-	public Map<String,Object> get(Integer id){
+	public Map<String,Object> get(String id){
 		return travelApprovalDao.get(id);
 	}
 	
@@ -44,12 +44,20 @@ public class TbTravelApprovalService {
 	}
 	
 	
-	public int remove(Integer id){
+	public int remove(String id){
 		return travelApprovalDao.remove(id);
 	}
+
+	/**
+	 * 通过travelId获取审批级别最高的Apid
+	 * @param travelId
+	 * @return
+	 */
+	public String getMaxIdxApid(String travelId){
+		return travelApprovalDao.getMaxApid(travelId);
+	}
 	
-	
-	public int batchRemove(Integer[] ids){
+	public int batchRemove(String[] ids){
 		return travelApprovalDao.batchRemove(ids);
 	}
 	
