@@ -28,6 +28,14 @@ public interface TbCompanyContractMapper {
 
 
     /**
+     * 修改合同已入库
+     * @param param
+     * @return
+     */
+    int updateCompanyContractStatus(Map<String, Object> param);
+
+
+    /**
      * 删除合同
      * @param param
      * @return
