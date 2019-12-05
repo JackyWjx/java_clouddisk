@@ -9,7 +9,6 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.open.service.OpenPageService;
 import com.sun.org.apache.xpath.internal.objects.XString;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -197,7 +196,6 @@ public class OpenPageController {
      * @param param
      * @return
      */
-    @ApiOperation(value="获取用户详细信息", notes="根据url的id来获取用户详细信息")
     @RequestMapping(value = "/serachApplicationMenu", method = RequestMethod.POST)
     @CrossOrigin
     public Response serachApplicationMenu(@RequestBody Map<String, Object> param) {

@@ -36,6 +36,18 @@ public class TbCompanyContractService {
         return tbCompanyContractMapper.updateCompanyContract(param);
     }
 
+
+    /**
+     * 修改合同已入库
+     * @param param
+     * @return
+     */
+    public  int updateCompanyContractStatus(Map<String, Object> param){
+        long time=System.currentTimeMillis();
+        param.put("updtime",time);
+        return tbCompanyContractMapper.updateCompanyContractStatus(param);
+    }
+
     /**
      * 删除合同
      * @param param
