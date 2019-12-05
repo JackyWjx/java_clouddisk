@@ -10,26 +10,19 @@
 	<select id="list" resultType="java.util.Map">
 		select  id , prid , prname , idx , prindex , addtime , adduid , status , summary  from tb_travel_produce
         <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="prid != null and prid != ''"> and prid = #{prid} </if>
-		  		  <if test="prname != null and prname != ''"> and prname = #{prname} </if>
-		  		  <if test="idx != null and idx != ''"> and idx = #{idx} </if>
-		  		  <if test="prindex != null and prindex != ''"> and prindex = #{prindex} </if>
-		  		  <if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
-		  		  <if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
-		  		  <if test="status != null and status != ''"> and status = #{status} </if>
-		  		  <if test="summary != null and summary != ''"> and summary = #{summary} </if>
-		  		</where>
-        <choose>
-            <when test="sort != null and sort.trim() != ''">
-                order by ${sort} ${order}
-            </when>
-			<otherwise>
-                order by id desc
-			</otherwise>
-        </choose>
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="prid != null and prid != ''"> and prid = #{prid} </if>
+		  <if test="prname != null and prname != ''"> and prname = #{prname} </if>
+		  <if test="idx != null and idx != ''"> and idx = #{idx} </if>
+		  <if test="prindex != null and prindex != ''"> and prindex = #{prindex} </if>
+		  <if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
+		  <if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
+		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  <if test="summary != null and summary != ''"> and summary = #{summary} </if>
+		</where>
+
 		<if test="offset != null and limit != null">
-			limit #{offset}, #{limit}
+			limit #{limit} offset #{offset}
 		</if>
 	</select>
 	
@@ -51,7 +44,6 @@
 	<insert id="save" parameterType="java.util.Map">
 		insert into tb_travel_produce
 		(
-			 id , 
 			 prid , 
 			 prname , 
 			 idx , 
@@ -63,7 +55,6 @@
 		)
 		values
 		(
-			#{id}, 
 			#{prid}, 
 			#{prname}, 
 			#{idx}, 
@@ -78,7 +69,6 @@
 	<update id="update" parameterType="java.util.Map">
 		update tb_travel_produce 
 		<set>
-			<if test="prid != null"> prid  = #{prid}, </if>
 			<if test="prname != null"> prname  = #{prname}, </if>
 			<if test="idx != null"> idx  = #{idx}, </if>
 			<if test="prindex != null"> prindex  = #{prindex}, </if>
@@ -87,7 +77,7 @@
 			<if test="status != null"> status  = #{status}, </if>
 			<if test="summary != null"> summary  = #{summary}</if>
 		</set>
-		where id = #{id}
+		where prid = #{prid}
 	</update>
 	
 	<delete id="remove">
