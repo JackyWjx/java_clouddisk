@@ -62,4 +62,11 @@ public class TbTravelService {
     public int setDeleteStatus(Map<String, Object> map) {
         return tbTravelMapper.setDeleteStatus(map);
     }
+
+    public List<Map<String, Object>> queryTrackUserListByid(Map<String, Object> map) {
+        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
+        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
+        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
+        return tbTravelMapper.queryTravelInfo(map);
+    }
 }

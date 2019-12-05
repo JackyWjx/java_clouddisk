@@ -81,7 +81,9 @@ public class CommonUserController {
 
     @Autowired
     private DeptMapper deptMapper;
-    // 新建公海用户
+    /*
+    新建公海用户
+     */
     @RequestMapping("/addCommonUser")
     public Response addCommonUser(@RequestBody Map<String,Object> paramp){
         Response response;

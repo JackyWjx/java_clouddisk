@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jzb.operate.dao.TbTravelApprovalMapper">
+
+	<select id="get" resultType="java.util.Map">
+		select  id , travelid , apid , idx , truid , trtime , trcomment , trstatus , addtime , adduid , status , summary , version  from tb_travel_approval where id = #{value}
+	</select>
+
+	<select id="list" resultType="java.util.Map">
+		select  id , travelid , apid , idx , truid , trtime , trcomment , trstatus , addtime , adduid , status , summary , version  from tb_travel_approval
+        <where>  
+		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  <if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
+		  <if test="apid != null and apid != ''"> and apid = #{apid} </if>
+		  <if test="idx != null and idx != ''"> and idx = #{idx} </if>
+		  <if test="truid != null and truid != ''"> and truid = #{truid} </if>
+		  <if test="trtime != null and trtime != ''"> and trtime = #{trtime} </if>
+		  <if test="trcomment != null and trcomment != ''"> and trcomment = #{trcomment} </if>
+		  <if test="trstatus != null and trstatus != ''"> and trstatus = #{trstatus} </if>
+		  <if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
+		  <if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
+		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  <if test="summary != null and summary != ''"> and summary = #{summary} </if>
+		  <if test="version != null and version != ''"> and version = #{version} </if>
+		</where>
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from tb_travel_approval
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
+		  		  <if test="apid != null and apid != ''"> and apid = #{apid} </if>
+		  		  <if test="idx != null and idx != ''"> and idx = #{idx} </if>
+		  		  <if test="truid != null and truid != ''"> and truid = #{truid} </if>
+		  		  <if test="trtime != null and trtime != ''"> and trtime = #{trtime} </if>
+		  		  <if test="trcomment != null and trcomment != ''"> and trcomment = #{trcomment} </if>
+		  		  <if test="trstatus != null and trstatus != ''"> and trstatus = #{trstatus} </if>
+		  		  <if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
+		  		  <if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="summary != null and summary != ''"> and summary = #{summary} </if>
+		  		  <if test="version != null and version != ''"> and version = #{version} </if>
+		  		</where>
+	</select>
+
+    <select id="getMaxApid" resultType="java.lang.String">
+        select apid from tb_travel_approval
+            where idx = (
+                select max(idx) from tb_travel_approval
+                where travelid = #{travelId}
+                )
+    </select>
+
+    <insert id="save" parameterType="java.util.Map">
+        insert into tb_travel_approval
+        (travelid,
+         apid,
+         idx,
+         truid,
+         trtime,
+         trcomment,
+         trstatus,
+         addtime,
+         adduid,
+         status,
+         summary,
+         version)
+        values (#{travelid},
+                #{apid},
+                #{idx},
+                #{truid},
+                #{trtime},
+                #{trcomment},
+                #{trstatus},
+                #{addtime},
+                #{adduid},
+                #{status},
+                #{summary},
+                #{version}
+                )
+    </insert>
+	 
+	<update id="update" parameterType="java.util.Map">
+		update tb_travel_approval 
+		<set>
+			<if test="travelid != null"> travelid  = #{travelid}, </if>
+<!--			<if test="apid != null"> apid  = #{apid}, </if>-->
+			<if test="idx != null"> idx  = #{idx}, </if>
+			<if test="truid != null"> truid  = #{truid}, </if>
+			<if test="trtime != null"> trtime  = #{trtime}, </if>
+			<if test="trcomment != null"> trcomment  = #{trcomment}, </if>
+			<if test="trstatus != null"> trstatus  = #{trstatus}, </if>
+			<if test="addtime != null"> addtime  = #{addtime}, </if>
+			<if test="adduid != null"> adduid  = #{adduid}, </if>
+			<if test="status != null"> status  = #{status}, </if>
+			<if test="summary != null"> summary  = #{summary}, </if>
+			<if test="version != null"> version  = #{version}</if>
+		</set>
+		where apid = #{apid}
+	</update>
+	
+	<delete id="remove">
+		delete from tb_travel_approval where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from tb_travel_approval where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

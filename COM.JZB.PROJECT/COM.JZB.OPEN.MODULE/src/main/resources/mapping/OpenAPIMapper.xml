@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.open.dao.OpenAPIMapper">
     <!-- 创建文档类型 -->
+
     <insert id="insertApiType" parameterType="java.util.Map">
         INSERT INTO
         tb_open_api_type (otid, cname, potid, idx, ouid, addtime, updtime, status, summary)

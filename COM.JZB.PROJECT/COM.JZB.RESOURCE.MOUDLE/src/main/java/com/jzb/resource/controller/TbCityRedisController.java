@@ -57,12 +57,13 @@ public class TbCityRedisController {
     @ResponseBody
     @CrossOrigin
     public Response getCityJson() {
-        Map<String, Object> param=new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         Response result;
         try {
-            param.put("key","jzb.system.city");
+            param.put("key", "jzb.system.city");
             Response response = tbCityRedis.getCityJson(param);
-            if(response.getResponseEntity()==null){
+            if (response.getResponseEntity() == null) {
+                /** 存整棵树 */
                 Response response1 = tbGetCityApi.getCityList();
                 Map<String, Object> map = (Map<String, Object>) response1.getResponseEntity();
                 String object = JSONObject.fromObject(map).toString();
@@ -70,16 +71,21 @@ public class TbCityRedisController {
                 map1.put("key", "jzb.system.city");
                 map1.put("value", object);
                 tbCityRedis.cacheCity(map1);
-                result=Response.getResponseSuccess();
+
+                /** 单个存 */
+                Response responseOne = tbGetCityApi.getCityListToo();
+                Map<String, Object> mapOne = (Map<String, Object>) responseOne.getResponseEntity();
+                tbCityRedis.setCityList(mapOne);
+                result = Response.getResponseSuccess();
                 result.setResponseEntity(JSON.parse(JzbDataType.getString(object)));
-            }else {
+            } else {
                 Object parse = JSON.parse(response.getResponseEntity().toString());
-                result=Response.getResponseSuccess();
+                result = Response.getResponseSuccess();
                 result.setResponseEntity(parse);
             }
         } catch (Exception ex) {
             JzbTools.logError(ex);
-            result=Response.getResponseError();
+            result = Response.getResponseError();
         }
         return result;
     }
@@ -94,8 +100,8 @@ public class TbCityRedisController {
     @CrossOrigin
     public Response setCityList() {
         Response response = tbGetCityApi.getCityListToo();
-        Map<String, Object> map = (Map<String, Object>) response.getResponseEntity();
-        Response response1 = tbCityRedis.setCityList(map);
+        Map<String, Object> mapOne = (Map<String, Object>) response.getResponseEntity();
+        Response response1 = tbCityRedis.setCityList(mapOne);
         return response1;
     }
 

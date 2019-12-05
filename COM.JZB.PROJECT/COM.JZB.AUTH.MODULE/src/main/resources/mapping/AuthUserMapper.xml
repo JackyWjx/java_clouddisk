@@ -27,6 +27,7 @@
             ul.authtime,
             ul.updtime,
             ul.status,
+            ul.summary,
             ui.age,
             ui.content,
             ui.origin,

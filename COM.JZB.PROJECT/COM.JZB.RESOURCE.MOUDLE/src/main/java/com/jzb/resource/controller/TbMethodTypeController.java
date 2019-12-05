@@ -12,7 +12,6 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.TbMethodTypeService;
 import com.jzb.resource.util.PageConvert;
-import org.jsoup.select.Evaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +99,12 @@ public class TbMethodTypeController {
                 } else {
                     node.put("score", record.get("score").toString());
                 }
-                node.put("days", record.get("days").toString());
+
+                if (JzbTools.isEmpty(record.get("days"))) {
+                    node.put("days", null);
+                } else {
+                    node.put("days", record.get("days").toString());
+                }
 
                 // if root node
                 if (parentId.equals(firstParent)) {

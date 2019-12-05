@@ -14,6 +14,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
+import com.jzb.org.service.TbCompanyContractService;
 import com.jzb.org.service.TbContractStatisticsService;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -54,6 +55,9 @@ public class TbContractStatisticsController {
 
     @Autowired
     private RegionBaseApi regionBaseApi;
+
+    @Autowired
+    private TbCompanyContractService tbCompanyContractService;
     /**
      * 日志记录对象
      */
@@ -92,6 +96,13 @@ public class TbContractStatisticsController {
                 param.put("staid", JzbRandom.getRandomCharLow(7));
                 // 执行添加方法
                 int count = tbContractStatisticsService.addToContractStatistics(param);
+                // 修改状态
+                if(count>0){
+                    Map<String,Object> map=new HashMap<>();
+                    map.put("contid",param.get("conid").toString());
+                    map.put("upduid",userInfo.get("uid").toString());
+                    tbCompanyContractService.updateCompanyContractStatus(map);
+                }
                 // 根据添加结果返回结果
                 response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
 

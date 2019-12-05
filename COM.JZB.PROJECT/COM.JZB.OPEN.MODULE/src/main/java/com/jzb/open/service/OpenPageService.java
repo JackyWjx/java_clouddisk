@@ -56,6 +56,12 @@ public class OpenPageService {
         param.put("status", "1");
         String mid = JzbDataType.getString(param.get("appid")) + JzbRandom.getRandomNum(4);
         param.put("mid", mid);
+
+        //提交之后添加一个状态返回给前端
+        Map<String, Object> map = new HashMap<>();
+        map.put("summary", "0");
+        map.put("appid", param.get("appid"));
+        updateOrgApplication(map);
         return openPageMapper.insertApplicationMenu(param);
     }
 
@@ -71,6 +77,12 @@ public class OpenPageService {
         param.put("status", "1");
         String pageId = JzbDataType.getString(param.get("mid")) + JzbRandom.getRandomNum(2);
         param.put("pageid", pageId);
+
+        //提交之后添加一个状态返回给前端
+        Map<String, Object> map = new HashMap<>();
+        map.put("summary", "0");
+        map.put("appid", param.get("appid"));
+        updateOrgApplication(map);
         return openPageMapper.insertApplicationPage(param);
     }
 

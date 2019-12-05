@@ -182,7 +182,6 @@
 
     <!-- 添加出差详情记录-->
     <insert id="addTravelDetails" parameterType="java.util.List">
-        <foreach collection="list" item="detials" separator=",">
             insert into tb_travel_record_deta
             (
             deid,
@@ -210,7 +209,8 @@
             summary
             )
             values
-            (
+        <foreach collection="list" item="detials" separator=",">
+        (
             #{detials.deid},
             <choose>
                 <when test="detials.travelid != null and detials.travelid!=''">
@@ -525,7 +525,7 @@
     <update id="updateTravelDetials" parameterType="java.util.Map">
         update tb_travel_record_deta
         <trim prefix="set" suffixOverrides=","
-              suffix=" where deid=#{deid} and (status = '1' or status = '3')  ">
+              suffix=" where deid=#{deid}"><!--and (status = '1' or status = '3') -->
             <if test="detialsid!='' and detialsid !=null">
                 detialsid=#{detialsid},
             </if>

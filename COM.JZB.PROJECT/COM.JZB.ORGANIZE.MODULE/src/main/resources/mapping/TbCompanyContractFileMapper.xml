@@ -69,6 +69,6 @@
 
     <!-- 查询合同下的附件 -->
     <select id="findFileByContId" parameterType="java.util.Map">
-        select fileid,contid,fname,furl where status='1'
+        select fileid,contid,fname,furl where status='1' and contid=#{contid}
     </select>
 </mapper>

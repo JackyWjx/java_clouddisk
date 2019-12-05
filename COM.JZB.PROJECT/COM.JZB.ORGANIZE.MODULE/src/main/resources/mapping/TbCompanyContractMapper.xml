@@ -297,6 +297,13 @@
         where contid=#{contid}
     </update>
 
+
+    <!-- 修改合同 -->
+    <update id="updateCompanyContractStatus" parameterType="java.util.Map">
+        update tb_company_contract set constatus='1' ,upduid=#{upduid}
+        where contid=#{contid}
+    </update>
+
     <!-- 删除合同 -->
     <update id="updateDeleteStatus" parameterType="java.util.Map">
         update tb_company_contract set status='2' where contid=#{contid}

@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.open.dao.OpenPageMapper">
+
     <!--新增应用菜单表-->
     <insert id="insertApplicationMenu">
         insert into tb_application_menu (appid, mid, parentid, cname, menupath,
@@ -48,11 +49,12 @@
        apptype,
        cid,
        appname,
-       summary
+       summary,
+       applogo
         from tb_org_application
         where status = '1'
           and appname ~ #{value}
-          order by addtime desc LIMIT #{pagesize}  OFFSET #{start};
+          order by addtime desc
     </select>
     <!--模糊查询开发者应用表总数-->
     <select id="searchOrgApplicationCount" resultType="java.lang.Integer">
@@ -165,7 +167,7 @@
         tb_application_page
         set
         <if test="cname != null and cname != ''">cname = #{cname},</if>
-        <if test="pagepath != null and pagepath != ''">pagepath = #{path},</if>
+        <if test="pagepath != null and pagepath != ''">pagepath = #{pagepath},</if>
         <if test="status != null and status != ''">status = #{status},</if>
         <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
         where

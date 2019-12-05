@@ -28,11 +28,14 @@ public class TbTrackUserService {
     // 新建跟进人员记录
     public int addTrackUser(Map<String, Object> param) {
         param.put("addtime",System.currentTimeMillis());
-        param.put("tracktime",JzbDataType.getLong(param.get("tracktime")));
+        param.put("tracktime",System.currentTimeMillis());
+        param.put("tracktype",JzbDataType.getInteger(param.get("tracktype")));
         param.put("trackid", JzbRandom.getRandomCharCap(17));
         param.put("customer",param.get("adduid"));
         param.put("status",'1');
-        param.put("image",param.get("image").toString());
+        if (!JzbTools.isEmpty(param.get("image"))){
+            param.put("image",param.get("image").toString());
+        }
         return userMapper.addTrackUser(param);
     }
     // 查询跟进人员记录总数

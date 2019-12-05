@@ -4,14 +4,18 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.org.NewTbCompanyListApi;
 import com.jzb.operate.api.org.TbTrackUserListApi;
+import com.jzb.operate.service.TbTravelExpenseService;
 import com.jzb.operate.service.TbTravelService;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +34,12 @@ public class TbTravelController {
     @Autowired
     TbTrackUserListApi api;
 
+    @Autowired
+    NewTbCompanyListApi newTbCompanyListApi;
+
+    @Autowired
+    TbTravelExpenseService tbTravelExpenseService;
+
     /**
      * 查询出差记录
      */
@@ -44,12 +54,12 @@ public class TbTravelController {
             // 根据出差记录获取出差详情  出差记录的id 获取
             for(int i = 0 ; i<list.size();i++){
                Map<String , Object> deMap = new HashMap<>();
-               deMap.put("travelid",list.get(i).get("travelid").toString());
+               deMap.put("travelid",list.get(i).get("travelid"));
                 // 获取出差详情 deList<Map>
                 List<Map<String , Object>>  deList =  tbTravelService.queryTravelListDeta(deMap);
                 for (int j = 0 ;j<deList.size();j++){
-                    Map<String,Object> damap=new HashMap<>();
-                    damap.put("deid",deList.get(j).get("deid").toString());
+                    Map<String,Object> damap = new HashMap<>();
+                    damap.put("deid",deList.get(j).get("deid"));
                     // 通过出差详情id  获取出差资料信息
                     List<Map<String , Object>> daList = tbTravelService.queryTravelData(damap);
                     //通过出差详情id  获取出差情报信息
@@ -71,6 +81,33 @@ public class TbTravelController {
         return result;
     }
 
+    @PostMapping("/queryListByDeid")
+    public Response queryListByDeid(@RequestBody Map<String, Object> map){
+        Response result;
+        try {
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setPages(JzbDataType.getInteger(map.get("page")) == 0 ? 1 : JzbDataType.getInteger(map.get("page")));
+            List<Map<String , Object>> list = tbTravelService.queryTravelListDeta(map);
+            for(int i =0 ;i < list.size();i++){
+                Map<String,Object> promap = new HashMap<>();
+                if(list.get(i).get("cid")!=null && list.get(i).get("projectid")!=null){
+                    promap.put("cid",list.get(i).get("cid"));
+                    promap.put("projectid",list.get(i).get("projectid"));
+                    promap.put("pageInfo",pageInfo);
+                    Response res = newTbCompanyListApi.queryCompanyByid(promap);
+                    List<Map<String , Object>>  reList = res.getPageInfo().getList();
+                    list.get(i).put("reList",reList);
+                }
+            }
+            result =  Response.getResponseSuccess();
+            pageInfo.setList(list);
+            result.setPageInfo(pageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
 
     /**
      *  修改出差费用
@@ -104,6 +141,7 @@ public class TbTravelController {
                 Map<String , Object> dataMap =  new HashedMap();
                 dataMap.put("userinfo",map.get("userinfo"));
                 dataMap.put("param",delist.get(i));
+                dataMap.put("pageInfo",pageInfo);
                  Response res  = api.queryTrackUserByName(dataMap);
                  List<Map<String , Object>>  reList = res.getPageInfo().getList();
                  delist.get(i).put("reList",reList);
@@ -118,13 +156,11 @@ public class TbTravelController {
         return result;
     }
 
-    /**
-     * @Author sapientia
-     * @Description 设置删除状态
-     * @Date  13:57
-     * @Param [param]
-     * @return com.jzb.base.message.Response
-     **/
+   /**
+    * @Author sapientia
+    * @Date 11:36 2019/12/5
+    * @Description 设置删除状态
+    **/
     @PostMapping(value = "/setDeleteStatus")
     @CrossOrigin
     @Transactional
@@ -134,14 +170,109 @@ public class TbTravelController {
             if (JzbCheckParam.haveEmpty(map, new String[]{"travelid"})) {
                 result = Response.getResponseError();
             } else {
-                result = tbTravelService.setDeleteStatus(map) > 0 ? Response.getResponseSuccess((Map<String, Object>) map.get("userinfo")) : Response.getResponseError();
+                result = tbTravelService.setDeleteStatus(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             }
-        } catch (Exception ex) {
-            JzbTools.logError(ex);
+        } catch (Exception e) {
+            JzbTools.logError(e);
             result = Response.getResponseError();
         }
         return result;
     }
 
+    /**
+     * @Author sapientia
+     * @Date 11:36 2019/12/5
+     * @Description  根据公司id修改公司信息
+     **/
+    @PostMapping("/updateCommonCompanyList")
+    @Transactional
+    public Response updateCommonCompanyList(@RequestBody Map<String, Object> map){
+        Response result;
+        try {
+            result = newTbCompanyListApi.updateCommonCompanyList(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
 
+    /**
+     * @Author sapientia
+     * @Date 11:36 2019/12/5
+     * @Description 根据项目id修改项目信息
+     **/
+    @PostMapping("/updateCompanyProject")
+    @Transactional
+    public Response updateCompanyProject(@RequestBody Map<String, Object> map){
+        Response result;
+        try {
+            result = newTbCompanyListApi.updateCompanyProject(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
+
+   /**
+    * @Author sapientia
+    * @Date 11:36 2019/12/5
+    * @Description 根据项目id修改项目情报
+    **/
+    @PostMapping("/updateCompanyProjectInfo")
+    @Transactional
+    public Response updateCompanyProjectInfo(@RequestBody Map<String, Object> map){
+        Response result;
+        try {
+           result = newTbCompanyListApi.updateCompanyProjectInfo(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * @Author sapientia
+     * @Date 17:28 2019/12/5
+     * @Description 添加报销单信息
+     **/
+    @PostMapping("/saveTravelExpense")
+    @Transactional
+    public Response saveTravelExpense(@RequestBody Map<String, Object> param){
+        Response result;
+        try {
+            List<Map<String, Object>> detailsList = (List<Map<String, Object>>) param.get("list");
+            param.put("exid",JzbRandom.getRandomChar(12));
+            param.put("addtime",System.currentTimeMillis());
+            tbTravelExpenseService.saveTravelExpense(Arrays.asList(param));
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * @Author sapientia
+     * @Date 17:37 2019/12/5
+     * @Description 报销单信息修改
+     **/
+    @PostMapping("/updateTravelExpense")
+    @Transactional
+    public Response updateTravelExpense(@RequestBody Map<String, Object> param ){
+        Response result;
+        try {
+            List<Map<String, Object>> detailsList = (List<Map<String, Object>>) param.get("uplists");
+            param.put("addtime",System.currentTimeMillis());
+            tbTravelExpenseService.updateTravelExpense(Arrays.asList(param));
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
 }

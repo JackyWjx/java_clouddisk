@@ -99,7 +99,6 @@ public class RoleService implements Service {
      * 保存角色组信息
      */
     public Map<String, Object> insertRoleGroup(Map<String, Object> map) {
-
         String crgId = JzbDataType.getString(map.get("crgid"));
         if (JzbTools.isEmpty(crgId)) {
             crgId = JzbRandom.getRandomChar(11);
