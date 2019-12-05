@@ -87,4 +87,6 @@ public interface PlatformCompanyMapper {
     int getProductByOpens(Map<String, Object> param);
 
     int upsateProductByOpens(Map<String, Object> param);
+
+    int updatePages(List<Map<String, Object>> list1);
 }

@@ -233,4 +233,12 @@ public class PlatformCompanyService {
         param.put("updtime", time);
         return platMapper.upsateProductByOpens(param);
     }
+
+    public int updatePages(List<Map<String, Object>> list1) {
+        for (int i = 0; i < list1.size(); i++) {
+            list1.get(i).put("updtime", System.currentTimeMillis());
+        }
+        return platMapper.updatePages(list1);
+    }
+
 }

@@ -9,6 +9,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.open.OpenPageApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.service.ProductLineService;
 
@@ -38,6 +39,12 @@ public class ProductLineController {
      */
     @Autowired
     private OrgRedisServiceApi orgRedisServiceApi;
+
+    /**
+     * 查询Open开放平台应用列表
+     */
+    @Autowired
+    private OpenPageApi openPageApi;
 
     /**
      * CRM菜单管理-记支宝电脑端
@@ -119,17 +126,47 @@ public class ProductLineController {
     @RequestMapping(value = "/getCompanyMenuList", method = RequestMethod.POST)
     @CrossOrigin
     public Response getCompanyMenuList(@RequestBody Map<String, Object> param) {
-        Response response;
+        Response result;
         try {
             List<Map<String, Object>> productMenuList = productLineService.getCompanyMenuList(param);
             List<Map<String, Object>> productPageList = productLineService.getCompanyPageList(param);
             // 设置树结构
-            response = setTreeStructure(productPageList, productMenuList, param);
+            Response response = setTreeStructure(productPageList, productMenuList, param);
+            //遍历集合拿到里面的值
+            List<Map<String,Object>> list = response.getPageInfo().getList();
+
+            //获取应用列表的菜单
+            param.put("count", 0);
+            param.put("value", "");
+            Response response1 = openPageApi.searchOrgApplication(param);
+            List<Map<String,Object>> pageInfo =  response1.getPageInfo().getList();
+            for (int i = 0; i < list.size(); i++) {
+                int count = 0;
+                for (int j = 0; j <pageInfo.size(); j++) {
+                    if (list.get(i).get("pid").equals(pageInfo.get(j).get("appid"))) {
+                        if (pageInfo.get(j).get("children") == null) {
+                            pageInfo.get(j).put("children", new ArrayList<Map<String, Object>>());
+                            List<Map<String, Object>> children = (List<Map<String, Object>>) pageInfo.get(j).get("children");
+                            children.add(list.get(i));
+                            count++;
+                        } else {
+                            List<Map<String, Object>> children = (List<Map<String, Object>>) pageInfo.get(j).get("children");
+                            children.add(list.get(i));
+                        }
+
+                    }
+                }
+                if (count == 0) {
+                    pageInfo.add(list.get(i));
+                }
+            }
+            result = Response.getResponseSuccess();
+            result.setResponseEntity(pageInfo);
         } catch (Exception ex) {
             JzbTools.logError(ex);
-            response = Response.getResponseError();
+            result = Response.getResponseError();
         }
-        return response;
+        return result;
     }
 
     /**
@@ -465,7 +502,7 @@ public class ProductLineController {
             // 获取用户信息
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             int count = productLineService.modifyProductMenu(param);
-            if (count == 1) {
+            if (count  > 0) {
                 // 判断缓存中是否存在产品数并删除
                 comHasMenuTree(param);
                 result = Response.getResponseSuccess(userInfo);

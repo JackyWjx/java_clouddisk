@@ -165,11 +165,16 @@ public class PlatformCompanyController {
             count1 = platService.saveMune(list);
             List<Map<String, Object>> list1 = (List<Map<String, Object>>) param.get("list1");
             Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map2 = new HashMap<>();
             map.put("pid", param.get("appid"));
             int counts = platService.getPage(map);
             if (counts > 0) {
+                //删除存在的页面，重新添加页面
                 int adds = platService.updatePage(map);
             }
+            //同步更新子产品中配好的页面
+             int update = platService.updatePages(list1);
+            //添加页面
             counts = platService.savepage(list1);
             result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
 
