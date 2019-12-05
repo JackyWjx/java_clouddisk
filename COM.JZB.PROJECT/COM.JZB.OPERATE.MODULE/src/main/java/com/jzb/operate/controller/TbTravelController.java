@@ -240,10 +240,14 @@ public class TbTravelController {
      **/
     @PostMapping("/saveTravelExpense")
     @Transactional
-    public Response saveTravelExpense(@RequestBody Map<String, Object> map){
+    public Response saveTravelExpense(@RequestBody Map<String, Object> param){
         Response result;
         try {
-            result = tbTravelExpenseService.saveTravelExpense(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            List<Map<String, Object>> detailsList = (List<Map<String, Object>>) param.get("list");
+            param.put("exid",JzbRandom.getRandomChar(12));
+            param.put("addtime",System.currentTimeMillis());
+            tbTravelExpenseService.saveTravelExpense(Arrays.asList(param));
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception e){
             e.printStackTrace();
             result =  Response.getResponseError();
@@ -261,9 +265,8 @@ public class TbTravelController {
     public Response updateTravelExpense(@RequestBody Map<String, Object> param ){
         Response result;
         try {
-            List<Map<String, Object>> detailsList = (List<Map<String, Object>>) param.get("list");
-            param.put("travelid", JzbRandom.getRandomChar(19));
-            param.put("exid",JzbRandom.getRandomChar(12));
+            List<Map<String, Object>> detailsList = (List<Map<String, Object>>) param.get("uplists");
+            param.put("addtime",System.currentTimeMillis());
             tbTravelExpenseService.updateTravelExpense(Arrays.asList(param));
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception e){

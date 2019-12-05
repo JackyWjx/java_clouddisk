@@ -176,26 +176,154 @@
 		)
 		</foreach>
 	</insert>
-	 
-	<update id="updateTravelExpense" parameterType=" java.util.Map">
+	<!--修改报销单 -->
+	<update id="updateTravelExpense" parameterType=" java.util.list">
 		update tb_travel_expense
-		<trim prefix="set" suffixOverrides=","
-			  suffix=" where exid=#{exid} and (status = '1' or status = '4' or status='32')  ">
-			<if test="exstrtime != null"> exstrtime  = #{exstrtime}, </if>
-			<if test="exendtime != null"> exendtime  = #{exendtime}, </if>
-			<if test="exstradderss != null"> exstradderss  = #{exstradderss}, </if>
-			<if test="exendadderss != null"> exendadderss  = #{exendadderss}, </if>
-			<if test="exvehicle != null"> exvehicle  = #{exvehicle}, </if>
-			<if test="trsum != null"> trsum  = #{trsum}, </if>
-			<if test="mail != null"> mail  = #{mail}, </if>
-			<if test="crosum != null"> crosum  = #{crosum}, </if>
-			<if test="getaccsum != null"> getaccsum  = #{getaccsum}, </if>
-			<if test="subsidy != null"> subsidy  = #{subsidy}, </if>
-			<if test="othsum != null"> othsum  = #{othsum}, </if>
-			<if test="sum != null"> "sum"  = #{sum}, </if>
-			<if test="addtime != null"> addtime  = #{addtime}, </if>
-			<if test="summary != null"> summary  = #{summary}</if>
-		</trim>
+		set
+		<foreach collection="list" item="uplists" separator=",">
+
+			<choose>
+				<when test="uplists.travelid != null and uplists.travelid!=''">
+					#{uplists.travelid},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="uplists.exid != null and uplists.exid!=''">
+					#{uplists.exid},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="uplists.exstrtime != null and uplists.exstrtime!=''">
+					#{uplists.exstrtime},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.exendtime != null and uplists.exendtime!=''">
+					#{uplists.exendtime},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.exstradderss != null and uplists.exstradderss!=''">
+					#{uplists.exstradderss},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.exendadderss != null and uplists.exendadderss!=''">
+					#{uplists.exendadderss},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.exvehicle != null and uplists.exvehicle!=''">
+					#{uplists.exvehicle},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.trsum != null and uplists.trsum!=''">
+					#{uplists.trsum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.mail != null and uplists.mail!=''">
+					#{uplists.mail},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.crosum != null and uplists.crosum!=''">
+					#{uplists.crosum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.getaccsum != null and uplists.getaccsum!=''">
+					#{uplists.getaccsum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.subsidy != null and uplists.subsidy!=''">
+					#{uplists.subsidy},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.othsum != null and uplists.othsum!=''">
+					#{uplists.othsum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.sum != null and uplists.sum!=''">
+					#{uplists.sum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.addtime != null and uplists.addtime!=''">
+					#{uplists.addtime},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="uplists.summary != null and uplists.summary!=''">
+					#{uplists.summary}
+				</when>
+				<otherwise>
+					null
+				</otherwise>
+			</choose>
+		</foreach>
 	</update>
 
 

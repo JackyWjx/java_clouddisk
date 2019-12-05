@@ -12,7 +12,7 @@ import java.util.Map;
 public interface TravelExpenseMapper {
 
 
-	int saveTravelExpense(Map<String, Object> map);
+	int saveTravelExpense(List<Map<String, Object>> list);
 
 	int updateTravelExpense(List<Map<String, Object>> list);
 

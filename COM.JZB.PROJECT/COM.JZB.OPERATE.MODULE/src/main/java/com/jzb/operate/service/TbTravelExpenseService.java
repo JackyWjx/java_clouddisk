@@ -18,8 +18,8 @@ public class TbTravelExpenseService {
     @Autowired
     private TravelExpenseMapper travelExpenseMapper;
 
-    public int saveTravelExpense(Map<String, Object> map) {
-        return travelExpenseMapper.saveTravelExpense(map);
+    public int saveTravelExpense(List<Map<String, Object>> list) {
+        return travelExpenseMapper.saveTravelExpense(list);
     }
 
     public int updateTravelExpense(List<Map<String, Object>> list) {
