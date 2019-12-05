@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.open.dao.OpenPageMapper">
+
     <!--新增应用菜单表-->
     <insert id="insertApplicationMenu">
         insert into tb_application_menu (appid, mid, parentid, cname, menupath,
