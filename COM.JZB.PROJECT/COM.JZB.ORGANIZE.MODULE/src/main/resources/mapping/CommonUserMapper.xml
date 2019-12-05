@@ -92,7 +92,6 @@
     <update id="updComUser" parameterType="java.util.Map">
         update tb_common_user_list
         set
-
         <if test="source != null and source != ''">
             source = #{source},
         </if>
@@ -150,7 +149,6 @@
         <if test="addtime != null and addtime != ''">
             addtime = #{addtime},
         </if>
-
         <if test="status != null and status != ''">
             status = #{status},
         </if>
@@ -176,7 +174,7 @@
     <!--查询公海用户-->
     <select id="queryComUser" parameterType="java.util.Map" resultType="java.util.Map">
         select
-        isrelation,
+        isrelation,cid,
         source,region,uid,uname,phone,cardid,sex,age,job,mail,
         cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary
         from tb_common_user_list where status = '1'
@@ -188,6 +186,9 @@
         </if>
         <if test="phone != null and phone != ''">
            and  phone = #{phone}
+        </if>
+        <if test="cid != null and cid != ''">
+            and  cid = #{cid}
         </if>
         <if test="uname != null and uname != ''">
             and  uname  like CONCAT('%',#{uname},'%')
@@ -205,6 +206,21 @@
     <!--查询公海用户总数-->
     <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_common_user_list where status = '1'
+        <if test="province != null and province != ''">
+            and region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        <if test="phone != null and phone != ''">
+            and  phone = #{phone}
+        </if>
+        <if test="cid != null and cid != ''">
+            and  cid = #{cid}
+        </if>
+        <if test="uname != null and uname != ''">
+            and  uname  like CONCAT('%',#{uname},'%')
+        </if>
     </select>
 
     <!--删除公海用户-->
