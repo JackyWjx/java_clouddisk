@@ -13,7 +13,7 @@ public interface ProjectTypeMapper {
 
     Integer selectMaxNum();
 
-    Integer delProjectType(String typeId);
+    Integer delProjectType(Map<String, Object> param);
 
     Integer putProjectType(Map<String, Object> param);
 

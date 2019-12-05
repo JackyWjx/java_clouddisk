@@ -11,7 +11,7 @@ public interface EvaluationMethodMapper {
 
     void addEvaluationMethod(Map<String, Object> param);
 
-    Integer delEvaluationMethod(Integer typeId);
+    Integer delEvaluationMethod(Map<String, Object> param);
 
     Integer putEvaluationMethod(Map<String, Object> param);
 

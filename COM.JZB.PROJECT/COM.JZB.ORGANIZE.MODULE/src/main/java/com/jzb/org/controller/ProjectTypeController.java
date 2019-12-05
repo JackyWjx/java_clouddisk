@@ -98,11 +98,10 @@ public class ProjectTypeController {
     @CrossOrigin
     public Response delProjectType(@RequestBody Map<String, Object> param) {
         Response result;
-        String  api="/org/ProjectType/addProjectType";
+        String  api="/org/ProjectType/delProjectType";
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
         try {
-            String typeId = (String) param.get("typeid");
-            Integer changeNum = projectTypeService.delProjectType(typeId);
+            Integer changeNum = projectTypeService.delProjectType(param);
             result = Response.getResponseSuccess(userInfo);
             logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
                     userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User del ProjectType"));

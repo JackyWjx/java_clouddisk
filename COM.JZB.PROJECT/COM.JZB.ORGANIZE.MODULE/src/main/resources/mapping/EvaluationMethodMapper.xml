@@ -43,7 +43,10 @@
     </insert>
 
     <delete id="delEvaluationMethod">
-        delete  from tb_tendering_judge where typeid = #{typeId}
+        delete  from tb_tendering_judge where typeid in
+        <foreach collection="list" item="item"  open="(" separator="," close=")">
+            #{item.typeid}
+        </foreach>
     </delete>
 
     <update id="putEvaluationMethod">

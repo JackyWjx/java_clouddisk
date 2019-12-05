@@ -48,10 +48,17 @@ public class EvaluationMethodController {
                 Long dateNum = (Long) evaluationMethod.get("addtime");
                 Long dateNum1 = (Long) evaluationMethod.get("updtime");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                date.setTime(dateNum);//java里面应该是按毫秒
-                evaluationMethod.put("addtime",sdf.format(date));
-                date.setTime(dateNum1);//java里面应该是按毫秒
-                evaluationMethod.put("updtime",sdf.format(date));
+                if(!("").equals(dateNum)&&dateNum!=null){
+                    date.setTime(dateNum);//java里面应该是按毫秒
+                    evaluationMethod.put("addtime",sdf.format(date));
+
+                }
+
+                if(!("").equals(dateNum1)&&dateNum1!=null){
+                    date.setTime(dateNum1);//java里面应该是按毫秒
+                    evaluationMethod.put("updtime",sdf.format(date));
+
+                }
             }
             result = Response.getResponseSuccess(userInfo);
             // 定义pageinfo
@@ -103,8 +110,7 @@ public class EvaluationMethodController {
         String  api="/org/evaluationMethod/delEvaluationMethod";
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
         try {
-            Integer typeId = (Integer) param.get("typeid");
-            Integer changeNum = evaluationMethodService.delEvaluationMethod(typeId);
+            Integer changeNum = evaluationMethodService.delEvaluationMethod(param);
             result = Response.getResponseSuccess(userInfo);
 
             logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",

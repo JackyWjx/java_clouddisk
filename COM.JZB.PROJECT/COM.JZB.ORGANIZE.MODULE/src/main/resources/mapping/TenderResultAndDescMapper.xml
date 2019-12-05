@@ -6,7 +6,7 @@
 
      <select id="queryTenderResultMessage" resultType="Map">
         select * from tb_tendering_result_list  WHERE
-        status = '1' order by opendate desc  LIMIT #{pagesize} OFFSET #{start}
+        status = '1' order by opendate desc  LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
     <select id="queryTenderResultMessageCount" resultType="int">
@@ -307,10 +307,16 @@
     </update>
 
     <delete id="delTenderMessage">
-        delete from tb_tendering_result_list where  tendid = #{tendid}
+        delete from tb_tendering_result_list where  tendid in
+        <foreach collection="tendids" item="tendid"  open="(" separator="," close=")">
+            #{tendid}
+        </foreach>
     </delete>
 
     <delete id="delTenderInfoMessage">
-        delete from tb_tendering_result_info where  tendid = #{tendid}
+        delete from tb_tendering_result_info where  tendid in
+        <foreach collection="tendids" item="tendid"  open="(" separator="," close=")">
+            #{tendid}
+        </foreach>
     </delete>
 </mapper>

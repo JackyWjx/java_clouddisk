@@ -12,8 +12,8 @@ public class EvaluationMethodService {
     @Autowired
     private EvaluationMethodMapper evaluationMethodMapper;
 
-    public Integer delEvaluationMethod(Integer typeId) {
-        return evaluationMethodMapper.delEvaluationMethod(typeId);
+    public Integer delEvaluationMethod(Map<String, Object> param) {
+        return evaluationMethodMapper.delEvaluationMethod(param);
     }
 
     public void addEvaluationMethod(Map<String, Object> param) {

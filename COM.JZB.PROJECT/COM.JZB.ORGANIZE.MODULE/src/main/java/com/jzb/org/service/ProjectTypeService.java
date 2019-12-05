@@ -1,6 +1,7 @@
 package com.jzb.org.service;
 
 import com.jzb.org.dao.ProjectTypeMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,8 +26,8 @@ public class ProjectTypeService {
         return  projectTypeMapper.selectMaxNum();
     }
 
-    public Integer delProjectType(String typeId) {
-        return projectTypeMapper.delProjectType(typeId);
+    public Integer delProjectType(Map<String, Object> param) {
+        return projectTypeMapper.delProjectType(param);
     }
 
     public Integer putProjectType(Map<String, Object> param) {
