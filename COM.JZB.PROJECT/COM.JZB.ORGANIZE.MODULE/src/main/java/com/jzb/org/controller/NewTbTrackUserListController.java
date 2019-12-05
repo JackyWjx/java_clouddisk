@@ -35,7 +35,7 @@ public class NewTbTrackUserListController {
         try{
             PageInfo pageInfo = new PageInfo();
             // 获取进度情况
-            List<Map<String , Object>> list = newTbTrackUserListService.queryTrackUserListByKey(map);
+            List<Map<String , Object>> list = newTbTrackUserListService.queryTrackUserListByKey((Map<String, Object>) map.get("param"));
             response =  Response.getResponseSuccess((Map)map.get("userinfo"));
             pageInfo.setList(list);
             response.setPageInfo(pageInfo);

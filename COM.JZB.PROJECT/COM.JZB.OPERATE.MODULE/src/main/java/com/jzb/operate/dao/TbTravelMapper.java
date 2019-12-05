@@ -1,5 +1,6 @@
 package com.jzb.operate.dao;
 
+import com.jzb.base.message.Response;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -25,5 +26,5 @@ public interface TbTravelMapper {
 
     int  updateTravelFare(Map<String, Object> map);
 
-    List<Map<String, Object>> queryTrackUserList(Map<String, Object> map);
+    int setDeleteStatus(Map<String, Object> map);
 }

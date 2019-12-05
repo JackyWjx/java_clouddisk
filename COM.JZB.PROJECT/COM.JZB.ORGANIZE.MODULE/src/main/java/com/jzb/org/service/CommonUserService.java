@@ -91,4 +91,8 @@ public class CommonUserService {
         param.put("isrelation",1);
         return userMapper.queryRelCommonUser(param);
     }
+
+    public Map<String,Object> getPhoneKey(Map<String, Object> param) {
+        return userMapper.getPhoneKey(param);
+    }
 }

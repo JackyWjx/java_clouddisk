@@ -5,6 +5,7 @@ import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.service.TbConnectionPubService;
 import org.slf4j.Logger;
@@ -57,6 +58,7 @@ public class TbConnectionPubController {
                 // 查询发帖总数
                 count = pubService.getConnectionCount(param);
             }
+            JzbPageConvert.setPageRows(param);
             userInfo = (Map<String, Object>) param.get("userinfo");
             List<Map<String ,Object>> list = pubService.getConnectionList(param);
             PageInfo pageInfo = new PageInfo();
@@ -140,6 +142,7 @@ public class TbConnectionPubController {
                 userInfo = (Map<String, Object>) param.get("userinfo");
                 // 新建发帖信息
                 param.put("adduid",userInfo.get("uid"));
+                param.put("uname",userInfo.get("cname"));
                 int count = pubService.insertConnectionList(param);
                 // 设置响应成功的结果
                 result = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();

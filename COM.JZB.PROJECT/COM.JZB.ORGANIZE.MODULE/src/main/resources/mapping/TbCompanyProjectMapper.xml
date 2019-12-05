@@ -78,6 +78,9 @@
         <if test="projectname != null and projectname != ''">
             and tcp.projectname  ~ #{projectname}
         </if>
+        <if test="cid != null and cid != ''">
+            and tcp.cid  = #{cid}
+        </if>
         ORDER BY tcp.addtime DESC
         LIMIT #{pagesize} offset #{pageno}
     </select>

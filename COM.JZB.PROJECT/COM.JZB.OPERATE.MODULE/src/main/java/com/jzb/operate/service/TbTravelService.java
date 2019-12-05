@@ -1,6 +1,7 @@
 package com.jzb.operate.service;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.message.Response;
 import com.jzb.operate.dao.TbTravelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,10 @@ public class TbTravelService {
         int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
         map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
         map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
-        return tbTravelMapper.queryTrackUserList(map);
+        return tbTravelMapper.queryTravelListDeta(map);
+    }
+
+    public int setDeleteStatus(Map<String, Object> map) {
+        return tbTravelMapper.setDeleteStatus(map);
     }
 }

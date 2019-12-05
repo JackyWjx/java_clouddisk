@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.NewCompanyProjectMapper">
+
+    <!--根据公司id查询公司信息-->
+    <select id="queryCommonCompanyListBycid" resultType="java.util.Map" parameterType="java.util.Map">
+        select cid,supervise,orgrelation,prodesc,prolist from tb_common_company_list where status='1' and cid=#{cid}
+        limit #{pagesize}  offset #{pageno}
+    </select>
+
+    <!--根据公司id查询项目-->
+    <select id="queryCompanyByid" resultType="java.util.Map" parameterType="java.util.Map">
+        select projectid,cid,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone
+--         ,porjcetra
+         from tb_company_project where cid=#{cid}
+    </select>
+
+    <!--根据项目id查询项目详情-->
+    <select id="queryCompanyByProjectid" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_company_project_info where projectid=#{projectid}
+    </select>
+
+    <!--修改单位-->
+    <update id="updateCommonCompanyList" parameterType="java.util.Map">
+        update tb_common_company_list
+        set
+        <choose><when test=" supervise != null and supervise != ''"> supervise=#{ supervise},</when></choose>
+        <choose><when test=" orgrelation != null and orgrelation != ''"> orgrelation=#{ orgrelation},</when></choose>
+        <choose><when test=" prodesc != null and prodesc != ''"> prodesc=#{ prodesc},</when></choose>
+        <choose><when test=" prolist != null and prolist != ''"> prolist=#{ prolist}</when></choose>
+        <choose><when test=" updtime != null and updtime != ''"> updtime=#{ updtime}</when></choose>
+        where status ='1' and cid=#{cid}
+    </update>
+
+    <!--修改项目-->
+    <update id="updateCompanyProject" parameterType="java.util.Map">
+        update tb_company_project 
+        set
+            <choose><when test=" prouname != null and prouname != ''"> prouname=#{ prouname},</when></choose>
+            <choose><when test=" prouphone != null and prouphone != ''"> prouphone=#{ prouphone},</when></choose>
+            <choose><when test=" tendertime != null and tendertime != ''"> tendertime=#{ tendertime},</when></choose>
+            <choose><when test=" tendercompany != null and tendercompany != ''"> tendercompany=#{ tendercompany},</when></choose>
+            <choose><when test=" projecttype != null and projecttype != ''"> projecttype=#{ projecttype},</when></choose>
+            <choose><when test=" mail != null and mail != ''"> mail=#{ mail},</when></choose>
+            <choose><when test=" tenderresultcompany != null and tenderresultcompany != ''"> tenderresultcompany=#{ tenderresultcompany},</when></choose>
+            <choose><when test=" tenderagent != null and tenderagent != ''"> tenderagent=#{ tenderagent},</when></choose>
+            <choose><when test=" agentphone != null and agentphone != ''"> agentphone=#{ agentphone},</when></choose>
+            <choose><when test=" updtime != null and updtime != ''"> updtime=#{ updtime}</when></choose>
+        where status ='1' and projectid=#{projectid}
+    </update>
+
+    <!--修改项目详情-->
+    <update id="updateCompanyProjectInfo" parameterType="java.util.Map">
+        update tb_company_project_info
+        set
+            <choose><when test=" lineuname != null and lineuname != ''"> lineuname=#{ lineuname},</when></choose>
+            <choose><when test=" linephone != null and linephone != ''"> linephone=#{ linephone},</when></choose>
+            <choose><when test=" lineage != null and lineage != ''"> lineage=#{ lineage},</when></choose>
+            <choose><when test=" linesex != null and linesex != ''"> linesex=#{ linesex},</when></choose>
+            <choose><when test=" linejob != null and linejob != ''"> linejob=#{ linejob},</when></choose>
+            <choose><when test=" linenature != null and linenature != ''"> linenature=#{ linenature},</when></choose>
+            <choose><when test=" des != null and des != ''"> des=#{ des},</when></choose>
+            <choose><when test=" idx != null and idx != ''"> idx=#{ idx},</when></choose>
+            <choose><when test=" podeperson != null and podeperson != ''"> podeperson=#{ podeperson},</when></choose>
+            <choose><when test=" podephone != null and podephone != ''"> podephone=#{ podephone},</when></choose>
+            <choose><when test=" podejob != null and podejob != ''"> podejob=#{ podejob},</when></choose>
+            <choose><when test=" podenature != null and podenature != ''"> podenature=#{ podenature},</when></choose>
+            <choose><when test=" npodeperson != null and npodeperson != ''"> npodeperson=#{ npodeperson},</when></choose>
+            <choose><when test=" npodephone != null and npodephone != ''"> npodephone=#{ npodephone},</when></choose>
+            <choose><when test=" npodejob != null and npodejob != ''"> npodejob=#{ npodejob},</when></choose>
+            <choose><when test=" npodenature != null and npodenature != ''"> npodenature=#{ npodenature},</when></choose>
+            <choose><when test=" setb != null and setb != ''"> setb=#{ setb},</when></choose>
+            <choose><when test=" sepr != null and sepr != ''"> sepr=#{ sepr},</when></choose>
+            <choose><when test=" setli != null and setli != ''"> setli=#{ setli},</when></choose>
+            <choose><when test=" relation != null and relation != ''"> relation=#{ relation},</when></choose>
+            <choose><when test=" recname != null and recname != ''"> recname=#{ recname},</when></choose>
+            <choose><when test=" reluname != null and reluname != ''"> reluname=#{ reluname},</when></choose>
+            <choose><when test=" relphone != null and relphone != ''"> relphone=#{ relphone},</when></choose>
+            <choose><when test=" brandname != null and brandname != ''"> brandname=#{ brandname},</when></choose>
+            <choose><when test=" contrast != null and contrast != ''"> contrast=#{ contrast},</when></choose>
+            <choose><when test=" mail != null and mail != ''"> mail=#{ mail},</when></choose>
+            <choose><when test=" nreluname != null and nreluname != ''"> nreluname=#{ nreluname},</when></choose>
+            <choose><when test=" nrelphone != null and nrelphone != ''"> nrelphone=#{ nrelphone},</when></choose>
+            <choose><when test=" nbrandname != null and nbrandname != ''"> nbrandname=#{ nbrandname},</when></choose>
+            <choose><when test=" ncontrast != null and ncontrast != ''"> ncontrast=#{ ncontrast},</when></choose>
+            <choose><when test=" nmail != null and nmail != ''"> nmail=#{ nmail},</when></choose>
+<!--            <choose><when test=" reshid != null and reshid != ''"> reshid=#{ reshid},</when></choose>-->
+            <choose><when test=" reshname != null and reshname != ''"> reshname=#{ reshname},</when></choose>
+            <choose><when test=" reshphone != null and reshphone != ''"> reshphone=#{ reshphone},</when></choose>
+<!--            <choose><when test=" adduid != null and adduid != ''"> adduid=#{ adduid},</when></choose>-->
+            <choose><when test=" addtime != null and addtime != ''"> addtime=#{ addtime},</when></choose>
+<!--            <choose><when test=" upduid != null and upduid != ''"> upduid=#{ upduid},</when></choose>-->
+            <choose><when test=" updtime != null and updtime != ''"> updtime=#{ updtime}</when></choose>
+        where status ='1'and projectid=#{projectid}
+    </update>
+</mapper>

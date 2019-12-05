@@ -5,9 +5,11 @@
 <mapper namespace="com.jzb.org.dao.TbTrackUserMapper">
     <!--新建跟进人员记录-->
     <insert id="addTrackUser" parameterType="java.util.Map" >
-        insert into tb_track_user_list (trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
+        insert into tb_track_user_list (trackcid,trackproid,trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
         adduid,status,summary,addtime)
         values (
+        #{trackid},
+        #{trackproid},
         #{trackvalue},
         #{trackid},
         <choose>
@@ -39,7 +41,7 @@
     
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
-        select trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
+        select trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
         from tb_track_user_list where status = '1'
         and trackvalue = #{trackvalue}
         <if test="startTime != null and startTime!= ''">
@@ -48,6 +50,13 @@
         <if test="endTime != null and endTime!= ''">
             and addtime &lt;= endTime
         </if>
+        <if test="trackcid != null and trackcid != ''">
+            and trackcid = #{trackcid}
+        </if>
+        <if test="customer != null and customer != ''">
+            and customer = #{customer}
+        </if>
+
         order by id desc
     </select>
 
@@ -82,8 +91,10 @@
     <!--查询跟进记录愿意见数目-->
     <select id="getHandleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_track_user_list
-        where adduid = #{uid}
-        and handlestage = #{handlestage}
+         where trackcid in
+        (select cid  from tb_private_company_list where oneheader = #{uid} or twoheader = #{uid})
+        and customer = #{uid}
+        and trackres = #{trackres}
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
         </if>
@@ -132,5 +143,54 @@
         trackid = #{trackid}
 
     </update>
+
+    <!--// 分别查询qq/微信/电话沟通数量-->
+    <select id="getSingleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(#{tracktype}) from tb_track_user_list  where adduid = #{adduid} and status = '1'
+    </select>
+
+    <!--根据用户查询qq微信电话方式跟进记录列表-->
+    <select id="getContactList" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
+        from tb_track_user_list
+        where adduid = #{adduid}
+        and status = '1'
+        and tracktype in (4,8,16)
+        <if test="zero != null and zero != ''">
+            and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
+    </select>
+
+    <!--获取历史有效客户数量-->
+    <select id="getClient" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_private_company_list where oneheader = #{adduid} or twoheader = #{adduid}
+        and status = '1'
+        <if test="zero != null and zero != ''">
+            and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
+
+    </select>
+
+    <!--根据跟进人查询 跟进阶段客户列表-->
+    <select id="getHandleStage" parameterType="java.util.Map" resultType="java.util.Map">
+       select trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
+        from tb_track_user_list
+        where adduid = #{adduid}
+        and status = '1'
+        and trackres = #{trackeres}
+        <if test="zero != null and zero != ''">
+            and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
+    </select>
     
 </mapper>

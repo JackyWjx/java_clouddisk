@@ -379,17 +379,25 @@ public class CompanyController {
         Response result;
         try {
             String[] str = {"phone", "cname", "type"};
-            if (JzbCheckParam.allNotEmpty(param, str)) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("uid", userInfo.get("uid"));
-                Map<String, Object> map = companyService.addCompany(param);
-                result = Response.getResponseSuccess(userInfo);
-                result.setResponseEntity(map);
-            } else {
-                Map<String, Object> map = new HashMap<>(2);
-                map.put("message", "1");
+            int not = companyService.queryCnameIsNot(param);
+            if(not < 1) {
+                if (JzbCheckParam.allNotEmpty(param, str)) {
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    param.put("uid", userInfo.get("uid"));
+                    Map<String, Object> map = companyService.addCompany(param);
+                    result = Response.getResponseSuccess(userInfo);
+                    result.setResponseEntity(map);
+                } else {
+                    Map<String, Object> map = new HashMap<>(2);
+                    map.put("message", "1");
+                    result = Response.getResponseError();
+                    result.setResponseEntity(map);
+                }
+            }else{
                 result = Response.getResponseError();
-                result.setResponseEntity(map);
+                Map<String , Object>  reMap =  new HashMap<>();
+                reMap.put("message","单位已经存在");
+                result.setResponseEntity(reMap);
             }
         } catch (Exception e) {
             JzbTools.logError(e);
@@ -981,20 +989,21 @@ public class CompanyController {
         Response result;
         try {
             String[] str = {"cid"};
-            if (JzbCheckParam.allNotEmpty(param, str)) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("addtime", System.currentTimeMillis());
-                param.put("status", "1");
-                param.put("uid", userInfo.get("uid"));
-                int add = companyService.addCompanyCommon(param);
-                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
-                // 返回用户手填公司地址
-                Map<String , Object> paMap =  new HashMap<>();
-                paMap.put("adderss",param.get("adderss"));
-                result.setResponseEntity(paMap);
-            } else {
-                result = Response.getResponseError();
-            }
+
+                if (JzbCheckParam.allNotEmpty(param, str)) {
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    param.put("addtime", System.currentTimeMillis());
+                    param.put("status", "1");
+                    param.put("uid", userInfo.get("uid"));
+                    int add = companyService.addCompanyCommon(param);
+                    result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                    // 返回用户手填公司地址
+                    Map<String , Object> paMap =  new HashMap<>();
+                    paMap.put("adderss",param.get("adderss"));
+                    result.setResponseEntity(paMap);
+                } else {
+                    result = Response.getResponseError();
+                }
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

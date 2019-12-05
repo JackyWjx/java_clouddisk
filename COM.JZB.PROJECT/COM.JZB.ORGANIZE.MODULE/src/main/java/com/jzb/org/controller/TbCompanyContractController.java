@@ -214,6 +214,101 @@ public class TbCompanyContractController {
     }
 
     /**
+     * 修改合同
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updateCompanyContract", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response updateFileStatusByConId(@RequestBody Map<String, Object> param) {
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyContract/updateCompanyContract";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 验证指定参数为空返回error
+            if (JzbCheckParam.haveEmpty(param, new String[]{"contid"})) {
+                response = Response.getResponseError();
+            } else {
+                if (param.get("createtime") != null && !param.get("createtime").toString().equals("")) {
+                    param.put("createtime", JzbDateUtil.getDate(param.get("createtime").toString(), JzbDateStr.yyyy_MM_dd).getTime());
+                }
+                // 执行修改
+                int count = tbCompanyContractService.updateCompanyContract(param);
+                response = count > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateFileStatusByConId Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
+    /**
+     * 修改合同
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updateDeleteStatus", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response updateDeleteStatus(@RequestBody Map<String, Object> param) {
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyContract/updateDeleteStatus";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 验证指定参数为空返回error
+            if (JzbCheckParam.haveEmpty(param, new String[]{"contid"})) {
+                response = Response.getResponseError();
+            } else {
+                // 执行修改
+                int count = tbCompanyContractService.updateDeleteStatus(param);
+                response = count > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateDeleteStatus Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
+    /**
      * 查询合同
      *
      * @param param
@@ -244,7 +339,7 @@ public class TbCompanyContractController {
             } else {
                 if (JzbCheckParam.haveEmpty(param, new String[]{"contid"})) {
                     JzbPageConvert.setPageRows(param);
-                }else {
+                } else {
                     param.remove("pageno");
                     param.remove("pagesize");
                 }
@@ -252,7 +347,7 @@ public class TbCompanyContractController {
                 List<Map<String, Object>> list = tbCompanyContractService.quertCompantContract(param);
                 for (int i = 0, l = list.size(); i < l; i++) {
                     list.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
-                    list.get(i).put("constatus",list.get(i).get("constatus").toString().equals("2")?"未入库":"已入库");
+                    list.get(i).put("constatus", list.get(i).get("constatus").toString().equals("2") ? "未入库" : "已入库");
                 }
                 response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
                 if (JzbCheckParam.allNotEmpty(param, new String[]{"contid"})) {
@@ -260,14 +355,14 @@ public class TbCompanyContractController {
                     List<Map<String, Object>> productFun = tbContractProductFunService.queryContractProductFun(param);
                     List<Map<String, Object>> contProduct = tbContractProductService.queryContractProduct(param);
                     List<Map<String, Object>> contService = tbContractServiceService.queryContractService(param);
-                    map.put("companyContract", list.size()>0?list.get(0):null);
+                    map.put("companyContract", list.size() > 0 ? list.get(0) : null);
                     map.put("productFun", productFun);
                     map.put("contProduct", contProduct);
                     map.put("contService", contService);
                     response.setResponseEntity(map);
                 } else {
                     PageInfo pageInfo = new PageInfo();
-                    pageInfo.setList(list == null ? new ArrayList() : list);
+                    pageInfo.setList(list == null || list.size() == 0 ? new ArrayList() : list);
                     // 如果count>0 就返回list 大小
                     pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? list.size() : 0);
                     response.setPageInfo(pageInfo);

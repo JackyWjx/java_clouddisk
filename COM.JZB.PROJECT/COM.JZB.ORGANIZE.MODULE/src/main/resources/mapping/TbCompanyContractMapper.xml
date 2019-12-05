@@ -239,15 +239,17 @@
     </insert>
 
     <!-- 查询合同 -->
-    <select id="quertCompantContract" parameterType="java.util.Map" resultType="java.util.Map">
+    <select id="quertCompanyContract" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
         tcc.contid,
         tcc.cname,
         tcc.cid,
-        (select cname from tb_company_list where status='1'  and cid=tcc.cid) as companyname,
-        (select projectname from tb_company_project where status='1'  and projectid=tcc.projectid) as projectname,
-        (select phone from tb_dept_user where uid=(select manager from tb_company_list where cid=tcc.cid) and cid=tcc.cid) AS userphone,
-        (select cname from tb_dept_user where uid=(select manager from tb_company_list where cid=tcc.cid) and cid=tcc.cid) as username,
+        (select cname from tb_company_list where status='1' and cid=tcc.cid) as companyname,
+        (select projectname from tb_company_project where status='1' and projectid=tcc.projectid) as projectname,
+        (select phone from tb_dept_user where uid=(select manager from tb_company_list where cid=tcc.cid) and
+        cid=tcc.cid) AS userphone,
+        (select cname from tb_dept_user where uid=(select manager from tb_company_list where cid=tcc.cid) and
+        cid=tcc.cid) as username,
         tcc.projectid,
         tcc.typeid,
         tcc.tempid,
@@ -283,8 +285,20 @@
 
             and tcc.contid=#{contid}
         </if>
-        LIMIT #{ pagesize } OFFSET #{ pageno}
+        <if test="pagesize!=null and pageno!=null and pagesize!='' and pageno !=''">
+            LIMIT #{ pagesize } OFFSET #{ pageno}
+
+        </if>
     </select>
 
+    <!-- 修改合同 -->
+    <update id="updateCompanyContract" parameterType="java.util.Map">
+        update tb_company_contract set proname=#{proname},concname=#{concname},subcname=#{subcname},createtime=#{createtime}
+        where contid=#{contid}
+    </update>
 
+    <!-- 删除合同 -->
+    <update id="updateDeleteStatus" parameterType="java.util.Map">
+        update tb_company_contract set status='2' where contid=#{contid}
+    </update>
 </mapper>

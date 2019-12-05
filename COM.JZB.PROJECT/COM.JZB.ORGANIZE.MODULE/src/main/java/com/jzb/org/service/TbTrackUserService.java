@@ -114,21 +114,26 @@ public class TbTrackUserService {
      * @return
      */
     public List<Map<String, Object>> getHandleCount(Map<String, Object> param) {
-        param.put("handlestage",1);
         Map<String, Object> map = methodTime(System.currentTimeMillis());
-        param.putAll(map);
+        if (!JzbTools.isEmpty(param.get("startTime")) || !JzbTools.isEmpty(param.get("endTime"))){
+            param.put("zero",param.get("startTime"));
+            param.put("twelve",param.get("endTime"));
+        }else {
+            param.putAll(map);
+        }
+        param.put("trackres",1);
         // 愿意见
         int willCount = userMapper.getHandleCount(param);
 
-        param.put("handlestage",2);
+        param.put("trackres",2);
         // 深度见
         int deepCount = userMapper.getHandleCount(param);
 
-        param.put("handlestage",4);
+        param.put("trackres",4);
         // 上会
         int meetCount = userMapper.getHandleCount(param);
 
-        param.put("handlestage",8);
+        param.put("trackres",8);
         // 上会
         int signCount = userMapper.getHandleCount(param);
         Map<String,Object> cmap = new HashMap<>();
@@ -160,5 +165,71 @@ public class TbTrackUserService {
         map.put("currCount",currCount);
         map.put("missCount",missCount);
         return map;
+    }
+
+    // 分别查询qq/微信/电话沟通数量
+    public List<Map<String, Object>> getSingleCount(Map<String, Object> param) {
+        List<Map<String,Object>> list = new ArrayList<>();
+        Map<String,Object> cmap = new HashMap<>();
+
+        param.put("tracktype",2);
+        cmap.put("朋友圈",userMapper.getSingleCount(param));
+
+        param.put("tracktype",4);
+        cmap.put("QQ",userMapper.getSingleCount(param));
+
+        param.put("tracktype",8);
+        cmap.put("微信",userMapper.getSingleCount(param));
+
+
+        list.add(cmap);
+        return list;
+    }
+
+    public List<Map<String, Object>> getContactList(Map<String, Object> param) {
+        Map<String, Object> map = methodTime(System.currentTimeMillis());
+        param.putAll(map);
+        return userMapper.getContactList(param);
+    }
+
+    // 查询有效客户
+    public List<Map<String, Object>> getClient(Map<String, Object> param) {
+        List<Map<String,Object>> mapList = new ArrayList<>();
+        // 获取历史有效客户数量
+        int hisCount = userMapper.getClient(param);
+
+        // 获取当日有效数量
+        Map<String, Object> cmap = methodTime(System.currentTimeMillis());
+        param.putAll(cmap);
+        int currCount = userMapper.getClient(param);
+        // 设置每日任务目标
+        int target = 0;
+        List<Map<String, Object>> list = pubMapper.getTask(param);
+        long addtime = 0;
+        for (Map<String, Object> map : list) {
+            if ("有效客户".equals(map.get("tname"))){
+                target = (int) map.get("target");
+                addtime = (long) map.get("addtime");
+            }
+        }
+
+        Map<String, Object> qMap = methodCount(addtime, target, hisCount, currCount);
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("有效客户",qMap);
+        mapList.add(map1);
+
+        return mapList;
+    }
+
+    // 根据跟进人查询 跟进阶段客户列表
+    public List<Map<String, Object>> getHandleStage(Map<String, Object> param) {
+        Map<String, Object> map = methodTime(System.currentTimeMillis());
+        if (!JzbTools.isEmpty(param.get("startTime")) || !JzbTools.isEmpty(param.get("endTime"))){
+            param.put("zero",param.get("startTime"));
+            param.put("twelve",param.get("endTime"));
+        }else {
+            param.putAll(map);
+        }
+        return userMapper.getHandleStage(param);
     }
 }

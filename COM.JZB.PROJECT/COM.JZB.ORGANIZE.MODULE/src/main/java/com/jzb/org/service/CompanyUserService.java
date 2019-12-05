@@ -342,6 +342,7 @@ public class CompanyUserService {
     public int addCompanyProjectInfo(Map<String, Object> param) {
         param.put("status", "1");
         param.put("addtime", System.currentTimeMillis());
+        param.put("lineage",JzbDataType.getInteger(param.get("lineage")));
         return   companyUserMapper.insertCompanyProjectInfo(param);
     }
 

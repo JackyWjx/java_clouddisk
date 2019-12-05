@@ -3,18 +3,15 @@ package com.jzb.operate.controller;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
-import com.jzb.operate.api.org.OrgCompanyApi;
+import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.org.TbTrackUserListApi;
 import com.jzb.operate.service.TbTravelService;
-import org.omg.CORBA.OBJ_ADAPTER;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +21,7 @@ import java.util.Map;
  * @Date 2019/12/2 11:21
  */
 @RestController
-@RequestMapping(value = "/reimbursementSystem")
+@RequestMapping(value = "/reimburseSystem")
 public class TbTravelController {
 
     @Autowired
@@ -103,8 +100,11 @@ public class TbTravelController {
             //获取出差详情记录
             List<Map<String , Object>> delist = tbTravelService.queryTrackUserList(map);
             for (int i = 0 ;i < delist.size() ;i++){
-                 // 根据申请人 单位 拜访时间 查询跟进记录
-                 Response res  = api.queryTrackUserByName(delist.get(i));
+                 // 根据申请人 单位 拜访时间 查询跟进记录\
+                Map<String , Object> dataMap =  new HashedMap();
+                dataMap.put("userinfo",map.get("userinfo"));
+                dataMap.put("param",delist.get(i));
+                 Response res  = api.queryTrackUserByName(dataMap);
                  List<Map<String , Object>>  reList = res.getPageInfo().getList();
                  delist.get(i).put("reList",reList);
             }
@@ -117,5 +117,31 @@ public class TbTravelController {
         }
         return result;
     }
+
+    /**
+     * @Author sapientia
+     * @Description 设置删除状态
+     * @Date  13:57
+     * @Param [param]
+     * @return com.jzb.base.message.Response
+     **/
+    @PostMapping(value = "/setDeleteStatus")
+    @CrossOrigin
+    @Transactional
+    public Response setDeleteStatus(@RequestBody Map<String, Object> map) {
+        Response result;
+        try {
+            if (JzbCheckParam.haveEmpty(map, new String[]{"travelid"})) {
+                result = Response.getResponseError();
+            } else {
+                result = tbTravelService.setDeleteStatus(map) > 0 ? Response.getResponseSuccess((Map<String, Object>) map.get("userinfo")) : Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 
 }
