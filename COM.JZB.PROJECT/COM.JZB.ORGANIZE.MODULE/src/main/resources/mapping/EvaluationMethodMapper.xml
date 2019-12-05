@@ -16,7 +16,9 @@
 
     </select>
 
-
+<select id="quertTenderTypeCount" resultType="int">
+    select count(1) from tb_tendering_judge where status = '1'
+</select>
     <insert id="addEvaluationMethod" useGeneratedKeys="true">
         insert into tb_tendering_judge(typeid,cname,typedesc,idx,adduid,addtime,upduid,updtime,status,summary)
          values (#{typeid},#{cname},

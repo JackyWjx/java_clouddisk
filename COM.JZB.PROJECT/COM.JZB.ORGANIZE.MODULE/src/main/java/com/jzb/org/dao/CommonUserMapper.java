@@ -36,4 +36,10 @@ public interface CommonUserMapper {
 
     // 查询已关联单位用户
     List<Map<String, Object>> queryRelCommonUser(Map<String, Object> param);
+
+    //查询公海用户电话号码是否唯一
+    Map<String,Object> getPhoneKey(Map<String, Object> param);
+
+
+
 }

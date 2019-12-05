@@ -29,15 +29,6 @@
     <select id="queryTravelInfo" resultType="java.util.Map" parameterType="java.util.Map">
         select * from  tb_travel_info where deid=#{deid}
     </select>
-    
-    <!--查询跟进记录表-->
-    <select id="queryTrackUserList" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_track_user_list where
-        <choose><when test="trackuid != null || trackuid != ''">trackuid=#{trackuid}</when></choose>
-        <choose><when test="trackcid != null || trackcid != ''">trackcid=#{trackcid}</when></choose>
-        <choose><when test="trackproid != null || trackproid != ''">trackproid=#{trackproid}</when></choose>
-        <choose><when test="tracktime != null || tracktime != ''">tracktime=#{tracktime}</when></choose>
-    </select>
 
     <!--根据出差id修改出差报销金额-->
     <update id="updateTravelFare"  parameterType="java.util.Map">
@@ -47,6 +38,10 @@
         where travelid=#{travelid}
     </update>
 
+    <!-- 设置删除状态-->
+    <update id="setDeleteStatus" parameterType="java.util.Map">
+        update tb_travel_record set status=2  where   travelid=#{travelid}
+    </update>
 
 
 </mapper>

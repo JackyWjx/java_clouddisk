@@ -2,8 +2,7 @@ package com.jzb.operate.api.base;
 
 import com.jzb.base.message.Response;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -26,4 +25,16 @@ public interface RegionBaseApi {
      */
     @RequestMapping(value = "/getRegionInfo", method = RequestMethod.POST)
     public Response getRegionInfo(Map<String, Object> param);
+
+    /**
+     * @Author sapientia
+     * @Description 获取省市县
+     * @Date  12:00
+     * @Param [params]
+     * @return com.jzb.base.message.Response
+     **/
+    
+    @RequestMapping(value = "/getCityList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCityJson(@RequestBody(required = false) Map<String, Object> params);
 }

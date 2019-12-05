@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * Redis控制层
- *
+ *ComProject
  * @author Chad
  * @date 2019年7月20日
  */
@@ -43,7 +43,7 @@ public class CommonRedisController {
     } // End cacheString
 
     /**
-     * 从Redis服务器中获取一个缓存数据。
+     * 从Redis服务器0                                                                                                 中获取一个缓存数据。
      */
     @RequestMapping(value = "/getString/{key}", method = RequestMethod.GET)
     public Response getString(@PathVariable(value = "key") String key) {

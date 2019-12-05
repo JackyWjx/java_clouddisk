@@ -459,77 +459,99 @@ public class CommonUserController {
 
         @Override
         public Response call() {
+            List<Map<String, Object>> errorList=new ArrayList<>();
+
             // 读取模板中的数据
             List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
 
             // 保存到用户导入信息表
             List<Map<String, Object>> userInfoList = new ArrayList<>();
-            Map<String, Object> exportMap = new HashMap<>(param);
+            Map<String, Object> exportMap = null;
             // 遍历结果行,菜单数据从第2行开始
             for (int i = 1; i < list.size(); i++) {
+                exportMap = new HashMap<>(param);
                 // 设置行信息
                 exportMap.put("idx", i);
                 Map<Integer, String> map = list.get(i);
-                // 获取模板中的用户名称
-                String uname = JzbDataType.getString(map.get(0));
 
+                // 获取序号
+                if (JzbTools.isEmpty(map.get(0))){
+                    break;
+                }
+                // 获取模板中的用户名称
+                String uname = JzbDataType.getString(map.get(1));
                 // 定义批次中的备注
                 String summary = "";
                 exportMap.put("uname", uname);
                 // 在参数中加入用户名称
                 param.put("uname", uname);
                 if (JzbDataType.isEmpty(uname)) {
-                    uname = "用户名称不能为空!";
+                    summary = "用户名称不能为空!";
                     exportMap.put("status", "2");
                     exportMap.put("summary", summary);
                     userInfoList.add(exportMap);
+                    errorList.add(exportMap);
                     continue;
                 }
                 // 获取模板中的用户性别
-                String sex = JzbDataType.getString(map.get(1));
+                String sex = JzbDataType.getString(map.get(2));
                 param.put("sex", sex);
                 if (JzbDataType.isEmpty(sex)) {
                     summary += "用户性别不能为空!";
                     exportMap.put("status", "2");
                     exportMap.put("summary", summary);
                     userInfoList.add(exportMap);
+                    errorList.add(exportMap);
                     continue;
                 }
                 // 获取模板中的用户电话号码
-                String phone = JzbDataType.getString(map.get(2));
+                String phone = JzbDataType.getString(map.get(3));
                 param.put("phone", phone);
-                if (JzbDataType.isEmpty(phone)) {
-                    summary += "招标人手机号不能为空!";
-                    exportMap.put("status", "2");
-                    exportMap.put("summary", summary);
-                    userInfoList.add(exportMap);
-                    continue;
-                } else {
-                    if (!toPhone(phone)) {
+                if (JzbTools.isEmpty(userService.getPhoneKey(param))){
+                    if (JzbDataType.isEmpty(phone)) {
+                        summary += "招标人手机号不能为空!";
                         exportMap.put("status", "2");
-                        summary += "手机号不合规范";
                         exportMap.put("summary", summary);
                         userInfoList.add(exportMap);
+                        errorList.add(exportMap);
                         continue;
+                    } else {
+                        if (!toPhone(phone)) {
+                            exportMap.put("status", "2");
+                            summary += "手机号不合规范";
+                            exportMap.put("summary", summary);
+                            userInfoList.add(exportMap);
+                            errorList.add(exportMap);
+                            continue;
+                        }
                     }
+                }else {
+                    exportMap.put("status", "2");
+                    summary += "该手机号已重复";
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    errorList.add(exportMap);
+                    continue;
                 }
 
+
                 // 获取模板中的身份证号
-                String cardid = JzbDataType.getString(map.get(3));
+                String cardid = JzbDataType.getString(map.get(4));
                 param.put("cardid", cardid);
 
                 // 获取模板中的邮箱
-                String mail = JzbDataType.getString(map.get(4));
+                String mail = JzbDataType.getString(map.get(5));
                 param.put("mail",mail);
 
               // 获取模板中的用户地区
-                String regionName = JzbDataType.getString(map.get(5));
+                String regionName = JzbDataType.getString(map.get(6));
                 param.put("regionName", regionName);
                 if (JzbDataType.isEmpty(regionName)) {
                     summary += "用户所属地区不能为空!";
                     exportMap.put("status", "2");
                     exportMap.put("summary", summary);
                     userInfoList.add(exportMap);
+                    errorList.add(exportMap);
                     continue;
                 }
                 // 调用获取地区ID的接口
@@ -544,30 +566,30 @@ public class CommonUserController {
                 param.put("region", region);
 
                 // 获取模板中的用户单位名称
-                String cname = JzbDataType.getString(map.get(6));
+                String cname = JzbDataType.getString(map.get(7));
                 param.put("cname", cname);
 
                 // 获取模板中的用户年龄
-                int age = JzbDataType.getInteger(map.get(7));
+                int age = JzbDataType.getInteger(map.get(8));
                 param.put("age", age);
 
                 // 获取模板中的用户职务
-                String job = JzbDataType.getString(map.get(8));
+                String job = JzbDataType.getString(map.get(9));
                 param.put("job", job);
                 // 获取模板中的用户籍贯
-                String address = JzbDataType.getString(map.get(9));
+                String address = JzbDataType.getString(map.get(10));
                 param.put("native", address);
                 // 获取模板中的用户毕业院校
-                String graduated = JzbDataType.getString(map.get(10));
+                String graduated = JzbDataType.getString(map.get(11));
                 param.put("graduated", graduated);
                 // 获取模板中的用户学历
-                String education = JzbDataType.getString(map.get(11));
+                String education = JzbDataType.getString(map.get(12));
                 param.put("education", education);
                 // 获取模板中的用户爱好
-                String likes = JzbDataType.getString(map.get(12));
+                String likes = JzbDataType.getString(map.get(13));
                 param.put("likes", likes);
                 // 获取模板中的用户婚姻状态
-                String marriage = JzbDataType.getString(map.get(13));
+                String marriage = JzbDataType.getString(map.get(14));
                 if (!JzbDataType.isEmpty(marriage)) {
                     if ("已婚".equals(marriage)) {
                         marriage = "1";
@@ -580,7 +602,7 @@ public class CommonUserController {
                 param.put("marriage", marriage);
 
                 // 获取模板中的用户工作经历
-                String works = JzbDataType.getString(map.get(14));
+                String works = JzbDataType.getString(map.get(15));
                 param.put("works", works);
                 // 调用接口
                 int count = userService.addCommUser(param);
@@ -607,6 +629,7 @@ public class CommonUserController {
                 exportMap.put("status", "4");
             }
             deptService.updateExportBatch(exportMap);
+            result.setResponseEntity(errorList);
             return result;
         }
     }

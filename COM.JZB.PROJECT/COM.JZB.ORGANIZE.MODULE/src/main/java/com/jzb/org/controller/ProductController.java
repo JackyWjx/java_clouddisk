@@ -1034,11 +1034,12 @@ public class ProductController {
             // 读取模板中的数据
             List<Map<Integer, String>> list = JzbExcelOperater.readSheet(filepath);
 
-            Map<String, Object> exportMap = new HashMap<>(param);
+            Map<String, Object> exportMap = null;
             // 保存到用户导入信息表
             List<Map<String, Object>> userInfoList = new ArrayList<>();
             // 遍历结果行,菜单数据从第2行开始
             for (int i = 1; i < list.size(); i++) {
+                exportMap = new HashMap<>(param);
                 // 设置行信息
                 exportMap.put("idx", i);
                 Map<Integer, String> map = list.get(i);

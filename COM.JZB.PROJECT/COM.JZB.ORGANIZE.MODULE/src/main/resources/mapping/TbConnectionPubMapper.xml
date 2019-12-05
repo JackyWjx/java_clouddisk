@@ -27,14 +27,9 @@
         <if test="type != null and type != ''">
         and type = #{type}
         </if>
-        <if test="endtime != null and endtime != ''">
-        and addtime &lt;= #{endtime}
-        </if>
-        <if test="startTime != null and startTime != ''">
-        and addtime &gt;= #{endtime}
-        </if>
-        <if test="type != null and type != ''">
-        and type = #{type}
+        <if test="endTime != null and endTime != ''">
+        and addtime &lt;= #{endTime}
+        and addtime &gt;= #{startTime}
         </if>
         order by id desc
         <if test="pagesize != null and pagesize != ''">

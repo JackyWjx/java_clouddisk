@@ -854,6 +854,10 @@ public class CompanyService {
         return companyMapper.insertCompanyCommon(param);
     }
 
+    public int queryCnameIsNot(Map<String, Object> param){
+        return companyMapper.queryCnameIsNot(param);
+    }
+
     /**
      * CRM-销售业主-公海-供应商5
      * 点击新建供应商建立单位下供应商

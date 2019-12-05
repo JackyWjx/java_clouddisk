@@ -1,6 +1,5 @@
 package com.jzb.org.service;
 
-import com.jzb.base.util.JzbRandom;
 import com.jzb.org.dao.TbCompanyContractMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,28 @@ public class TbCompanyContractService {
         return tbCompanyContractMapper.addCompanyContract(param);
     }
 
+    /**
+     * 修改合同
+     * @param param
+     * @return
+     */
+    public int updateCompanyContract(Map<String, Object> param){
+        long time=System.currentTimeMillis();
+        param.put("updtime",time);
+        return tbCompanyContractMapper.updateCompanyContract(param);
+    }
+
+    /**
+     * 删除合同
+     * @param param
+     * @return
+     */
+    public int updateDeleteStatus(Map<String, Object> param){
+        long time=System.currentTimeMillis();
+        param.put("updtime",time);
+        return tbCompanyContractMapper.updateDeleteStatus(param);
+    }
+
 
     /**
      * 查询合同
@@ -33,7 +54,7 @@ public class TbCompanyContractService {
      * @return
      */
     public List<Map<String, Object>> quertCompantContract(Map<String, Object> param){
-        return tbCompanyContractMapper.quertCompantContract(param);
+        return tbCompanyContractMapper.quertCompanyContract(param);
     }
 }
 

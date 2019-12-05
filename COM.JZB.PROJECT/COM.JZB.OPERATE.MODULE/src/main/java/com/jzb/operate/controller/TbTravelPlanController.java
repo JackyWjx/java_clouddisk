@@ -1,6 +1,7 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
@@ -8,10 +9,16 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.service.TbTravelDataService;
 import com.jzb.operate.service.TbTravelInfoService;
+import com.jzb.operate.api.base.RegionBaseApi;
+import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.service.TbTravelPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +43,8 @@ public class TbTravelPlanController {
     TbTravelInfoService travelInfoService;
     @Autowired
     TbTravelDataService travelDataService;
-
+    @Autowired
+    RegionBaseApi regionBaseApi;
     /**
      * 根据用户名或电话号码 获取同行人
      * @param param
@@ -48,7 +56,6 @@ public class TbTravelPlanController {
         Response result = null;
         return deptOrgApi.getDeptUser(param);
     }
-
 
     /**
      * 添加出差计划
@@ -113,7 +120,6 @@ public class TbTravelPlanController {
             param.put("endtime",endTime);
 
             travelPlanService.addTravelRecord(Arrays.asList(param));
-            travelPlanService.addTravelDetails(detailsList);
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
             //   result = new Response();
         } catch (Exception ex) {
@@ -222,6 +228,30 @@ public class TbTravelPlanController {
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
            // result = new Response();
             result.setResponseEntity(travelMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            result =  Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * @Author sapientia
+     * @Description 获取省市县列表
+     * @Date  12:49
+     * @Param [param]
+     * @return com.jzb.base.message.Response
+     **/
+    @CrossOrigin
+    @PostMapping("/getCityList")
+    public Response getCityList(@RequestBody Map<String, Object> param){
+        Response result = null;
+        try{
+            PageInfo pageInfo = new PageInfo();
+            Response res  = regionBaseApi.getCityJson(param);
+            List<Map<String , Object>>  cityList = res.getPageInfo().getList();
+            pageInfo.setList(cityList);
+            result.setPageInfo(pageInfo);
         }catch (Exception e){
             e.printStackTrace();
             result =  Response.getResponseError();
