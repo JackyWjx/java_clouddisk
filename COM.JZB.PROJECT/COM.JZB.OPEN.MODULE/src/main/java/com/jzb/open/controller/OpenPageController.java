@@ -26,7 +26,7 @@ import java.util.Spliterator;
  * @Date: 2019/11/21 14:51
  */
 @RestController
-@RequestMapping("open/page")
+@RequestMapping("/open/page")
 public class OpenPageController {
     @Autowired
     private OpenPageService openPageService;
@@ -40,29 +40,33 @@ public class OpenPageController {
      */
     @RequestMapping(value = "/searchOrgApplication", method = RequestMethod.POST)
     @CrossOrigin
-    public Response searchOrgApplication(@RequestBody Map<String, Object> param) {
+    public Response searchOrgApplication(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
         PageInfo Info;
         try {
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            int rows = JzbDataType.getInteger(param.get("pagesize"));
+            /*Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");*/
+           /* int rows = JzbDataType.getInteger(param.get("pagesize"));
             int page = JzbDataType.getInteger(param.get("pageno"));
             if (page > 0 && rows > 0) {
                 param.put("start", rows * (page - 1));
-                param.put("pagesize", rows);
+                param.put("pagesize", rows);*/
                 List<Map<String, Object>> orgAppList = openPageService.searchOrgApplication(param);
-                result = Response.getResponseSuccess(userInfo);
+               for (int i = 0; i < orgAppList.size(); i++) {
+                   orgAppList.get(i).put("cname", orgAppList.get(i).get("appname"));
+                   orgAppList.get(i).put("type", "1");
+               }
+                result = Response.getResponseSuccess();
                 Info = new PageInfo();
                 Info.setList(orgAppList);
-                int count = JzbDataType.getInteger(param.get("count"));
+                /*int count = JzbDataType.getInteger(param.get("count"));
                 if (count == 0) {
                     int size = openPageService.searchOrgApplicationCount(param);
                     Info.setTotal(size > 0 ? size : orgAppList.size());
-                }
+                }*/
                 result.setPageInfo(Info);
-            } else {
+            /*} else {
                 result = Response.getResponseError();
-            }
+            }*/
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
