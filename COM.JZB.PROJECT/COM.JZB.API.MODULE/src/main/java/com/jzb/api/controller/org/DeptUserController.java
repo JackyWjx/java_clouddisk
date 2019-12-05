@@ -86,6 +86,8 @@ public class DeptUserController {
                         param.put("userinfo", userInfo);
                         PageInfo pageInfo = deptUserService.getUserDept(param);
                         result = Response.getResponseSuccess(userInfo);
+                        List<Map<String , Object>> deList =  pageInfo.getList();
+                        pageInfo.setList(deList);
                         result.setPageInfo(pageInfo);
                     } else {
                         result = Response.getResponseError();
@@ -345,16 +347,22 @@ public class DeptUserController {
                         param.put("type", "1");
                         param.put("authid", "0");
                         Response comRes = companyService.addCompany(param);
-                        String cid = "";
-                        if (JzbDataType.isMap(comRes.getResponseEntity())) {
-                            Map<String, Object> comMap = (Map<String, Object>) comRes.getResponseEntity();
-                            cid = JzbDataType.getString(comMap.get("cid"));
+                        if(comRes.getServerResult().getResultCode() != 200){
+                            result = Response.getResponseError();
+                            result.setResponseEntity("单位已经存在!");
+                        }else{
+                            String cid = "";
+                            if (JzbDataType.isMap(comRes.getResponseEntity())) {
+                                Map<String, Object> comMap = (Map<String, Object>) comRes.getResponseEntity();
+                                cid = JzbDataType.getString(comMap.get("cid"));
+                            }
+                            // 创建公海单位表数据
+                            param.put("cid", cid);
+                            param.put("send", send);
+                            result = companyOrgApi.addCompanyCommon(param);
+                            authService.addAdmin(param);
                         }
-                        // 创建公海单位表数据
-                        param.put("cid", cid);
-                        param.put("send", send);
-                        result = companyOrgApi.addCompanyCommon(param);
-                        authService.addAdmin(param);
+
                     }
                 } else {
                     result = Response.getResponseError();
