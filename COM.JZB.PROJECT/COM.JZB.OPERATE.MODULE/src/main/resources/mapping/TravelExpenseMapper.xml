@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jzb.operate.dao.TravelExpenseMapper">
+
+	<!--根据出差id查询报销单-->
+	<select id="queryTravelExpenseByid" resultType=" java.util.Map">
+		select  * from tb_travel_expense where travelid = #{travelid}
+	</select>
+
+	 <!--插入-->
+	<insert id="saveTravelExpense" parameterType="java.util.List">
+		insert into tb_travel_expense
+		(
+			 travelid,
+			 exid,
+			 exstrtime , 
+			 exendtime , 
+			 exstradderss , 
+			 exendadderss , 
+			 exvehicle , 
+			 trsum , 
+			 mail , 
+			 crosum , 
+			 getaccsum , 
+			 subsidy , 
+			 othsum , 
+			 "sum" ,
+			 addtime ,
+			 summary 
+		)
+		values
+		<foreach collection="list" item="detials" separator=",">
+		(
+			<choose>
+				<when test="detials.travelid != null and detials.travelid!=''">
+					#{detials.travelid},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="detials.exid != null and detials.exid!=''">
+					#{detials.exid},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="detials.exstrtime != null and detials.exstrtime!=''">
+					#{detials.exstrtime},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.exendtime != null and detials.exendtime!=''">
+					#{detials.exendtime},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.exstradderss != null and detials.exstradderss!=''">
+					#{detials.exstradderss},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.exendadderss != null and detials.exendadderss!=''">
+					#{detials.exendadderss},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.exvehicle != null and detials.exvehicle!=''">
+					#{detials.exvehicle},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.trsum != null and detials.trsum!=''">
+					#{detials.trsum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.mail != null and detials.mail!=''">
+					#{detials.mail},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.crosum != null and detials.crosum!=''">
+					#{detials.crosum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.getaccsum != null and detials.getaccsum!=''">
+					#{detials.getaccsum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.subsidy != null and detials.subsidy!=''">
+					#{detials.subsidy},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.othsum != null and detials.othsum!=''">
+					#{detials.othsum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.sum != null and detials.sum!=''">
+					#{detials.sum},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.addtime != null and detials.addtime!=''">
+					#{detials.addtime},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="detials.summary != null and detials.summary!=''">
+					#{detials.summary}
+				</when>
+				<otherwise>
+					null
+				</otherwise>
+			</choose>
+		)
+		</foreach>
+	</insert>
+	 
+	<update id="updateTravelExpense" parameterType=" java.util.Map">
+		update tb_travel_expense
+		<trim prefix="set" suffixOverrides=","
+			  suffix=" where exid=#{exid} and (status = '1' or status = '4' or status='32')  ">
+			<if test="exstrtime != null"> exstrtime  = #{exstrtime}, </if>
+			<if test="exendtime != null"> exendtime  = #{exendtime}, </if>
+			<if test="exstradderss != null"> exstradderss  = #{exstradderss}, </if>
+			<if test="exendadderss != null"> exendadderss  = #{exendadderss}, </if>
+			<if test="exvehicle != null"> exvehicle  = #{exvehicle}, </if>
+			<if test="trsum != null"> trsum  = #{trsum}, </if>
+			<if test="mail != null"> mail  = #{mail}, </if>
+			<if test="crosum != null"> crosum  = #{crosum}, </if>
+			<if test="getaccsum != null"> getaccsum  = #{getaccsum}, </if>
+			<if test="subsidy != null"> subsidy  = #{subsidy}, </if>
+			<if test="othsum != null"> othsum  = #{othsum}, </if>
+			<if test="sum != null"> "sum"  = #{sum}, </if>
+			<if test="addtime != null"> addtime  = #{addtime}, </if>
+			<if test="summary != null"> summary  = #{summary}</if>
+		</trim>
+	</update>
+
+
+</mapper>

@@ -12,7 +12,7 @@
 
     <!--根据公司id查询项目-->
     <select id="queryCompanyByid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectid,cid,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone
+        select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone
 --         ,porjcetra
          from tb_company_project where cid=#{cid}
     </select>
