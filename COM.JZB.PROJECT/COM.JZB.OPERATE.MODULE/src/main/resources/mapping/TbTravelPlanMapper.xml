@@ -525,7 +525,7 @@
     <update id="updateTravelDetials" parameterType="java.util.Map">
         update tb_travel_record_deta
         <trim prefix="set" suffixOverrides=","
-              suffix=" where deid=#{deid} and (status = '1' or status = '3')  ">
+              suffix=" where deid=#{deid}"><!--and (status = '1' or status = '3') -->
             <if test="detialsid!='' and detialsid !=null">
                 detialsid=#{detialsid},
             </if>

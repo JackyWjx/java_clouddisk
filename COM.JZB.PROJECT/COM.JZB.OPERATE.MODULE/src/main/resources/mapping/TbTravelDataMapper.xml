@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jzb.operate.dao.TbTravelDataMapper">
+
+	<select id="get" resultType="java.util.Map">
+		select  id , travelid , deid , did , coou , coppt , couage , cocustomer , coframe , copropagand , contrast , card , account , speechcraft , signin , newsletter , train , implement , offer , contract , plan , invitation , reviewed , cureviewed , addtime , adduid , status , summary  from tb_travel_data where id = #{value}
+	</select>
+
+	<select id="list" resultType="java.util.Map">
+		select  id , travelid , deid , did , coou , coppt , couage , cocustomer , coframe , copropagand , contrast , card , account , speechcraft , signin , newsletter , train , implement , offer , contract , plan , invitation , reviewed , cureviewed , addtime , adduid , status , summary  from tb_travel_data
+        <where>
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
+		  		  <if test="deid != null and deid != ''"> and deid = #{deid} </if>
+		  		  <if test="did != null and did != ''"> and did = #{did} </if>
+		  		  <if test="coou != null and coou != ''"> and coou = #{coou} </if>
+		  		  <if test="coppt != null and coppt != ''"> and coppt = #{coppt} </if>
+		  		  <if test="couage != null and couage != ''"> and couage = #{couage} </if>
+		  		  <if test="cocustomer != null and cocustomer != ''"> and cocustomer = #{cocustomer} </if>
+		  		  <if test="coframe != null and coframe != ''"> and coframe = #{coframe} </if>
+		  		  <if test="copropagand != null and copropagand != ''"> and copropagand = #{copropagand} </if>
+		  		  <if test="contrast != null and contrast != ''"> and contrast = #{contrast} </if>
+		  		  <if test="card != null and card != ''"> and card = #{card} </if>
+		  		  <if test="account != null and account != ''"> and account = #{account} </if>
+		  		  <if test="speechcraft != null and speechcraft != ''"> and speechcraft = #{speechcraft} </if>
+		  		  <if test="signin != null and signin != ''"> and signin = #{signin} </if>
+		  		  <if test="newsletter != null and newsletter != ''"> and newsletter = #{newsletter} </if>
+		  		  <if test="train != null and train != ''"> and train = #{train} </if>
+		  		  <if test="implement != null and implement != ''"> and implement = #{implement} </if>
+		  		  <if test="offer != null and offer != ''"> and offer = #{offer} </if>
+		  		  <if test="contract != null and contract != ''"> and contract = #{contract} </if>
+		  		  <if test="plan != null and plan != ''"> and plan = #{plan} </if>
+		  		  <if test="invitation != null and invitation != ''"> and invitation = #{invitation} </if>
+		  		  <if test="reviewed != null and reviewed != ''"> and reviewed = #{reviewed} </if>
+		  		  <if test="cureviewed != null and cureviewed != ''"> and cureviewed = #{cureviewed} </if>
+		  		  <if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
+		  		  <if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="summary != null and summary != ''"> and summary = #{summary} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+ 	<select id="count" resultType="int">
+		select count(*) from tb_travel_data
+		 <where>
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
+		  		  <if test="deid != null and deid != ''"> and deid = #{deid} </if>
+		  		  <if test="did != null and did != ''"> and did = #{did} </if>
+		  		  <if test="coou != null and coou != ''"> and coou = #{coou} </if>
+		  		  <if test="coppt != null and coppt != ''"> and coppt = #{coppt} </if>
+		  		  <if test="couage != null and couage != ''"> and couage = #{couage} </if>
+		  		  <if test="cocustomer != null and cocustomer != ''"> and cocustomer = #{cocustomer} </if>
+		  		  <if test="coframe != null and coframe != ''"> and coframe = #{coframe} </if>
+		  		  <if test="copropagand != null and copropagand != ''"> and copropagand = #{copropagand} </if>
+		  		  <if test="contrast != null and contrast != ''"> and contrast = #{contrast} </if>
+		  		  <if test="card != null and card != ''"> and card = #{card} </if>
+		  		  <if test="account != null and account != ''"> and account = #{account} </if>
+		  		  <if test="speechcraft != null and speechcraft != ''"> and speechcraft = #{speechcraft} </if>
+		  		  <if test="signin != null and signin != ''"> and signin = #{signin} </if>
+		  		  <if test="newsletter != null and newsletter != ''"> and newsletter = #{newsletter} </if>
+		  		  <if test="train != null and train != ''"> and train = #{train} </if>
+		  		  <if test="implement != null and implement != ''"> and implement = #{implement} </if>
+		  		  <if test="offer != null and offer != ''"> and offer = #{offer} </if>
+		  		  <if test="contract != null and contract != ''"> and contract = #{contract} </if>
+		  		  <if test="plan != null and plan != ''"> and plan = #{plan} </if>
+		  		  <if test="invitation != null and invitation != ''"> and invitation = #{invitation} </if>
+		  		  <if test="reviewed != null and reviewed != ''"> and reviewed = #{reviewed} </if>
+		  		  <if test="cureviewed != null and cureviewed != ''"> and cureviewed = #{cureviewed} </if>
+		  		  <if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
+		  		  <if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
+		  		  <if test="status != null and status != ''"> and status = #{status} </if>
+		  		  <if test="summary != null and summary != ''"> and summary = #{summary} </if>
+		  		</where>
+	</select>
+
+	<insert id="save" parameterType="java.util.Map">
+		insert into tb_travel_data
+		(
+			 id ,
+			 travelid ,
+			 deid ,
+			 did ,
+			 coou ,
+			 coppt ,
+			 couage ,
+			 cocustomer ,
+			 coframe ,
+			 copropagand ,
+			 contrast ,
+			 card ,
+			 account ,
+			 speechcraft ,
+			 signin ,
+			 newsletter ,
+			 train ,
+			 implement ,
+			 offer ,
+			 contract ,
+			 plan ,
+			 invitation ,
+			 reviewed ,
+			 cureviewed ,
+			 addtime ,
+			 adduid ,
+			 status ,
+			 summary 
+		)
+		values
+		(
+			#{id},
+			#{travelid},
+			#{deid},
+			#{did},
+			#{coou},
+			#{coppt},
+			#{couage},
+			#{cocustomer},
+			#{coframe},
+			#{copropagand},
+			#{contrast},
+			#{card},
+			#{account},
+			#{speechcraft},
+			#{signin},
+			#{newsletter},
+			#{train},
+			#{implement},
+			#{offer},
+			#{contract},
+			#{plan},
+			#{invitation},
+			#{reviewed},
+			#{cureviewed},
+			#{addtime},
+			#{adduid},
+			#{status},
+			#{summary}
+		)
+	</insert>
+
+	<update id="update" parameterType="java.util.Map">
+		update tb_travel_data 
+		<set>
+			<if test="travelid != null"> travelid  = #{travelid}, </if>
+			<if test="deid != null"> deid  = #{deid}, </if>
+			<if test="did != null"> did  = #{did}, </if>
+			<if test="coou != null"> coou  = #{coou}, </if>
+			<if test="coppt != null"> coppt  = #{coppt}, </if>
+			<if test="couage != null"> couage  = #{couage}, </if>
+			<if test="cocustomer != null"> cocustomer  = #{cocustomer}, </if>
+			<if test="coframe != null"> coframe  = #{coframe}, </if>
+			<if test="copropagand != null"> copropagand  = #{copropagand}, </if>
+			<if test="contrast != null"> contrast  = #{contrast}, </if>
+			<if test="card != null"> card  = #{card}, </if>
+			<if test="account != null"> account  = #{account}, </if>
+			<if test="speechcraft != null"> speechcraft  = #{speechcraft}, </if>
+			<if test="signin != null"> signin  = #{signin}, </if>
+			<if test="newsletter != null"> newsletter  = #{newsletter}, </if>
+			<if test="train != null"> train  = #{train}, </if>
+			<if test="implement != null"> implement  = #{implement}, </if>
+			<if test="offer != null"> offer  = #{offer}, </if>
+			<if test="contract != null"> contract  = #{contract}, </if>
+			<if test="plan != null"> plan  = #{plan}, </if>
+			<if test="invitation != null"> invitation  = #{invitation}, </if>
+			<if test="reviewed != null"> reviewed  = #{reviewed}, </if>
+			<if test="cureviewed != null"> cureviewed  = #{cureviewed}, </if>
+			<if test="addtime != null"> addtime  = #{addtime}, </if>
+			<if test="adduid != null"> adduid  = #{adduid}, </if>
+			<if test="status != null"> status  = #{status}, </if>
+			<if test="summary != null"> summary  = #{summary}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from tb_travel_data where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from tb_travel_data where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -5,11 +5,17 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.org.DeptOrgApi;
+import com.jzb.operate.service.TbTravelDataService;
+import com.jzb.operate.service.TbTravelInfoService;
 import com.jzb.operate.service.TbTravelPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ：Champ-Ping
@@ -24,6 +30,25 @@ public class TbTravelPlanController {
 
     @Autowired
     TbTravelPlanService travelPlanService;
+    @Autowired
+    DeptOrgApi deptOrgApi;
+    @Autowired
+    TbTravelInfoService travelInfoService;
+    @Autowired
+    TbTravelDataService travelDataService;
+
+    /**
+     * 根据用户名或电话号码 获取同行人
+     * @param param
+     * @return
+     */
+    @CrossOrigin
+    @PostMapping("/getPeers")
+    public Response getTravelpeers(@RequestBody Map<String, Object> param){
+        Response result = null;
+        return deptOrgApi.getDeptUser(param);
+    }
+
 
     /**
      * 添加出差计划
@@ -49,19 +74,46 @@ public class TbTravelPlanController {
             long temp = JzbDataType.getLong(detailsList.get(0).get("trtime"));
             long startTime = temp;
             long endTime = temp;
+
+            //遍历细节集合
             for(Map<String, Object> detailsMap: detailsList){
+
                 detailsMap.put("deid",JzbRandom.getRandomChar(19));
                 detailsMap.put("travelid",param.get("travelid"));
                 long trTime = JzbDataType.getLong(detailsMap.get("trtime"));
                 //统计始末时间
                 startTime = startTime < trTime ? startTime : trTime;
                 endTime = endTime > trTime ? endTime : trTime;
-                travelPlanService.addTravelDetails(Arrays.asList(detailsMap));
+
+                //获取并保存情报收集list
+                List<Map<String,Object>> travelinfolist = (List<Map<String, Object>>) detailsMap.get("travelinfolist");
+                //一般travelinfolist的长度为1
+                for( Map<String,Object> infoMap : travelinfolist){
+
+                    infoMap.put("adduid",param.get("adduid"));
+                    infoMap.put("travelid",param.get("travelid"));
+                    infoMap.put("deid",detailsMap.get("deid"));
+                    infoMap.put("inid",JzbRandom.getRandomChar(19));
+                    travelInfoService.save(infoMap);
+                }
+
+
+                //获取并保存出差资料list
+                List<Map<String,Object>> traveldatalist  = (List<Map<String, Object>>) detailsMap.get("travelinfolist");
+                for(Map<String,Object> dataMap : traveldatalist){
+
+                    dataMap.put("adduid",param.get("adduid"));
+                    dataMap.put("travelid",param.get("travelid"));
+                    dataMap.put("deid",detailsMap.get("deid"));
+                    dataMap.put("did",JzbRandom.getRandomChar(19));
+                    travelDataService.save(dataMap);
+                }
             }
             param.put("orgtime",startTime);
             param.put("endtime",endTime);
 
             travelPlanService.addTravelRecord(Arrays.asList(param));
+            travelPlanService.addTravelDetails(detailsList);
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
             //   result = new Response();
         } catch (Exception ex) {
@@ -147,7 +199,6 @@ public class TbTravelPlanController {
             //设置始末时间
             param.put("orgtime",startTime);
             param.put("endtime",endTime);
-
             result = travelPlanService.updateTravelRecord(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
 
         } catch (Exception ex) {
@@ -169,6 +220,7 @@ public class TbTravelPlanController {
             List<Map<String,Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(param);
             travelMap.put("list",detailsList);
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+           // result = new Response();
             result.setResponseEntity(travelMap);
         }catch (Exception e){
             e.printStackTrace();
