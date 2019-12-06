@@ -21,30 +21,19 @@ public class TbTravelService {
     private TbTravelMapper tbTravelMapper;
 
     public List<Map<String, Object>> queryTravelList(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
-        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
-        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
+
         return tbTravelMapper.queryTravelList(map);
     }
 
     public List<Map<String, Object>> queryTravelListDeta(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
-        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
-        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return tbTravelMapper.queryTravelListDeta(map);
     }
 
     public List<Map<String, Object>> queryTravelData(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
-        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
-        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return tbTravelMapper.queryTravelData(map);
     }
 
     public List<Map<String, Object>> queryTravelInfo(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
-        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
-        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return tbTravelMapper.queryTravelInfo(map);
     }
 
@@ -53,9 +42,6 @@ public class TbTravelService {
     }
 
     public List<Map<String, Object>> queryTrackUserList(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
-        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
-        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return tbTravelMapper.queryTravelListDeta(map);
     }
 
@@ -64,9 +50,14 @@ public class TbTravelService {
     }
 
     public List<Map<String, Object>> queryTrackUserListByid(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
-        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
-        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
         return tbTravelMapper.queryTravelInfo(map);
+    }
+
+    public int countList(Map<String, Object> param) {
+        return tbTravelMapper.countList(param);
+    }
+
+    public List<Map<String, Object>> queryAllTravelList(Map<String, Object> param) {
+        return tbTravelMapper.queryAllTravelList(param);
     }
 }

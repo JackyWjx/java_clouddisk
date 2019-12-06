@@ -8,6 +8,7 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
+import com.jzb.operate.api.org.TbDeptUserListApi;
 import com.jzb.operate.service.TbTravelDataService;
 import com.jzb.operate.service.TbTravelInfoService;
 import com.jzb.operate.service.TbTravelPlanService;
@@ -44,6 +45,8 @@ public class TbTravelPlanController {
     RegionBaseApi regionBaseApi;
     @Autowired
     TbTravelProduceService travelProduceService;
+    @Autowired
+    TbDeptUserListApi tbDeptUserListApi;
 
     /**
      * 根据用户名或电话号码 获取同行人
@@ -311,10 +314,8 @@ public class TbTravelPlanController {
 
     /**
      * @Author sapientia
-     * @Description &#x83b7;&#x53d6;&#x7701;&#x5e02;&#x53bf;&#x5217;&#x8868;
-     * @Date 12:49
-     * @Param [param]
-     * @return com.jzb.base.message.Response
+     * @Date 10:41 2019/12/4
+     * @Description 获取省市县
      **/
     @CrossOrigin
     @PostMapping("/getCityList")
@@ -334,4 +335,22 @@ public class TbTravelPlanController {
         return response;
     }
 
+    /**
+     * @Author sapientia
+     * @Date 10:38 2019/12/6
+     * @Description 根据部门id获取部门同行人
+     **/
+    @RequestMapping(value = "/queryUsernameBydept", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryUsernameBydept(@RequestBody Map<String, Object> param){
+        Response response = null;
+        try{
+            response  = tbDeptUserListApi.queryUsernameBydept(param);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            response =  Response.getResponseError();
+        }
+        return response;
+    }
 }

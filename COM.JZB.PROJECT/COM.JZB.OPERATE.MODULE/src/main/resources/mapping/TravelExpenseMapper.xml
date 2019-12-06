@@ -29,11 +29,12 @@
 			 adduid ,
 			 addtime ,
 			 status ,
-			 summary 
+			 summary
 		)
 		values
 		<foreach collection="list" item="expList" separator=",">
 		(
+
 			<choose>
 				<when test="expList.travelid != null and expList.travelid!=''">
 					#{expList.travelid},
@@ -198,152 +199,112 @@
 	</insert>
 	<!--修改报销单 -->
 	<update id="updateTravelExpense" parameterType="java.util.List">
-		update tb_travel_expense
-		set
-		<foreach collection="list" item="uplists" separator=",">
+		<foreach collection = "list" item = "exlist" separator = ";">
+			update tb_travel_expense
+			<set>
+				<choose>
+					<when test="exlist.exstrtime != null and exlist.exstrtime!=''">
+						exstrtime = #{exlist.exstrtime},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.travelid != null and uplists.travelid!=''">
-					#{uplists.travelid},
-				</when>
-				<otherwise>
-					null ,
-				</otherwise>
-			</choose>
-			<choose>
-				<when test="uplists.exid != null and uplists.exid!=''">
-					#{uplists.exid},
-				</when>
-				<otherwise>
-					null ,
-				</otherwise>
-			</choose>
-			<choose>
-				<when test="uplists.exstrtime != null and uplists.exstrtime!=''">
-					#{uplists.exstrtime},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.exendtime != null and exlist.exendtime!=''">
+						exendtime = #{exlist.exendtime},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.exendtime != null and uplists.exendtime!=''">
-					#{uplists.exendtime},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.exstradderss != null and exlist.exstradderss!=''">
+						exstradderss = #{exlist.exstradderss},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.exstradderss != null and uplists.exstradderss!=''">
-					#{uplists.exstradderss},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.exendadderss != null and exlist.exendadderss!=''">
+						exendadderss = #{exlist.exendadderss},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.exendadderss != null and uplists.exendadderss!=''">
-					#{uplists.exendadderss},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.exvehicle != null and exlist.exvehicle!=''">
+						exvehicle = #{exlist.exvehicle},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.exvehicle != null and uplists.exvehicle!=''">
-					#{uplists.exvehicle},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.trsum != null and exlist.trsum!=''">
+						trsum = #{exlist.trsum},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.trsum != null and uplists.trsum!=''">
-					#{uplists.trsum},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.mail != null and exlist.mail!=''">
+						mail =#{exlist.mail},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.mail != null and uplists.mail!=''">
-					#{uplists.mail},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.crosum != null and exlist.crosum!=''">
+						crosum = #{exlist.crosum},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.crosum != null and uplists.crosum!=''">
-					#{uplists.crosum},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.getaccsum != null and exlist.getaccsum!=''">
+						getaccsum = #{exlist.getaccsum},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.getaccsum != null and uplists.getaccsum!=''">
-					#{uplists.getaccsum},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.subsidy != null and exlist.subsidy!=''">
+						subsidy = #{exlist.subsidy},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.subsidy != null and uplists.subsidy!=''">
-					#{uplists.subsidy},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.othsum != null and exlist.othsum!=''">
+						othsum = #{exlist.othsum},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.othsum != null and uplists.othsum!=''">
-					#{uplists.othsum},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.sum != null and exlist.sum!=''">
+						"sum" = #{exlist.sum},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.sum != null and uplists.sum!=''">
-					#{uplists.sum},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.adduid != null and exlist.adduid!=''">
+						adduid = #{exlist.adduid},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.addtime != null and uplists.addtime!=''">
-					#{uplists.addtime},
-				</when>
-				<otherwise>
-					null,
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.status != null and exlist.status!=''">
+						status = #{exlist.status},
+					</when>
+				</choose>
 
-			<choose>
-				<when test="uplists.summary != null and uplists.summary!=''">
-					#{uplists.summary}
-				</when>
-				<otherwise>
-					null
-				</otherwise>
-			</choose>
+				<choose>
+					<when test="exlist.summary != null and exlist.summary!=''">
+						summary = #{exlist.summary},
+					</when>
+				</choose>
+
+				<choose>
+					<when test="exlist.addtime != null and exlist.addtime!=''">
+						addtime = #{exlist.addtime}
+					</when>
+				</choose>
+			</set>
+			where exid = #{exlist.exid}
 		</foreach>
 	</update>
+
+	<!-- 设置删除状态-->
+	<update id="setExpenseDeleteStatus" parameterType="java.util.Map">
+        update tb_travel_expense set status=2  where  exid=#{exid}
+    </update>
 
 </mapper>

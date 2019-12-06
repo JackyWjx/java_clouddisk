@@ -488,8 +488,6 @@
                 summary=#{summary},
             </if>
         </trim>
-
-
     </update>
 
     <!-- 设置删除状态-->

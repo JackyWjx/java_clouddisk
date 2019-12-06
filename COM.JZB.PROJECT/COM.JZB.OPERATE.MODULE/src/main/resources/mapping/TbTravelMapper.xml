@@ -5,20 +5,41 @@
 <mapper namespace="com.jzb.operate.dao.TbTravelMapper">
 
     <!--  查询出差记录   -->
-    <select id="queryTravelList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid
-        from tb_travel_record where status='1'and uid=#{uid} and travelid = #{travelid}
+    <select id="queryAllTravelList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum"
+        from tb_travel_record where status='1' and aptype = '2'and uid=#{uid}
         <choose><when test="orgtime != null and orgtime != ''"><![CDATA[orgtime>=#{orgtime} ]]></when></choose>
         <choose><when test="endtime != null and endtime != ''"><![CDATA[endtime<=#{endtime} ]]></when></choose>
          limit #{pagesize}  offset #{pageno}
     </select>
 
+    <!--查询出差记录总条数-->
+    <select id="countList" resultType="int" parameterType="java.util.Map">
+        SELECT count(1)
+        from tb_travel_record where status='1'and uid=#{uid}
+        <choose><when test="orgtime != null and orgtime != ''"><![CDATA[orgtime>=#{orgtime} ]]></when></choose>
+        <choose><when test="endtime != null and endtime != ''"><![CDATA[endtime<=#{endtime} ]]></when></choose>
+    </select>
+
+
+    <!--  查询出差记录详情   -->
+    <select id="queryTravelList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum"
+        from tb_travel_record where status='1'and uid=#{uid} and travelid = #{travelid}
+        <choose><when test="orgtime != null and orgtime != ''"><![CDATA[orgtime>=#{orgtime} ]]></when></choose>
+        <choose><when test="endtime != null and endtime != ''"><![CDATA[endtime<=#{endtime} ]]></when></choose>
+        limit #{pagesize}  offset #{pageno}
+    </select>
 
     <!--  查询出差详情记录   -->
     <select id="queryTravelListDeta" resultType="java.util.Map" parameterType="java.util.Map">
-        select deid,travelid,uid,cid,projectid,did,trpeers,trregion,cid,trtime,trtype,trgoal,trdefense,produce,amount,fare,expenses addtime,adduid,updtime,upduid
-        from tb_travel_record_deta where  deid = #{deid}
+        select * from tb_travel_record_deta where status='1' deid = #{deid}
         limit #{pagesize}  offset #{pageno}
+    </select>
+
+    <!--  查询出差详情记录条数   -->
+    <select id="countTravelListDeta" resultType="java.util.Map" parameterType="java.util.Map">
+        select count(1) from tb_travel_record_deta where  deid = #{deid}
     </select>
 
     <!--查询出差资料-->
@@ -36,10 +57,13 @@
 
     <!--根据出差id修改出差报销金额-->
     <update id="updateTravelFare"  parameterType="java.util.Map">
-        update tb_travel_record set
+        update tb_travel_record
+        <trim prefix="set" suffixOverrides=","
+              suffix="where travelid=#{travelid}">
             <if test="fare != null and fare != '' ">fare=#{fare},</if>
-            <if test="expenses != null and expenses != '' ">expenses=#{expenses}</if>
-        where travelid=#{travelid}
+            <if test="expenses != null and expenses != '' ">expenses=#{expenses},</if>
+            <if test="sum != null and sum != '' ">"sum"=#{sum}</if>
+        </trim>
     </update>
 
     <!-- 设置删除状态-->

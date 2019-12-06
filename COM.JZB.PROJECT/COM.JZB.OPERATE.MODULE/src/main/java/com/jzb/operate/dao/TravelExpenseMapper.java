@@ -17,5 +17,5 @@ public interface TravelExpenseMapper {
 
 	int updateTravelExpense(List<Map<String, Object>> list);
 
-
+	int setExpenseDeleteStatus(Map<String, Object> map);
 }
