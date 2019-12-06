@@ -16,6 +16,7 @@
     <select id="getComProject" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
         cid,
+        tcp.tendercompany,
         tcp.projectid,
         projectname,
         projecttype,

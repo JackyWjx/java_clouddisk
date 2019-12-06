@@ -31,7 +31,9 @@ public class TbTrackUserService {
         param.put("tracktime",System.currentTimeMillis());
         param.put("tracktype",JzbDataType.getInteger(param.get("tracktype")));
         param.put("trackid", JzbRandom.getRandomCharCap(17));
-        param.put("customer",param.get("adduid"));
+        if (!JzbTools.isEmpty(param.get("customer"))){
+            param.put("customer",param.get("adduid"));
+        }
         param.put("status",'1');
         if (!JzbTools.isEmpty(param.get("image"))){
             param.put("image",param.get("image").toString());

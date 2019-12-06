@@ -1,6 +1,6 @@
 package com.jzb.org.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -9,10 +9,12 @@ import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.TbCompanySupplierService;
+import com.jzb.org.util.HttpConnectionURL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,27 +177,23 @@ public class TbCompanySupplierController {
     public Response authCompanySupplier(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-
-                // 设置参数
-                JzbPageConvert.setPageRows(param);
-
-
-                // 将供应商部分信息存入供应商表
-                // int count =  tbCompanySupplierService.addCompanySupplier(pmap);
-
-                PageInfo pageInfo = new PageInfo();
-
-                // 获取用户信息返回
-                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-                result.setPageInfo(pageInfo);
-
-
-
+            result = Response.getResponseError();
+            //获取认证公司名字
+            if (!JzbTools.isEmpty(param.get("cname"))){
+                // 调用认证接口获取供应商公司信息
+                String url = "http://192.168.0.20:8811/test_1.0";
+                String name = JzbDataType.getString(param.get("cname"));
+                String s = HttpConnectionURL.post(url, name);
+                Map<String, Object> parse  =(Map<String, Object>) JSON.parse(s);
+                 if(parse.get("code").equals("200")) {
+                     result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+                     result.setResponseEntity(parse);
+                 }
+            }
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
         }
         return result;
     }
-
 }
