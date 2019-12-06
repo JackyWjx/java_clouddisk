@@ -99,7 +99,8 @@ public class AuthUserController {
             // 获取用户资料
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             if (JzbDataType.isEmpty(JzbDataType.getString(param.get("uid")))){
-                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+//                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+                param.put("uid", param.get("uid"));
             }
             Map<String, Object> resuMap = userService.getUserInfo(param);
             if (!JzbTools.isEmpty(resuMap)) {
@@ -112,7 +113,11 @@ public class AuthUserController {
                 }
             }
             Response res = userRedisApi.getCacheUserInfo(resuMap);
-            response = Response.getResponseSuccess(userInfo);
+            if(param.containsKey("userinfo")){
+                response = Response.getResponseSuccess(userInfo);
+            }else{
+                response = Response.getResponseSuccess();
+            }
             response.setResponseEntity(res.getResponseEntity());
         } catch (Exception e) {
             JzbTools.logError(e);
