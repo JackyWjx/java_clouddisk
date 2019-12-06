@@ -100,6 +100,7 @@ public class TbCommonProjectListController {
         try {
             // 如果获取参数userinfo不为空的话
             if (param.get("userinfo") != null) {
+                //获取用户信息
                 userInfo = (Map<String, Object>) param.get("userinfo");
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
@@ -111,8 +112,6 @@ public class TbCommonProjectListController {
                 result = Response.getResponseError();
             } else {
 
-                //获取用户信息
-                userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("upduid", userInfo.get("uid"));
                 //新建项目
                 int count = tbCommonProjectListService.updateCommonProjectList(param);

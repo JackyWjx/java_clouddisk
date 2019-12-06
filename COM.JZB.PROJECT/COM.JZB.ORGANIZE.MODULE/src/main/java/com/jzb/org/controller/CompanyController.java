@@ -327,8 +327,14 @@ public class CompanyController {
     public Response getEnterpriseNames(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            param.put("start", 0);
-            param.put("pagesize", 10);
+                if(param.containsKey("pageno")){
+                int pageno  = JzbDataType.getInteger(param.get("pageno"))  <= 1 ? 1 : JzbDataType.getInteger(param.get("pageno"));
+                param.put("start", (pageno - 1 )  * 10 );
+                param.put("pagesize", 10 * pageno);
+            }else{
+                param.put("start", 0);
+                param.put("pagesize", 10);
+            }
             List<Map<String, Object>> list = companyService.getNames(param);
             result = Response.getResponseSuccess();
             result.setResponseEntity(list);

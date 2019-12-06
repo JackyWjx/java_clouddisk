@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author  chenzhengduan
+ * 中标list
+ */
 @RestController
 @RequestMapping(value = "/org/tenderResult")
 public class TbTenderResultController {

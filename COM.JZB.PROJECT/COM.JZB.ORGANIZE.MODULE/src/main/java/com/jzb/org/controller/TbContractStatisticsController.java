@@ -152,10 +152,8 @@ public class TbContractStatisticsController {
             } else {
                 // 设置分页参数
                 JzbPageConvert.setPageRows(param);
-
                 // 要分页
                 param.put("page", 1);
-
                 // 判断时间参数不为空则转换参数值
                 if (param.get("beginTime") != null && !param.get("beginTime").toString().equals("")) {
                     param.put("beginTime", JzbDateUtil.getDate(param.get("beginTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
@@ -163,7 +161,6 @@ public class TbContractStatisticsController {
                 if (param.get("endTime") != null && !param.get("endTime").toString().equals("")) {
                     param.put("endTime", JzbDateUtil.getDate(param.get("endTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
                 }
-
                 // 获取结果集
                 List<Map<String, Object>> list = tbContractStatisticsService.findContractStatisticsList(param);
                 for (int i = 0; i < list.size(); i++) {
