@@ -243,10 +243,16 @@ public class TbTravelController {
     public Response saveTravelExpense(@RequestBody Map<String, Object> param){
         Response result;
         try {
-            List<Map<String, Object>> detailsList = (List<Map<String, Object>>) param.get("list");
-            param.put("exid",JzbRandom.getRandomChar(12));
-            param.put("addtime",System.currentTimeMillis());
-            tbTravelExpenseService.saveTravelExpense(Arrays.asList(param));
+            List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+
+            for(Map<String, Object> expMap: list){
+                expMap.put("exid",JzbRandom.getRandomChar(12));
+                expMap.put("travelid",param.get("travelid"));
+                expMap.put("addtime",System.currentTimeMillis());
+                expMap.put("status",1);//默认状态1
+                list.add(expMap);
+            }
+            tbTravelExpenseService.saveTravelExpense(list);
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception e){
             e.printStackTrace();
@@ -265,9 +271,15 @@ public class TbTravelController {
     public Response updateTravelExpense(@RequestBody Map<String, Object> param ){
         Response result;
         try {
-            List<Map<String, Object>> detailsList = (List<Map<String, Object>>) param.get("uplists");
-            param.put("addtime",System.currentTimeMillis());
-            tbTravelExpenseService.updateTravelExpense(Arrays.asList(param));
+            List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+
+            for(Map<String, Object> expMap: list){
+                expMap.put("travelid",param.get("travelid"));
+                expMap.put("addtime",System.currentTimeMillis());
+                expMap.put("status",1);//默认状态1
+                list.add(expMap);
+            }
+            tbTravelExpenseService.saveTravelExpense(list);
             result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception e){
             e.printStackTrace();

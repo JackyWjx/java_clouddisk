@@ -4,7 +4,7 @@
 <mapper namespace="com.jzb.operate.dao.TravelExpenseMapper">
 
 	<!--根据出差id查询报销单-->
-	<select id="queryTravelExpenseByid" resultType=" java.util.Map">
+	<select id="queryTravelExpenseByid" resultType="java.util.Map" parameterType="java.util.Map">
 		select  * from tb_travel_expense where travelid = #{travelid}
 	</select>
 
@@ -26,31 +26,33 @@
 			 subsidy , 
 			 othsum , 
 			 "sum" ,
+			 adduid ,
 			 addtime ,
+			 status ,
 			 summary 
 		)
 		values
-		<foreach collection="list" item="detials" separator=",">
+		<foreach collection="list" item="expList" separator=",">
 		(
 			<choose>
-				<when test="detials.travelid != null and detials.travelid!=''">
-					#{detials.travelid},
+				<when test="expList.travelid != null and expList.travelid!=''">
+					#{expList.travelid},
 				</when>
 				<otherwise>
 					null ,
 				</otherwise>
 			</choose>
 			<choose>
-				<when test="detials.exid != null and detials.exid!=''">
-					#{detials.exid},
+				<when test="expList.exid != null and expList.exid!=''">
+					#{expList.exid},
 				</when>
 				<otherwise>
 					null ,
 				</otherwise>
 			</choose>
 			<choose>
-				<when test="detials.exstrtime != null and detials.exstrtime!=''">
-					#{detials.exstrtime},
+				<when test="expList.exstrtime != null and expList.exstrtime!=''">
+					#{expList.exstrtime},
 				</when>
 				<otherwise>
 					null,
@@ -58,8 +60,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.exendtime != null and detials.exendtime!=''">
-					#{detials.exendtime},
+				<when test="expList.exendtime != null and expList.exendtime!=''">
+					#{expList.exendtime},
 				</when>
 				<otherwise>
 					null,
@@ -67,8 +69,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.exstradderss != null and detials.exstradderss!=''">
-					#{detials.exstradderss},
+				<when test="expList.exstradderss != null and expList.exstradderss!=''">
+					#{expList.exstradderss},
 				</when>
 				<otherwise>
 					null,
@@ -76,8 +78,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.exendadderss != null and detials.exendadderss!=''">
-					#{detials.exendadderss},
+				<when test="expList.exendadderss != null and expList.exendadderss!=''">
+					#{expList.exendadderss},
 				</when>
 				<otherwise>
 					null,
@@ -85,8 +87,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.exvehicle != null and detials.exvehicle!=''">
-					#{detials.exvehicle},
+				<when test="expList.exvehicle != null and expList.exvehicle!=''">
+					#{expList.exvehicle},
 				</when>
 				<otherwise>
 					null,
@@ -94,8 +96,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.trsum != null and detials.trsum!=''">
-					#{detials.trsum},
+				<when test="expList.trsum != null and expList.trsum!=''">
+					#{expList.trsum},
 				</when>
 				<otherwise>
 					null,
@@ -103,8 +105,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.mail != null and detials.mail!=''">
-					#{detials.mail},
+				<when test="expList.mail != null and expList.mail!=''">
+					#{expList.mail},
 				</when>
 				<otherwise>
 					null,
@@ -112,8 +114,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.crosum != null and detials.crosum!=''">
-					#{detials.crosum},
+				<when test="expList.crosum != null and expList.crosum!=''">
+					#{expList.crosum},
 				</when>
 				<otherwise>
 					null,
@@ -121,8 +123,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.getaccsum != null and detials.getaccsum!=''">
-					#{detials.getaccsum},
+				<when test="expList.getaccsum != null and expList.getaccsum!=''">
+					#{expList.getaccsum},
 				</when>
 				<otherwise>
 					null,
@@ -130,8 +132,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.subsidy != null and detials.subsidy!=''">
-					#{detials.subsidy},
+				<when test="expList.subsidy != null and expList.subsidy!=''">
+					#{expList.subsidy},
 				</when>
 				<otherwise>
 					null,
@@ -139,8 +141,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.othsum != null and detials.othsum!=''">
-					#{detials.othsum},
+				<when test="expList.othsum != null and expList.othsum!=''">
+					#{expList.othsum},
 				</when>
 				<otherwise>
 					null,
@@ -148,8 +150,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.sum != null and detials.sum!=''">
-					#{detials.sum},
+				<when test="expList.sum != null and expList.sum!=''">
+					#{expList.sum},
 				</when>
 				<otherwise>
 					null,
@@ -157,8 +159,8 @@
 			</choose>
 
 			<choose>
-				<when test="detials.addtime != null and detials.addtime!=''">
-					#{detials.addtime},
+				<when test="expList.adduid != null and expList.adduid!=''">
+					#{expList.adduid},
 				</when>
 				<otherwise>
 					null,
@@ -166,8 +168,26 @@
 			</choose>
 
 			<choose>
-				<when test="detials.summary != null and detials.summary!=''">
-					#{detials.summary}
+				<when test="expList.addtime != null and expList.addtime!=''">
+					#{expList.addtime},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="expList.status != null and expList.status!=''">
+					#{expList.status},
+				</when>
+				<otherwise>
+					1,
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="expList.summary != null and expList.summary!=''">
+					#{expList.summary}
 				</when>
 				<otherwise>
 					null
@@ -177,7 +197,7 @@
 		</foreach>
 	</insert>
 	<!--修改报销单 -->
-	<update id="updateTravelExpense" parameterType=" java.util.list">
+	<update id="updateTravelExpense" parameterType="java.util.List">
 		update tb_travel_expense
 		set
 		<foreach collection="list" item="uplists" separator=",">
@@ -325,6 +345,5 @@
 			</choose>
 		</foreach>
 	</update>
-
 
 </mapper>
