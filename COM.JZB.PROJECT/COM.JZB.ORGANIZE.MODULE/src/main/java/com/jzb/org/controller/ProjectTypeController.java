@@ -15,6 +15,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author wangjixiang
+ * 公告类型增删改
+ */
 @RequestMapping("/org/projectType")
 @RestController
 public class ProjectTypeController {
@@ -28,7 +32,11 @@ public class ProjectTypeController {
     private final static Logger logger = LoggerFactory.getLogger(ProjectTypeController.class);
 
 
-
+    /**
+     * 获取公告类型
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/getProjectType", method = RequestMethod.POST)
     @CrossOrigin
     public Response getProjectType(@RequestBody(required = false) Map<String, Object> param) {
@@ -66,6 +74,11 @@ public class ProjectTypeController {
         return result;
     }
 
+    /**
+     * 增加公告类型
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/addProjectType", method = RequestMethod.POST)
     @CrossOrigin
     public Response addProjectType(@RequestBody Map<String, Object> param) {
@@ -94,6 +107,11 @@ public class ProjectTypeController {
     }
 
 
+    /**
+     * 删除公告类型
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/delProjectType", method = RequestMethod.POST)
     @CrossOrigin
     public Response delProjectType(@RequestBody Map<String, Object> param) {
@@ -114,6 +132,11 @@ public class ProjectTypeController {
         return result;
     }
 
+    /**
+     * 修改公告类型
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/putProjectType", method = RequestMethod.POST)
     @CrossOrigin
     public Response putProjectType(@RequestBody Map<String, Object> param) {

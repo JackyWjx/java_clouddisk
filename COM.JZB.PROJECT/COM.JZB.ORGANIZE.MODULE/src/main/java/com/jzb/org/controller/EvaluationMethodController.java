@@ -17,6 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 评标方法增删改
+ * @author wang jixiang
+ */
 @RestController
 @RequestMapping("/org/evaluationMethod")
 public class EvaluationMethodController {
@@ -29,7 +33,11 @@ public class EvaluationMethodController {
     private final static Logger logger = LoggerFactory.getLogger(EvaluationMethodController.class);
 
 
-
+    /**
+     * 获取评标方法的所有数据
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/getEvaluationMethod", method = RequestMethod.POST)
     @CrossOrigin
     public Response getEvaluationMethod(@RequestBody(required = false) Map<String, Object> param) {
@@ -79,6 +87,11 @@ public class EvaluationMethodController {
         return result;
     }
 
+    /**
+     * 增加评标方法
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/addEvaluationMethod", method = RequestMethod.POST)
     @CrossOrigin
     public Response addEvaluationMethod(@RequestBody Map<String, Object> param) {
@@ -102,7 +115,11 @@ public class EvaluationMethodController {
         return result;
     }
 
-
+    /**
+     * 删除评标方法
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/delEvaluationMethod", method = RequestMethod.POST)
     @CrossOrigin
     public Response delEvaluationMethod(@RequestBody Map<String, Object> param) {
@@ -124,6 +141,11 @@ public class EvaluationMethodController {
         return result;
     }
 
+    /**
+     * 修改评标方法
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/putEvaluationMethod", method = RequestMethod.POST)
     @CrossOrigin
     public Response putEvaluationMethod(@RequestBody Map<String, Object> param) {
