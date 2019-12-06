@@ -241,7 +241,9 @@ public class AuthUserLoginService {
         String phone = map.get("phone") == null ? "" : map.get("phone").toString();
         String name = map.get("name") == null ? "" : map.get("name").toString();
         boolean b1 = verify(phone, 4);
-        boolean b2 = verify(name, 2);
+//        boolean b2 = verify(name, 2);
+        // 去除对姓名的校验
+        boolean b2 = name == "" ? false : true  ;
         if (b1 && b2) {
             List<Map> loList = userMapper.searchSendCode(map);
             if (loList.size() > 0) {

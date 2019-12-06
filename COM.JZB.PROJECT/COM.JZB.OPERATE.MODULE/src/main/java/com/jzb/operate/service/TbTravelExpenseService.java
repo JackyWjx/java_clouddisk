@@ -25,4 +25,12 @@ public class TbTravelExpenseService {
     public int updateTravelExpense(List<Map<String, Object>> list) {
         return travelExpenseMapper.updateTravelExpense(list);
     }
+
+    public List<Map<String, Object>> queryTravelExpenseByid(Map<String, Object> map) {
+        return travelExpenseMapper.queryTravelExpenseByid(map);
+    }
+
+    public int setExpenseDeleteStatus(Map<String, Object> param) {
+        return travelExpenseMapper.setExpenseDeleteStatus(param);
+    }
 }

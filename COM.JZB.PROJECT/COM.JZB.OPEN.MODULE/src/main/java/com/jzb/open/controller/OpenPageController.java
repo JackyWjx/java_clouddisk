@@ -6,6 +6,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.open.service.OpenPageService;
 import com.sun.org.apache.xpath.internal.objects.XString;
@@ -253,6 +254,7 @@ public class OpenPageController {
                     node.put("statuss", map.get("statuss").toString());
                     node.put("parentid", map.get("parentid").toString());
                     node.put("children", new JSONArray());
+                    node.put("numIdx", JzbRandom.getRandomChar(7));
                     //拿到菜单id去查询页面对应的菜单
                     Map<String, Object> hashMap = new HashMap<>();
                     hashMap.put("mid", map.get("mid").toString());
@@ -264,6 +266,7 @@ public class OpenPageController {
                         //把页面放到菜单下面
                         for (int j = 0; j <list.size() ; j++) {
                             List<Map<String,Object>> children = (List<Map<String, Object>>) node.get("children");
+                            list.get(j).put("numIdx", JzbRandom.getRandomChar(7));
                             children.add(list.get(j));
                         }
 
@@ -272,6 +275,7 @@ public class OpenPageController {
                         recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
                         for (int j = 0; j <list.size() ; j++) {
                             List<Map<String,Object>> children = (List<Map<String, Object>>) node.get("children");
+                            list.get(j).put("numIdx", JzbRandom.getRandomChar(7));
                             children.add(list.get(j));
                         }
                         recordJson.put(map.get("mid").toString(), node);

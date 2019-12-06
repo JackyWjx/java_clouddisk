@@ -27,4 +27,8 @@ public interface TbTravelMapper {
     int  updateTravelFare(Map<String, Object> map);
 
     int setDeleteStatus(Map<String, Object> map);
+
+    int countList(Map<String, Object> map);
+
+    List<Map<String, Object>> queryAllTravelList(Map<String, Object> param);
 }

@@ -160,8 +160,19 @@ public class ProductLineController {
                     pageInfo.add(list.get(i));
                 }
             }
+           List<Map<String,Object>> objects = new ArrayList<>();
+            for (int i = 0; i < pageInfo.size(); i++) {
+                if (pageInfo.get(i).get("children") == null && pageInfo.get(i).get("appid") != null) {
+                    pageInfo.get(i).clear();
+                }
+                if (pageInfo.get(i) != null && pageInfo.get(i).size() > 0) {
+                    objects.add(pageInfo.get(i));
+                }
+            }
+
+
             result = Response.getResponseSuccess();
-            result.setResponseEntity(pageInfo);
+            result.setResponseEntity(objects);
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
