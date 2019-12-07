@@ -334,6 +334,9 @@ public class PlatformComService {
         param.put("appid", JzbRandom.getRandomCharCap(11));
         param.put("time", System.currentTimeMillis());
         param.put("status", "1");
+        param.put("appkey", JzbRandom.getRandom(16));
+        param.put("appsecret", JzbRandom.getRandom(32));
+        param.put("checkcode", JzbRandom.getRandomCharCap(32));
         return platformComMapper.insertOrgApplication(param);
     }
 

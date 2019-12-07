@@ -1,6 +1,8 @@
 package com.jzb.open.service;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.code.JzbDataCheck;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.open.dao.OpenPageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -168,4 +171,12 @@ public class OpenPageService {
         return openPageMapper.updateOrgApplication(param);
     }
 
+
+
+    public Map<String,Object> getOrgApplication(String appid) throws Exception {
+
+        Map<String,Object> map = openPageMapper.getOrgApplication(appid);
+
+        return map;
+    }
 }

@@ -96,4 +96,5 @@ public interface OpenPageMapper {
      */
     int updateOrgApplication(Map<String, Object> param);
 
+    Map<String, Object> getOrgApplication(String appid);
 }
