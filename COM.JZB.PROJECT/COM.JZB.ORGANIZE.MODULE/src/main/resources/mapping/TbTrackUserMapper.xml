@@ -60,14 +60,18 @@
         <if test="trackcid != null and trackcid != ''">
             and trackcid = #{trackcid}
         </if>
+        <if test="trackproid != null and trackproid != ''">
+            and trackproid = #{trackproid}
+        </if>
         <if test="customer != null and customer != ''">
             and customer = #{customer}
         </if>
-        <if test="pageno != null and pageno != ''">
-            limit pagesize
-            offset pageno
-        </if>
         order by id desc
+        <if test="pageno != null and pageno != ''">
+            limit #{pagesize}
+            offset #{pageno}
+        </if>
+
     </select>
 
     <!--查询qq/微信联系记录数-->
@@ -102,7 +106,7 @@
     <select id="getHandleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_track_user_list
          where trackcid in
-        (select cid  from tb_private_company_list where oneheader = #{uid} or twoheader = #{uid})
+        (select cid  from tb_private_company_list where  oneheader = #{uid} or twoheader = #{uid} and status = '1')
         and customer = #{uid}
         and trackres = #{trackres}
         <if test="zero != null and zero != ''">

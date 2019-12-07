@@ -41,7 +41,7 @@ public class TbTrackUserController {
         Response response;
         try {
             Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            param.put("trackuid",userInfo.get("uid"));
+            param.put("adduid",userInfo.get("uid"));
             int count = userService.addTrackUser(param);
             response = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseSuccess();
         }catch (Exception e){
@@ -65,7 +65,7 @@ public class TbTrackUserController {
                 count = userService.getTrackCount(param);
             }
             param.put("count",count);
-            SetPageSize.setPagenoSize(param);
+            JzbPageConvert.setPageRows(param);
             // 查询跟进人员记录信息
             List<Map<String,Object>> list = null;
             if (!JzbTools.isEmpty(param.get("trackvalue"))){
@@ -133,7 +133,6 @@ public class TbTrackUserController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             param.put("adduid",userInfo.get("uid"));
-            userInfo = (Map<String, Object>) param.get("userinfo");
             List<Map<String ,Object>> list = userService.getInfo(param);
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(list);

@@ -432,25 +432,25 @@
     <update id="upcompanyProject" parameterType="java.util.Map">
         update  tb_company_project set
         updtime = #{updtime} , upduid = #{uid}
-        <choose><when test=" tendername != null and tendername !=''">,#{tendername}</when></choose>
-        <choose><when test=" tenderphone != null and tenderphone !=''">,#{tenderphone}</when></choose>
-        <choose><when test=" projectname != null and projectname !=''">,#{projectname}</when></choose>
-        <choose><when test=" region != null and region !=''">,#{region}</when></choose>
-        <choose><when test=" address != null and address !=''">,#{address}</when></choose>
-        <choose><when test=" tendertime != null and tendertime !=''">,#{tendertime}</when></choose>
-        <choose><when test=" tenderuid != null and tenderuid !=''">,#{tenderuid}</when></choose>
-        <choose><when test=" podeperson != null and podeperson !=''">,#{podeperson}</when></choose>
-        <choose><when test=" podephone != null and podephone !=''">,#{podephone}</when></choose>
-        <choose><when test=" podejob != null and podejob !=''">,#{podejob}</when></choose>
-        <choose><when test=" podenature != null and podenature !=''">,#{podenature}</when></choose>
-        <choose><when test=" tendercompany != null and tendercompany !=''">,#{tendercompany}</when></choose>
-        <choose><when test=" projecttype != null and projecttype !=''">,#{projecttype}</when></choose>
-        <choose><when test=" mail != null and mail !=''">,#{mail}</when></choose>
-        <choose><when test=" tenderresultcompany != null and tenderresultcompany !=''">,#{tenderresultcompany}</when></choose>
-        <choose><when test=" tenderagent != null and tenderagent !=''">,#{tenderagent}</when></choose>
-        <choose><when test=" agent != null and agent !=''">,#{agent}</when></choose>
-        <choose><when test=" agentphone != null and agentphone !=''">,#{agentphone}</when></choose>
-        <choose><when test=" relation != null and relation !=''">,#{relation}</when></choose>
+        <choose><when test=" tendername != null and tendername !=''">,tendername = #{tendername}</when></choose>
+        <choose><when test=" tenderphone != null and tenderphone !=''">,tenderphone = #{tenderphone}</when></choose>
+        <choose><when test=" projectname != null and projectname !=''">,projectname = #{projectname}</when></choose>
+        <choose><when test=" region != null and region !=''">,region = #{region}</when></choose>
+        <choose><when test=" address != null and address !=''">,address =  #{address}</when></choose>
+        <choose><when test=" tendertime != null and tendertime !=''">,tendertime = #{tendertime}</when></choose>
+        <choose><when test=" tenderuid != null and tenderuid !=''">,tenderuid = #{tenderuid}</when></choose>
+        <choose><when test=" podeperson != null and podeperson !=''">,podeperson = #{podeperson}</when></choose>
+        <choose><when test=" podephone != null and podephone !=''">,podephone = #{podephone}</when></choose>
+        <choose><when test=" podejob != null and podejob !=''">,podejob = #{podejob}</when></choose>
+        <choose><when test=" podenature != null and podenature !=''">,podenature = #{podenature}</when></choose>
+        <choose><when test=" tendercompany != null and tendercompany !=''">,tendercompany =  #{tendercompany}</when></choose>
+        <choose><when test=" projecttype != null and projecttype !=''">,projecttype = #{projecttype}</when></choose>
+        <choose><when test=" mail != null and mail !=''">,mail = #{mail}</when></choose>
+        <choose><when test=" tenderresultcompany != null and tenderresultcompany !=''">,tenderresultcompany = #{tenderresultcompany}</when></choose>
+        <choose><when test=" tenderagent != null and tenderagent !=''">,tenderagent = #{tenderagent}</when></choose>
+        <choose><when test=" agent != null and agent !=''">,agent = #{agent}</when></choose>
+        <choose><when test=" agentphone != null and agentphone !=''">,agentphone = #{agentphone}</when></choose>
+        <choose><when test=" relation != null and relation !=''">,relation = #{relation}</when></choose>
         where  projectid = #{projectid}
     </update>
 

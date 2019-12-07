@@ -354,6 +354,7 @@ public class CompanyUserService {
      */
     public int upCompanyProject(Map<String, Object> param) {
         param.put("updtime", System.currentTimeMillis());
+        param.put("tendertime",JzbDataType.getLong(param.get("tendertime")));
         return   companyUserMapper.upcompanyProject(param);
     }
 
