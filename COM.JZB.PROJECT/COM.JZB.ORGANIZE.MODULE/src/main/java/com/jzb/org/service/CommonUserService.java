@@ -67,6 +67,7 @@ public class CommonUserService {
     }
     // 修改公海用户信息
     public int updComUser(Map<String, Object> paramp) {
+        paramp.put("source",JzbDataType.getInteger(paramp.get("source")));
         paramp.put("age",JzbDataType.getInteger(paramp.get("age")));
         paramp.put("updtime",System.currentTimeMillis());
         return userMapper.updComUser(paramp);

@@ -428,7 +428,7 @@
         )
     </insert>
 
-    <!--修改项目详情表-->
+    <!--修改项目表-->
     <update id="upcompanyProject" parameterType="java.util.Map">
         update  tb_company_project set
         updtime = #{updtime} , upduid = #{uid}
@@ -458,18 +458,16 @@
     <update id="upcompanyProjectInfo" parameterType="java.util.Map">
           update  tb_common_project_info set
           updtime = #{updtime} , upduid = #{uid}
-        <choose><when test=" lineuid != null and lineuid !=''">,#{lineuid}</when></choose>
-        <choose><when test=" lineuname != null and lineuname !=''">,#{lineuname}</when></choose>
-        <choose><when test=" linephone != null and linephone !=''">,#{linephone}</when></choose>
-        <choose><when test=" job != null and job !=''">,#{job}</when></choose>
-        <choose><when test=" linenature != null and linenature !=''">,#{linenature}</when></choose>
-        <choose><when test=" cname != null and cname !=''">,#{cname}</when></choose>
-        <choose><when test=" reluname != null and reluname !=''">,#{reluname}</when></choose>
-        <choose><when test=" brandname != null and brandname !=''">,#{brandname}</when></choose>
-        <choose><when test=" contrast != null and contrast !=''">,#{contrast}</when></choose>
-        <choose><when test=" reluid != null and reluid !=''">,#{reluid}</when></choose>
-        <choose><when test=" reluname != null and reluname !=''">,#{reluname}</when></choose>
-        <choose><when test=" relphone != null and relphone !=''">,#{relphone}</when></choose>
+        <choose><when test=" lineuid != null and lineuid !=''">,lineuid = #{lineuid}</when></choose>
+        <choose><when test=" lineuname != null and lineuname !=''">,lineuname = #{lineuname}</when></choose>
+        <choose><when test=" linephone != null and linephone !=''">,linephone = #{linephone}</when></choose>
+        <choose><when test=" job != null and job !=''">,job = #{job}</when></choose>
+        <choose><when test=" linenature != null and linenature !=''">,linenature = #{linenature}</when></choose>
+        <choose><when test=" brandname != null and brandname !=''">,brandname = #{brandname}</when></choose>
+        <choose><when test=" contrast != null and contrast !=''">,contrast = #{contrast}</when></choose>
+        <choose><when test=" reluid != null and reluid !=''">,reluid = #{reluid}</when></choose>
+        <choose><when test=" reluname != null and reluname !=''">,reluname = #{reluname}</when></choose>
+        <choose><when test=" relphone != null and relphone !=''">,relphone = #{relphone}</when></choose>
         where  projectid = #{projectid}
     </update>
 

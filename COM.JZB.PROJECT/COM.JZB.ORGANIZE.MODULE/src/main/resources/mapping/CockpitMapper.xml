@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.CockpitMapper">
+
+    <!--驾驶舱/联系客户-查询-->
+    <select id="getInfo" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_track_user_list where tracktype in (4,8,16)
+        and status = '1'
+        <if test="customer != null and customer != ''">
+            and customer = #{customer}
+        </if>
+    </select>
+
+    <!--愿意见-深度见-上会-签约数量-->
+    <select id="getHandleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_track_user_list
+        where status = '1'
+        and trackres = #{trackres}
+        <if test="customer != null and customer != ''">
+            and customer = #{customer}
+        </if>
+    </select>
+
+
+</mapper>

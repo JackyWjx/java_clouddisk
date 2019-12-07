@@ -36,7 +36,7 @@ public class TbTrackUserController {
     private final static Logger logger = LoggerFactory.getLogger(TbCommonProjectInfoController.class);
 
     // 新建跟进人员记录
-    @RequestMapping("/addTrackUser")
+    @RequestMapping(value = "/addTrackUser",method = RequestMethod.POST)
     public Response addTrackUser(@RequestBody Map<String,Object> param){
         Response response;
         try {
@@ -64,7 +64,6 @@ public class TbTrackUserController {
             if (count == 0){
                 count = userService.getTrackCount(param);
             }
-            param.put("count",count);
             JzbPageConvert.setPageRows(param);
             // 查询跟进人员记录信息
             List<Map<String,Object>> list = null;
@@ -76,7 +75,6 @@ public class TbTrackUserController {
                 pageInfo.setTotal(count);
                 pageInfo.setList(list);
                 response.setPageInfo(pageInfo);
-
         } catch (Exception e) {
             JzbTools.logError(e);
             response = Response.getResponseError();
@@ -85,7 +83,7 @@ public class TbTrackUserController {
     }
 
     // 删除跟进人员记录信息
-    @RequestMapping("/delTrackUser")
+    @RequestMapping(value = "/delTrackUser",method = RequestMethod.POST)
     public Response delTrackUser(@RequestBody Map<String,Object> param){
         Response response;
         try {
@@ -101,7 +99,7 @@ public class TbTrackUserController {
     }
 
     // 修改跟进人员记录信息
-    @RequestMapping("/updTrackUser")
+    @RequestMapping(value = "/updTrackUser",method = RequestMethod.POST)
     public Response updTrackUser(@RequestBody Map<String,Object> param){
         Response response;
         try {
@@ -117,7 +115,7 @@ public class TbTrackUserController {
     }
 
     // 查询联系沟通信息
-    @RequestMapping("/getInfo")
+    @RequestMapping(value = "/getInfo",method = RequestMethod.POST)
     public Response getInfo(@RequestBody Map<String,Object> param){
         Response result;
         Map<String, Object> userInfo = null;
@@ -153,7 +151,7 @@ public class TbTrackUserController {
         return result;
     }
     // 查询有效客户
-    @RequestMapping("/getClient")
+    @RequestMapping(value = "/getClient",method = RequestMethod.POST)
     public Response getClient(@RequestBody Map<String,Object> param){
         Response result;
         Map<String, Object> userInfo = null;
@@ -211,7 +209,6 @@ public class TbTrackUserController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-
             param.put("uid",userInfo.get("uid"));
             List<Map<String, Object>> List = userService.getHandleCount(param);
             result = Response.getResponseSuccess(userInfo);
@@ -252,7 +249,6 @@ public class TbTrackUserController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-
             param.put("adduid",userInfo.get("uid"));
             List<Map<String, Object>> List = userService.getSingleCount(param);
             result = Response.getResponseSuccess(userInfo);
@@ -293,7 +289,6 @@ public class TbTrackUserController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-
             param.put("adduid",userInfo.get("uid"));
             List<Map<String, Object>> List = userService.getContactList(param);
             result = Response.getResponseSuccess(userInfo);
@@ -333,7 +328,6 @@ public class TbTrackUserController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-
             param.put("adduid",userInfo.get("uid"));
             List<Map<String, Object>> List = userService.getHandleStage(param);
             result = Response.getResponseSuccess(userInfo);
@@ -354,7 +348,6 @@ public class TbTrackUserController {
         }
         return result;
     }
-
 
 
 }
