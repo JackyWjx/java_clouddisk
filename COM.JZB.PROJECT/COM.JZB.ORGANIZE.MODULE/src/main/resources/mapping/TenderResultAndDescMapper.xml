@@ -5,7 +5,7 @@
 <mapper namespace="com.jzb.org.dao.TenderResultAndDescMapper">
 
      <select id="queryTenderResultMessage" resultType="Map">
-        select id,tendid,title,( SELECT cname FROM tb_project_type WHERE typeid = B.projecttype ) projecttype,( SELECT cname FROM tb_tendering_judge   WHERE typeid = 666 )  evaluation,type,provice,city,opendate from tb_tendering_result_list B WHERE
+        select id,tendid,title,certificate,( SELECT cname FROM tb_project_type WHERE typeid = B.projecttype ) projecttype,( SELECT cname FROM tb_tendering_judge   WHERE typeid = 666 )  evaluation,type,provice,city,opendate,(select infourl from  tb_project_tendering_info where tendid=B.tendid ),(select content from  tb_project_tendering_info where tendid=B.tendid ) as context from tb_tendering_result_list B WHERE
         status = '1' order by opendate desc  LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
@@ -178,7 +178,7 @@
                 null,
             </otherwise>
         </choose>
-        #{collected}, #{content},
+        #{collected}, #{context},
         <choose>
             <when test="snatchid!=null and snatchid!=''">
                 #{snatchid},
@@ -265,7 +265,7 @@
                 upduid=#{upduid},
             </if>
               <if test="updtime!=null">
-                updtime=#{updtime},
+                updtime=#{updtime},opendate=#{updtime}
             </if>
 
         </set>
@@ -294,13 +294,13 @@
                 city=#{city},
             </if>
             <if test="content!=null">
-                content=#{content},
+                content=#{context},
             </if>
             <if test="upduid!=null">
                 upduid=#{upduid},
             </if>
               <if test="updtime!=null">
-                updtime=#{updtime},
+                updtime=#{updtime},opendate=#{updtime}
             </if>
         </set>
         where tendid = #{tendid}

@@ -455,7 +455,7 @@ public class TbCompanyCommonController {
 
                 // 设置参数
                 JzbPageConvert.setPageRows(param);
-
+                param.put("uid", userInfo.get("uid"));
                 // 获取list
                 List<Map<String, Object>> list = tbCompanyCommonService.getCompanyCommoms(param);
 

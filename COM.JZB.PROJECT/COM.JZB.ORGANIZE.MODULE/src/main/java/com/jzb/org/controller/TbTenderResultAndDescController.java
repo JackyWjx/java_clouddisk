@@ -24,7 +24,8 @@ import java.util.zip.DataFormatException;
 
 /**
  * @author wang jixiang
- * 招投标增删改查
+ * @Date 2019.12.7
+ * @Description 招投标增删改查
  */
 @RestController
 @RequestMapping(value = "/org/TenderMessage")
@@ -49,6 +50,7 @@ public class TbTenderResultAndDescController {
 
     /**
      * 保存招投标信息type=1招标，type=2中标
+     *
      * @param param
      * @return
      */
@@ -59,66 +61,65 @@ public class TbTenderResultAndDescController {
         Response result;
         String api = "/org/TenderMessage/addTenderMessage";
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-        ArrayList<String> region = (ArrayList<String>) param.get("region");
+        ArrayList<String> region = null;
+        region = (ArrayList<String>) param.get("region");
+        //判断所传的值是否为空，为空不添加地区信息
         if (!("").equals(region) && region != null) {
+            //如果只有省
             if (region.size() == 1) {
                 param.put("provice", region.get(0));
-            } else if (region.size() == 2) {
+            } else if (region.size() == 2) {//如果有省市
                 param.put("provice", region.get(0));
                 param.put("city", region.get(1));
             }
         }
         try {
-            if (JzbCheckParam.haveEmpty(param, new String[]{"type"})) {
+            //是否包含所有参数必填项
+            if (JzbCheckParam.haveEmpty(param, new String[]{"type", "projecttype", "title"})) {
                 result = Response.getResponseError();
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "没有必填参数"));
             } else {
+                //中标
                 if (param.get("type").equals("2")) {
-                    //中标
-                    if (param.get("projecttype") == null || param.get("title") == null) {
-                        result = Response.getResponseError();
-                    } else {
-                        param.put("tendid", JzbRandom.getRandomChar(32));
-                        param.put("adduid", userInfo.get("uid"));
-                        param.put("status", "1");
-                        param.put("addtime", System.currentTimeMillis());
-                        Integer changeNum = tenderResultAndDescService.addTenderMessage(param);
-                        // 定义返回结果
-                        result = Response.getResponseSuccess(userInfo);
-                    }
+                    param.put("tendid", JzbRandom.getRandomChar(32));
+                    param.put("adduid", userInfo.get("uid"));
+                    param.put("status", "1");
+                    param.put("addtime", System.currentTimeMillis());
+                    Integer changeNum = tenderResultAndDescService.addTenderMessage(param);
+                    // 定义返回结果
+                    result = Response.getResponseSuccess(userInfo);
                     logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                             userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "tender result Message"));
                 } else if (param.get("type").equals("1")) {
                     //招標
-                    if (param.get("projecttype") == null || param.get("title") == null) {
-                        result = Response.getResponseError();
-                    } else {
-                        param.put("tendid", JzbRandom.getRandomChar(32));
-                        param.put("adduid", userInfo.get("uid"));
-                        param.put("status", "1");
-                        param.put("addtime", System.currentTimeMillis());
-                        tenderAndDescService.addTenderMessage(param);
-                        result = Response.getResponseSuccess(userInfo);
-                    }
+                    param.put("tendid", JzbRandom.getRandomChar(32));
+                    param.put("adduid", userInfo.get("uid"));
+                    param.put("status", "1");
+                    param.put("addtime", System.currentTimeMillis());
+                    tenderAndDescService.addTenderMessage(param);
+                    result = Response.getResponseSuccess(userInfo);
                     logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                             userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "tender Message"));
                 } else {
+                    //既不是中标，又不是招标
                     result = Response.getResponseError();
                     logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                            userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
+                            userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "参数type传值错误"));
                 }
-
             }
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "add tender or tenderresult error"));
+                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "增加招标中标异常"));
         }
         return result;
     }
 
     /**
      * 获取招标中标数据，当type=1时，获取招标数据，type=2时，中标数据，其余，查询全部
+     *
      * @param param
      * @return
      */
@@ -131,7 +132,7 @@ public class TbTenderResultAndDescController {
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
         String api = "/org/TenderMessage/getTenderMessage";
         try {
-
+            //判断页码参数是否存在
             if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
@@ -140,8 +141,8 @@ public class TbTenderResultAndDescController {
             } else {
                 JzbPageConvert.setPageRows(param);
                 List<Map<String, Object>> tenderMessages = tenderResultAndDescService.queryTenderMessage(param);
-
                 result = Response.getResponseSuccess(userInfo);
+                //将时间戳转化
                 for (Map<String, Object> tenderMessage : tenderMessages) {
                     Date date = new Date();
                     Long dateNum = (Long) tenderMessage.get("opendate");
@@ -151,14 +152,19 @@ public class TbTenderResultAndDescController {
                         tenderMessage.put("opendate", sdf.format(date));
                     }
 
-
+                    //将地区id转化名称与对象
                     Map<String, Object> regionMap = new HashMap<>();
                     regionMap.put("key", tenderMessage.get("city") == null ? tenderMessage.get("provice") : tenderMessage.get("city"));
                     Response proviceList = tbCityRedisApi.getCityList(regionMap);
-
                     Map<String, Object> resultParam = null;
                     if (proviceList.getResponseEntity() != null) {
                         resultParam = (Map<String, Object>) JSON.parse(proviceList.getResponseEntity().toString());
+                        if (resultParam != null) {
+                            resultParam.put("region", resultParam.get("creaid"));
+                        } else {
+                            resultParam = new HashMap<>();
+                            resultParam.put("region", null);
+                        }
                         if (resultParam != null && resultParam.get("province") != null) {
                             tenderMessage.put("provice", resultParam.get("province"));
                         }
@@ -166,14 +172,15 @@ public class TbTenderResultAndDescController {
                             tenderMessage.put("city", resultParam.get("city"));
                         }
                     }
-
-
+                    // 转map
+                    if (resultParam != null) {
+                        Response response1 = regionBaseApi.getRegionInfo(resultParam);
+                        tenderMessage.put("region", response1.getResponseEntity());
+                    }
                 }
                 // 定义pageinfo
                 PageInfo pi = new PageInfo();
-
                 pi.setList(tenderMessages);
-
                 // 如果有一个指定参数不为空，则返回list.size()  否则返回总数
                 pi.setTotal(tenderResultAndDescService.queryTenderMessageCount(param));
                 result.setPageInfo(pi);
@@ -184,13 +191,14 @@ public class TbTenderResultAndDescController {
             JzbTools.logError(e);
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
+                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "查询招投标异常"));
         }
         return result;
     }
 
     /**
      * 修改招投标信息，type=1修改招标信息，type=2时修改中标
+     *
      * @param param
      * @return
      */
@@ -202,59 +210,47 @@ public class TbTenderResultAndDescController {
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
         String api = "/org/TenderMessage/putTenderMessage";
         try {
-            if(JzbCheckParam.haveEmpty(param,new String[]{"type"})){
+            if (JzbCheckParam.haveEmpty(param, new String[]{"type", "tendid"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
-            }else {
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "必要参数为空"));
+            } else {
                 if (param.get("type").equals("2")) {
                     //中标
-                    if (param.get("tendid") == null) {
-                        result = Response.getResponseError();
-                        logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                                userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
-                    } else {
-                        param.put("upduid", userInfo.get("uid"));
-                        param.put("updtime", System.currentTimeMillis());
-                        tenderResultAndDescService.putTenderMessage(param);
-                        // 定义返回结果
-                        result = Response.getResponseSuccess(userInfo);
-                        logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                                userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "put tenderResult"));
-                    }
+                    param.put("upduid", userInfo.get("uid"));
+                    param.put("updtime", System.currentTimeMillis());
+                    tenderResultAndDescService.putTenderMessage(param);
+                    // 定义返回结果
+                    result = Response.getResponseSuccess(userInfo);
+                    logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                            userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "put tenderResult"));
+
                 } else if (param.get("type").equals("1")) {
                     //招標
-                    if (param.get("tendid") == null) {
-                        result = Response.getResponseError();
-                        logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                                userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
-                    } else {
-                        param.put("upduid", userInfo.get("uid"));
-                        param.put("updtime", System.currentTimeMillis());
-                        tenderAndDescService.putTenderMessage(param);
-                        result = Response.getResponseSuccess(userInfo);
-                        logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                                userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "put tender"));
-                    }
+                    param.put("upduid", userInfo.get("uid"));
+                    param.put("updtime", System.currentTimeMillis());
+                    tenderAndDescService.putTenderMessage(param);
+                    result = Response.getResponseSuccess(userInfo);
+                    logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                            userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "put tender"));
                 } else {
                     result = Response.getResponseError();
                     logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                            userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
+                            userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "传入type参数不标准"));
                 }
             }
-
-
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
+                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "修改招投标异常"));
         }
         return result;
     }
 
     /**
      * 删除中标投标信息，前端传输集合，根据集合中的type值，分为招标中标信息，在进行删除
+     *
      * @param param
      * @return
      */
@@ -265,27 +261,33 @@ public class TbTenderResultAndDescController {
         Response result;
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
         String api = "/org/TenderMessage/delTenderMessage";
-        List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+        List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+        //前端传输list集合过来，将其对招投标信息进行分类
         List<String> tenderMessage = new ArrayList<>();
         List<String> tenderResultMessage = new ArrayList<>();
         try {
             for (Map map : list) {
-                if(map.get("type").equals("1")){
+                //招标
+                if (map.get("type").equals("1")) {
                     tenderMessage.add((String) map.get("tendid"));
-                }else if(map.get("type").equals("2")){
+                } else if (map.get("type").equals("2")) {
+                    //中标
                     tenderResultMessage.add((String) map.get("tendid"));
-                }else {
+                } else {
+                    //异常数据
                     result = Response.getResponseError();
-                    logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                    logger.error(JzbLoggerUtil.getApiLogger(api, "1", "ERROR",
                             userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
                 }
             }
-            if(tenderMessage.size()>0){
-                param.put("tendids",tenderMessage);
+            //当招标内有数值时，执行招标删除
+            if (tenderMessage.size() > 0) {
+                param.put("tendids", tenderMessage);
                 tenderAndDescService.delTenderMessage(param);
             }
-            if(tenderResultMessage.size()>0){
-                param.put("tendids",tenderResultMessage);
+            //当中标内有数值时，执行中标删除
+            if (tenderResultMessage.size() > 0) {
+                param.put("tendids", tenderResultMessage);
                 tenderResultAndDescService.delTenderMessage(param);
             }
             result = Response.getResponseSuccess(userInfo);
@@ -294,8 +296,8 @@ public class TbTenderResultAndDescController {
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
+            logger.error(JzbLoggerUtil.getApiLogger(api, "1", "ERROR",
+                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "招投标删除异常"));
         }
         return result;
     }

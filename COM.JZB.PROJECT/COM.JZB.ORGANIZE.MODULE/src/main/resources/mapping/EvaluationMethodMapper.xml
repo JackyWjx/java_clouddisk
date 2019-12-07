@@ -7,7 +7,7 @@
         select * from tb_tendering_judge where status = '1' ORDER BY id
         <choose>
             <when test="pagesize!=null and pagesize!=''">
-                LIMIT #{pagesize} OFFSET #{start}
+                LIMIT #{pagesize} OFFSET #{pageno}
             </when>
             <otherwise>
 

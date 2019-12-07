@@ -183,6 +183,9 @@ WHERE
         <if test="keyword!=null and keyword !=''">
             and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
         </if>
+        <if test="uid!=null and uid !=''">
+            and a.uid=#{uid}
+        </if>
         <if test="province != null and province != ''">
             and a.region IN
             <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
@@ -268,6 +271,9 @@ WHERE
         </if>
         <if test="region!=null and region !=''">
             and a.region=#{region}
+        </if>
+        <if test="uid!=null and uid !=''">
+            and a.uid=#{uid}
         </if>
         <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
             and a.dictvalue=#{dictvalue}
