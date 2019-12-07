@@ -309,7 +309,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "findParticularsList Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "findParticularsList Method", e.toString()));
 
         }
         if (userInfo != null) {
@@ -370,7 +370,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "findParticularsByList Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "findParticularsByList Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -436,7 +436,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getLikeName Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getLikeName Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -489,7 +489,7 @@ public class ActivityController {
         } catch (Exception e) {
             e.printStackTrace();
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addActivityDocess Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addActivityDocess Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -622,7 +622,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getActivityList Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getActivityList Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -663,7 +663,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addActivityList Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addActivityList Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -705,7 +705,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getActivityData Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getActivityData Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -786,7 +786,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "removeActivityData Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "removeActivityData Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -826,7 +826,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "modifyActivityDataSEO Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "modifyActivityDataSEO Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
@@ -868,7 +868,7 @@ public class ActivityController {
             flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getActivityDataSEO Method", "[param error] or [param is null]"));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getActivityDataSEO Method", e.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
