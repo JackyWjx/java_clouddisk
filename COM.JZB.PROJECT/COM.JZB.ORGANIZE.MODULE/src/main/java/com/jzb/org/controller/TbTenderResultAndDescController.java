@@ -132,7 +132,7 @@ public class TbTenderResultAndDescController {
         String api = "/org/TenderMessage/getTenderMessage";
         try {
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","type"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "data error"));
