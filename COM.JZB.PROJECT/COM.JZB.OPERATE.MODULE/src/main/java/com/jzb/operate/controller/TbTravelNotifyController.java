@@ -3,7 +3,6 @@ package com.jzb.operate.controller;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.service.TbTravelNotifyService;
-import com.jzb.operate.service.TbTravelVerifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
