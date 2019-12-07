@@ -1,10 +1,14 @@
 package com.jzb.operate.controller;
 
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
+import com.jzb.base.util.JzbTools;
 import com.jzb.operate.service.TbTravelApprovalService;
 import com.jzb.operate.service.TbTravelPlanService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +32,11 @@ public class TbTravelApprovalController {
     @Autowired
     TbTravelPlanService travelPlanService;
 
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbTravelPlanController.class);
+
 
     /**
      * 添加出差报销申请
@@ -40,13 +49,25 @@ public class TbTravelApprovalController {
     public Response addTravelApproval(@RequestBody Map<String, Object> param) {
 
         Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/operate//addTravelApproval";
+        boolean flag = true;
 
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
             List<Map<String,Object>> approvalList = (List<Map<String, Object>>) param.get("list");
             for (Map<String,Object> approval : approvalList){
 
+                approval.put("adduid",userInfo.get("uid"));
                 approval.put("travelid",param.get("travelid"));
-                approval.put("apid", JzbRandom.getRandomChar(19));
+                approval.put("apid", JzbRandom.getRandomChar(12));
                 approval.put("addtime",System.currentTimeMillis());
                 //默认状态和默认版本号
                 approval.put("trstatus",1);
@@ -55,15 +76,24 @@ public class TbTravelApprovalController {
             }
 
             travelPlanService.updateTravelRecord(param);
-            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            response = Response.getResponseSuccess(userInfo);
         }catch (Exception e) {
+            JzbTools.logError(e);
             response = Response.getResponseError();
         }
+
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+
         return response;
     }
 
     /**
-     * 修改出差报销申请
+     * 批量修改出差报销申请 (预留)
      * @param param
      * @return
      */
@@ -108,7 +138,8 @@ public class TbTravelApprovalController {
         try {
             param.put("trtime",System.currentTimeMillis());//审批时间
             Integer isOk = (Integer) param.get("isOk");
-
+            //审批时间
+            param.put("trtime",System.currentTimeMillis());
             if(isOk == 1){// 同意
                 //判断是否是最后一级审批人
                 String lastApid = travelApprovalService.getMaxIdxApid((String) param.get("travelid"));
@@ -120,7 +151,7 @@ public class TbTravelApprovalController {
 
             }else {// 退回
                 param.put("trstatus", 4);
-                //更新版本好
+                //更新版本号
                 param.put("version",JzbRandom.getRandom(8));
 
             }

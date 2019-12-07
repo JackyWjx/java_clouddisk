@@ -19,29 +19,30 @@ public class NewCompanyProjectService {
     @Autowired
     private NewCompanyProjectMapper newCompanyProjectMapper;
 
-    public List<Map<String, Object>> queryCommonCompanyListBycid(Map<String, Object> map) {
-        int page = JzbDataType.getInteger(map.get("pageno")) == 0 ? 0 : JzbDataType.getInteger(map.get("pageno")) - 1;
-        map.put("pageno", page * JzbDataType.getInteger(map.get("pagesize")));
-        map.put("pagesize", JzbDataType.getInteger(map.get("pagesize")));
-        return newCompanyProjectMapper.queryCommonCompanyListBycid(map);
+    public List<Map<String, Object>> queryCommonCompanyListBycid(Map<String, Object> param) {
+        return newCompanyProjectMapper.queryCommonCompanyListBycid(param);
     }
 
-    public List<Map<String, Object>> queryCompanyByid(Map<String, Object> map) {
-        return newCompanyProjectMapper.queryCompanyByid(map);
+    public List<Map<String, Object>> queryCompanyByid(Map<String, Object> param) {
+        return newCompanyProjectMapper.queryCompanyByid(param);
     }
 
-    public List<Map<String, Object>> queryCompanyByProjectid(Map<String, Object> map) {
-        return newCompanyProjectMapper.queryCompanyByProjectid(map);
+    public List<Map<String, Object>> queryCompanyByProjectid(Map<String, Object> param) {
+        return newCompanyProjectMapper.queryCompanyByProjectid(param);
     }
 
-    public int  updateCompanyProjectInfo(Map<String, Object> map) {
-        return  newCompanyProjectMapper.updateCompanyProjectInfo(map);
+    public int  updateCompanyProjectInfo(Map<String, Object> param) {
+        return  newCompanyProjectMapper.updateCompanyProjectInfo(param);
     }
-    public int  updateCompanyProject(Map<String, Object> map) {
-        return  newCompanyProjectMapper.updateCompanyProject(map);
+    public int  updateCompanyProject(Map<String, Object> param) {
+        return  newCompanyProjectMapper.updateCompanyProject(param);
     }
 
-    public int  updateCommonCompanyList(Map<String, Object> map) {
-        return  newCompanyProjectMapper.updateCommonCompanyList(map);
+    public int  updateCommonCompanyList(Map<String, Object> param) {
+        return  newCompanyProjectMapper.updateCommonCompanyList(param);
+    }
+
+    public int countProjectInfo(Map<String, Object> param) {
+        return newCompanyProjectMapper.countProjectInfo(param);
     }
 }

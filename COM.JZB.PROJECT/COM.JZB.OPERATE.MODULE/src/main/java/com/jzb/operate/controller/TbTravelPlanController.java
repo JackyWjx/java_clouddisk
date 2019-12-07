@@ -1,6 +1,7 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -8,11 +9,12 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
-import com.jzb.operate.api.org.TbDeptUserListApi;
 import com.jzb.operate.service.TbTravelDataService;
 import com.jzb.operate.service.TbTravelInfoService;
 import com.jzb.operate.service.TbTravelPlanService;
 import com.jzb.operate.service.TbTravelProduceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +47,11 @@ public class TbTravelPlanController {
     RegionBaseApi regionBaseApi;
     @Autowired
     TbTravelProduceService travelProduceService;
-    @Autowired
-    TbDeptUserListApi tbDeptUserListApi;
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbTravelPlanController.class);
 
     /**
      * 根据用户名或电话号码 获取同行人
@@ -54,7 +59,7 @@ public class TbTravelPlanController {
      * @return
      */
     @CrossOrigin
-    @PostMapping("/getPeers")
+    @RequestMapping(value = "/getPeers",method = RequestMethod.POST)
     public Response getTravelpeers(@RequestBody Map<String, Object> param){
         Response response = null;
         return deptOrgApi.getDeptUser(param);
@@ -62,13 +67,12 @@ public class TbTravelPlanController {
 
     /**
      * 获取预计产出列表
-     * @param param
      * @return
      */
     @CrossOrigin
     @Transactional
-    @PostMapping(value = "/getProduceList")
-    public Response getProduceList(@RequestBody Map<String, Object> param){
+    @RequestMapping(value = "/getProduceList",method = RequestMethod.POST)
+    public Response getProduceList(){
         Response response;
         try{
             PageInfo pageInfo = new PageInfo();
@@ -92,15 +96,28 @@ public class TbTravelPlanController {
      */
     @CrossOrigin
     @Transactional
-    @PostMapping("/addTravelPlan")
+    @RequestMapping(value = "/addTravelPlan",method = RequestMethod.POST)
     public Response addTravelRecord(@RequestBody Map<String, Object> param) {
 
-        Response response = null;
+        Response response ;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/travelPlan/addTravelPlan";
+        boolean flag = true;
+        
         try{
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
             // 获取参数中的出差详情list
             List<Map<String, Object>> detailsList = (List) param.get("list");
 
             //出差记录
+            param.put("adduid",userInfo.get("uid"));
             param.put("travelid",JzbRandom.getRandomChar(19));
             param.put("aptype",1);//1出差 2 报销
             param.put("version",JzbRandom.getRandom(8));
@@ -164,14 +181,21 @@ public class TbTravelPlanController {
             travelPlanService.addTravelDetails(detailsList);
             //添加出差记录
             travelPlanService.addTravelRecord(Arrays.asList(param));
-            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            response = Response.getResponseSuccess(userInfo);
 
             //   response = new Response();
         } catch (Exception ex) {
-            ex.printStackTrace();
-            JzbTools.isEmpty(ex);
+            JzbTools.logError(ex);
             response = Response.getResponseError();
         }
+
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+
         return response;
     }
 
@@ -180,24 +204,43 @@ public class TbTravelPlanController {
      * @param param
      * @return
      */
-    @PostMapping(value = "/setRecallStatus")
+    @RequestMapping(value = "/setRecallStatus",method = RequestMethod.POST)
     @CrossOrigin
     @Transactional
     public Response setBackStatus(@RequestBody Map<String, Object> param) {
         Response response;
 
-        param.put("status",3);
-        param.put("version",JzbRandom.getRandom(8));
+        Map<String, Object> userInfo = null;
+        String api = "/operate/travelPlan/addTravelPlan";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
             if (JzbCheckParam.haveEmpty(param, new String[]{"travelid"})) {
                 response = Response.getResponseError();
             } else {
-                response = travelPlanService.updateTravelRecord(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+                param.put("status",3);
+                param.put("version",JzbRandom.getRandom(8));
+                response = travelPlanService.updateTravelRecord(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
             JzbTools.logError(ex);
             response = Response.getResponseError();
         }
+
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+
         return response;
     }
 
@@ -206,7 +249,7 @@ public class TbTravelPlanController {
      * @param param
      * @return
      */
-    @PostMapping(value = "/setDeleteStatus")
+    @RequestMapping(value = "/setDeleteStatus",method = RequestMethod.POST)
     @CrossOrigin
     @Transactional
     public Response setDeleteStatus(@RequestBody Map<String, Object> param) {
@@ -229,7 +272,7 @@ public class TbTravelPlanController {
      * @param param
      * @return
      */
-    @PostMapping(value = "/updateTravelPlan")
+    @RequestMapping(value = "/updateTravelPlan",method = RequestMethod.POST)
     @CrossOrigin
     @Transactional
     public Response updateTravelRecord(@RequestBody Map<String, Object> param) {
@@ -283,9 +326,9 @@ public class TbTravelPlanController {
      * 根据Travelid查询出差记录
      */
     @CrossOrigin
-    @PostMapping("/getTravelPlanByTravelid")
+    @RequestMapping(value = "/getTravelPlanByTravelid",method = RequestMethod.POST)
     public Response queryTravelPlan(@RequestBody Map<String, Object> param){
-        Response response = null;
+        Response response ;
         try{
             Map<String,Object> travelMap = travelPlanService.queryTravelRecordByTravelid(param);
             List<Map<String,Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(param);
@@ -301,8 +344,8 @@ public class TbTravelPlanController {
                 detialsMap.put("traveldatalist",travelDataService.list(query));
             }
 
-            // response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-            response = new Response();
+            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            // response = new Response();
             response.setResponseEntity(travelMap);
         }catch (Exception e){
             e.printStackTrace();
@@ -314,19 +357,21 @@ public class TbTravelPlanController {
 
     /**
      * @Author sapientia
-     * @Date 10:41 2019/12/4
      * @Description 获取省市县
+     * @Date 12:49
+     * @Param [param]
+     * @return com.jzb.base.message.Response
      **/
     @CrossOrigin
-    @PostMapping("/getCityList")
+    @RequestMapping(value = "/getCityList",method = RequestMethod.POST)
     public Response getCityList(@RequestBody Map<String, Object> param){
-        Response response = null;
+        Response response ;
         try{
             PageInfo pageInfo = new PageInfo();
             Response res  = regionBaseApi.getCityJson(param);
             List<Map<String , Object>>  cityList = res.getPageInfo().getList();
             pageInfo.setList(cityList);
-            response = Response.getResponseSuccess();
+            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
             response.setPageInfo(pageInfo);
         }catch (Exception e){
             e.printStackTrace();
@@ -335,22 +380,4 @@ public class TbTravelPlanController {
         return response;
     }
 
-    /**
-     * @Author sapientia
-     * @Date 10:38 2019/12/6
-     * @Description 根据部门id获取部门同行人
-     **/
-    @RequestMapping(value = "/queryUsernameBydept", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response queryUsernameBydept(@RequestBody Map<String, Object> param){
-        Response response = null;
-        try{
-            response  = tbDeptUserListApi.queryUsernameBydept(param);
-
-        }catch (Exception e){
-            e.printStackTrace();
-            response =  Response.getResponseError();
-        }
-        return response;
-    }
 }

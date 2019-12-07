@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Map;
 
 @FeignClient(name = "jzb-org")
-@RequestMapping(value = "/company/project")
+@RequestMapping(value = "/org/companyproject")
 public interface NewTbCompanyListApi {
 
     /**
@@ -20,7 +20,7 @@ public interface NewTbCompanyListApi {
      **/
     @PostMapping("/queryCompanyByid")
     @CrossOrigin
-    public Response queryCompanyByid(@RequestBody Map<String, Object> map);
+    public Response queryCompanyByid(@RequestBody Map<String, Object> param);
 
     /**
      * @Author sapientia
@@ -29,7 +29,7 @@ public interface NewTbCompanyListApi {
      **/
     @PostMapping("/updateCompanyProject")
     @CrossOrigin
-    public Response updateCompanyProject(@RequestBody Map<String, Object> map);
+    public Response updateCompanyProject(@RequestBody Map<String, Object> param);
 
     /**
      * @Author sapientia
@@ -38,7 +38,7 @@ public interface NewTbCompanyListApi {
      **/
     @PostMapping("/updateCompanyProjectInfo")
     @CrossOrigin
-    public Response updateCompanyProjectInfo(@RequestBody Map<String, Object> map);
+    public Response updateCompanyProjectInfo(@RequestBody Map<String, Object> param);
 
     /**
      * @Author sapientia
@@ -47,5 +47,5 @@ public interface NewTbCompanyListApi {
      **/
     @PostMapping("/updateCommonCompanyList")
     @CrossOrigin
-    public Response updateCommonCompanyList(@RequestBody Map<String, Object> map);
+    public Response updateCommonCompanyList(@RequestBody Map<String, Object> param);
 }

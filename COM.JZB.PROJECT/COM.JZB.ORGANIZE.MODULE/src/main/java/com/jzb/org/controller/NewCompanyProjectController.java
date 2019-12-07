@@ -24,7 +24,7 @@ import java.util.Map;
  * @Date 2019/12/4 14:18
  */
 @RestController
-@RequestMapping(value = "/company/project")
+@RequestMapping(value = "/org/companyproject")
 public class NewCompanyProjectController {
 
     @Autowired
@@ -44,7 +44,7 @@ public class NewCompanyProjectController {
     public Response queryCompanyByid(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/queryCompanyByid";
+        String api = "/org/companyproject/queryCompanyByid";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -54,23 +54,22 @@ public class NewCompanyProjectController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "cid", "projectid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "list"})) {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
-                // 获取出差详情
-                param.put("uid", userInfo.get("uid"));
                 //获取单位信息
                 List<Map<String, Object>> list = newCompanyProjectService.queryCommonCompanyListBycid(param);
                 for (int i = 0 ,a = list.size(); i < a; i++) {
                     Map<String, Object> proMap = new HashMap<>();
-                    proMap.put("cid", list.get(i).get("cid").toString());
-                    //获取单位
-                    List<Map<String, Object>> prolist = newCompanyProjectService.queryCompanyByid(proMap);
+                    proMap.put("cid", list.get(i).get("cid"));
+                    proMap.put("projectid",list.get(i).get("projectid"));
                     //获取单位下的项目
+                    List<Map<String, Object>> prolist = newCompanyProjectService.queryCompanyByid(proMap);
                     for (int j = 0,b = prolist.size(); j < b; j++) {
                         Map<String, Object> infoMap = new HashMap<>();
-                        infoMap.put("projectid", prolist.get(j).get("projectid").toString());
+                        infoMap.put("projectid", prolist.get(j).get("projectid"));
+                        //获取项目下的情报
                         List<Map<String, Object>> infolist = newCompanyProjectService.queryCompanyByProjectid(infoMap);
                         list.get(j).put("infoList", infolist);
                     }
@@ -78,6 +77,7 @@ public class NewCompanyProjectController {
                 }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
+                pageInfo.setTotal(newCompanyProjectService.countProjectInfo(param));
                 pageInfo.setList(list);
                 response.setPageInfo(pageInfo);
             }
@@ -101,18 +101,41 @@ public class NewCompanyProjectController {
      * @Date  15:01
      * @Description 修改项目信息
      **/
-    @PostMapping("/updateCompanyProject")
+    @RequestMapping(value = "/updateCompanyProject",method = RequestMethod.POST)
     @Transactional
-    public Response updateCompanyProject(@RequestBody Map<String, Object> map){
-        Response result;
+    public Response updateCompanyProject(@RequestBody Map<String, Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyproject/updateCompanyProject";
+        boolean flag = true;
         try {
-            map.put("updtime",System.currentTimeMillis());
-            result = newCompanyProjectService.updateCompanyProject(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            result =  Response.getResponseError();
-        }
-        return result;
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","projectid"})) {
+                response = Response.getResponseError();
+            } else {
+                JzbPageConvert.setPageRows(param);
+                param.put("updtime", System.currentTimeMillis());
+                response = newCompanyProjectService.updateCompanyProject(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+        }catch (Exception ex) {
+                flag = false;
+                JzbTools.logError(ex);
+                response = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateCompanyProject Method", ex.toString()));
+            }
+            if (userInfo != null) {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                        userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            return response;
     }
 
     /**
@@ -122,16 +145,39 @@ public class NewCompanyProjectController {
      **/
     @PostMapping("/updateCompanyProjectInfo")
     @Transactional
-    public Response updateCompanyProjectInfo(@RequestBody Map<String, Object> map){
-        Response result;
+    public Response updateCompanyProjectInfo(@RequestBody Map<String, Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyproject/updateCompanyProjectInfo";
+        boolean flag = true;
         try {
-            map.put("updtime",System.currentTimeMillis());
-            result = newCompanyProjectService.updateCompanyProjectInfo(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            result =  Response.getResponseError();
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","projectid"})) {
+                response = Response.getResponseError();
+            } else {
+                JzbPageConvert.setPageRows(param);
+                param.put("updtime", System.currentTimeMillis());
+                response = newCompanyProjectService.updateCompanyProjectInfo(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+        }catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateCompanyProjectInfo Method", ex.toString()));
         }
-        return result;
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
     }
 
     /**
@@ -141,16 +187,39 @@ public class NewCompanyProjectController {
      **/
     @PostMapping("/updateCommonCompanyList")
     @Transactional
-    public Response updateCommonCompanyList(@RequestBody Map<String, Object> map){
-        Response result;
+    public Response updateCommonCompanyList(@RequestBody Map<String, Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyproject/updateCommonCompanyList";
+        boolean flag = true;
         try {
-            map.put("updtime",System.currentTimeMillis());
-            result = newCompanyProjectService.updateCommonCompanyList(map) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
-        }catch (Exception e){
-            e.printStackTrace();
-            result =  Response.getResponseError();
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","cid"})) {
+                response = Response.getResponseError();
+            } else {
+                JzbPageConvert.setPageRows(param);
+                param.put("updtime", System.currentTimeMillis());
+                response = newCompanyProjectService.updateCommonCompanyList(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+        }catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateCommonCompanyList Method", ex.toString()));
         }
-        return result;
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
     }
 
 }

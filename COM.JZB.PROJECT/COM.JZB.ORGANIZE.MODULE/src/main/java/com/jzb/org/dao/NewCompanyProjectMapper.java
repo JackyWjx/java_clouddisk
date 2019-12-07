@@ -15,15 +15,20 @@ import java.util.Map;
 @Repository
 public interface NewCompanyProjectMapper {
 
-    List<Map<String, Object>> queryCompanyByid(Map<String, Object> map);
+    List<Map<String, Object>> queryCompanyByid(Map<String, Object> param);
 
-    List<Map<String, Object>> queryCompanyByProjectid(Map<String, Object> map);
+    //根据projectid查询项目列表
+    List<Map<String, Object>> queryCompanyByProjectid(Map<String, Object> param);
 
-    List<Map<String, Object>> queryCommonCompanyListBycid(Map<String, Object> map);
+    //根据cid查询公司列表
+    List<Map<String, Object>> queryCommonCompanyListBycid(Map<String, Object> param);
 
-    int updateCompanyProjectInfo(Map<String, Object> map);
+    int updateCompanyProjectInfo(Map<String, Object> param);
 
-    int updateCompanyProject(Map<String, Object> map);
+    int updateCompanyProject(Map<String, Object> param);
 
-    int updateCommonCompanyList(Map<String, Object> map);
+    int updateCommonCompanyList(Map<String, Object> param);
+
+    //产出情况总数
+    int countProjectInfo(Map<String, Object> param);
 }
