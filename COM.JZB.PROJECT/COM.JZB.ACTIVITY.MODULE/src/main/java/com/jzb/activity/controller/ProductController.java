@@ -30,7 +30,7 @@ public class ProductController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(ActivityController.class);
+    private final static Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     /**
      * 查询产品的信息
