@@ -3,15 +3,21 @@ package com.jzb.open.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.code.JzbDataCheck;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.open.api.redis.UserRedisServiceApi;
 import com.jzb.open.service.OpenPageService;
 import com.sun.org.apache.xpath.internal.objects.XString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import sun.security.provider.MD5;
 
 
 import java.util.HashMap;
@@ -31,6 +37,77 @@ import java.util.Spliterator;
 public class OpenPageController {
     @Autowired
     private OpenPageService openPageService;
+
+
+    @Autowired
+    private UserRedisServiceApi userRedisServiceApi;
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(OpenPageController.class);
+
+    /**
+     * 根据token和appkey，appsecret 数据库中进行对比，如果相同则返回给前端用信息
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getOrgApplication",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getOrgApplication(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/open/page/getOrgApplication";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            //如果指定参数为空 则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"appkey", "appsecret", "appid"})) {
+                result = Response.getResponseError();
+            } else {
+            String appkey = param.get("appkey").toString();
+            String appsecret = param.get("appsecret").toString();
+            String appid = param.get("appid").toString();
+             Map<String,Object> checkCode = openPageService.getOrgApplication(appid);
+             //进行MD5加密
+            String md5 = JzbDataCheck.Md5(appid + appkey + appsecret + checkCode.get("checkcode").toString());
+            //如果验证MD5加密与第三方传过来的是相等的 则把用户信息返回给第三方
+            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map1 = new HashMap<>();
+            if (md5.equals(param.get("checkcode"))) {
+                map.put("uid", param.get("uid"));
+                Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String,Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
+                map1.put("cname", Entity.get("cname"));
+                map1.put("cid", Entity.get("cid"));
+                map1.put("phone", Entity.get("phone"));
+                map1.put("uid", Entity.get("uid"));
+            }
+            result = Response.getResponseSuccess();
+             result.setResponseEntity(map1);
+            }
+        } catch (Exception ex) {
+            //打印错误信息
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getOrgApplication Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 
     /**
      * 模糊查询开发者应用表
