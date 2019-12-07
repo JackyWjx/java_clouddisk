@@ -50,9 +50,9 @@
     </insert>
     <!--新增开发者应用-->
     <insert id="insertOrgApplication">
-        insert into tb_org_application (applogo,appid, appline, devtype, apptype, cid,
+        insert into tb_org_application (checkcode,appkey,appsecret,applogo,appid, appline, devtype, apptype, cid,
                                         appname,ouid,addtime,upduid,updtime,status)
-        values (#{applogo},#{appid},#{appline},#{devtype},#{apptype},#{cid},
+        values (#{checkcode},#{appkey},#{appsecret},#{applogo},#{appid},#{appline},#{devtype},#{apptype},#{cid},
             #{appname},#{uid},#{time},#{uid},#{time},#{status});
     </insert>
     <!--审批产品列表-->

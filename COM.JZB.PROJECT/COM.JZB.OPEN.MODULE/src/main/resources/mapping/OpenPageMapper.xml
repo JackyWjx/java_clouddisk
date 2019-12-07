@@ -4,6 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.open.dao.OpenPageMapper">
 
+
+    <select id="getOrgApplication" parameterType="java.lang.String" resultType="java.util.Map">
+        select
+        *
+        from
+        tb_org_application
+        where
+        appid = #{appid}
+    </select>
+
     <!--新增应用菜单表-->
     <insert id="insertApplicationMenu">
         insert into tb_application_menu (appid, mid, parentid, cname, menupath,
@@ -43,6 +53,9 @@
     <!--模糊查询开发者应用表-->
     <select id="searchOrgApplication" resultType="java.util.Map">
         select
+        checkcode,
+        appkey,
+        appsecret,
         appid,
        appline,
        devtype,
