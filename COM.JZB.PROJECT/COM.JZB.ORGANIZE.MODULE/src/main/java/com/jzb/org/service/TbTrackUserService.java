@@ -26,12 +26,12 @@ public class TbTrackUserService {
     TbConnectionPubMapper pubMapper;
 
     // 新建跟进人员记录
-    public int addTrackUser(Map<String, Object> param) {
+    public int  addTrackUser(Map<String, Object> param) {
         param.put("addtime",System.currentTimeMillis());
         param.put("tracktime",System.currentTimeMillis());
         param.put("tracktype",JzbDataType.getInteger(param.get("tracktype")));
         param.put("trackid", JzbRandom.getRandomCharCap(17));
-        if (!JzbTools.isEmpty(param.get("customer"))){
+        if (JzbTools.isEmpty(param.get("customer"))){
             param.put("customer",param.get("adduid"));
         }
         param.put("status",'1');
@@ -193,6 +193,9 @@ public class TbTrackUserService {
 
     public List<Map<String, Object>> getContactList(Map<String, Object> param) {
         Map<String, Object> map = methodTime(System.currentTimeMillis());
+        if (JzbTools.isEmpty(param.get("customer"))){
+            param.put("customer",param.get("adduid"));
+        }
         param.putAll(map);
         return userMapper.getContactList(param);
     }
@@ -220,7 +223,7 @@ public class TbTrackUserService {
 
         Map<String, Object> qMap = methodCount(addtime, target, hisCount, currCount);
         Map<String,Object> map1 = new HashMap<>();
-        map1.put("有效客户",qMap);
+        map1.put("userClient",qMap);
         mapList.add(map1);
 
         return mapList;
@@ -234,6 +237,9 @@ public class TbTrackUserService {
             param.put("twelve",param.get("endTime"));
         }else {
             param.putAll(map);
+        }
+        if (JzbTools.isEmpty(param.get("customer"))){
+            param.put("customer",param.get("adduid"));
         }
         return userMapper.getHandleStage(param);
     }

@@ -85,7 +85,15 @@
             and addtime &lt;= #{twelve}
         </if>
         and status = '1'
-        and adduid = #{adduid}
+        <choose>
+            <when test="customer != null and customer != ''">
+                and customer = #{customer}
+            </when>
+            <otherwise>
+                and adduid = #{adduid}
+            </otherwise>
+        </choose>
+
     </select>
 
     <!--查询电话联系记录数-->
@@ -99,7 +107,14 @@
             and addtime &lt;= #{twelve}
         </if>
         and status = '1'
-        and adduid = #{adduid}
+        <choose>
+            <when test="customer != null and customer != ''">
+                and customer = #{customer}
+            </when>
+            <otherwise>
+                and adduid = #{adduid}
+            </otherwise>
+        </choose>
     </select>
 
     <!--查询跟进记录愿意见数目-->
@@ -107,7 +122,14 @@
         select count(1) from tb_track_user_list
          where trackcid in
         (select cid  from tb_private_company_list where  oneheader = #{uid} or twoheader = #{uid} and status = '1')
-        and customer = #{uid}
+        <choose>
+            <when test="customer != null and customer != ''">
+                 and customer = #{customer}
+            </when>
+            <otherwise>
+                 and customer = #{uid}
+            </otherwise>
+        </choose>
         and trackres = #{trackres}
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
@@ -186,7 +208,7 @@
         select
         trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
         from tb_track_user_list
-        where adduid = #{adduid}
+        where customer = #{customer}
         and status = '1'
         and tracktype in (4,8,16)
         <if test="zero != null and zero != ''">
@@ -195,6 +217,7 @@
         <if test="twelve != null and twelve != ''">
             and addtime &lt;= #{twelve}
         </if>
+        order by addtime desc
     </select>
 
     <!--获取历史有效客户数量-->
@@ -214,7 +237,7 @@
     <select id="getHandleStage" parameterType="java.util.Map" resultType="java.util.Map">
        select trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
         from tb_track_user_list
-        where adduid = #{adduid}
+        where customer = #{customer}
         and status = '1'
         and trackres = #{trackeres}
         <if test="zero != null and zero != ''">
