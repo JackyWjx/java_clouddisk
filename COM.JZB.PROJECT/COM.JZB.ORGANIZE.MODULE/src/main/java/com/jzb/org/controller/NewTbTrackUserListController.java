@@ -42,7 +42,7 @@ public class NewTbTrackUserListController {
     public Response queryTrackUserByName(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/queryAllTravelList";
+        String api = "/operate/reimburseSystem/queryTrackUserByName";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -56,10 +56,12 @@ public class NewTbTrackUserListController {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
+                param.put("uid",userInfo.get("uid"));
                 // 获取进度情况
-                List<Map<String, Object>> list = newTbTrackUserListService.queryTrackUserListByKey((Map<String, Object>) param.get("list"));
-                response = Response.getResponseSuccess(userInfo);
+                List<Map<String, Object>> list = newTbTrackUserListService.queryTrackUserListByKey(param);
+                response = Response.getResponseSuccess(param);
                 PageInfo pageInfo = new PageInfo();
+                pageInfo.setTotal(newTbTrackUserListService.countTrackUserListByKey(param));
                 pageInfo.setList(list);
                 response.setPageInfo(pageInfo);
             }

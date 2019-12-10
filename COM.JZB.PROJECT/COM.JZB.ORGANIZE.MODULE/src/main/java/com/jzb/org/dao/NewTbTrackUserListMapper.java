@@ -14,5 +14,7 @@ import java.util.Map;
 @Mapper
 public interface NewTbTrackUserListMapper {
 
-    List<Map<String, Object>> queryTrackUserListByKey(Map<String, Object> map);
+    List<Map<String, Object>> queryTrackUserListByKey(Map<String, Object> param);
+
+    int countTrackUserListByKey(Map<String, Object> param);
 }

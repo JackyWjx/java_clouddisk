@@ -6,27 +6,32 @@
 
     <!--根据公司id查询公司信息-->
     <select id="queryCommonCompanyListBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,supervise,orgrelation,prodesc,prolist from tb_common_company_list where status='1' and cid=#{cid}
+        select cid,cname,supervise,orgrelation,prodesc,prolist from tb_common_company_list where status='1' and cid=#{cid}
         limit #{pagesize}  offset #{pageno}
+    </select>
+
+    <!--根据公司id查询公司名称-->
+    <select id="queryCompanyNameBycid" resultType="java.util.Map" parameterType="java.util.Map">
+        select cid,cname from tb_common_company_list where status='1' and cid=#{cid}
     </select>
 
     <!--根据公司id查询项目信息-->
     <select id="queryCompanyByid" resultType="java.util.Map" parameterType="java.util.Map">
         select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone
 --         ,porjcetra
-         from tb_company_project where cid=#{cid} and  projectid=#{projectid}
+         from tb_company_project where cid=#{cid}
          limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--根据项目id查询项目情报-->
     <select id="queryCompanyByProjectid" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_company_project_info where  projectid=#{projectid}
+        select * from tb_common_project_info where  projectid=#{projectid}
         limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--根据项目id查询项目情报-->
-    <select id="countProjectInfo" resultType="java.util.Map" parameterType="java.util.Map">
-        select count(1) from tb_company_project_info where  projectid=#{projectid}
+    <select id="countProjectInfo" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_common_project_info where  projectid=#{projectid}
     </select>
 
     <!--修改单位-->
@@ -55,14 +60,14 @@
             <if test=" tenderresultcompany != null and tenderresultcompany != ''"> tenderresultcompany=#{ tenderresultcompany},</if>
             <if test=" tenderagent != null and tenderagent != ''"> tenderagent=#{ tenderagent},</if>
             <if test=" agentphone != null and agentphone != ''"> agentphone=#{ agentphone},</if>
-            <if test=" upduid != null and upduid != ''"> upduid=#{ upduid},</if>
+            <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>
             <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
         where status ='1' and projectid=#{projectid}
     </update>
 
     <!--修改项目详情-->
     <update id="updateCompanyProjectInfo" parameterType="java.util.Map">
-        update tb_company_project_info
+        update tb_common_project_info
         set
             <if test=" lineuname != null and lineuname != ''"> lineuname=#{ lineuname},</if>
             <if test=" linephone != null and linephone != ''"> linephone=#{ linephone},</if>
@@ -95,12 +100,11 @@
             <if test=" nbrandname != null and nbrandname != ''"> nbrandname=#{ nbrandname},</if>
             <if test=" ncontrast != null and ncontrast != ''"> ncontrast=#{ ncontrast},</if>
             <if test=" nmail != null and nmail != ''"> nmail=#{ nmail},</if>
-<!--            <if test=" reshid != null and reshid != ''"> reshid=#{ reshid},</if>-->
+            <if test=" reshid != null and reshid != ''"> reshid=#{ reshid},</if>
             <if test=" reshname != null and reshname != ''"> reshname=#{ reshname},</if>
             <if test=" reshphone != null and reshphone != ''"> reshphone=#{ reshphone},</if>
-<!--            <if test=" adduid != null and adduid != ''"> adduid=#{ adduid},</if>-->
             <if test=" addtime != null and addtime != ''"> addtime=#{ addtime},</if>
-            <if test=" upduid != null and upduid != ''"> upduid=#{ upduid},</if>
+            <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>
             <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
         where status ='1'and projectid=#{projectid}
     </update>

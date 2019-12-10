@@ -9,6 +9,14 @@
         <choose><when test="uid != null || uid != ''">and trackuid = #{uid}</when></choose>
         <choose><when test="cid != null || cid != ''">and trackcid = #{cid}</when></choose>
         <choose><when test="trtime != null || trtime != ''">and tracktime = #{trtime}</when></choose>
+        limit #{pagesize}  offset #{pageno}
+    </select>
+
+    <select id="countTrackUserListByKey" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1) from tb_track_user_list where status='1'
+        <choose><when test="uid != null || uid != ''">and trackuid = #{uid}</when></choose>
+        <choose><when test="cid != null || cid != ''">and trackcid = #{cid}</when></choose>
+        <choose><when test="trtime != null || trtime != ''">and tracktime = #{trtime}</when></choose>
     </select>
 
 </mapper>

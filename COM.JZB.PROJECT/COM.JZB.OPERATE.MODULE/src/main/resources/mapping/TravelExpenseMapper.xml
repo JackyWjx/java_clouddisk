@@ -304,7 +304,7 @@
 
 	<!-- 设置删除状态-->
 	<update id="setExpenseDeleteStatus" parameterType="java.util.Map">
-        update tb_travel_expense set status=2  where  exid=#{exid}
+        update tb_travel_expense set status='2'  where  travelid = #{travelid}
     </update>
 
 </mapper>

@@ -31,4 +31,6 @@ public interface NewCompanyProjectMapper {
 
     //产出情况总数
     int countProjectInfo(Map<String, Object> param);
+
+    List<Map<String, Object>> queryCompanyNameBycid(Map<String, Object> param);
 }

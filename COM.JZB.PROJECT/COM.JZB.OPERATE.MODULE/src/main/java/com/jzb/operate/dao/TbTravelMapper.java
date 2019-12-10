@@ -44,4 +44,12 @@ public interface TbTravelMapper {
 
     //根据出差id及详情id获取详情条数（1条记录）
     int countTravelListDeta(Map<String, Object> param);
+
+    int countTravelInfo(Map<String, Object> param);
+
+    //查询审批类型
+    List<Map<String, Object>> queryTravelApproval(Map<String, Object> param);
+
+    //查询产出
+    List<Map<String, Object>> queryTravelProduce(Map<String, Object> param);
 }
