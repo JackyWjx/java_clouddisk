@@ -57,7 +57,7 @@
         plid = ${plid}
     </update>
 
-    <!--电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的菜单列表-->
+    <!--电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的菜单列表1111-->
     <select id="queryCompanyMenuList" parameterType="java.util.Map" resultType="java.util.Map">
         WITH RECURSIVE menu AS (
         SELECT
@@ -80,7 +80,6 @@
         WHERE
         m.parentid = '000000000000000'
         AND c.status = #{status}
-        AND c.cid = #{cid}
 
         UNION ALL
         SELECT
@@ -111,6 +110,26 @@
 
     <!--电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的顶级菜单下的页面-->
     <select id="queryCompanyPageList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        pid,
+        mid,
+        icon,
+        pageid,
+        pagecode,
+        cname,
+        pagepath,
+        summary
+        from
+        tb_product_page
+        where
+        status = #{status}
+        and
+        mid = '000000000000000'
+    </select>
+
+
+    <!--电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的顶级菜单下的页面-->
+    <select id="queryCompanyPageLists" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
         pid,
         mid,
@@ -315,6 +334,62 @@
         menu.idx ASC
     </select>
 
+
+    <!--根据分页获取菜单信息-->
+    <select id="queryProductMenuLists" parameterType="java.util.Map" resultType="java.util.Map">
+        WITH RECURSIVE menu AS (
+        SELECT
+        pid,
+        mid,
+        parentid,
+        cname,
+        menupath,
+        icon,
+        photo,
+        summary,
+        idx,
+        status
+        FROM
+        tb_product_menu
+        WHERE
+        <choose>
+            <when test="mid != null and mid != '' and mid != '000000000000000'">
+                mid = #{mid}
+            </when>
+            <otherwise>
+                parentid = '000000000000000'
+            </otherwise>
+        </choose>
+        AND status = '3'
+        AND pid = #{pid}
+        UNION ALL
+        SELECT
+        tpm.pid,
+        tpm.mid,
+        tpm.parentid,
+        tpm.cname,
+        tpm.menupath,
+        tpm.icon,
+        tpm.photo,
+        tpm.summary,
+        tpm.idx,
+        tpm.status
+        FROM
+        tb_product_menu tpm
+        JOIN menu ON tpm.parentid = menu.mid
+        AND tpm.status = '3'
+        AND tpm.pid = #{pid}
+        )
+        SELECT
+        menu.*
+        FROM
+        menu
+        where
+        menu.status='3'
+        ORDER BY
+        menu.idx ASC
+    </select>
+
     <!--加入产品菜单表-->
     <insert id="insertProductMenu" parameterType="java.util.Map">
         INSERT INTO
@@ -364,7 +439,7 @@
                 #{status},
             </when>
             <otherwise>
-                '1',
+                '3',
             </otherwise>
         </choose>
         <choose>
