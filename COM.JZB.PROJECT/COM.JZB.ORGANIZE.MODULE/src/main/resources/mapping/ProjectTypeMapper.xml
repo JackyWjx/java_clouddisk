@@ -45,12 +45,12 @@
         )
     </insert>
 
-    <delete id="delProjectType">
-        delete  from tb_project_type where typeid in
+    <update id="delProjectType">
+        update   tb_project_type set status='2' where typeid in
         <foreach collection="list" item="item"  open="(" separator="," close=")">
             #{item.typeid}
         </foreach>
-    </delete>
+    </update>
 
     <update id="putProjectType">
         update  tb_project_type set cname=#{cname} ,upduid = #{upduid},updtime=#{updtime} where typeid = #{typeid}

@@ -42,12 +42,12 @@
         )
     </insert>
 
-    <delete id="delEvaluationMethod">
-        delete  from tb_tendering_judge where typeid in
+    <update id="delEvaluationMethod">
+        update  tb_tendering_judge set status = '2' where typeid in
         <foreach collection="list" item="item"  open="(" separator="," close=")">
             #{item.typeid}
         </foreach>
-    </delete>
+    </update>
 
     <update id="putEvaluationMethod">
         update  tb_tendering_judge set cname=#{cname} ,upduid = #{upduid},updtime=#{updtime} where typeid = #{typeid}

@@ -127,9 +127,7 @@ public class ProjectTypeController {
         String api = "/org/ProjectType/delProjectType";
         Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
         try {
-            result = projectTypeService.delProjectType(param)>0?
-                Response.getResponseError():
-                Response.getResponseSuccess(userInfo);
+            result = projectTypeService.delProjectType(param)>0?Response.getResponseSuccess(userInfo):Response.getResponseError();
             logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                     userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User del ProjectType"));
         } catch (Exception e) {
