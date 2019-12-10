@@ -166,7 +166,9 @@ public class TbTrackUserController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            param.put("adduid",userInfo.get("uid"));
+            if (JzbTools.isEmpty(param.get("adduid"))){
+                param.put("adduid",userInfo.get("uid"));
+            }
             userInfo = (Map<String, Object>) param.get("userinfo");
             List<Map<String ,Object>> list = userService.getClient(param);
             PageInfo pageInfo = new PageInfo();

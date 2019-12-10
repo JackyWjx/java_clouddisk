@@ -24,6 +24,9 @@ public class CockpitService {
      * @return
      */
     public int getInfo(Map<String, Object> param) {
+        if(JzbTools.isEmpty(param.get("customer"))){
+            param.put("customer",param.get("adduid"));
+        }
         return cockpitMapper.getInfo(param);
     }
 

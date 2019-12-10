@@ -9,260 +9,260 @@
 
 	<select id="list" resultType="java.util.Map">
 		select  id , travelid , deid , inid , cid , cname , supervise , prodesc , prolist , projectid , projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone , tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature , npodeperson , npodephone , npodejob , npodenature , setb , sepr , seli , recname , reluname , relphone , brandname , contrast , mail , nreluname , nrelphone , nbrandname , ncontrast , nmail , reshid , reshname , reshphone , lineuname , linejob , linephone , linenature , adduid , addtime , upduid , updtime , status , summary  from tb_travel_info
-        <where>  
-		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  <if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
-		  <if test="deid != null and deid != ''"> and deid = #{deid} </if>
-		  <if test="inid != null and inid != ''"> and inid = #{inid} </if>
-		  <if test="cid != null and cid != ''"> and cid = #{cid} </if>
-		  <if test="cname != null and cname != ''"> and cname = #{cname} </if>
-		  <if test="supervise != null and supervise != ''"> and supervise = #{supervise} </if>
-		  <if test="prodesc != null and prodesc != ''"> and prodesc = #{prodesc} </if>
-		  <if test="prolist != null and prolist != ''"> and prolist = #{prolist} </if>
-		  <if test="projectid != null and projectid != ''"> and projectid = #{projectid} </if>
-		  <if test="projectname != null and projectname != ''"> and projectname = #{projectname} </if>
-		  <if test="tendercompany != null and tendercompany != ''"> and tendercompany = #{tendercompany} </if>
-		  <if test="tendername != null and tendername != ''"> and tendername = #{tendername} </if>
-		  <if test="projecttype != null and projecttype != ''"> and projecttype = #{projecttype} </if>
-		  <if test="promail != null and promail != ''"> and promail = #{promail} </if>
-		  <if test="projectras != null and projectras != ''"> and projectras = #{projectras} </if>
-		  <if test="tenderphone != null and tenderphone != ''"> and tenderphone = #{tenderphone} </if>
-		  <if test="tenderresultcompany != null and tenderresultcompany != ''"> and tenderresultcompany = #{tenderresultcompany} </if>
-		  <if test="tendertime != null and tendertime != ''"> and tendertime = #{tendertime} </if>
-		  <if test="tenderagent != null and tenderagent != ''"> and tenderagent = #{tenderagent} </if>
-		  <if test="relation != null and relation != ''"> and relation = #{relation} </if>
-		  <if test="idx != null and idx != ''"> and idx = #{idx} </if>
-		  <if test="podeperson != null and podeperson != ''"> and podeperson = #{podeperson} </if>
-		  <if test="podephone != null and podephone != ''"> and podephone = #{podephone} </if>
-		  <if test="podejob != null and podejob != ''"> and podejob = #{podejob} </if>
-		  <if test="podenature != null and podenature != ''"> and podenature = #{podenature} </if>
-		  <if test="npodeperson != null and npodeperson != ''"> and npodeperson = #{npodeperson} </if>
-		  <if test="npodephone != null and npodephone != ''"> and npodephone = #{npodephone} </if>
-		  <if test="npodejob != null and npodejob != ''"> and npodejob = #{npodejob} </if>
-		  <if test="npodenature != null and npodenature != ''"> and npodenature = #{npodenature} </if>
-		  <if test="setb != null and setb != ''"> and setb = #{setb} </if>
-		  <if test="sepr != null and sepr != ''"> and sepr = #{sepr} </if>
-		  <if test="seli != null and seli != ''"> and seli = #{seli} </if>
-		  <if test="recname != null and recname != ''"> and recname = #{recname} </if>
-		  <if test="reluname != null and reluname != ''"> and reluname = #{reluname} </if>
-		  <if test="relphone != null and relphone != ''"> and relphone = #{relphone} </if>
-		  <if test="brandname != null and brandname != ''"> and brandname = #{brandname} </if>
-		  <if test="contrast != null and contrast != ''"> and contrast = #{contrast} </if>
-		  <if test="mail != null and mail != ''"> and mail = #{mail} </if>
-		  <if test="nreluname != null and nreluname != ''"> and nreluname = #{nreluname} </if>
-		  <if test="nrelphone != null and nrelphone != ''"> and nrelphone = #{nrelphone} </if>
-		  <if test="nbrandname != null and nbrandname != ''"> and nbrandname = #{nbrandname} </if>
-		  <if test="ncontrast != null and ncontrast != ''"> and ncontrast = #{ncontrast} </if>
-		  <if test="nmail != null and nmail != ''"> and nmail = #{nmail} </if>
-		  <if test="reshid != null and reshid != ''"> and reshid = #{reshid} </if>
-		  <if test="reshname != null and reshname != ''"> and reshname = #{reshname} </if>
-		  <if test="reshphone != null and reshphone != ''"> and reshphone = #{reshphone} </if>
-		  <if test="lineuname != null and lineuname != ''"> and lineuname = #{lineuname} </if>
-		  <if test="linejob != null and linejob != ''"> and linejob = #{linejob} </if>
-		  <if test="linephone != null and linephone != ''"> and linephone = #{linephone} </if>
-		  <if test="linenature != null and linenature != ''"> and linenature = #{linenature} </if>
-		  <if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
-		  <if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
-		  <if test="upduid != null and upduid != ''"> and upduid = #{upduid} </if>
-		  <if test="updtime != null and updtime != ''"> and updtime = #{updtime} </if>
-		  <if test="status != null and status != ''"> and status = #{status} </if>
-		  <if test="summary != null and summary != ''"> and summary = #{summary} </if>
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
+			<if test="deid != null and deid != ''"> and deid = #{deid} </if>
+			<if test="inid != null and inid != ''"> and inid = #{inid} </if>
+			<if test="cid != null and cid != ''"> and cid = #{cid} </if>
+			<if test="cname != null and cname != ''"> and cname = #{cname} </if>
+			<if test="supervise != null and supervise != ''"> and supervise = #{supervise} </if>
+			<if test="prodesc != null and prodesc != ''"> and prodesc = #{prodesc} </if>
+			<if test="prolist != null and prolist != ''"> and prolist = #{prolist} </if>
+			<if test="projectid != null and projectid != ''"> and projectid = #{projectid} </if>
+			<if test="projectname != null and projectname != ''"> and projectname = #{projectname} </if>
+			<if test="tendercompany != null and tendercompany != ''"> and tendercompany = #{tendercompany} </if>
+			<if test="tendername != null and tendername != ''"> and tendername = #{tendername} </if>
+			<if test="projecttype != null and projecttype != ''"> and projecttype = #{projecttype} </if>
+			<if test="promail != null and promail != ''"> and promail = #{promail} </if>
+			<if test="projectras != null and projectras != ''"> and projectras = #{projectras} </if>
+			<if test="tenderphone != null and tenderphone != ''"> and tenderphone = #{tenderphone} </if>
+			<if test="tenderresultcompany != null and tenderresultcompany != ''"> and tenderresultcompany = #{tenderresultcompany} </if>
+			<if test="tendertime != null and tendertime != ''"> and tendertime = #{tendertime} </if>
+			<if test="tenderagent != null and tenderagent != ''"> and tenderagent = #{tenderagent} </if>
+			<if test="relation != null and relation != ''"> and relation = #{relation} </if>
+			<if test="idx != null and idx != ''"> and idx = #{idx} </if>
+			<if test="podeperson != null and podeperson != ''"> and podeperson = #{podeperson} </if>
+			<if test="podephone != null and podephone != ''"> and podephone = #{podephone} </if>
+			<if test="podejob != null and podejob != ''"> and podejob = #{podejob} </if>
+			<if test="podenature != null and podenature != ''"> and podenature = #{podenature} </if>
+			<if test="npodeperson != null and npodeperson != ''"> and npodeperson = #{npodeperson} </if>
+			<if test="npodephone != null and npodephone != ''"> and npodephone = #{npodephone} </if>
+			<if test="npodejob != null and npodejob != ''"> and npodejob = #{npodejob} </if>
+			<if test="npodenature != null and npodenature != ''"> and npodenature = #{npodenature} </if>
+			<if test="setb != null and setb != ''"> and setb = #{setb} </if>
+			<if test="sepr != null and sepr != ''"> and sepr = #{sepr} </if>
+			<if test="seli != null and seli != ''"> and seli = #{seli} </if>
+			<if test="recname != null and recname != ''"> and recname = #{recname} </if>
+			<if test="reluname != null and reluname != ''"> and reluname = #{reluname} </if>
+			<if test="relphone != null and relphone != ''"> and relphone = #{relphone} </if>
+			<if test="brandname != null and brandname != ''"> and brandname = #{brandname} </if>
+			<if test="contrast != null and contrast != ''"> and contrast = #{contrast} </if>
+			<if test="mail != null and mail != ''"> and mail = #{mail} </if>
+			<if test="nreluname != null and nreluname != ''"> and nreluname = #{nreluname} </if>
+			<if test="nrelphone != null and nrelphone != ''"> and nrelphone = #{nrelphone} </if>
+			<if test="nbrandname != null and nbrandname != ''"> and nbrandname = #{nbrandname} </if>
+			<if test="ncontrast != null and ncontrast != ''"> and ncontrast = #{ncontrast} </if>
+			<if test="nmail != null and nmail != ''"> and nmail = #{nmail} </if>
+			<if test="reshid != null and reshid != ''"> and reshid = #{reshid} </if>
+			<if test="reshname != null and reshname != ''"> and reshname = #{reshname} </if>
+			<if test="reshphone != null and reshphone != ''"> and reshphone = #{reshphone} </if>
+			<if test="lineuname != null and lineuname != ''"> and lineuname = #{lineuname} </if>
+			<if test="linejob != null and linejob != ''"> and linejob = #{linejob} </if>
+			<if test="linephone != null and linephone != ''"> and linephone = #{linephone} </if>
+			<if test="linenature != null and linenature != ''"> and linenature = #{linenature} </if>
+			<if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
+			<if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
+			<if test="upduid != null and upduid != ''"> and upduid = #{upduid} </if>
+			<if test="updtime != null and updtime != ''"> and updtime = #{updtime} </if>
+			<if test="status != null and status != ''"> and status = #{status} </if>
+			<if test="summary != null and summary != ''"> and summary = #{summary} </if>
 		</where>
 		<if test="offset != null and limit != null">
 			limit #{limit} offset #{offset}
 		</if>
 	</select>
-	
- 	<select id="count" resultType="int">
+
+	<select id="count" resultType="int">
 		select count(*) from tb_travel_info
-		 <where>  
-		  		  <if test="id != null and id != ''"> and id = #{id} </if>
-		  		  <if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
-		  		  <if test="deid != null and deid != ''"> and deid = #{deid} </if>
-		  		  <if test="inid != null and inid != ''"> and inid = #{inid} </if>
-		  		  <if test="cid != null and cid != ''"> and cid = #{cid} </if>
-		  		  <if test="cname != null and cname != ''"> and cname = #{cname} </if>
-		  		  <if test="supervise != null and supervise != ''"> and supervise = #{supervise} </if>
-		  		  <if test="prodesc != null and prodesc != ''"> and prodesc = #{prodesc} </if>
-		  		  <if test="prolist != null and prolist != ''"> and prolist = #{prolist} </if>
-		  		  <if test="projectid != null and projectid != ''"> and projectid = #{projectid} </if>
-		  		  <if test="projectname != null and projectname != ''"> and projectname = #{projectname} </if>
-		  		  <if test="tendercompany != null and tendercompany != ''"> and tendercompany = #{tendercompany} </if>
-		  		  <if test="tendername != null and tendername != ''"> and tendername = #{tendername} </if>
-		  		  <if test="projecttype != null and projecttype != ''"> and projecttype = #{projecttype} </if>
-		  		  <if test="promail != null and promail != ''"> and promail = #{promail} </if>
-		  		  <if test="projectras != null and projectras != ''"> and projectras = #{projectras} </if>
-		  		  <if test="tenderphone != null and tenderphone != ''"> and tenderphone = #{tenderphone} </if>
-		  		  <if test="tenderresultcompany != null and tenderresultcompany != ''"> and tenderresultcompany = #{tenderresultcompany} </if>
-		  		  <if test="tendertime != null and tendertime != ''"> and tendertime = #{tendertime} </if>
-		  		  <if test="tenderagent != null and tenderagent != ''"> and tenderagent = #{tenderagent} </if>
-		  		  <if test="relation != null and relation != ''"> and relation = #{relation} </if>
-		  		  <if test="idx != null and idx != ''"> and idx = #{idx} </if>
-		  		  <if test="podeperson != null and podeperson != ''"> and podeperson = #{podeperson} </if>
-		  		  <if test="podephone != null and podephone != ''"> and podephone = #{podephone} </if>
-		  		  <if test="podejob != null and podejob != ''"> and podejob = #{podejob} </if>
-		  		  <if test="podenature != null and podenature != ''"> and podenature = #{podenature} </if>
-		  		  <if test="npodeperson != null and npodeperson != ''"> and npodeperson = #{npodeperson} </if>
-		  		  <if test="npodephone != null and npodephone != ''"> and npodephone = #{npodephone} </if>
-		  		  <if test="npodejob != null and npodejob != ''"> and npodejob = #{npodejob} </if>
-		  		  <if test="npodenature != null and npodenature != ''"> and npodenature = #{npodenature} </if>
-		  		  <if test="setb != null and setb != ''"> and setb = #{setb} </if>
-		  		  <if test="sepr != null and sepr != ''"> and sepr = #{sepr} </if>
-		  		  <if test="seli != null and seli != ''"> and seli = #{seli} </if>
-		  		  <if test="recname != null and recname != ''"> and recname = #{recname} </if>
-		  		  <if test="reluname != null and reluname != ''"> and reluname = #{reluname} </if>
-		  		  <if test="relphone != null and relphone != ''"> and relphone = #{relphone} </if>
-		  		  <if test="brandname != null and brandname != ''"> and brandname = #{brandname} </if>
-		  		  <if test="contrast != null and contrast != ''"> and contrast = #{contrast} </if>
-		  		  <if test="mail != null and mail != ''"> and mail = #{mail} </if>
-		  		  <if test="nreluname != null and nreluname != ''"> and nreluname = #{nreluname} </if>
-		  		  <if test="nrelphone != null and nrelphone != ''"> and nrelphone = #{nrelphone} </if>
-		  		  <if test="nbrandname != null and nbrandname != ''"> and nbrandname = #{nbrandname} </if>
-		  		  <if test="ncontrast != null and ncontrast != ''"> and ncontrast = #{ncontrast} </if>
-		  		  <if test="nmail != null and nmail != ''"> and nmail = #{nmail} </if>
-		  		  <if test="reshid != null and reshid != ''"> and reshid = #{reshid} </if>
-		  		  <if test="reshname != null and reshname != ''"> and reshname = #{reshname} </if>
-		  		  <if test="reshphone != null and reshphone != ''"> and reshphone = #{reshphone} </if>
-		  		  <if test="lineuname != null and lineuname != ''"> and lineuname = #{lineuname} </if>
-		  		  <if test="linejob != null and linejob != ''"> and linejob = #{linejob} </if>
-		  		  <if test="linephone != null and linephone != ''"> and linephone = #{linephone} </if>
-		  		  <if test="linenature != null and linenature != ''"> and linenature = #{linenature} </if>
-		  		  <if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
-		  		  <if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
-		  		  <if test="upduid != null and upduid != ''"> and upduid = #{upduid} </if>
-		  		  <if test="updtime != null and updtime != ''"> and updtime = #{updtime} </if>
-		  		  <if test="status != null and status != ''"> and status = #{status} </if>
-		  		  <if test="summary != null and summary != ''"> and summary = #{summary} </if>
-		  		</where>
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
+			<if test="deid != null and deid != ''"> and deid = #{deid} </if>
+			<if test="inid != null and inid != ''"> and inid = #{inid} </if>
+			<if test="cid != null and cid != ''"> and cid = #{cid} </if>
+			<if test="cname != null and cname != ''"> and cname = #{cname} </if>
+			<if test="supervise != null and supervise != ''"> and supervise = #{supervise} </if>
+			<if test="prodesc != null and prodesc != ''"> and prodesc = #{prodesc} </if>
+			<if test="prolist != null and prolist != ''"> and prolist = #{prolist} </if>
+			<if test="projectid != null and projectid != ''"> and projectid = #{projectid} </if>
+			<if test="projectname != null and projectname != ''"> and projectname = #{projectname} </if>
+			<if test="tendercompany != null and tendercompany != ''"> and tendercompany = #{tendercompany} </if>
+			<if test="tendername != null and tendername != ''"> and tendername = #{tendername} </if>
+			<if test="projecttype != null and projecttype != ''"> and projecttype = #{projecttype} </if>
+			<if test="promail != null and promail != ''"> and promail = #{promail} </if>
+			<if test="projectras != null and projectras != ''"> and projectras = #{projectras} </if>
+			<if test="tenderphone != null and tenderphone != ''"> and tenderphone = #{tenderphone} </if>
+			<if test="tenderresultcompany != null and tenderresultcompany != ''"> and tenderresultcompany = #{tenderresultcompany} </if>
+			<if test="tendertime != null and tendertime != ''"> and tendertime = #{tendertime} </if>
+			<if test="tenderagent != null and tenderagent != ''"> and tenderagent = #{tenderagent} </if>
+			<if test="relation != null and relation != ''"> and relation = #{relation} </if>
+			<if test="idx != null and idx != ''"> and idx = #{idx} </if>
+			<if test="podeperson != null and podeperson != ''"> and podeperson = #{podeperson} </if>
+			<if test="podephone != null and podephone != ''"> and podephone = #{podephone} </if>
+			<if test="podejob != null and podejob != ''"> and podejob = #{podejob} </if>
+			<if test="podenature != null and podenature != ''"> and podenature = #{podenature} </if>
+			<if test="npodeperson != null and npodeperson != ''"> and npodeperson = #{npodeperson} </if>
+			<if test="npodephone != null and npodephone != ''"> and npodephone = #{npodephone} </if>
+			<if test="npodejob != null and npodejob != ''"> and npodejob = #{npodejob} </if>
+			<if test="npodenature != null and npodenature != ''"> and npodenature = #{npodenature} </if>
+			<if test="setb != null and setb != ''"> and setb = #{setb} </if>
+			<if test="sepr != null and sepr != ''"> and sepr = #{sepr} </if>
+			<if test="seli != null and seli != ''"> and seli = #{seli} </if>
+			<if test="recname != null and recname != ''"> and recname = #{recname} </if>
+			<if test="reluname != null and reluname != ''"> and reluname = #{reluname} </if>
+			<if test="relphone != null and relphone != ''"> and relphone = #{relphone} </if>
+			<if test="brandname != null and brandname != ''"> and brandname = #{brandname} </if>
+			<if test="contrast != null and contrast != ''"> and contrast = #{contrast} </if>
+			<if test="mail != null and mail != ''"> and mail = #{mail} </if>
+			<if test="nreluname != null and nreluname != ''"> and nreluname = #{nreluname} </if>
+			<if test="nrelphone != null and nrelphone != ''"> and nrelphone = #{nrelphone} </if>
+			<if test="nbrandname != null and nbrandname != ''"> and nbrandname = #{nbrandname} </if>
+			<if test="ncontrast != null and ncontrast != ''"> and ncontrast = #{ncontrast} </if>
+			<if test="nmail != null and nmail != ''"> and nmail = #{nmail} </if>
+			<if test="reshid != null and reshid != ''"> and reshid = #{reshid} </if>
+			<if test="reshname != null and reshname != ''"> and reshname = #{reshname} </if>
+			<if test="reshphone != null and reshphone != ''"> and reshphone = #{reshphone} </if>
+			<if test="lineuname != null and lineuname != ''"> and lineuname = #{lineuname} </if>
+			<if test="linejob != null and linejob != ''"> and linejob = #{linejob} </if>
+			<if test="linephone != null and linephone != ''"> and linephone = #{linephone} </if>
+			<if test="linenature != null and linenature != ''"> and linenature = #{linenature} </if>
+			<if test="adduid != null and adduid != ''"> and adduid = #{adduid} </if>
+			<if test="addtime != null and addtime != ''"> and addtime = #{addtime} </if>
+			<if test="upduid != null and upduid != ''"> and upduid = #{upduid} </if>
+			<if test="updtime != null and updtime != ''"> and updtime = #{updtime} </if>
+			<if test="status != null and status != ''"> and status = #{status} </if>
+			<if test="summary != null and summary != ''"> and summary = #{summary} </if>
+		</where>
 	</select>
-	 
+
 	<insert id="save" parameterType="java.util.Map">
 		insert into tb_travel_info
 		(
-			 travelid , 
-			 deid , 
-			 inid , 
-			 cid , 
-			 cname , 
-			 supervise , 
-			 prodesc , 
-			 prolist , 
-			 projectid , 
-			 projectname , 
-			 tendercompany , 
-			 tendername , 
-			 projecttype , 
-			 promail , 
-			 projectras , 
-			 tenderphone , 
-			 tenderresultcompany , 
-			 tendertime , 
-			 tenderagent , 
-			 relation , 
-			 idx , 
-			 podeperson , 
-			 podephone , 
-			 podejob , 
-			 podenature , 
-			 npodeperson , 
-			 npodephone , 
-			 npodejob , 
-			 npodenature , 
-			 setb , 
-			 sepr , 
-			 seli , 
-			 recname , 
-			 reluname , 
-			 relphone , 
-			 brandname , 
-			 contrast , 
-			 mail , 
-			 nreluname , 
-			 nrelphone , 
-			 nbrandname , 
-			 ncontrast , 
-			 nmail , 
-			 reshid , 
-			 reshname , 
-			 reshphone , 
-			 lineuname , 
-			 linejob , 
-			 linephone , 
-			 linenature , 
-			 adduid , 
-			 addtime , 
-			 upduid , 
-			 updtime , 
-			 status , 
-			 summary 
+			 travelid ,
+			 deid ,
+			 inid ,
+			 cid ,
+			 cname ,
+			 supervise ,
+			 prodesc ,
+			 prolist ,
+			 projectid ,
+			 projectname ,
+			 tendercompany ,
+			 tendername ,
+			 projecttype ,
+			 promail ,
+			 projectras ,
+			 tenderphone ,
+			 tenderresultcompany ,
+			 tendertime ,
+			 tenderagent ,
+			 relation ,
+			 idx ,
+			 podeperson ,
+			 podephone ,
+			 podejob ,
+			 podenature ,
+			 npodeperson ,
+			 npodephone ,
+			 npodejob ,
+			 npodenature ,
+			 setb ,
+			 sepr ,
+			 seli ,
+			 recname ,
+			 reluname ,
+			 relphone ,
+			 brandname ,
+			 contrast ,
+			 mail ,
+			 nreluname ,
+			 nrelphone ,
+			 nbrandname ,
+			 ncontrast ,
+			 nmail ,
+			 reshid ,
+			 reshname ,
+			 reshphone ,
+			 lineuname ,
+			 linejob ,
+			 linephone ,
+			 linenature ,
+			 adduid ,
+			 addtime ,
+			 upduid ,
+			 updtime ,
+			 status ,
+			 summary
 		)
 		values
 		(
-			#{travelid}, 
-			#{deid}, 
-			#{inid}, 
-			#{cid}, 
-			#{cname}, 
-			#{supervise}, 
-			#{prodesc}, 
-			#{prolist}, 
-			#{projectid}, 
-			#{projectname}, 
-			#{tendercompany}, 
-			#{tendername}, 
-			#{projecttype}, 
-			#{promail}, 
-			#{projectras}, 
-			#{tenderphone}, 
-			#{tenderresultcompany}, 
-			#{tendertime}, 
-			#{tenderagent}, 
-			#{relation}, 
-			#{idx}, 
-			#{podeperson}, 
-			#{podephone}, 
-			#{podejob}, 
-			#{podenature}, 
-			#{npodeperson}, 
-			#{npodephone}, 
-			#{npodejob}, 
-			#{npodenature}, 
-			#{setb}, 
-			#{sepr}, 
-			#{seli}, 
-			#{recname}, 
-			#{reluname}, 
-			#{relphone}, 
-			#{brandname}, 
-			#{contrast}, 
-			#{mail}, 
-			#{nreluname}, 
-			#{nrelphone}, 
-			#{nbrandname}, 
-			#{ncontrast}, 
-			#{nmail}, 
-			#{reshid}, 
-			#{reshname}, 
-			#{reshphone}, 
-			#{lineuname}, 
-			#{linejob}, 
-			#{linephone}, 
-			#{linenature}, 
-			#{adduid}, 
-			#{addtime}, 
-			#{upduid}, 
-			#{updtime}, 
-			#{status}, 
+			#{travelid},
+			#{deid},
+			#{inid},
+			#{cid},
+			#{cname},
+			#{supervise},
+			#{prodesc},
+			#{prolist},
+			#{projectid},
+			#{projectname},
+			#{tendercompany},
+			#{tendername},
+			#{projecttype},
+			#{promail},
+			#{projectras},
+			#{tenderphone},
+			#{tenderresultcompany},
+			#{tendertime},
+			#{tenderagent},
+			#{relation},
+			#{idx},
+			#{podeperson},
+			#{podephone},
+			#{podejob},
+			#{podenature},
+			#{npodeperson},
+			#{npodephone},
+			#{npodejob},
+			#{npodenature},
+			#{setb},
+			#{sepr},
+			#{seli},
+			#{recname},
+			#{reluname},
+			#{relphone},
+			#{brandname},
+			#{contrast},
+			#{mail},
+			#{nreluname},
+			#{nrelphone},
+			#{nbrandname},
+			#{ncontrast},
+			#{nmail},
+			#{reshid},
+			#{reshname},
+			#{reshphone},
+			#{lineuname},
+			#{linejob},
+			#{linephone},
+			#{linenature},
+			#{adduid},
+			#{addtime},
+			#{upduid},
+			#{updtime},
+			#{status},
 			#{summary}
 		)
 	</insert>
-	 
+
 	<update id="update" parameterType="java.util.Map">
-		update tb_travel_info 
+		update tb_travel_info
 		<set>
 			<if test="travelid != null"> travelid  = #{travelid}, </if>
 			<if test="deid != null"> deid  = #{deid}, </if>
-<!--			<if test="inid != null"> inid  = #{inid}, </if>-->
+			<!--			<if test="inid != null"> inid  = #{inid}, </if>-->
 			<if test="cid != null"> cid  = #{cid}, </if>
 			<if test="cname != null"> cname  = #{cname}, </if>
 			<if test="supervise != null"> supervise  = #{supervise}, </if>
@@ -319,13 +319,13 @@
 		</set>
 		where inid = #{inid}
 	</update>
-	
+
 	<delete id="remove">
 		delete from tb_travel_info where id = #{value}
 	</delete>
-	
+
 	<delete id="batchRemove">
-		delete from tb_travel_info where id in 
+		delete from tb_travel_info where id in
 		<foreach item="id" collection="array" open="(" separator="," close=")">
 			#{id}
 		</foreach>

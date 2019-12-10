@@ -1,18 +1,16 @@
 package com.jzb.operate.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.Response;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
-import com.jzb.operate.dao.TbCompanyMethodTargetMapper;
 import com.jzb.operate.service.TbCompanyMethodService;
 import com.jzb.operate.service.TbCompanyMethodTargetService;
-import com.netflix.discovery.converters.jackson.EurekaXmlJacksonCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +82,6 @@ public class TbCompanyMethodController {
                         tbCompanyMethodTargetService.addMethodTarget(targetList);
                     }
                 }
-
             }
         } catch (Exception ex) {
             flag = false;
