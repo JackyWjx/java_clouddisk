@@ -254,17 +254,22 @@
         SELECT count(1) FROM tb_role_group WHERE cid =#{cid} and status='1'
     </select>
 
-    <!--根据企业id获取角色组信息-->
+    <!--根据企业id获取角色组信息  修改人czd  加了每个角色组下有多少个角色-->
     <select id="queryRoleList" resultType="java.util.Map" parameterType="java.util.Map">
-                SELECT
-                    cid,
-                    crgid,
-                    cname
-                FROM
-                    tb_role_group
-                WHERE
-                    cid =#{cid} and status='1' order by cid
-                LIMIT #{pagesize}  OFFSET #{start}
+        SELECT cid, crgid, cname,
+            ( SELECT COUNT ( 1 ) FROM tb_role_relation re
+                LEFT JOIN tb_user_list u ON u.uid = re.rrid
+                LEFT JOIN tb_company_role cr ON cr.crid = re.rrid
+              WHERE re.status = '1' AND re.crgid = trg.crgid AND re.rrtype = '2'
+            )
+        FROM
+            tb_role_group trg
+        WHERE
+            cid = #{cid}
+            AND status = '1'
+        ORDER BY
+            cid
+        LIMIT #{pagesize}  OFFSET #{start}
     </select>
 
 
