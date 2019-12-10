@@ -151,6 +151,21 @@ public class ProductLineService {
     }
 
     /**
+     * CRM菜单管理-记支宝电脑端
+     * 电脑端-全界面-记支宝电脑端下全界面显示企业下所有产品的顶级菜单下的页面
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getCompanyPageLists(Map<String, Object> param) {
+        // 加入查询状态
+        param.put("status", "1");
+
+        // 1代表单产品,2代表产品包
+        param.put("ptype", "1");
+        return productLineMapper.queryCompanyPageLists(param);
+    }
+
+    /**
      * 电脑端-全界面-记支宝电脑端下全界面显示菜单下的所有页面
      *
      * @author kuangbin
@@ -168,6 +183,33 @@ public class ProductLineService {
      * @author kuangbin
      */
     public int addProductPage(Map<String, Object> param) {
+        int count;
+        try {
+
+            // 获取当前时间
+            long addtime = System.currentTimeMillis();
+            param.put("addtime", addtime);
+            param.put("updtime", addtime);
+            // 获取产品页面ID
+            String pageid = JzbRandom.getRandomCharCap(17);
+            param.put("pageid", pageid);
+            param.put("status", "1");
+            // 加入产品页面表
+            count = productLineMapper.insertProductPage(param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
+     * CRM菜单管理-记支宝电脑端
+     * 电脑端-全界面-记支宝电脑端下全界面新建同级页面
+     *
+     * @author kuangbin
+     */
+    public int addProductPages(Map<String, Object> param) {
         int count;
         try {
 
@@ -240,6 +282,16 @@ public class ProductLineService {
 
     /**
      * CRM菜单管理
+     * 获取企业下单一产品的菜单信息
+     *
+     * @author kuangbin
+     */
+    public List<Map<String, Object>> getProductMenuLists(Map<String, Object> param) {
+        return productLineMapper.queryProductMenuLists(param);
+    }
+
+    /**
+     * CRM菜单管理
      * CRM菜单新建同级菜单或子级
      *
      * @author kuangbin
@@ -253,6 +305,32 @@ public class ProductLineService {
             param.put("mid", mid);
             param.put("addtime", addtime);
             param.put("updtime", addtime);
+            param.put("status", '3');
+            // 加入菜单表
+            count = productLineMapper.insertProductMenu(param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
+     * CRM菜单管理
+     * CRM菜单新建同级菜单或子级
+     *
+     * @author kuangbin
+     */
+    public int addProductMenus(Map<String, Object> param) {
+        int count;
+        try {
+            // 获取当前时间
+            long addtime = System.currentTimeMillis();
+            String mid = JzbRandom.getRandomCharCap(15);
+            param.put("mid", mid);
+            param.put("addtime", addtime);
+            param.put("updtime", addtime);
+            param.put("status", '1');
             // 加入菜单表
             count = productLineMapper.insertProductMenu(param);
         } catch (Exception ex) {

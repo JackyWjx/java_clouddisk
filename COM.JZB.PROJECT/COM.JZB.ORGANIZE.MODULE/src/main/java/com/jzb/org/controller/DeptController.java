@@ -58,12 +58,56 @@ public class DeptController {
             String[] str = {"cid"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("uid", userInfo.get("uid"));
+                if (userInfo.get("uid") != null) {
+                    param.put("uid", userInfo.get("uid"));
+                }
                 param.put("pagesize", 2147483647);
                 param.put("start", 0);
                 List<Map<String, Object>> list = deptService.getDeptListByCid(param);
                 PageInfo pageInfo = new PageInfo();
-                result = Response.getResponseSuccess(userInfo);
+                result = Response.getResponseSuccess();
+                pageInfo.setList(list);
+                result.setPageInfo(pageInfo);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /**
+     * 根据企业id获取部门信息  开放平台接口
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getDeptLists", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getDeptLists(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"cid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("pagesize", 2147483647);
+                param.put("start", 0);
+                List<Map<String, Object>> list = deptService.getDeptListByCid(param);
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).put("cid", param.get("cid"));
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("cdid", list.get(i).get("cdid"));
+                    map.put("cid", param.get("cid"));
+                    //查询部门接口
+                    List<Map<String, Object>> list1 = deptService.queryDeptUser(map);
+                    list.get(i).put("list", list1);
+
+                }
+                PageInfo pageInfo = new PageInfo();
+                result = Response.getResponseSuccess();
                 pageInfo.setList(list);
                 result.setPageInfo(pageInfo);
             } else {
