@@ -131,7 +131,7 @@ public class OpenPageController {
                 List<Map<String, Object>> orgAppList = openPageService.searchOrgApplication(param);
                for (int i = 0; i < orgAppList.size(); i++) {
                    orgAppList.get(i).put("cname", orgAppList.get(i).get("appname"));
-                   orgAppList.get(i).put("type", "1");
+                   orgAppList.get(i).put("type", "3");
                }
                 result = Response.getResponseSuccess();
                 Info = new PageInfo();
