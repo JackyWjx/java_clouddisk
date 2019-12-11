@@ -17,7 +17,11 @@ public class TbDeptUserService {
     @Autowired
     private TbDeptUserMapper tbDeptUserMapper;
 
-    public List<Map<String, Object>> queryUsernameBydept(Map<String, Object> map) {
-        return tbDeptUserMapper.queryUsernameBydept(map);
+    public List<Map<String, Object>> queryUsernameBydept(Map<String, Object> param) {
+        return tbDeptUserMapper.queryUsernameBydept(param);
+    }
+
+    public List<Map<String, Object>> queryOtherPersonByuid(Map<String, Object> param) {
+        return tbDeptUserMapper.queryOtherPersonByuid(param);
     }
 }

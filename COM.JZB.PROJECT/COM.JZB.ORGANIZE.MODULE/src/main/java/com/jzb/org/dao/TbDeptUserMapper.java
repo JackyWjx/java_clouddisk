@@ -12,4 +12,6 @@ import java.util.Map;
 public interface TbDeptUserMapper {
 
     List<Map<String, Object>> queryUsernameBydept(Map<String, Object> map);
+
+    List<Map<String, Object>> queryOtherPersonByuid(Map<String, Object> param);
 }
