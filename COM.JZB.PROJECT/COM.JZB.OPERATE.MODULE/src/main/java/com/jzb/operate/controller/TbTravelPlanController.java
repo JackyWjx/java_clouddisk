@@ -1,6 +1,7 @@
 package com.jzb.operate.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -11,6 +12,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.auth.UserInfoApi;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
+import com.jzb.operate.api.org.NewTbCompanyListApi;
 import com.jzb.operate.api.org.TbDeptUserListApi;
 import com.jzb.operate.service.*;
 import com.jzb.operate.util.PrindexUtil;
@@ -55,6 +57,9 @@ public class TbTravelPlanController {
 
     @Autowired
     UserInfoApi userInfoApi;
+
+    @Autowired
+    NewTbCompanyListApi newTbCompanyListApi;
 
     /**
      * 日志记录对象
@@ -302,6 +307,10 @@ public class TbTravelPlanController {
                 //统计始末时间
                 startTime = startTime < trTime ? startTime : trTime;
                 endTime = endTime > trTime ? endTime : trTime;
+                // prindex加密处理
+                Integer[] prindexs = (Integer[]) detailsMap.get("prindexs");
+                List<Integer> prindexLst = new ArrayList<>(Arrays.asList(prindexs));
+                detailsMap.put("produce",PrindexUtil.setPrindex(prindexLst));
                 travelPlanService.updateTravelDetials(detailsMap);
 
                 //获取并保存情报收集list
@@ -354,6 +363,11 @@ public class TbTravelPlanController {
                 detialsMap.put("travelinfolist",travelInfoService.list(query));
                 //出差资料
                 detialsMap.put("traveldatalist",travelDataService.list(query));
+                //预计产出
+                Integer produce = (Integer) detialsMap.get("produce");
+                List<Map<String,Object>> produceMaps = travelProduceService.list(null);
+                List<Integer> produceList = PrindexUtil.getPrindex(produce,produceMaps);
+                detialsMap.put("produceList",produceList);
             }
 
             response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
@@ -454,12 +468,12 @@ public class TbTravelPlanController {
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid",userInfo.get("uid"));
                 logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-
 
             if (JzbCheckParam.allNotEmpty(param, new String[]{"uid", "pagesize", "pageno"})) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -476,7 +490,7 @@ public class TbTravelPlanController {
                 }
                 // 得到结果集
                 List<Map<String, Object>> recordList = tbTravelRecordService.getTravelRecordListByUid(param);
-
+                Response resApi;
                 for (Map<String,Object> travelMap: recordList) {
                     // 1.根据查询出来的truids(审批人员id集合)调用用户Aip查询审批人员名称用于界面展示
                     Map<String,Object> whereParam = new HashMap<>();
@@ -484,8 +498,8 @@ public class TbTravelPlanController {
                         travelMap.put("approvers","");
                     }
                     whereParam.put("unames",travelMap.get("truids"));
-                    Response res = userInfoApi.searchInvitee(param);
-                    String unameStr = (String) res.getResponseEntity();
+                    resApi = userInfoApi.searchInvitee(param);
+                    String unameStr = (String) resApi.getResponseEntity();
                     travelMap.put("approvers",unameStr);
                     // 2.根据查询出来的travelid 查询 出差详情记录
                     whereParam.put("travelid",travelMap.get("travelid"));
@@ -493,6 +507,25 @@ public class TbTravelPlanController {
 
                     for(Map<String,Object> detialsMap : detailsList){
                         Map<String,Object> query = new HashMap<>();
+                        // 获取同行人名称
+                        if(JzbTools.isEmpty(detialsMap.get("trpeers"))){
+                            travelMap.put("trpeers","");
+                        }
+                        query.put("unames",detialsMap.get("trpeers"));
+                        resApi = userInfoApi.searchInvitee(query);
+                        String trpeers = (String) resApi.getResponseEntity();
+                        detialsMap.put("trpeers",trpeers);
+                        // 出差区域
+                        query.put("",detialsMap.get("trregion"));
+                        resApi = regionBaseApi.getCityJson(query);
+                        String travelCity = (String) resApi.getResponseEntity();
+                        detialsMap.put("travelCity",travelCity);
+                        //获取单位名称
+                        query.put("cid",detialsMap.get("cid"));
+                        resApi = newTbCompanyListApi.queryCompanyNameBycid(query);
+                        List<Map<String,Object>> calist = resApi.getPageInfo().getList();
+                        detialsMap.put("clist",calist);
+
                         query.put("travelid",detialsMap.get("travelid"));
                         query.put("deid",detialsMap.get("deid"));
                         //情报收集
@@ -551,7 +584,6 @@ public class TbTravelPlanController {
         }
         return result;
     }
-
 
 
 }
