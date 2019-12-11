@@ -67,7 +67,7 @@
         from tb_travel_record tb1 LEFT JOIN tb_travel_approval tb2 on  tb1.travelid = tb2.travelid
         <where>
             <if test="uid != null and uid != '' ">
-                and uid &gt;= #{uid}
+                and uid = #{uid}
             </if>
             <if test="beginTime != null and beginTime != '' ">
                 and orgtime &gt;= #{beginTime}
