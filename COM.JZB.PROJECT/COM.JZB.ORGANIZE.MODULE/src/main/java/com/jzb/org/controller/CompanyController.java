@@ -599,7 +599,7 @@ public class CompanyController {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("ouid", JzbDataType.getString(userInfo.get("uid")));
             int count = companyService.passDenyProposer(param);
-            if (count == 1) {
+            if (count >0) {
                 result = Response.getResponseSuccess(userInfo);
                 Response sendResult;
                 int maybe = JzbDataType.getInteger(param.get("maybe"));
