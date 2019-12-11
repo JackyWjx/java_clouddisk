@@ -37,8 +37,9 @@
             and title ~ #{keyword}
         </if>
         ORDER BY
-        ID
-        LIMIT #{rows} OFFSET #{page}
+        opendate
+        desc
+        LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
 

@@ -24,10 +24,17 @@ public class CockpitService {
      * @return
      */
     public int getInfo(Map<String, Object> param) {
-        if(JzbTools.isEmpty(param.get("customer"))){
-            param.put("customer",param.get("adduid"));
+        int count = 0;
+        if (JzbTools.isEmpty(param.get("cdid"))){
+            if(JzbTools.isEmpty(param.get("customer"))){
+                param.put("customer",param.get("adduid"));
+               count =  cockpitMapper.getInfo(param);
+            }
+        }else {
+            // 查询该部门下的所有用户的记录数
+             count = cockpitMapper.getDeptUser(param);
         }
-        return cockpitMapper.getInfo(param);
+        return count;
     }
 
     /**
@@ -36,6 +43,10 @@ public class CockpitService {
      * @return
      */
     public List<Map<String, Object>> getHandleCount(Map<String, Object> param) {
+        int willCount = 0;
+        int deepCount = 0;
+        int signCount = 0;
+        int meetCount = 0;
         Map<String, Object> map = methodTime(System.currentTimeMillis());
         if (!JzbTools.isEmpty(param.get("startTime")) || !JzbTools.isEmpty(param.get("endTime"))){
             param.put("zero",param.get("startTime"));
@@ -43,21 +54,39 @@ public class CockpitService {
         }else {
             param.putAll(map);
         }
-        param.put("trackres",1);
-        // 愿意见
-        int willCount = cockpitMapper.getHandleCount(param);
+        if (JzbTools.isEmpty(param.get("cdid")) && !JzbTools.isEmpty(param.get("customer"))) {
+            param.put("trackres", 1);
+            // 愿意见
+             willCount = cockpitMapper.getHandleCount(param);
 
-        param.put("trackres",2);
-        // 深度见
-        int deepCount = cockpitMapper.getHandleCount(param);
+            param.put("trackres", 2);
+            // 深度见
+             deepCount = cockpitMapper.getHandleCount(param);
 
-        param.put("trackres",4);
-        // 上会
-        int meetCount = cockpitMapper.getHandleCount(param);
+            param.put("trackres", 4);
+            // 上会
+             meetCount = cockpitMapper.getHandleCount(param);
 
-        param.put("trackres",8);
-        // 上会
-        int signCount = cockpitMapper.getHandleCount(param);
+            param.put("trackres", 8);
+            // 上会
+             signCount = cockpitMapper.getHandleCount(param);
+        } else {
+            param.put("trackres", 1);
+            // 愿意见
+            willCount = cockpitMapper.getDeptCount(param);
+
+            param.put("trackres", 2);
+            // 深度见
+            deepCount = cockpitMapper.getDeptCount(param);
+
+            param.put("trackres", 4);
+            // 上会
+            meetCount = cockpitMapper.getDeptCount(param);
+
+            param.put("trackres", 8);
+            // 上会
+            signCount = cockpitMapper.getDeptCount(param);
+        }
         Map<String,Object> cmap = new HashMap<>();
         cmap.put("willCount",willCount);
         cmap.put("deepCount",deepCount);

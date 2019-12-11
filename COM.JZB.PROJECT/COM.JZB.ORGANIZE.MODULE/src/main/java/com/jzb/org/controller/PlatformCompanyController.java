@@ -211,7 +211,7 @@ public class PlatformCompanyController {
                     Response response = null;
                     if (list.get(i).get("pid") != null || list.get(i).get("pid") != "") {
                         map.put("pid", list.get(i).get("pid"));
-                         response = productLineController.getProductMenuList(map);
+                         response = productLineController.getProductMenuLists(map);
                     }
                     if (response.getPageInfo().getList() != null && response.getPageInfo().getList().size() > 0) {
                         List list2 = response.getPageInfo().getList();

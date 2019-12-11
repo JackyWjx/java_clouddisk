@@ -2,10 +2,7 @@ package com.jzb.operate.api.org;
 import com.jzb.base.message.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -21,6 +18,15 @@ public interface NewTbCompanyListApi {
     @PostMapping("/queryCompanyByid")
     @CrossOrigin
     public Response queryCompanyByid(@RequestBody Map<String, Object> param);
+
+    /**
+     * @Author sapientia
+     * @Date 19:54 2019/12/9
+     * @Description 根据cid获取公司名称
+     **/
+    @RequestMapping(value = "/queryCompanyNameBycid" , method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryCompanyNameBycid(@RequestBody Map<String, Object> param);
 
     /**
      * @Author sapientia

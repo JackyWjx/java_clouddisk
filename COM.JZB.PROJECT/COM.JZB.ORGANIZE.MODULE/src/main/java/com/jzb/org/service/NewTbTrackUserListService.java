@@ -19,7 +19,11 @@ public class NewTbTrackUserListService {
     @Autowired
     private NewTbTrackUserListMapper newTbTrackUserListMapper;
 
-    public List<Map<String, Object>> queryTrackUserListByKey(Map<String, Object> map) {
-        return newTbTrackUserListMapper.queryTrackUserListByKey(map);
+    public List<Map<String, Object>> queryTrackUserListByKey(Map<String, Object> param) {
+        return newTbTrackUserListMapper.queryTrackUserListByKey(param);
+    }
+
+    public int countTrackUserListByKey(Map<String, Object> param) {
+        return newTbTrackUserListMapper.countTrackUserListByKey(param);
     }
 }

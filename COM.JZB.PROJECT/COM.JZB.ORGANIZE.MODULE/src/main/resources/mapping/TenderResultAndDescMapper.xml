@@ -306,17 +306,17 @@
         where tendid = #{tendid}
     </update>
 
-    <delete id="delTenderMessage">
-        delete from tb_tendering_result_list where  tendid in
+    <update id="delTenderMessage">
+        update tb_tendering_result_list set status = '2' where  tendid in
         <foreach collection="tendids" item="tendid"  open="(" separator="," close=")">
             #{tendid}
         </foreach>
-    </delete>
+    </update>
 
-    <delete id="delTenderInfoMessage">
-        delete from tb_tendering_result_info where  tendid in
+    <update id="delTenderInfoMessage">
+        update tb_tendering_result_info set status = '2' where  tendid in
         <foreach collection="tendids" item="tendid"  open="(" separator="," close=")">
             #{tendid}
         </foreach>
-    </delete>
+    </update>
 </mapper>

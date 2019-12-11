@@ -45,4 +45,8 @@ public class NewCompanyProjectService {
     public int countProjectInfo(Map<String, Object> param) {
         return newCompanyProjectMapper.countProjectInfo(param);
     }
+
+    public List<Map<String, Object>> queryCompanyNameBycid(Map<String, Object> param) {
+        return  newCompanyProjectMapper.queryCompanyNameBycid(param);
+    }
 }

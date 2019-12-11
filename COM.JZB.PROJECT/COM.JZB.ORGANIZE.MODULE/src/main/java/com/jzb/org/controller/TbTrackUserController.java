@@ -41,6 +41,7 @@ public class TbTrackUserController {
         Response response;
         try {
             Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("trackuname",userInfo.get("cname"));
             param.put("adduid",userInfo.get("uid"));
             int count = userService.addTrackUser(param);
             response = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseSuccess();

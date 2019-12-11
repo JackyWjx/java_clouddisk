@@ -302,8 +302,14 @@ public class TbConnectionPubController {
 
                 userInfo = (Map<String, Object>) param.get("userinfo");
                 // 修改发帖信息
-                param.put("upduid",userInfo.get("uid"));
-                int count = pubService.modifyTask(param);
+
+                List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).put("upduid",userInfo.get("uid"));
+                list.get(i).put("updtime",System.currentTimeMillis());
+                list.get(i).put("target", JzbDataType.getInteger(list.get(i).get("target")));
+            }
+                int count = pubService.modifyTask(list);
                 // 设置响应成功的结果
                 result = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
 

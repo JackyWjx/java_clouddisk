@@ -68,4 +68,16 @@ public class TbTravelService {
     public int countTravelListDeta(Map<String, Object> param) {
         return tbTravelMapper.countTravelListDeta(param);
     }
+
+    public int countTravelInfo(Map<String, Object> param) {
+        return tbTravelMapper.countTravelInfo(param);
+    }
+
+    public List<Map<String, Object>> queryTravelApproval(Map<String, Object> param) {
+        return  tbTravelMapper.queryTravelApproval(param);
+    }
+
+    public List<Map<String, Object>> queryTravelProduce(Map<String, Object> param) {
+        return tbTravelMapper.queryTravelProduce(param);
+    }
 }

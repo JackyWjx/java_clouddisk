@@ -248,6 +248,44 @@ public class ProductLineController {
 
     /**
      * CRM菜单管理-记支宝电脑端
+     * 电脑端-全界面-记支宝电脑端下全界面新建同级页面或菜单
+     *
+     * @author kuang Bin
+     */
+    @RequestMapping(value = "/addProductPages", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addProductPages(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            int maybe = JzbDataType.getInteger(param.get("maybe"));
+            int count;
+            // maybe为1代表新增菜单
+            if (maybe == 1) {
+                // 返回成功数
+                count = productLineService.addProductMenus(param);
+            } else {
+                // 返回成功数
+                count = productLineService.addProductPages(param);
+            }
+            if (count == 1) {
+                // 判断缓存中是否存在产品数并删除
+                comHasMenuTree(param);
+                result = Response.getResponseSuccess();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM菜单管理-记支宝电脑端
      * 电脑端-全界面-记支宝电脑端下全界面修改页面或者删除页面
      *
      * @author kuang Bin
@@ -461,6 +499,29 @@ public class ProductLineController {
         try {
             List<Map<String, Object>> productMenuList = productLineService.getProductMenuList(param);
             List<Map<String, Object>> productPageList = productLineService.getCompanyPageList(param);
+            // 设置树结构
+            response = setTreeStructures(productPageList, productMenuList, param);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+
+    /**
+     * CRM菜单管理
+     * 点击crm菜单管理获取菜单信息
+     *
+     * @author kuang Bin
+     */
+    @RequestMapping(value = "/getProductMenuLists", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getProductMenuLists(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            List<Map<String, Object>> productMenuList = productLineService.getProductMenuLists(param);
+            List<Map<String, Object>> productPageList = productLineService.getCompanyPageLists(param);
             // 设置树结构
             response = setTreeStructures(productPageList, productMenuList, param);
         } catch (Exception ex) {

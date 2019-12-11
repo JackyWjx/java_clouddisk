@@ -35,7 +35,7 @@ public class RoleController {
      * @param param
      * @return
      */
-    @PostMapping("/getRoleGroup")
+    @RequestMapping(value = "/getRoleGroup",method = RequestMethod.POST)
     @CrossOrigin
     public Response getRoleGroup(@RequestBody Map<String, Object> param) {
         Response result;

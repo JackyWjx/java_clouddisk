@@ -7,46 +7,47 @@
     <!--  查询出差记录   -->
     <select id="queryAllTravelList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum"
-        from tb_travel_record where status='1' and aptype = '2'and uid=#{uid}
-        <choose><when test="orgtime != null and orgtime != ''"><![CDATA[orgtime>=#{orgtime} ]]></when></choose>
-        <choose><when test="endtime != null and endtime != ''"><![CDATA[endtime<=#{endtime} ]]></when></choose>
+        from tb_travel_record where status='1' and uid=#{uid}
+        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid} </when></choose>
+        <choose><when test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </when></choose>
+        <choose><when test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </when></choose>
          limit #{pagesize}  offset #{pageno}
     </select>
+    
 
     <!--查询出差记录总条数-->
     <select id="countAllList" resultType="int" parameterType="java.util.Map">
         SELECT count(1)
         from tb_travel_record where status='1'and uid=#{uid}
-        <choose><when test="orgtime != null and orgtime != ''"><![CDATA[orgtime>=#{orgtime} ]]></when></choose>
-        <choose><when test="endtime != null and endtime != ''"><![CDATA[endtime<=#{endtime} ]]></when></choose>
     </select>
 
 
     <!--  查询出差记录详情   -->
     <select id="queryTravelList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum"
-        from tb_travel_record where status='1'and uid=#{uid} and travelid = #{travelid}
-        <choose><when test="orgtime != null and orgtime != ''"><![CDATA[orgtime>=#{orgtime} ]]></when></choose>
-        <choose><when test="endtime != null and endtime != ''"><![CDATA[endtime<=#{endtime} ]]></when></choose>
+        SELECT * from tb_travel_record_deta where status='1'
+        <choose><when test="uid != null and uid != ''">and uid = #{uid}</when></choose>
+        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid}</when></choose>
+        <choose><when test="orgtime != null and orgtime != ''">and <![CDATA[orgtime>=#{orgtime} ]]></when></choose>
+        <choose><when test="endtime != null and endtime != ''">and <![CDATA[endtime<=#{endtime} ]]></when></choose>
         limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--  查询出差记录详情总条数  -->
     <select id="countTravelList" resultType="int" parameterType="java.util.Map">
-        SELECT count(1)
-        from tb_travel_record where status='1'and uid=#{uid} and travelid = #{travelid}
-        <choose><when test="orgtime != null and orgtime != ''"><![CDATA[orgtime>=#{orgtime} ]]></when></choose>
-        <choose><when test="endtime != null and endtime != ''"><![CDATA[endtime<=#{endtime} ]]></when></choose>
+        SELECT count(1) from tb_travel_record_deta where status='1'
+        <choose><when test="uid != null and uid != ''">and uid = #{uid}</when></choose>
+        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid}</when></choose>
+        <choose><when test="orgtime != null and orgtime != ''">and <![CDATA[orgtime>=#{orgtime} ]]></when></choose>
+        <choose><when test="endtime != null and endtime != ''">and <![CDATA[endtime<=#{endtime} ]]></when></choose>
     </select>
 
     <!--  查询出差详情记录   -->
     <select id="queryTravelListDeta" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_travel_record_deta where status='1'
-        <choose><when test="uid != null and uid != ''">and uid = #{uid}</when></choose>
-        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid}</when></choose>
-        <choose><when test="deid != null and deid != ''">and deid = #{deid}</when></choose>
-        limit #{pagesize}  offset #{pageno}
-    </select>
+    select * from tb_travel_record_deta where status='1'
+    <choose><when test="uid != null and uid != ''">and uid = #{uid}</when></choose>
+    <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid}</when></choose>
+    <choose><when test="deid != null and deid != ''">and deid = #{deid}</when></choose>
+</select>
 
     <!--  查询出差详情记录条数   -->
     <select id="countTravelListDeta" resultType="int" parameterType="java.util.Map">
@@ -68,6 +69,23 @@
         <choose><when test="projectid != null and projectid != ''">and projectid=#{projectid}</when></choose>
     </select>
 
+    <!--查询出差情报表-->
+    <select id="countTravelInfo" resultType="int" parameterType="java.util.Map">
+        select count(1) from  tb_travel_info where deid=#{deid}
+        <choose><when test="cid != null and cid != ''">and cid=#{cid}</when></choose>
+        <choose><when test="projectid != null and projectid != ''">and projectid=#{projectid}</when></choose>
+    </select>
+
+    <!--查询审批状态-->
+    <select id="queryTravelApproval" resultType="java.util.Map" parameterType="java.util.Map">
+        select  trstatus from tb_travel_approval where status = '1' and travelid = #{travelid}
+    </select>
+
+    <!--查询产出情况-->
+    <select id="queryTravelProduce" resultType="java.util.Map" parameterType="java.util.Map">
+        select  * from tb_travel_produce where status = '1'
+    </select>
+
 
     <!--根据出差id修改出差报销金额-->
     <update id="updateTravelFare"  parameterType="java.util.Map">
@@ -84,6 +102,8 @@
     <update id="setDeleteStatus" parameterType="java.util.Map">
         update tb_travel_record set status=2  where   travelid=#{travelid}
     </update>
+
+
 
 
 </mapper>

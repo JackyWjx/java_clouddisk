@@ -23,5 +23,22 @@
         </if>
     </select>
 
+    <!--部门下愿意见-深度见-上会-签约数量-->
+    <select id="getDeptCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_track_user_list
+        where status = '1'
+        and trackres = #{trackres}
+        and uid in (
+        select uid from tb_dept_user where cdid = #{cdid} and status = 1
+        )
+    </select>
+
+
+
+    <!--/ 查询该部门下的所有用户-->
+    <select id="getDeptUser" parameterType="java.util.Map" resultType="java.lang.Integer">
+       select count(1) from tb_track_user_list where uid in (
+       select uid from tb_dept_user where cdid = #{cdid} and status = 1) and status = '1'
+    </select>
 
 </mapper>
