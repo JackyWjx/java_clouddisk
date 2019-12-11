@@ -6,7 +6,6 @@ import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
-import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
@@ -15,13 +14,15 @@ import com.jzb.org.service.TenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.ldap.PagedResultsControl;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author  chenzhengduan
+ */
 @RestController
 @RequestMapping(value = "/org/tender")
 public class TbTenderController {
