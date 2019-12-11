@@ -3,6 +3,7 @@ package com.jzb.operate.controller;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.service.TbTravelApprovalService;
@@ -50,9 +51,8 @@ public class TbTravelApprovalController {
 
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate//addTravelApproval";
+        String api = "/operate/travelApproval/addTravelApproval";
         boolean flag = true;
-
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
@@ -60,35 +60,34 @@ public class TbTravelApprovalController {
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }if (JzbCheckParam.haveEmpty(param, new String[]{"list"})) {
+                response = Response.getResponseError();
+            } else {
+                List<Map<String, Object>> approvalList = (List<Map<String, Object>>) param.get("list");
+                for (Map<String, Object> approval : approvalList) {
+                    approval.put("adduid", userInfo.get("uid"));
+                    approval.put("travelid", param.get("travelid"));
+                    approval.put("apid", JzbRandom.getRandomChar(12));
+                    approval.put("addtime", System.currentTimeMillis());
+                    //默认状态
+                    approval.put("trstatus", 1);
+                    travelApprovalService.save(approval);
+                }
+                travelPlanService.updateTravelRecord(param);
+                response = Response.getResponseSuccess(userInfo);
             }
-
-            List<Map<String,Object>> approvalList = (List<Map<String, Object>>) param.get("list");
-            for (Map<String,Object> approval : approvalList){
-
-                approval.put("adduid",userInfo.get("uid"));
-                approval.put("travelid",param.get("travelid"));
-                approval.put("apid", JzbRandom.getRandomChar(12));
-                approval.put("addtime",System.currentTimeMillis());
-                //默认状态和默认版本号
-                approval.put("trstatus",1);
-                approval.put("version",JzbRandom.getRandom(8));
-                travelApprovalService.save(approval);
-            }
-
-            travelPlanService.updateTravelRecord(param);
-            response = Response.getResponseSuccess(userInfo);
-        }catch (Exception e) {
-            JzbTools.logError(e);
+        }catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addTravelApproval Method", ex.toString()));
         }
-
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
                     userInfo.get("msgTag").toString(), "User Login Message"));
         } else {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
-
         return response;
     }
 
@@ -148,14 +147,12 @@ public class TbTravelApprovalController {
                 }else {
                     param.put("trstatus", 2);
                 }
-
             }else {// 退回
                 param.put("trstatus", 4);
                 //更新版本号
                 param.put("version",JzbRandom.getRandom(8));
 
             }
-
             travelApprovalService.update(param);
             response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
         }catch (Exception e) {

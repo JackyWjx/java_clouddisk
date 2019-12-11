@@ -83,7 +83,7 @@
 
     <!--查询产出情况-->
     <select id="queryTravelProduce" resultType="java.util.Map" parameterType="java.util.Map">
-        select  * from tb_travel_produce where status = '1'
+        select  prname,prindex,idx from tb_travel_produce where status = '1'
     </select>
 
 

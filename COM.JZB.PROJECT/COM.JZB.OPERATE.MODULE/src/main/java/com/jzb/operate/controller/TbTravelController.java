@@ -13,6 +13,8 @@ import com.jzb.operate.api.org.TbTrackUserListApi;
 import com.jzb.operate.service.TbTravelExpenseService;
 import com.jzb.operate.service.TbTravelProduceService;
 import com.jzb.operate.service.TbTravelService;
+import com.jzb.operate.util.PrindexUtil;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.jzb.operate.util.PrindexUtil.getPrindex;
 
 /**
  * @Author sapientia
@@ -106,9 +110,10 @@ public class TbTravelController {
                         relist.get(j).put("daList",daList);
                         relist.get(j).put("infoList",infoList);
 
-//                    //获取产出
-//                    Map<String,Object> promap = new HashMap<>();
-//                    promap.put("produce",list.get(i).get("produce"));
+                        //获取产出情况
+                        List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce(param);
+                        List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(relist.get(j).get("produce")),prolist);
+                        relist.get(j).put("proList",prindex);
                     }
                     list.get(i).put("reList",relist);
                 }
@@ -251,9 +256,15 @@ public class TbTravelController {
                     List<Map<String, Object>> daList = tbTravelService.queryTravelData(recmap);
                     //通过出差详情id  获取出差情报信息
                     List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recmap);
+
+                    //获取产出情况
+                    List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce(param);
+                    List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),prolist);
+                    list.get(i).put("proList",prindex);
                     list.get(i).put("daList", daList);
                     list.get(i).put("infoList", infoList);
                     list.get(i).put("monList",monlist);
+
                 }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
@@ -276,11 +287,6 @@ public class TbTravelController {
         return response;
     }
 
-    /**
-     * @Author sapientia
-     * @Date 17:26 2019/12/10
-     * @Description 情报搜集
-     **/
 
 
     /**
@@ -325,6 +331,10 @@ public class TbTravelController {
                         //获取产出
                         Response res = newTbCompanyListApi.queryCompanyByid(promap);
                         List<Map<String, Object>> reList = res.getPageInfo().getList();
+                        //获取产出情况
+                        List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce(param);
+                        List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),prolist);
+                        list.get(i).put("proList",prindex);
                         list.get(i).put("infoList",infolist);
                         list.get(i).put("reList", reList);
                     }
@@ -854,4 +864,5 @@ public class TbTravelController {
         }
         return response;
     }
+
 }

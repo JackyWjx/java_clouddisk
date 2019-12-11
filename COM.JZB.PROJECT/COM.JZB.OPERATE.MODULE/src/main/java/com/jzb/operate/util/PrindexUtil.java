@@ -1,10 +1,12 @@
 package com.jzb.operate.util;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbTools;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author sapientia
@@ -38,20 +40,17 @@ public class PrindexUtil {
      * @Author sapientia
      * @Date 11:17 2019/12/11
      * @Description        解密
+     * @param  index 加密值  list  产出所有数据
      **/
-    public static List<Integer> getPrindex(int index , List<Integer> list){
-//        for(Integer integer : list){
-//            if((index & integer) != integer ){
-//                list.remove(integer);
-//            }
-//        }
+    public static List<Integer> getPrindex(int index , List<Map<String , Object>> list){
+        List<Integer> result =  new ArrayList<>();
         for(int i = 0 ;i < list.size() ;i++){
-            if((index & list.get(i)) != list.get(i) ){
-                list.remove(i);
-                i -- ;
+            int  prindex = JzbDataType.getInteger(list.get(i).get("prindex"));
+            if((index & prindex ) == prindex){
+                result.add(prindex);
             }
         }
-        return list;
+        return result;
     }
 
 
