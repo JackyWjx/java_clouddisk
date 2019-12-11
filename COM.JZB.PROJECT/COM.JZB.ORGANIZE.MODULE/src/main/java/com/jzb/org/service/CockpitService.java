@@ -25,14 +25,16 @@ public class CockpitService {
      */
     public int getInfo(Map<String, Object> param) {
         int count = 0;
-        if (JzbTools.isEmpty(param.get("cdid"))){
-            if(JzbTools.isEmpty(param.get("customer"))){
-                param.put("customer",param.get("adduid"));
-               count =  cockpitMapper.getInfo(param);
-            }
+        if (JzbTools.isEmpty(param.get("cdid")) && JzbTools.isEmpty(param.get("customer"))){
+            param.put("customer",param.get("adduid"));
+            count =  cockpitMapper.getInfo(param);
         }else {
             // 查询该部门下的所有用户的记录数
              count = cockpitMapper.getDeptUser(param);
+        }
+
+        if (!JzbTools.isEmpty(param.get("customer"))){
+            count = cockpitMapper.getInfo(param);
         }
         return count;
     }
@@ -104,5 +106,10 @@ public class CockpitService {
         map.put("zero",zero);
         map.put("twelve",twelve);
         return map;
+    }
+
+    // 查询企业认证级别个数
+    public List<Map<String, Object>> getComAuthCount(Map<String, Object> param) {
+        return cockpitMapper.getComAuthCount(param);
     }
 }

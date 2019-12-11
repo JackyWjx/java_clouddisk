@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.auth.dao.PersonBoardMapper">
+    
+    <!--查询统计用户认证-->
+    <select id="getAuthCount" parameterType="java.util.Map" resultType="java.util.Map">
+        select (select count(1) from tb_user_list where authid = 1 and status = '1') small,
+        (select count(1) from tb_user_list where authid = 2 and status = '1') middle ,
+        count(1) higher from tb_user_list where authid = 4 and status = '1'
+    </select>
+
+</mapper>
