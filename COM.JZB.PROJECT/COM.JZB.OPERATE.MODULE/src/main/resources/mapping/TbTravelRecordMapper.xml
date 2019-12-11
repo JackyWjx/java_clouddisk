@@ -5,51 +5,84 @@
 <mapper namespace="com.jzb.operate.dao.TbTravelRecordMapper">
 
     <!--获取我的出差申请-->
+<!--    <select id="queryTravelRecordByUid" parameterType="java.util.Map" resultType="java.util.Map">-->
+<!--        SELECT-->
+<!--        travelid,-->
+<!--        uid,-->
+<!--        typeid,-->
+<!--        curcity,-->
+<!--        curcid,-->
+<!--        cname,-->
+<!--        travedesc,-->
+<!--        tarcity,-->
+<!--        tarcid,-->
+<!--        tarname,-->
+<!--        relperson,-->
+<!--        relphone,-->
+<!--        projectid,-->
+<!--        project,-->
+<!--        starttime,-->
+<!--        finishtime,-->
+<!--        METHOD,-->
+<!--        fare,-->
+<!--        expenses,-->
+<!--        amount,-->
+<!--        speed,-->
+<!--        speeddesc,-->
+<!--        payfare,-->
+<!--        payexpenses,-->
+<!--        times,-->
+<!--        nexttime,-->
+<!--        status,-->
+<!--        summary,-->
+<!--        (select vehicle from tb_user_travel where uid =#{ uid } and travelid=tt.travelid )-->
+<!--        FROM tb_travel_record tt-->
+<!--        WHERE-->
+<!--        travelid IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )-->
+<!--        and status != '8'-->
+<!--        <if test="beginTime != null and beginTime != '' ">-->
+<!--            and starttime &gt;= #{beginTime}-->
+<!--        </if>-->
+<!--        <if test="endTime != null and endTime != '' ">-->
+<!--            and finishtime &lt;= #{endTime}-->
+<!--        </if>-->
+<!--        <if test="curcid !=null and curcid!=''">-->
+<!--                and curcid=#{curcid}-->
+<!--        </if>-->
+<!--        order by id asc-->
+<!--        LIMIT #{pagesize} OFFSET #{pageno}-->
+<!--    </select>-->
+
     <select id="queryTravelRecordByUid" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
-        travelid,
-        uid,
-        typeid,
-        curcity,
-        curcid,
-        cname,
-        travedesc,
-        tarcity,
-        tarcid,
-        tarname,
-        relperson,
-        relphone,
-        projectid,
-        project,
-        starttime,
-        finishtime,
-        METHOD,
-        fare,
-        expenses,
-        amount,
-        speed,
-        speeddesc,
-        payfare,
-        payexpenses,
-        times,
-        nexttime,
-        status,
-        summary,
-        (select vehicle from tb_user_travel where uid =#{ uid } and travelid=tt.travelid )
-        FROM tb_travel_record tt
-        WHERE
-        travelid IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
-        and status != '8'
-        <if test="beginTime != null and beginTime != '' ">
-            and starttime &gt;= #{beginTime}
-        </if>
-        <if test="endTime != null and endTime != '' ">
-            and finishtime &lt;= #{endTime}
-        </if>
-        <if test="curcid !=null and curcid!=''">
+        tb1.travelid as travelid,
+        tb1.uname as uname,
+        tb1.orgtime as begintime,
+        tb1.endtime as endtime,
+        tb1.fare as fare,
+        tb1.expenses as expenses,
+        string_agg(tb2.truid, ',') as truids,
+        string_agg(to_char(tb2.trstatus,'1'), ',') as trstatus
+
+        from tb_travel_record tb1 LEFT JOIN tb_travel_approval tb2 on  tb1.travelid = tb2.travelid
+        <where>
+            <if test="uid != null and uid != '' ">
+                and uid = #{uid}
+            </if>
+            <if test="beginTime != null and beginTime != '' ">
+                and orgtime &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and endtime &lt;= #{endTime}
+            </if>
+            <if test="curcid !=null and curcid!=''">
                 and curcid=#{curcid}
-        </if>
-        order by id asc
+            </if>
+        </where>
+        GROUP BY tb1.travelid,tb1.uname,tb1.orgtime,
+        tb1.endtime,
+        tb1.fare,
+        tb1.expenses
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
@@ -95,12 +128,17 @@
     </select>
 
     <!--  根据单位id查询-->
+<!--    <select id="quertTravelRecordCountByUid" parameterType="java.util.Map" resultType="java.lang.Integer">-->
+<!--        select count(1) from tb_travel_record-->
+<!--        WHERE-->
+<!--            travelid IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )-->
+<!--    </select>-->
+
     <select id="quertTravelRecordCountByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_travel_record
         WHERE
-            travelid IN ( SELECT travelid FROM tb_user_travel WHERE uid =#{ uid } )
+        uid =#{ uid }
     </select>
-
     <!-- 添加出差记录-->
     <insert id="addTravelRecord" parameterType="java.util.List">
         <foreach collection="list" item="travel" separator=",">

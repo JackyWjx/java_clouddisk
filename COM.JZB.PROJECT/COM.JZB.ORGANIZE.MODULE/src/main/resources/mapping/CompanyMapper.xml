@@ -311,7 +311,7 @@
         (#{cid},
         <choose>
             <when test="limitday != null and limitday != ''">
-                ${limitday},
+                #{limitday},
             </when>
             <otherwise>
                 null,

@@ -106,6 +106,7 @@ public class TbConnectionPubController {
                 param.put("adduid",userInfo.get("uid"));
                 int count = pubService.modifyConnectionList(param);
                 // 设置响应成功的结果
+
                 result = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
             }
         }catch (Exception e){
@@ -283,7 +284,7 @@ public class TbConnectionPubController {
         return result;
     }
 
-    // 修改发帖信息
+    // 修改目标参数
     @RequestMapping("/modifyTask")
     public Response modifyTask(@RequestBody Map<String,Object> param){
         Response result;
@@ -304,6 +305,7 @@ public class TbConnectionPubController {
                 // 修改发帖信息
 
                 List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+
             for (int i = 0; i < list.size(); i++) {
                 list.get(i).put("upduid",userInfo.get("uid"));
                 list.get(i).put("updtime",System.currentTimeMillis());
@@ -311,7 +313,7 @@ public class TbConnectionPubController {
             }
                 int count = pubService.modifyTask(list);
                 // 设置响应成功的结果
-                result = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
+                result = count >= 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
 
         }catch (Exception e){
             flag = false;
