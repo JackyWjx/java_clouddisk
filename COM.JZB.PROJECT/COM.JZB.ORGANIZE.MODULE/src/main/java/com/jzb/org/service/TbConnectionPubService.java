@@ -66,8 +66,9 @@ public class TbConnectionPubService {
         return pubMapper.getTask(param);
     }
 
-    public int modifyTask(Map<String, Object> param) {
-        param.put("updtime",System.currentTimeMillis());
+    // 修改目标参数
+    public int modifyTask(List<Map<String, Object>> param) {
+
         return pubMapper.modifyTask(param);
     }
 

@@ -35,7 +35,7 @@ public interface TbConnectionPubMapper {
     int insertTask(Map<String, Object> param);
 
     // 修改任务目标参数
-    int modifyTask(Map<String, Object> param);
+    int modifyTask(List<Map<String, Object>> param);
 
     // 查询朋友圈发帖记录数
     int getWechatCount(Map<String, Object> param);

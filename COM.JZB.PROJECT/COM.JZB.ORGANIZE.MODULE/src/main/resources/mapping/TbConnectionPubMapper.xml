@@ -183,17 +183,10 @@
     </select>
 
     <!--修改任务目标参数-->
-    <update id="modifyTask" parameterType="java.util.Map">
-        update tb_task_target set
-         <if test="tname != null and tname != ''">
-             tname = #{tname},
-         </if>
-        <if test="target != null and target != ''">
-            target = #{target},
-        </if>
-        upduid = #{upduid},
-        updtime = #{updtime}
-        WHERE status = '1'  ;
+    <update id="modifyTask" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="item" open="" separator="" close="">
+        update tb_task_target set target = #{item.target}, upduid = #{item.upduid}, updtime = #{item.updtime} WHERE status = '1' and taskid = #{item.taskid};
+    </foreach>　
     </update>
 
 

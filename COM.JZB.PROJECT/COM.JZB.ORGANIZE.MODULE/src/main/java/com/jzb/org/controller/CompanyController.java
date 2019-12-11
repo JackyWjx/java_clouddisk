@@ -28,7 +28,7 @@ import java.util.*;
  * @date 2019年7月20日
  */
 @RestController
-@RequestMapping("org")
+@RequestMapping("/org")
 public class CompanyController {
     @Autowired
     private CompanyService companyService;

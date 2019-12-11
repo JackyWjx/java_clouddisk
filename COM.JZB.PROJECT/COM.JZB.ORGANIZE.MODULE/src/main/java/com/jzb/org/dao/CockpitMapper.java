@@ -19,4 +19,10 @@ public interface CockpitMapper {
 
     // 愿意见-深度见-上会-签约数量
     int getHandleCount(Map<String, Object> param);
+
+    // 查询该部门下的所有用户的记录数
+    int  getDeptUser(Map<String, Object> param);
+
+    // 查询部门下所有愿意见-深度见-上会-签约数量
+    int getDeptCount(Map<String, Object> param);
 }
