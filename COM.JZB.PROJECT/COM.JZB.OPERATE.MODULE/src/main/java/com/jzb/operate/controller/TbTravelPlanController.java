@@ -5,24 +5,21 @@ import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
-import com.jzb.operate.service.TbTravelDataService;
-import com.jzb.operate.service.TbTravelInfoService;
-import com.jzb.operate.service.TbTravelPlanService;
-import com.jzb.operate.service.TbTravelProduceService;
+import com.jzb.operate.api.org.TbDeptUserListApi;
+import com.jzb.operate.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author ：Champ-Ping
@@ -48,6 +45,12 @@ public class TbTravelPlanController {
     @Autowired
     TbTravelProduceService travelProduceService;
 
+    @Autowired
+    TbDeptUserListApi tbDeptUserListApi;
+
+    @Autowired
+    private TbTravelRecordService tbTravelRecordService;
+
     /**
      * 日志记录对象
      */
@@ -64,6 +67,7 @@ public class TbTravelPlanController {
         Response response = null;
         return deptOrgApi.getDeptUser(param);
     }
+
 
     /**
      * 获取预计产出列表
@@ -380,4 +384,145 @@ public class TbTravelPlanController {
         return response;
     }
 
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/11 10:59
+     *  @Description: 获取同行人列表信息
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    @RequestMapping(value = "/queryUsernameBydept", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryUsernameBydept(@RequestBody Map<String, Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/reimburseSystem/queryAllTravelList";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            //获取同行人列表
+            Response res = tbDeptUserListApi.queryUsernameBydept(param);
+            response = Response.getResponseSuccess(userInfo);
+            response.setResponseEntity(res.getPageInfo().getList());
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryAllTravelList Method", ex.toString()));
+        }
+
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
+    /**
+     * 根据uid 获取出差申请记录
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getTravelRecordList", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response getTravelRecordList(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String  api="/operate/travelRecord/getTravelRecordList";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+
+            if (JzbCheckParam.allNotEmpty(param, new String[]{"uid", "pagesize", "pageno"})) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                // 设置分页
+                JzbPageConvert.setPageRows(param);
+                // 如果起始时间参数不为空则转为时间戳
+                if (!JzbTools.isEmpty(param.get("beginTime"))) {
+                    Date beginTime = sdf.parse(JzbDataType.getString(param.get("beginTime")));
+                    param.put("beginTime", beginTime.getTime());
+                }
+                if (!JzbTools.isEmpty(param.get("endTime"))) {
+                    Date beginTime = sdf.parse(JzbDataType.getString(param.get("endTime")));
+                    param.put("endTime", beginTime.getTime());
+                }
+                // 得到结果集
+                List<Map<String, Object>> list = tbTravelRecordService.getTravelRecordListByUid(param);
+//                for (int i = 0; i < list.size(); i++) {
+//                    Map<String, Object> map = new HashMap<>();
+//                    // 取出每一行记录的出差工具id
+//                    map.put("vehicleid", list.get(i).get("vehicle"));
+//                    // 查出name 后放入
+//                    list.get(i).put("vehicleName", tbTravelVehicleService.getTravelName(map));
+//                    map.put("travelid", list.get(i).get("travelid"));
+//                    list.get(i).put("travelAim", tbTravelAimService.queryTravelAim(map));
+//                    list.get(i).put("userList", tbUserTravelService.queryUserTravel(map));
+//                    list.get(i).put("starttime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("starttime")));
+//                    list.get(i).put("finishtime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("finishtime")));
+//                }
+
+                for (Map<String,Object> objectMap: list) {
+                    // 1.根据查询出来的truids(审批人员id集合)调用用户Aip查询审批人员名称用于界面展示
+                    // 2.根据查询出来的travelid 查询 出差详情记录
+
+                }
+
+                // 得到总数
+                int count = tbTravelRecordService.getTravelRecordCountByUid(param);
+
+                // 定义分页  pageinfo
+                PageInfo pi = new PageInfo();
+                pi.setList(list);
+                pi.setTotal(count);
+                // 设置userinfo
+                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+                result.setPageInfo(pi);
+
+            } else {
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTravelRecordList Method", "[param error] or [param is null]"));
+                result = Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            flag=false;
+            // 返回错误
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTravelRecordList Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+
+//    public static void main(String[] args) {
+//        int a = 2,b=2;
+//        int res = a|b;
+//        System.out.println(res);
+//
+//    }
 }
