@@ -8,10 +8,12 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.auth.UserInfoApi;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.api.org.TbDeptUserListApi;
 import com.jzb.operate.service.*;
+import com.jzb.operate.util.PrindexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,9 @@ public class TbTravelPlanController {
 
     @Autowired
     private TbTravelRecordService tbTravelRecordService;
+
+    @Autowired
+    UserInfoApi userInfoApi;
 
     /**
      * 日志记录对象
@@ -107,7 +112,7 @@ public class TbTravelPlanController {
         Map<String, Object> userInfo = null;
         String api = "/operate/travelPlan/addTravelPlan";
         boolean flag = true;
-        
+
         try{
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
@@ -140,6 +145,10 @@ public class TbTravelPlanController {
                 detailsMap.put("uid",param.get("uid"));
                 detailsMap.put("addtime",System.currentTimeMillis());
                 detailsMap.put("status",1);//默认状态1
+                // prindex加密处理
+                Integer[] prindexs = (Integer[]) detailsMap.get("prindexs");
+                List<Integer> prindexLst = new ArrayList<>(Arrays.asList(prindexs));
+                detailsMap.put("produce",PrindexUtil.setPrindex(prindexLst));
 
                 long trTime = JzbDataType.getLong(detailsMap.get("trtime"));
                 //统计始末时间
@@ -180,7 +189,6 @@ public class TbTravelPlanController {
             //设置出差记录的时间域
             param.put("orgtime",startTime);
             param.put("endtime",endTime);
-
             //添加出差细节
             travelPlanService.addTravelDetails(detailsList);
             //添加出差记录
@@ -260,10 +268,10 @@ public class TbTravelPlanController {
         Response response;
         try {
             if (JzbCheckParam.haveEmpty(param, new String[]{"travelid"})) {
-                    response = Response.getResponseError();
-                } else {
-                    response = travelPlanService.setDeleteStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
-                }
+                response = Response.getResponseError();
+            } else {
+                response = travelPlanService.setDeleteStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
+            }
         } catch (Exception ex) {
             JzbTools.logError(ex);
             response = Response.getResponseError();
@@ -467,23 +475,49 @@ public class TbTravelPlanController {
                     param.put("endTime", beginTime.getTime());
                 }
                 // 得到结果集
-                List<Map<String, Object>> list = tbTravelRecordService.getTravelRecordListByUid(param);
-//                for (int i = 0; i < list.size(); i++) {
-//                    Map<String, Object> map = new HashMap<>();
-//                    // 取出每一行记录的出差工具id
-//                    map.put("vehicleid", list.get(i).get("vehicle"));
-//                    // 查出name 后放入
-//                    list.get(i).put("vehicleName", tbTravelVehicleService.getTravelName(map));
-//                    map.put("travelid", list.get(i).get("travelid"));
-//                    list.get(i).put("travelAim", tbTravelAimService.queryTravelAim(map));
-//                    list.get(i).put("userList", tbUserTravelService.queryUserTravel(map));
-//                    list.get(i).put("starttime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("starttime")));
-//                    list.get(i).put("finishtime", JzbTimeConvert.ToStringy_M_d_H_m_s(list.get(i).get("finishtime")));
-//                }
+                List<Map<String, Object>> recordList = tbTravelRecordService.getTravelRecordListByUid(param);
 
-                for (Map<String,Object> objectMap: list) {
+                for (Map<String,Object> travelMap: recordList) {
                     // 1.根据查询出来的truids(审批人员id集合)调用用户Aip查询审批人员名称用于界面展示
+                    Map<String,Object> whereParam = new HashMap<>();
+                    if(JzbTools.isEmpty(travelMap.get("truids"))){
+                        travelMap.put("approvers","");
+                    }
+                    whereParam.put("unames",travelMap.get("truids"));
+                    Response res = userInfoApi.searchInvitee(param);
+                    String unameStr = (String) res.getResponseEntity();
+                    travelMap.put("approvers",unameStr);
                     // 2.根据查询出来的travelid 查询 出差详情记录
+                    whereParam.put("travelid",travelMap.get("travelid"));
+                    List<Map<String,Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(whereParam);
+
+                    for(Map<String,Object> detialsMap : detailsList){
+                        Map<String,Object> query = new HashMap<>();
+                        query.put("travelid",detialsMap.get("travelid"));
+                        query.put("deid",detialsMap.get("deid"));
+                        //情报收集
+                        detialsMap.put("travelinfolist",travelInfoService.list(query));
+                        //出差资料
+                        detialsMap.put("traveldatalist",travelDataService.list(query));
+                        //预计产出
+                        Integer produce = (Integer) detialsMap.get("produce");
+                        List<Map<String,Object>> produceMaps = travelProduceService.list(null);
+                        List<Integer> produceList = PrindexUtil.getPrindex(produce,produceMaps);
+                        //筛选过滤 获取出差详情的产出资料
+                        List<Map<String,Object>> selectedProduce = new ArrayList<>();
+                        for(Map<String,Object> map : produceMaps){
+                            Integer prindex = (Integer) map.get("prindex");
+                            for (Integer i : produceList){
+                                if(i == prindex){
+                                    selectedProduce.add(map);
+                                    break;
+                                }
+                            }
+                        }
+                        detialsMap.put("produceList",produceList);
+                    }
+
+                    travelMap.put("detailsList",detailsList);
 
                 }
 
@@ -492,7 +526,7 @@ public class TbTravelPlanController {
 
                 // 定义分页  pageinfo
                 PageInfo pi = new PageInfo();
-                pi.setList(list);
+                pi.setList(recordList);
                 pi.setTotal(count);
                 // 设置userinfo
                 result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
@@ -519,10 +553,5 @@ public class TbTravelPlanController {
     }
 
 
-//    public static void main(String[] args) {
-//        int a = 2,b=2;
-//        int res = a|b;
-//        System.out.println(res);
-//
-//    }
+
 }
