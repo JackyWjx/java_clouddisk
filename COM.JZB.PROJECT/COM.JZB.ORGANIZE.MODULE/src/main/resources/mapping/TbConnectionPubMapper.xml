@@ -177,15 +177,19 @@
         addtime,
         taskid,
         tname,
+        updtime,
         target
         from tb_task_target
-        where status = '1';
+        where status = '1'
+        order by id;
     </select>
 
     <!--修改任务目标参数-->
     <update id="modifyTask" parameterType="java.util.List">
         <foreach collection="list" index="index" item="item" open="" separator="" close="">
-        update tb_task_target set target = #{item.target}, upduid = #{item.upduid}, updtime = #{item.updtime} WHERE status = '1' and taskid = #{item.taskid};
+        update tb_task_target set target = #{item.target}, upduid = #{item.upduid}, updtime = #{item.updtime}
+        WHERE status = '1' and taskid = #{item.taskid}
+        and target &lt;&gt; #{item.target};
     </foreach>　
     </update>
 

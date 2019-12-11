@@ -25,4 +25,13 @@ public interface TbDeptUserListApi {
     @RequestMapping(value = "/queryUsernameBydept", method = RequestMethod.POST)
     @CrossOrigin
     public Response queryUsernameBydept(@RequestBody Map<String, Object> param);
+
+    /**
+     * @Author sapientia
+     * @Date 16:49 2019/12/11
+     * @Description 查询同公司下的其他人
+     **/
+    @RequestMapping(value = "/queryOtherPersonByuid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryOtherPersonByuid(@RequestBody Map<String, Object> param);
 }

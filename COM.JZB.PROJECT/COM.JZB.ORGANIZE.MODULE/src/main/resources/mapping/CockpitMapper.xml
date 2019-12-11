@@ -41,4 +41,12 @@
        select uid from tb_dept_user where cdid = #{cdid} and status = 1) and status = '1'
     </select>
 
+    <!--查询企业认证级别个数-->
+    <select id="getComAuthCount" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        (select count(1) from tb_company_list where authid = 4 and status = '1' ) small,
+        (select count(1) from tb_company_list where authid = 8 and status = '1' ) middle,
+        (select count(1) from tb_company_list where authid = 16 and status = '1' ) higher,
+        count(1) gorvrn from tb_company_list where authid = 32 and status = '1'
+    </select>
 </mapper>

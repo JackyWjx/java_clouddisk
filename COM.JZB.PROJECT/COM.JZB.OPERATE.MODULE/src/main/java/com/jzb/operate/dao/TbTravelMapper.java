@@ -51,5 +51,7 @@ public interface TbTravelMapper {
     List<Map<String, Object>> queryTravelApproval(Map<String, Object> param);
 
     //查询产出
-    List<Map<String, Object>> queryTravelProduce(Map<String, Object> param);
+    List<Map<String, Object>> queryTravelProduce();
+
+    int  setRecallStatus(Map<String, Object> param);
 }

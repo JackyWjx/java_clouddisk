@@ -77,7 +77,11 @@ public class TbTravelService {
         return  tbTravelMapper.queryTravelApproval(param);
     }
 
-    public List<Map<String, Object>> queryTravelProduce(Map<String, Object> param) {
-        return tbTravelMapper.queryTravelProduce(param);
+    public List<Map<String, Object>> queryTravelProduce() {
+        return tbTravelMapper.queryTravelProduce();
+    }
+
+    public int setRecallStatus(Map<String, Object> param) {
+        return tbTravelMapper.setRecallStatus(param);
     }
 }

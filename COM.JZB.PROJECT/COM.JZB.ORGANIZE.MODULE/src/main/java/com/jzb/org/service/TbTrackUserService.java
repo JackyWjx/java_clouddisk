@@ -76,15 +76,15 @@ public class TbTrackUserService {
         // 设置每日任务目标
         int target = 0;
         List<Map<String, Object>> list = pubMapper.getTask(param);
-        long addtime = 0;
+        long updtime = 0;
         for (Map<String, Object> map : list) {
             if ("QQ/微信沟通".equals(map.get("tname"))){
                 target = (int) map.get("target");
-                addtime = (long) map.get("addtime");
+                updtime = (long) map.get("updtime");
             }
         }
 
-        Map<String, Object> qMap = methodCount(addtime, target, hisCount, currCount);
+        Map<String, Object> qMap = methodCount(updtime, target, hisCount, currCount);
         Map<String,Object> map1 = new HashMap<>();
         map1.put("QQ",qMap);
         mapList.add(map1);
@@ -103,10 +103,10 @@ public class TbTrackUserService {
         for (Map<String, Object> map : list) {
             if ("电话沟通".equals(map.get("tname"))){
                 target = (int) map.get("target");
-                addtime = (long) map.get("addtime");
+                updtime = (long) map.get("updtime");
             }
         }
-        Map<String, Object> pMap = methodCount(addtime, target, hisCount, currCount);
+        Map<String, Object> pMap = methodCount(updtime, target, hisCount, currCount);
         Map<String,Object> map2 = new HashMap<>();
         map2.put("phone",pMap);
         mapList.add(map2);
@@ -213,15 +213,15 @@ public class TbTrackUserService {
         // 设置每日任务目标
         int target = 0;
         List<Map<String, Object>> list = pubMapper.getTask(param);
-        long addtime = 0;
+        long updtime = 0;
         for (Map<String, Object> map : list) {
             if ("有效客户".equals(map.get("tname"))){
                 target = (int) map.get("target");
-                addtime = (long) map.get("addtime");
+                updtime = (long) map.get("updtime");
             }
         }
 
-        Map<String, Object> qMap = methodCount(addtime, target, hisCount, currCount);
+        Map<String, Object> qMap = methodCount(updtime, target, hisCount, currCount);
         Map<String,Object> map1 = new HashMap<>();
         map1.put("userClient",qMap);
         mapList.add(map1);

@@ -35,6 +35,7 @@ public class TbConnectionPubService {
     }
     // 修改发帖信息
     public int modifyConnectionList(Map<String, Object> param) {
+        param.put("type",JzbDataType.getInteger(param.get("type")));
         param.put("updtime",System.currentTimeMillis());
         return pubMapper.modifyConnectionList(param);
     }
@@ -86,15 +87,15 @@ public class TbConnectionPubService {
         // 设置每日任务目标
         int target = 0;
         List<Map<String, Object>> list = pubMapper.getTask(param);
-        long addtime = 0;
+        long updtime = 0;
         for (Map<String, Object> map : list) {
             if ("百度发贴".equals(map.get("tname"))){
                 target = (int) map.get("target");
-                addtime = (long) map.get("addtime");
+                updtime = (long) map.get("updtime");
             }
         }
 
-        Map<String, Object> baiduMap = methodCount(addtime, target, hisCount, currCount);
+        Map<String, Object> baiduMap = methodCount(updtime, target, hisCount, currCount);
         Map<String,Object> map1 = new HashMap<>();
         map1.put("baidu",baiduMap);
         mapList.add(map1);
@@ -113,10 +114,10 @@ public class TbConnectionPubService {
         for (Map<String, Object> map : list) {
             if ("发朋友圈".equals(map.get("tname"))){
                 target = (int) map.get("target");
-                addtime = (long) map.get("addtime");
+                updtime = (long) map.get("updtime");
             }
         }
-        Map<String, Object> weChatMap = methodCount(addtime, target, hisCount, currCount);
+        Map<String, Object> weChatMap = methodCount(updtime, target, hisCount, currCount);
         Map<String,Object> map2 = new HashMap<>();
         map2.put("weChat",weChatMap);
         mapList.add(map2);

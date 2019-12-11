@@ -8,4 +8,10 @@
         select DISTINCT cname,uid from tb_dept_user where cdid = #{cdid}
     </select>
 
+    <select id="queryOtherPersonByuid" parameterType="java.util.Map" resultType="java.util.Map">
+        select td.cid,td.cname as uname,tc.cname,td.cdid,uid,phone from tb_dept_user td  LEFT JOIN tb_company_dept tc on tc.cdid = td.cdid
+        where td.status = '1' and td.cid = #{cid}
+        <choose><when test="cname != null and cname != '' ">and td.cname like CONCAT('%',#{cname},'%')  </when></choose>
+        <choose><when test="uname != null and uname != '' ">and tc.cname like CONCAT('%',#{uname},'%')  </when></choose>
+    </select>
 </mapper>

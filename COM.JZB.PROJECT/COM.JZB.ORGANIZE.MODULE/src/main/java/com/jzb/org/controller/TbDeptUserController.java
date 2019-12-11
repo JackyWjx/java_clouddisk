@@ -83,4 +83,48 @@ public class TbDeptUserController {
         }
         return response;
     }
+
+
+
+    @RequestMapping(value = "/queryOtherPersonByuid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryOtherPersonByuid(@RequestBody Map<String, Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/reimburseSystem/queryUsernameBydept";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            param.put("uid",userInfo.get("uid"));
+            List<Map<String, Object>> list = tbDeptUserService.queryOtherPersonByuid(param);
+            for (Map<String, Object> usermap : list) {
+                if (usermap.get("uid") == param.get("uid")) {
+                    list.remove(usermap);
+                    break;
+                }
+            }
+            response = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            response.setPageInfo(pageInfo);
+        }catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryOtherPersonByuid Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
 }
