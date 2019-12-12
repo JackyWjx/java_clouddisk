@@ -1,5 +1,6 @@
 package com.jzb.operate.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.log.JzbLoggerUtil;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -138,7 +140,7 @@ public class TbTravelPlanController {
             param.put("status",1);//默认状态1
 
             //始末时间默认为第一条记录的时间
-            long temp = JzbDataType.getLong(detailsList.get(0).get("trtime"));
+            long temp = getTimestamp(detailsList.get(0).get("trtime").toString());
             long startTime = temp;
             long endTime = temp;
 
@@ -151,11 +153,12 @@ public class TbTravelPlanController {
                 detailsMap.put("addtime",System.currentTimeMillis());
                 detailsMap.put("status",1);//默认状态1
                 // prindex加密处理
-                Integer[] prindexs = (Integer[]) detailsMap.get("prindexs");
-                List<Integer> prindexLst = new ArrayList<>(Arrays.asList(prindexs));
+//                Integer[] prindexs = (Integer[]) detailsMap.get("produce");
+                List<Integer> prindexLst = (List<Integer>) detailsMap.get("produce");
                 detailsMap.put("produce",PrindexUtil.setPrindex(prindexLst));
-
-                long trTime = JzbDataType.getLong(detailsMap.get("trtime"));
+                //出差详情--出差时间转化处理
+                long trTime = getTimestamp(detailsMap.get("trtime").toString());
+                detailsMap.put("trtime",trTime);
                 //统计始末时间
                 startTime = startTime < trTime ? startTime : trTime;
                 endTime = endTime > trTime ? endTime : trTime;
@@ -164,22 +167,40 @@ public class TbTravelPlanController {
                 List<Map<String,Object>> travelinfolist = (List<Map<String, Object>>) detailsMap.get("travelinfolist");
                 //一般travelinfolist的长度为1
                 for( Map<String,Object> infoMap : travelinfolist){
-
+                    // tendertime时间需要前端传值,暂时用系统时间戳代替
+                    infoMap.put("tendertime",System.currentTimeMillis());
                     infoMap.put("adduid",param.get("adduid"));
                     infoMap.put("travelid",param.get("travelid"));
                     infoMap.put("deid",detailsMap.get("deid"));
                     infoMap.put("status",1);//默认状态1
                     infoMap.put("inid",JzbRandom.getRandomChar(19));
                     infoMap.put("addtime",System.currentTimeMillis());
-
-
                     travelInfoService.save(infoMap);
                 }
 
                 //获取并保存出差资料list
                 List<Map<String,Object>> traveldatalist  = (List<Map<String, Object>>) detailsMap.get("traveldatalist");
                 for(Map<String,Object> dataMap : traveldatalist){
-
+                    dataMap.put("coou",JSONArray.toJSONString(dataMap.get("coou")));
+                    dataMap.put("coppt",JSONArray.toJSONString(dataMap.get("coppt")));
+                    dataMap.put("couage",JSONArray.toJSONString(dataMap.get("couage")));
+                    dataMap.put("cocustomer",JSONArray.toJSONString(dataMap.get("cocustomer")));
+                    dataMap.put("coframe",JSONArray.toJSONString(dataMap.get("coframe")));
+                    dataMap.put("copropaganda",JSONArray.toJSONString(dataMap.get("copropaganda")));
+                    dataMap.put("contrast",JSONArray.toJSONString(dataMap.get("contrast")));
+                    dataMap.put("card",JSONArray.toJSONString(dataMap.get("card")));
+                    dataMap.put("account",JSONArray.toJSONString(dataMap.get("account")));
+                    dataMap.put("speechcraft",JSONArray.toJSONString(dataMap.get("speechcraft")));
+                    dataMap.put("signin",JSONArray.toJSONString(dataMap.get("signin")));
+                    dataMap.put("newsletter",JSONArray.toJSONString(dataMap.get("newsletter")));
+                    dataMap.put("train",JSONArray.toJSONString(dataMap.get("train")));
+                    dataMap.put("implement",JSONArray.toJSONString(dataMap.get("implement")));
+                    dataMap.put("offer",JSONArray.toJSONString(dataMap.get("offer")));
+                    dataMap.put("plan",JSONArray.toJSONString(dataMap.get("plan")));
+                    dataMap.put("invitation",JSONArray.toJSONString(dataMap.get("invitation")));
+                    dataMap.put("reviewed",JSONArray.toJSONString(dataMap.get("reviewed")));
+                    dataMap.put("cureviewed",JSONArray.toJSONString(dataMap.get("cureviewed")));
+                    dataMap.put("contract",JSONArray.toJSONString(dataMap.get("contract")));
                     dataMap.put("adduid",param.get("adduid"));
                     dataMap.put("travelid",param.get("travelid"));
                     dataMap.put("deid",detailsMap.get("deid"));
@@ -194,10 +215,10 @@ public class TbTravelPlanController {
             //设置出差记录的时间域
             param.put("orgtime",startTime);
             param.put("endtime",endTime);
-            //添加出差细节
+           // 添加出差细节
             travelPlanService.addTravelDetails(detailsList);
-            //添加出差记录
-            travelPlanService.addTravelRecord(Arrays.asList(param));
+          //  添加出差记录
+            travelPlanService.addTravelRecord(param);
             response = Response.getResponseSuccess(userInfo);
 
             //   response = new Response();
@@ -214,6 +235,14 @@ public class TbTravelPlanController {
         }
 
         return response;
+    }
+
+    private long getTimestamp(String str) throws ParseException {
+        String dateStr = str;
+        dateStr = dateStr.replace("Z", " UTC");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+        Date date = format.parse(dateStr);
+        return date.getTime();
     }
 
     /**
@@ -547,7 +576,7 @@ public class TbTravelPlanController {
                                 }
                             }
                         }
-                        detialsMap.put("produceList",produceList);
+                        detialsMap.put("produceList",selectedProduce);
                     }
 
                     travelMap.put("detailsList",detailsList);

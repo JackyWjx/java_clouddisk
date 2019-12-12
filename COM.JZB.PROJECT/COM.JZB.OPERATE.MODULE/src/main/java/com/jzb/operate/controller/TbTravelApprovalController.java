@@ -136,7 +136,7 @@ public class TbTravelApprovalController {
     public Response setTravelApproval(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/travelApproval/addTravelApproval";
+        String api = "/operate/travelApproval/setTravelApproval";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -145,7 +145,9 @@ public class TbTravelApprovalController {
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
-            }if (JzbCheckParam.haveEmpty(param, new String[]{"list"})) {
+            }
+
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list"})) {
                 response = Response.getResponseError();
             } else {
                 param.put("trtime", System.currentTimeMillis());//审批时间

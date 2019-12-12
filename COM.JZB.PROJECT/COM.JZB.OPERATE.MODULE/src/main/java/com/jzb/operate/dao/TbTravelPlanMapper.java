@@ -17,7 +17,8 @@ import java.util.Map;
 @Repository
 public interface TbTravelPlanMapper {
 
-    int addTravelRecord(List<Map<String, Object>> list);
+//    int addTravelRecord(List<Map<String, Object>> list);
+    int addTravelRecord(Map<String, Object> list);
 
     int addTravelDetails(List<Map<String, Object>> list);
 

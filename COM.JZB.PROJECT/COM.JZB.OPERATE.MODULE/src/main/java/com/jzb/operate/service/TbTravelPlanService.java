@@ -26,7 +26,7 @@ public class TbTravelPlanService {
      * @param list
      * @return
      */
-    public int addTravelRecord(List<Map<String, Object>> list){
+    public int addTravelRecord(Map<String, Object> list){
 
         return travelPlanMapper.addTravelRecord(list);
     }
