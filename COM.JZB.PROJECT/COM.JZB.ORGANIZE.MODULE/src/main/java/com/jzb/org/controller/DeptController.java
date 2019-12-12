@@ -767,6 +767,95 @@ public class DeptController {
         }
         return result;
     }
+    /**
+     * 获取部门下所有用户
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author:
+     * @DateTime:
+     */
+    @RequestMapping(value = "/getDeptUserChild", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getDeptUserChild(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"cid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                if (JzbTools.isEmpty(param.get("pcdid"))) {
+                    param.put("pcdid", "00000000000");
+                }
+                List<Map<String, Object>> map = deptService.queryDeptUserChildList(param);
+
+                result = map.size() > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                result.setResponseEntity(map);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    private List<Map<String,Object>> mehtodUser(List<Map<String,Object>> list){
+
+
+        return list;
+    }
+
+    /**
+     * 获取部门
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/9/4 14:36
+     */
+    @RequestMapping(value = "/getDept", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getDept(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"cid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                if (JzbTools.isEmpty(param.get("pcdid"))) {
+                    param.put("pcdid", "00000000000");
+                }
+                List<Map<String, Object>> map = deptService.queryDeptUserChildList(param);
+                List<Map<String, Object>> method = method(map);
+                result = map.size() > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                result.setResponseEntity(method);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    private List<Map<String,Object>> method(List<Map<String,Object>> list){
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).remove("list");
+            list.get(i).remove("pcdid");
+            list.get(i).remove("cidx");
+            list.get(i).put("label",list.get(i).get("cname"));
+            list.get(i).remove("cname");
+            list.get(i).put("value",list.get(i).get("cdid"));
+            list.get(i).remove("cdid");
+            if (!JzbTools.isEmpty(list.get(i).get("children"))){
+                method((List<Map<String, Object>>) list.get(i).get("children"));
+            }
+
+        }
+        return list;
+    }
+
 
     /**
      * 调整部门
@@ -795,4 +884,6 @@ public class DeptController {
         }
         return result;
     }
+
+
 }
