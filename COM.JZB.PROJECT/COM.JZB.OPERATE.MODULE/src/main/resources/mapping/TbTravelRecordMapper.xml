@@ -61,6 +61,7 @@
         tb1.endtime as endtime,
         tb1.fare as fare,
         tb1.expenses as expenses,
+        tb1."version",
         string_agg(tb2.truid, ',') as truids,
         string_agg(to_char(tb2.trstatus,'1'), ',') as trstatus
 
@@ -82,7 +83,8 @@
         GROUP BY tb1.travelid,tb1.uname,tb1.orgtime,
         tb1.endtime,
         tb1.fare,
-        tb1.expenses
+        tb1.expenses,
+        tb1."version"
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
