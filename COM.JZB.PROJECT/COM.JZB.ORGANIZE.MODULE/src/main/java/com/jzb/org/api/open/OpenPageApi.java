@@ -27,7 +27,7 @@ public interface OpenPageApi {
      * @return com.jzb.base.message.Response
      * @Author: DingSC
      */
-    @RequestMapping(value = "/searchOrgApplication", method = RequestMethod.POST)
+    @RequestMapping(value = "/searchOrgApplications", method = RequestMethod.POST)
     @CrossOrigin
-     Response searchOrgApplication(@RequestBody(required = false) Map<String, Object> param);
+     Response searchOrgApplications(@RequestBody(required = false) Map<String, Object> param);
 }

@@ -402,17 +402,58 @@
         where
         cid = #{cid}
         <if test="apptype!= null">
-            and apptype = #{apptype}
+            and apptype = cast(#{apptype} as integer)
         </if>
         <if test="devtype!= null">
             and devtype = #{devtype}
         </if>
-        order by
+        and status = '1'
+        <!--order by
         id
         limit
         #{pagesize}
         offset
-        #{pageno}
+        #{pageno}-->
+    </select>
+
+    <!--获取应用列表-->
+    <select id="queryRogApplications" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        appid,
+        appline,
+        appkey,
+        appsecret,
+        devtype,
+        apptype,
+        cid,
+        keys,
+        appname,
+        applogo,
+        appdesc,
+        appurl,
+        appips,
+        manurl,
+        summary
+        from
+        tb_org_application
+        where
+        cid = #{cid}
+        <if test="apptype!= null">
+            and apptype = cast(#{apptype} as integer)
+        </if>
+        <if test="devtype!= null">
+            and devtype = #{devtype}
+        </if>
+        and status = '1'
+        <if test="appid != null and appid != ''">
+          and appid = #{appid}
+        </if>
+        <!--order by
+        id
+        limit
+        #{pagesize}
+        offset
+        #{pageno}-->
     </select>
 
     <!--获取入驻企业列表-->
@@ -597,6 +638,15 @@
         count(1)
         from
         tb_platform_org
+    </select>
+
+    <select id="getAppDevelopers" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        *
+        from
+        tb_app_developer
+        where
+        uid = #{uid} and devauth = '1' and status = '1'
     </select>
 
 </mapper>

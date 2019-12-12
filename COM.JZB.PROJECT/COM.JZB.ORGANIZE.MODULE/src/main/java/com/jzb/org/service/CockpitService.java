@@ -1,5 +1,6 @@
 package com.jzb.org.service;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.dao.CockpitMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +25,35 @@ public class CockpitService {
      * @return
      */
     public int getInfo(Map<String, Object> param) {
-        int count = 0;
-        if (JzbTools.isEmpty(param.get("cdid")) && JzbTools.isEmpty(param.get("customer"))){
+//        int count = 0;
+//        if (JzbTools.isEmpty(param.get("cdid")) && JzbTools.isEmpty(param.get("customer"))){
+//            param.put("customer",param.get("adduid"));
+//            count =  cockpitMapper.getInfo(param);
+//        }else {
+//            // 查询该部门下的所有用户的记录数
+//             count = cockpitMapper.getDeptUser(param);
+//        }
+//        if (!JzbTools.isEmpty(param.get("customer"))){
+//            count = cockpitMapper.getInfo(param);
+//        }
+//        if(!JzbTools.isEmpty(param.get("cid")) && !JzbTools.isEmpty(param.get("manager"))){
+//            count = cockpitMapper.getCompanyUser(param);
+//        }
+        if (JzbTools.isEmpty(param.get("customer")) &&
+                JzbTools.isEmpty(param.get("cdid")) &&
+                JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
             param.put("customer",param.get("adduid"));
-            count =  cockpitMapper.getInfo(param);
-        }else {
-            // 查询该部门下的所有用户的记录数
-             count = cockpitMapper.getDeptUser(param);
+        }
+        if (!JzbTools.isEmpty(param.get("cid"))){
+            List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).remove("pcdid");
+                list.get(i).remove("idx");
+            }
+            param.put("list",list);
         }
 
-        if (!JzbTools.isEmpty(param.get("customer"))){
-            count = cockpitMapper.getInfo(param);
-        }
-        return count;
+        return cockpitMapper.getInfo(param);
     }
 
     /**
@@ -56,7 +73,19 @@ public class CockpitService {
         }else {
             param.putAll(map);
         }
-        if (JzbTools.isEmpty(param.get("cdid")) && !JzbTools.isEmpty(param.get("customer"))) {
+        if (JzbTools.isEmpty(param.get("customer")) &&
+                JzbTools.isEmpty(param.get("cdid")) &&
+                JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
+            param.put("customer",param.get("adduid"));
+        }
+        if (!JzbTools.isEmpty(param.get("cid"))){
+            List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).remove("pcdid");
+                list.get(i).remove("idx");
+            }
+            param.put("list",list);
+        }
             param.put("trackres", 1);
             // 愿意见
              willCount = cockpitMapper.getHandleCount(param);
@@ -72,23 +101,7 @@ public class CockpitService {
             param.put("trackres", 8);
             // 上会
              signCount = cockpitMapper.getHandleCount(param);
-        } else {
-            param.put("trackres", 1);
-            // 愿意见
-            willCount = cockpitMapper.getDeptCount(param);
 
-            param.put("trackres", 2);
-            // 深度见
-            deepCount = cockpitMapper.getDeptCount(param);
-
-            param.put("trackres", 4);
-            // 上会
-            meetCount = cockpitMapper.getDeptCount(param);
-
-            param.put("trackres", 8);
-            // 上会
-            signCount = cockpitMapper.getDeptCount(param);
-        }
         Map<String,Object> cmap = new HashMap<>();
         cmap.put("willCount",willCount);
         cmap.put("deepCount",deepCount);
@@ -111,5 +124,12 @@ public class CockpitService {
     // 查询企业认证级别个数
     public List<Map<String, Object>> getComAuthCount(Map<String, Object> param) {
         return cockpitMapper.getComAuthCount(param);
+    }
+
+    public List<Map<String, Object>> getAllDeptUser(Map<String, Object> param) {
+        // 获取部门下的子级部门
+        List<Map<String, Object>> list = cockpitMapper.getDeptChild(param);
+        param.put("list",list);
+        return cockpitMapper.getAllDeptUser(param);
     }
 }

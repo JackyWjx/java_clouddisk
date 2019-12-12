@@ -26,4 +26,11 @@ public interface CockpitMapper {
     int getDeptCount(Map<String, Object> param);
 
     List<Map<String, Object>> getComAuthCount(Map<String, Object> param);
+
+    int getCompanyUser(Map<String, Object> param);
+
+    // 查询部门下所有的下级部门
+    List<Map<String,Object>> getDeptChild(Map<String, Object> param);
+
+    List<Map<String, Object>> getAllDeptUser(Map<String, Object> param);
 }

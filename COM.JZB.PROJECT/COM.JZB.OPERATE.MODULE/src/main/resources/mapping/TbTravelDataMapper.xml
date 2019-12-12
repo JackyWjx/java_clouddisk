@@ -107,39 +107,232 @@
 			 addtime ,
 			 adduid ,
 			 status ,
-			 summary 
+			 summary
 		)
 		values
 		(
-			#{travelid},
-			#{deid},
-			#{did},
-			#{coou},
-			#{coppt},
-			#{couage},
-			#{cocustomer},
-			#{coframe},
-			#{copropaganda},
-			#{contrast},
-			#{card},
-			#{account},
-			#{speechcraft},
-			#{signin},
-			#{newsletter},
-			#{train},
-			#{implement},
-			#{offer},
-			#{contract},
-			#{plan},
-			#{invitation},
-			#{reviewed},
-			#{cureviewed},
-			#{addtime},
-			#{adduid},
-			#{status},
-			#{summary}
+		<trim suffixOverrides=",">
+			<choose>
+				<when test="travelid != null and travelid !=''">
+					#{travelid},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="deid != null and deid !=''">
+					#{deid},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="did != null and did !=''">
+					#{did},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="coou != null and coou !=''">
+					#{coou},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="coppt != null and coppt !=''">
+					#{coppt},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="couage != null and couage !=''">
+					#{couage},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="cocustomer != null and cocustomer !=''">
+					#{cocustomer},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="coframe != null and coframe !=''">
+					#{coframe},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="copropaganda != null and copropaganda !=''">
+					#{copropaganda},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="contrast != null and contrast !=''">
+					#{contrast},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="card != null and card !=''">
+					#{card},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="account != null and account !=''">
+					#{account},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="speechcraft != null and speechcraft !=''">
+					#{speechcraft},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="signin != null and signin !=''">
+					#{signin},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="newsletter != null and newsletter !=''">
+					#{newsletter},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="train != null and train !=''">
+					#{train},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="implement != null and implement !=''">
+					#{implement},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="offer != null and offer !=''">
+					#{offer},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="contract != null and contract !=''">
+					#{contract},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="plan != null and plan !=''">
+					#{plan},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="invitation != null and invitation !=''">
+					#{invitation},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="reviewed != null and reviewed !=''">
+					#{reviewed},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="cureviewed != null and cureviewed !=''">
+					#{cureviewed},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="addtime != null and addtime !=''">
+					#{addtime},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="adduid != null and adduid !=''">
+					#{adduid},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="status != null and status !=''">
+					#{status},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="summary != null and summary !=''">
+					#{summary}
+				</when>
+				<otherwise>
+					null
+				</otherwise>
+			</choose>
+		</trim>
 		)
 	</insert>
+
+
 
 	<update id="update" parameterType="java.util.Map">
 		update tb_travel_data 

@@ -159,7 +159,6 @@
 			 tendertime ,
 			 tenderagent ,
 			 relation ,
-			 idx ,
 			 podeperson ,
 			 podephone ,
 			 podejob ,
@@ -198,62 +197,453 @@
 		)
 		values
 		(
-			#{travelid},
-			#{deid},
-			#{inid},
-			#{cid},
-			#{cname},
-			#{supervise},
-			#{prodesc},
-			#{prolist},
-			#{projectid},
-			#{projectname},
-			#{tendercompany},
-			#{tendername},
-			#{projecttype},
-			#{promail},
-			#{projectras},
-			#{tenderphone},
-			#{tenderresultcompany},
-			#{tendertime},
-			#{tenderagent},
-			#{relation},
-			#{idx},
-			#{podeperson},
-			#{podephone},
-			#{podejob},
-			#{podenature},
-			#{npodeperson},
-			#{npodephone},
-			#{npodejob},
-			#{npodenature},
-			#{setb},
-			#{sepr},
-			#{seli},
-			#{recname},
-			#{reluname},
-			#{relphone},
-			#{brandname},
-			#{contrast},
-			#{mail},
-			#{nreluname},
-			#{nrelphone},
-			#{nbrandname},
-			#{ncontrast},
-			#{nmail},
-			#{reshid},
-			#{reshname},
-			#{reshphone},
-			#{lineuname},
+		<trim suffixOverrides=",">
+		<choose>
+			<when test="travelid != null and travelid !=''">
+				#{travelid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="deid != null and deid !=''">
+				#{deid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+
+		<choose>
+			<when test="inid != null and inid !=''">
+				#{inid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="cid != null and cid !=''">
+				#{cid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="cname != null and cname !=''">
+				#{cname},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="travelid != null and travelid !=''">
+				#{travelid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="supervise != null and supervise !=''">
+				#{supervise},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="prodesc != null and prodesc !=''">
+				#{prodesc},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="prolist != null and prolist !=''">
+				#{prolist},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="projectid != null and projectid !=''">
+				#{projectid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="projectname != null and projectname !=''">
+				#{projectname},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="tendercompany != null and tendercompany !=''">
+				#{tendercompany},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="tendername != null and tendername !=''">
+				#{tendername},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="projecttype != null and projecttype !=''">
+				#{projecttype},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="promail != null and promail !=''">
+				#{promail},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="projectras != null and projectras !=''">
+				#{projectras},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="tenderphone != null and tenderphone !=''">
+				#{tenderphone},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="tenderresultcompany != null and tenderresultcompany !=''">
+				#{tenderresultcompany},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+
+		<choose>
+			<when test="tendertime != null and tendertime !=''">
+				#{tendertime},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="tenderagent != null and tenderagent !=''">
+				#{tenderagent},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="relation != null and relation !=''">
+				#{relation},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+
+		<choose>
+			<when test="podeperson != null and podeperson !=''">
+				#{podeperson},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="podephone != null and podephone !=''">
+				#{podephone},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="podejob != null and podejob !=''">
+				#{podejob},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="podenature != null and podenature !=''">
+				#{podenature},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="npodeperson != null and npodeperson !=''">
+				#{npodeperson},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="npodephone != null and npodephone !=''">
+				#{npodephone},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="npodejob != null and npodejob !=''">
+				#{npodejob},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="npodenature != null and npodenature !=''">
+				#{npodenature},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="setb != null and setb !=''">
+				#{setb},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+
+		<choose>
+			<when test="sepr != null and sepr !=''">
+				#{sepr},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="seli != null and seli !=''">
+				#{seli},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="recname != null and recname !=''">
+				#{recname},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="reluname != null and reluname !=''">
+				#{reluname},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="relphone != null and relphone !=''">
+				#{relphone},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="contrast != null and contrast !=''">
+				#{contrast},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="mail != null and mail !=''">
+				#{mail},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="nreluname != null and nreluname !=''">
+				#{nreluname},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="nrelphone != null and nrelphone !=''">
+				#{nrelphone},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="nbrandname != null and nbrandname !=''">
+				#{nbrandname},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="ncontrast != null and ncontrast !=''">
+				#{ncontrast},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="nmail != null and nmail !=''">
+				#{nmail},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+
+		<choose>
+			<when test="reshid != null and reshid !=''">
+				#{reshid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="reshname != null and reshname !=''">
+				#{reshname},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="reshphone != null and reshphone !=''">
+				#{setb},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="lineuname != null and lineuname !=''">
+				#{lineuname},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+		<when test="linejob != null and linejob !=''">
 			#{linejob},
-			#{linephone},
-			#{linenature},
-			#{adduid},
-			#{addtime},
-			#{upduid},
-			#{updtime},
-			#{status},
-			#{summary}
+		</when>
+		<otherwise>
+			null ,
+		</otherwise>
+		</choose>
+		<choose>
+			<when test="linephone != null and linephone !=''">
+				#{linephone},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="linenature != null and linenature !=''">
+				#{linenature},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="adduid != null and adduid !=''">
+				#{adduid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="addtime != null and addtime !=''">
+				#{addtime},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="upduid != null and upduid !=''">
+				#{upduid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="updtime != null and updtime !=''">
+				#{updtime},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="status != null and status !=''">
+				#{status},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="summary != null and summary !=''">
+				#{summary}
+			</when>
+			<otherwise>
+				null
+			</otherwise>
+		</choose>
+	</trim>
 		)
 	</insert>
 

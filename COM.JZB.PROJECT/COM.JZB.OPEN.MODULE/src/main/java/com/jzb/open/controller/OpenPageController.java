@@ -10,6 +10,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.open.api.org.CompanyApi;
 import com.jzb.open.api.redis.UserRedisServiceApi;
 import com.jzb.open.service.OpenPageService;
 import com.sun.org.apache.xpath.internal.objects.XString;
@@ -20,10 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import sun.security.provider.MD5;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Spliterator;
+import java.util.*;
 
 /**
  * @Description:
@@ -41,6 +39,10 @@ public class OpenPageController {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
+    @Autowired
+    private CompanyApi companyApi;
+
     /**
      * 日志记录对象
      */
@@ -48,10 +50,11 @@ public class OpenPageController {
 
     /**
      * 根据token和appkey，appsecret 数据库中进行对比，如果相同则返回给前端用信息
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getOrgApplication",method = RequestMethod.POST)
+    @RequestMapping(value = "/getOrgApplication", method = RequestMethod.POST)
     @CrossOrigin
     public Response getOrgApplication(@RequestBody Map<String, Object> param) {
         Response result;
@@ -71,26 +74,26 @@ public class OpenPageController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"appkey", "appsecret", "appid"})) {
                 result = Response.getResponseError();
             } else {
-            String appkey = param.get("appkey").toString();
-            String appsecret = param.get("appsecret").toString();
-            String appid = param.get("appid").toString();
-             Map<String,Object> checkCode = openPageService.getOrgApplication(appid);
-             //进行MD5加密
-            String md5 = JzbDataCheck.Md5(appid + appkey + appsecret + checkCode.get("checkcode").toString());
-            //如果验证MD5加密与第三方传过来的是相等的 则把用户信息返回给第三方
-            Map<String, Object> map = new HashMap<>();
-            Map<String, Object> map1 = new HashMap<>();
-            if (md5.equals(param.get("checkcode"))) {
-                map.put("uid", param.get("uid"));
-                Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(map);
-                Map<String,Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
-                map1.put("cname", Entity.get("cname"));
-                map1.put("cid", Entity.get("cid"));
-                map1.put("phone", Entity.get("phone"));
-                map1.put("uid", Entity.get("uid"));
-            }
-            result = Response.getResponseSuccess();
-             result.setResponseEntity(map1);
+                String appkey = param.get("appkey").toString();
+                String appsecret = param.get("appsecret").toString();
+                String appid = param.get("appid").toString();
+                Map<String, Object> checkCode = openPageService.getOrgApplication(appid);
+                //进行MD5加密
+                String md5 = JzbDataCheck.Md5(appid + appkey + appsecret + checkCode.get("checkcode").toString());
+                //如果验证MD5加密与第三方传过来的是相等的 则把用户信息返回给第三方
+                Map<String, Object> map = new HashMap<>();
+                Map<String, Object> map1 = new HashMap<>();
+                if (md5.equals(param.get("checkcode"))) {
+                    map.put("uid", param.get("uid"));
+                    Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(map);
+                    Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
+                    map1.put("cname", Entity.get("cname"));
+                    map1.put("cid", Entity.get("cid"));
+                    map1.put("phone", Entity.get("phone"));
+                    map1.put("uid", Entity.get("uid"));
+                }
+                result = Response.getResponseSuccess();
+                result.setResponseEntity(map1);
             }
         } catch (Exception ex) {
             //打印错误信息
@@ -122,26 +125,92 @@ public class OpenPageController {
         Response result;
         PageInfo Info;
         try {
-            /*Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");*/
+            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map2 = new HashMap<>();
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("cid", param.get("cid"));
+            map.put("cid", param.get("cid"));
+            map.put("userinfo", param.get("userinfo"));
+            //根据cid查询企业的管理员
+            Response response = companyApi.getEnterpriseData(map);
+            Map<String, Object> map1 = (Map<String, Object>) response.getResponseEntity();
+            //如果是企业的管理员,则可以看到企业下面所有的应用  不是管理员只能看到自己小组的应用
+            List<Map<String, Object>> orgAppList = new ArrayList<>();
+            if (!map1.get("manager").equals(userInfo.get("uid"))) {
+                map2.put("uid", userInfo.get("uid"));
+                List<Map<String, Object>> list = openPageService.getAppDeveloper(map2);
+                for (int i = 0; i < list.size(); i++) {
+                    param.put("appid", list.get(i).get("appid"));
+                    List<Map<String, Object>> orgAppLists = openPageService.searchOrgApplication(param);
+                    for (int j = 0; j < orgAppLists.size(); j++) {
+                        orgAppList.add(orgAppLists.get(j));
+                    }
+                }
+            } else {
+
            /* int rows = JzbDataType.getInteger(param.get("pagesize"));
             int page = JzbDataType.getInteger(param.get("pageno"));
             if (page > 0 && rows > 0) {
                 param.put("start", rows * (page - 1));
                 param.put("pagesize", rows);*/
-                List<Map<String, Object>> orgAppList = openPageService.searchOrgApplication(param);
-               for (int i = 0; i < orgAppList.size(); i++) {
-                   orgAppList.get(i).put("cname", orgAppList.get(i).get("appname"));
-                   orgAppList.get(i).put("type", "3");
-               }
-                result = Response.getResponseSuccess();
-                Info = new PageInfo();
-                Info.setList(orgAppList);
+                orgAppList = openPageService.searchOrgApplication(param);
+            }
+            result = Response.getResponseSuccess();
+            Info = new PageInfo();
+            Info.setList(orgAppList);
                 /*int count = JzbDataType.getInteger(param.get("count"));
                 if (count == 0) {
                     int size = openPageService.searchOrgApplicationCount(param);
                     Info.setTotal(size > 0 ? size : orgAppList.size());
                 }*/
-                result.setPageInfo(Info);
+            result.setPageInfo(Info);
+            /*} else {
+                result = Response.getResponseError();
+            }*/
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /**
+     * 全界面的应用查询
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     */
+    @RequestMapping(value = "/searchOrgApplications", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response searchOrgApplications(@RequestBody(required = false) Map<String, Object> param) {
+        Response result;
+        PageInfo Info;
+        try {
+
+            if (param.get("userinfo") != null) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            }
+           /* int rows = JzbDataType.getInteger(param.get("pagesize"));
+            int page = JzbDataType.getInteger(param.get("pageno"));
+            if (page > 0 && rows > 0) {
+                param.put("start", rows * (page - 1));
+                param.put("pagesize", rows);*/
+            List<Map<String, Object>> orgAppList = openPageService.searchOrgApplications(param);
+            for (int i = 0; i < orgAppList.size(); i++) {
+                orgAppList.get(i).put("cname", orgAppList.get(i).get("appname"));
+                orgAppList.get(i).put("type", "3");
+            }
+            result = Response.getResponseSuccess();
+            Info = new PageInfo();
+            Info.setList(orgAppList);
+                /*int count = JzbDataType.getInteger(param.get("count"));
+                if (count == 0) {
+                    int size = openPageService.searchOrgApplicationCount(param);
+                    Info.setTotal(size > 0 ? size : orgAppList.size());
+                }*/
+            result.setPageInfo(Info);
             /*} else {
                 result = Response.getResponseError();
             }*/
@@ -154,6 +223,7 @@ public class OpenPageController {
 
     /**
      * 应用列表的修改和删除
+     *
      * @param param
      * @return
      */
@@ -335,14 +405,14 @@ public class OpenPageController {
                     //拿到菜单id去查询页面对应的菜单
                     Map<String, Object> hashMap = new HashMap<>();
                     hashMap.put("mid", map.get("mid").toString());
-                    List<Map<String,Object>> list = openPageService.getApplicationPage(hashMap);
+                    List<Map<String, Object>> list = openPageService.getApplicationPage(hashMap);
                     // if root node
                     if (parentId.equals(firstParent)) {
                         result.add(node);
                         recordJson.put(map.get("mid").toString(), node);
                         //把页面放到菜单下面
-                        for (int j = 0; j <list.size() ; j++) {
-                            List<Map<String,Object>> children = (List<Map<String, Object>>) node.get("children");
+                        for (int j = 0; j < list.size(); j++) {
+                            List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
                             list.get(j).put("numIdx", JzbRandom.getRandomChar(7));
                             children.add(list.get(j));
                         }
@@ -350,8 +420,8 @@ public class OpenPageController {
                     } else if (recordJson.containsKey(parentId)) {
                         // add children
                         recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
-                        for (int j = 0; j <list.size() ; j++) {
-                            List<Map<String,Object>> children = (List<Map<String, Object>>) node.get("children");
+                        for (int j = 0; j < list.size(); j++) {
+                            List<Map<String, Object>> children = (List<Map<String, Object>>) node.get("children");
                             list.get(j).put("numIdx", JzbRandom.getRandomChar(7));
                             children.add(list.get(j));
                         }
@@ -392,7 +462,7 @@ public class OpenPageController {
                     }
                 }
 
-               // 设置返回响应结果
+                // 设置返回响应结果
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 response = Response.getResponseSuccess();
 
@@ -408,12 +478,13 @@ public class OpenPageController {
 
     /**
      * 修改菜单或者页面
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/updateMenuPage",method = RequestMethod.POST)
+    @RequestMapping(value = "/updateMenuPage", method = RequestMethod.POST)
     @CrossOrigin
-    public Response updateMenuPage(@RequestBody Map<String,Object> param) {
+    public Response updateMenuPage(@RequestBody Map<String, Object> param) {
         Response result;
         try {
             //如果指定参数为空，则返回404
