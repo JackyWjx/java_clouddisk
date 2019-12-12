@@ -25,6 +25,17 @@ public interface OpenPageMapper {
      */
     List<Map<String, Object>> searchOrgApplication(Map<String, Object> param);
 
+
+    /**
+     * 模糊查询开发者应用表
+     *
+     * @param param
+     * @return java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
+     * @Author: DingSC
+     */
+    List<Map<String, Object>> searchOrgApplications(Map<String, Object> param);
+
+
     /**
      * 模糊查询开发者应用表总数
      *
@@ -97,4 +108,11 @@ public interface OpenPageMapper {
     int updateOrgApplication(Map<String, Object> param);
 
     Map<String, Object> getOrgApplication(String appid);
+
+    /**
+     * 查询应用开发者列表
+     * @param map2
+     * @return
+     */
+    List<Map<String, Object>> getAppDeveloper(Map<String, Object> map2);
 }

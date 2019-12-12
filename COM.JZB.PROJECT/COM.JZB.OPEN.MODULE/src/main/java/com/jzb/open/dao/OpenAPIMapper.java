@@ -91,6 +91,12 @@ public interface OpenAPIMapper {
     List<Map<String,Object>>  queryRogApplication(Map<String,Object> param);
 
     /***
+     * 获取应用列表
+     */
+    List<Map<String,Object>>  queryRogApplications(Map<String,Object> param);
+
+
+    /***
      * 获取入驻企业列表
      */
     List<Map<String,Object>>  queryPlatformOrg(Map<String,Object> param);
@@ -174,4 +180,6 @@ public interface OpenAPIMapper {
      * 获取模糊查询API总数
      */
     int queryApiCount(Map<String, Object> param);
+
+    List<Map<String, Object>> getAppDevelopers(Map<Object, Object> map1);
 } // End interface OpenAPIMapper

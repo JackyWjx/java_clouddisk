@@ -6,14 +6,17 @@ import com.jzb.base.entity.open.OpenApiType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
+import com.jzb.open.api.org.CompanyApi;
 import com.jzb.open.api.org.OpenAuthApi;
 import com.jzb.open.api.org.OpenOrgApi;
 import com.jzb.open.api.redis.UserRedisServiceApi;
 import com.jzb.open.service.OpenAPIService;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +49,12 @@ public class OpenAPIController {
      */
     @Autowired
     private UserRedisServiceApi userRedisApi;
+
+    /**
+     * 查询公司的管理员
+     */
+    @Autowired
+    private CompanyApi companyApi;
 
     /**
      * 创建文档类型
@@ -274,7 +283,7 @@ public class OpenAPIController {
     public Response getOrgApplication(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String key = "apptype";
+            /*String key = "apptype";
             if (!JzbTools.isEmpty(param.get(key))) {
                 param.put(key, JzbDataType.getInteger(param.get(key)));
             }
@@ -284,7 +293,7 @@ public class OpenAPIController {
             if (count == 0) {
                 // 获取应用列表总数
                 count = openAPIService.getApplicationCount(param);
-            }
+            }*/
             // 返回所有符合条件的应用
             List<Map<String, Object>> records = openAPIService.getOrgApplication(param);
 
@@ -292,7 +301,52 @@ public class OpenAPIController {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setTotal(count > 0 ? count : records.size());
+            //pageInfo.setTotal(count > 0 ? count : records.size());
+            pageInfo.setList(records);
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /***
+     * 获取应用列表
+     */
+    @RequestMapping(value = "/getOrgApplications", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getOrgApplications(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 获取用户资料和token
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            //查询公司的管理员
+            Response enterpriseData = companyApi.getEnterpriseData(param);
+            Map<String, Object> map = (Map<String, Object>) enterpriseData.getResponseEntity();
+            //如果是管理员就能够看到这个公司所有的  如果不是只有对应应用管理员才能看到
+            List<Map<String, Object>> records = new ArrayList<>();
+            if (!map.get("manager").equals(userInfo.get("uid"))) {
+                Map<Object, Object> map1 = new HashMap<>();
+                map1.put("uid", userInfo.get("uid"));
+                List<Map<String,Object>>  list = openAPIService.getAppDevelopers(map1);
+                for (int i = 0; i < list.size(); i++) {
+                    param.put("appid", list.get(i).get("appid"));
+                    //查询出来如果是应用管理对应的应用
+                    List<Map<String, Object>>   record = openAPIService.getOrgApplications(param);
+                    for (int j = 0; j < record.size(); j++) {
+                        records.add(record.get(j));
+                    }
+                }
+            } else {
+                 records = openAPIService.getOrgApplications(param);
+            }
+
+
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            //pageInfo.setTotal(count > 0 ? count : records.size());
             pageInfo.setList(records);
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {

@@ -138,7 +138,7 @@ public class ProductLineController {
             //获取应用列表的菜单
             param.put("count", 0);
             param.put("value", "");
-            Response response1 = openPageApi.searchOrgApplication(param);
+            Response response1 = openPageApi.searchOrgApplications(param);
             List<Map<String,Object>> pageInfo =  response1.getPageInfo().getList();
             for (int i = 0; i < list.size(); i++) {
                 int count = 0;

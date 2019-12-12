@@ -37,6 +37,15 @@ public class OpenPageService {
     }
 
     /**
+     * 全界面的应用查询
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> searchOrgApplications(Map<String, Object> param) {
+        return openPageMapper.searchOrgApplications(param);
+    }
+
+    /**
      * 模糊查询开发者应用表总数
      *
      * @param param
@@ -178,5 +187,14 @@ public class OpenPageService {
         Map<String,Object> map = openPageMapper.getOrgApplication(appid);
 
         return map;
+    }
+
+    /**
+     * 查询应用开发者列表
+     * @param map2
+     * @return
+     */
+    public List<Map<String, Object>> getAppDeveloper(Map<String, Object> map2) {
+        return openPageMapper.getAppDeveloper(map2);
     }
 }

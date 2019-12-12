@@ -67,8 +67,41 @@
         from tb_org_application
         where status = '1'
           and appname ~ #{value}
+          <if test="cid != null and cid != ''">
+              and cid = #{cid}
+          </if>
+          <if test="appid != null and appid != ''">
+              and appid = #{appid}
+          </if>
+          <if test="devtype != null and devtype != ''">
+              and devtype = #{devtype}
+          </if>
+        <if test="apptype != null and apptype != ''">
+            and apptype = cast(#{apptype} as integer)
+        </if>
           order by addtime desc
     </select>
+
+    <!--模糊查询开发者应用表-->
+    <select id="searchOrgApplications" resultType="java.util.Map">
+        select
+        checkcode,
+        appkey,
+        appsecret,
+        appid,
+       appline,
+       devtype,
+       apptype,
+       cid,
+       appname,
+       summary,
+       applogo
+        from tb_org_application
+        where status = '1'
+          and appname ~ #{value}
+          order by addtime desc
+    </select>
+
     <!--模糊查询开发者应用表总数-->
     <select id="searchOrgApplicationCount" resultType="java.lang.Integer">
         select count(appid)
@@ -186,4 +219,14 @@
         where
         pageid = #{pageid}
     </update>
+
+    <!--查询应用开发者列表-->
+    <select id="getAppDeveloper" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        *
+        from
+        tb_app_developer
+        where
+        uid = #{uid} and status = '1'
+    </select>
 </mapper>

@@ -254,10 +254,17 @@ public class OpenAPIService {
      */
     public List<Map<String, Object>> getOrgApplication(Map<String, Object> param) {
         // 设置分页参数
-        param = setPageSize(param);
+        //param = setPageSize(param);
         return mapper.queryRogApplication(param);
     }
-
+    /***
+     * 获取应用列表
+     */
+    public List<Map<String, Object>> getOrgApplications(Map<String, Object> param) {
+        // 设置分页参数
+        //param = setPageSize(param);
+        return mapper.queryRogApplications(param);
+    }
     /***
      * 获取入驻企业列表
      */
@@ -420,5 +427,14 @@ public class OpenAPIService {
             count = 0;
         }
         return count;
+    }
+
+    /**
+     * 查询应用管理员
+     * @param map1
+     * @return
+     */
+    public List<Map<String, Object>> getAppDevelopers(Map<Object, Object> map1) {
+        return mapper.getAppDevelopers(map1);
     }
 }

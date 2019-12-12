@@ -113,6 +113,7 @@ public class DeptService {
     }
 
 
+
     /**
      * 获取用户信息和用户部门信息总数
      *
@@ -973,4 +974,6 @@ public class DeptService {
         }
         return result;
     }
+
+
 }

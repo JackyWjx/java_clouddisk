@@ -343,6 +343,29 @@ public class CompanyUserController {
     }
 
     /**
+     * CRM-销售业主-公海-业主下的项目7
+     * 点击业主下的项目中修改
+     *
+     * @author kuangbin
+     */
+    @RequestMapping(value = "/delCompanyProject", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response delCompanyProject(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            // 返回所有的企业列表
+            int count = companyUserService.delCompanyProject(param);
+            result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
      * CRM-销售业主-公海-业主下的项目8
      * 点击业主下的项目中的修改项目按钮
      *

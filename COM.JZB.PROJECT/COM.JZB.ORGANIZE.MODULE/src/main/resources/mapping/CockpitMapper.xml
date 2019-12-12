@@ -11,6 +11,58 @@
         <if test="customer != null and customer != ''">
             and customer = #{customer}
         </if>
+        <if test="cdid != null and cdid != ''">
+            and customer in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="cid != null and manager != null and cid != '' and manager != ''">
+            and customer in(
+            select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
+            )
+        </if>
+    </select>
+
+    <!--查询部门下的所有部门-->
+    <select id="getDeptChild" parameterType="java.util.Map" resultType="java.util.Map">
+         WITH RECURSIVE modt AS (
+            SELECT
+            cdid,
+            pcdid,
+            idx
+            FROM
+            tb_company_dept
+            WHERE
+            cdid = #{cdid}
+        AND status = '1'
+        UNION ALL
+            SELECT
+            tmt.cdid,
+            tmt.pcdid,
+            tmt.idx
+        FROM
+            tb_company_dept tmt
+            JOIN modt ON tmt.pcdid = modt.cdid
+        AND tmt.status = '1'
+        )
+            SELECT
+            modt.*
+            FROM
+            modt
+        ORDER BY
+            modt.idx ASC
+    </select>
+
+    <!--查询部门下所有的用户-->
+    <select id="getAllDeptUser" parameterType="java.util.Map" resultType="java.util.Map">
+        select distinct  uid ,cname as label from tb_dept_user where cdid in
+        <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+            #{item.cdid}
+        </foreach>
     </select>
 
     <!--愿意见-深度见-上会-签约数量-->
@@ -21,25 +73,51 @@
         <if test="customer != null and customer != ''">
             and customer = #{customer}
         </if>
+        <if test="cdid != null and cdid != ''">
+            and customer in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="cid != null and manager != null and cid != '' and manager != ''">
+            and customer in(
+            select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
+            )
+        </if>
     </select>
 
     <!--部门下愿意见-深度见-上会-签约数量-->
-    <select id="getDeptCount" parameterType="java.util.Map" resultType="java.lang.Integer">
-        select count(1) from tb_track_user_list
-        where status = '1'
-        and trackres = #{trackres}
-        and uid in (
-        select uid from tb_dept_user where cdid = #{cdid} and status = 1
-        )
-    </select>
+    <!--<select id="getDeptCount" parameterType="java.util.Map" resultType="java.lang.Integer">-->
+        <!--select count(1) from tb_track_user_list-->
+        <!--where status = '1'-->
+        <!--and trackres = #{trackres}-->
+        <!--and customer in (-->
+        <!--select uid from tb_dept_user where cdid = #{cdid} and status = 1-->
+        <!--)-->
+    <!--</select>-->
 
 
 
-    <!--/ 查询该部门下的所有用户-->
-    <select id="getDeptUser" parameterType="java.util.Map" resultType="java.lang.Integer">
-       select count(1) from tb_track_user_list where uid in (
-       select uid from tb_dept_user where cdid = #{cdid} and status = 1) and status = '1'
-    </select>
+    <!--/ 查询该部门下的所有用户的跟进记录数-->
+    <!--<select id="getDeptUser" parameterType="java.util.Map" resultType="java.lang.Integer">-->
+       <!--select count(1) from tb_track_user_list where customer in (-->
+       <!--select uid from tb_dept_user where cdid = #{cdid} and status = 1) and status = '1'-->
+       <!--and tracktype in (4,8,16)-->
+    <!--</select>-->
+
+    <!--查询该企业下所有用户的跟进记录数-->
+    <!--<select id="getCompanyUser" parameterType="java.util.Map" resultType="java.lang.Integer">-->
+        <!--select count(1) from tb_track_user_list-->
+        <!--where customer in-->
+        <!--(-->
+        <!--select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'-->
+        <!--)-->
+        <!--and status = '1'-->
+        <!--and tracktype in (4,8,16)-->
+    <!--</select>-->
 
     <!--查询企业认证级别个数-->
     <select id="getComAuthCount" parameterType="java.util.Map" resultType="java.util.Map">

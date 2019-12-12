@@ -294,7 +294,7 @@
     <update id="delCompanyProject" parameterType="java.util.Map">
           UPDATE
         tb_company_project
-        SET  status = #{status} where projectid = #{projectid}
+        SET  status = #{status} where projectid = #{projectid};
     </update>
 
 

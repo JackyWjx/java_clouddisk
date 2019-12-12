@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.dao.CockpitMapper;
 import com.jzb.org.dao.TbConnectionPubMapper;
 import com.jzb.org.dao.TbTrackUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ import java.util.*;
  */
 @Service
 public class TbTrackUserService {
+    @Autowired
+    CockpitMapper cockpitMapper;
+
+
     @Autowired
     TbTrackUserMapper userMapper;
 
@@ -125,6 +130,19 @@ public class TbTrackUserService {
             param.put("twelve",param.get("endTime"));
         }else {
             param.putAll(map);
+        }
+        if (JzbTools.isEmpty(param.get("customer")) &&
+                JzbTools.isEmpty(param.get("cdid")) &&
+                JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
+            param.put("customer",param.get("adduid"));
+        }
+        if (!JzbTools.isEmpty(param.get("cid"))){
+            List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).remove("pcdid");
+                list.get(i).remove("idx");
+            }
+            param.put("list",list);
         }
         param.put("trackres",1);
         // 愿意见
