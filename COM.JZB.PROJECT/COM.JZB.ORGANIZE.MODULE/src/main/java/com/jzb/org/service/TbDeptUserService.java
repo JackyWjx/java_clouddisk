@@ -21,7 +21,11 @@ public class TbDeptUserService {
         return tbDeptUserMapper.queryUsernameBydept(param);
     }
 
-    public List<Map<String, Object>> queryOtherPersonByuid(Map<String, Object> param) {
-        return tbDeptUserMapper.queryOtherPersonByuid(param);
+    public List<Map<String, Object>> queryOtherPersonBycid(Map<String, Object> param) {
+        return tbDeptUserMapper.queryOtherPersonBycid(param);
+    }
+
+    public List<Map<String, Object>> queryPersonNameByuid(Map<String, Object> param) {
+        return tbDeptUserMapper.queryPersonNameByuid(param);
     }
 }

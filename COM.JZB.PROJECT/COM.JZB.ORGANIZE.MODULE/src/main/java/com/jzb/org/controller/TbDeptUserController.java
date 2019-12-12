@@ -86,12 +86,17 @@ public class TbDeptUserController {
 
 
 
-    @RequestMapping(value = "/queryOtherPersonByuid", method = RequestMethod.POST)
+    /**
+     * @Author sapientia
+     * @Date 18:12 2019/12/11
+     * @Description 获取单位下的人
+     **/
+    @RequestMapping(value = "/queryOtherPersonBycid", method = RequestMethod.POST)
     @CrossOrigin
     public Response queryOtherPersonByuid(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/queryUsernameBydept";
+        String api = "/operate/reimburseSystem/queryOtherPersonBycid";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -102,7 +107,7 @@ public class TbDeptUserController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             param.put("uid",userInfo.get("uid"));
-            List<Map<String, Object>> list = tbDeptUserService.queryOtherPersonByuid(param);
+            List<Map<String, Object>> list = tbDeptUserService.queryOtherPersonBycid(param);
             for (Map<String, Object> usermap : list) {
                 if (usermap.get("uid") == param.get("uid")) {
                     list.remove(usermap);
@@ -117,7 +122,49 @@ public class TbDeptUserController {
             flag = false;
             JzbTools.logError(ex);
             response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryOtherPersonByuid Method", ex.toString()));
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryOtherPersonBycid Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
+
+    /**
+     * @Author sapientia
+     * @Date 18:18 2019/12/12
+     * @Description 查询审批人姓名
+     **/
+    @RequestMapping(value = "/queryPersonNameByuid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryPersonNameByuid(@RequestBody Map<String, Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/reimburseSystem/queryPersonNameByuid";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            param.put("uid",userInfo.get("uid"));
+            List<Map<String, Object>> list = tbDeptUserService.queryPersonNameByuid(param);
+            response = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            response.setPageInfo(pageInfo);
+        }catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryPersonNameByuid Method", ex.toString()));
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),

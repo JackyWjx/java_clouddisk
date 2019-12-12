@@ -217,12 +217,12 @@ public class TbTravelApprovalController {
      * @Date 17:04 2019/12/11
      * @Description 获取审批人列表
      **/
-    @RequestMapping(value = "/queryOtherPersonByuid", method = RequestMethod.POST)
+    @RequestMapping(value = "/queryOtherPersonBycid", method = RequestMethod.POST)
     @CrossOrigin
     public Response queryOtherPersonByuid(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/travelApproval/queryOtherPersonByuid";
+        String api = "/operate/travelApproval/queryOtherPersonBycid";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -233,7 +233,7 @@ public class TbTravelApprovalController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             param.put("userinfo",userInfo);
-            Response res = tbDeptUserListApi.queryOtherPersonByuid(param);
+            Response res = tbDeptUserListApi.queryOtherPersonBycid(param);
             List<Map<String, Object>> list = res.getPageInfo().getList();
             response = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();

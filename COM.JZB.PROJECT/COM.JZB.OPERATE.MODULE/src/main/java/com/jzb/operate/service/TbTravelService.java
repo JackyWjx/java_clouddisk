@@ -84,4 +84,12 @@ public class TbTravelService {
     public int setRecallStatus(Map<String, Object> param) {
         return tbTravelMapper.setRecallStatus(param);
     }
+
+    public List<Map<String, Object>> queryDetaBycid(Map<String, Object> param) {
+        return tbTravelMapper.queryDetaBycid(param);
+    }
+
+    public List<Map<String, Object>> queryProduceByPrindex(Map<String, Object> param) {
+        return tbTravelMapper.queryProduceByPrindex(param);
+    }
 }

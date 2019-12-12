@@ -54,4 +54,8 @@ public interface TbTravelMapper {
     List<Map<String, Object>> queryTravelProduce();
 
     int  setRecallStatus(Map<String, Object> param);
+
+    List<Map<String, Object>> queryDetaBycid(Map<String, Object> param);
+
+    List<Map<String, Object>> queryProduceByPrindex(Map<String, Object> param);
 }

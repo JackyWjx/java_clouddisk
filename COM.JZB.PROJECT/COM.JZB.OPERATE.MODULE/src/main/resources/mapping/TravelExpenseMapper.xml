@@ -10,31 +10,30 @@
 
 	 <!--插入-->
 	<insert id="saveTravelExpense" parameterType="java.util.List">
-		insert into tb_travel_expense
-		(
-			 travelid,
-			 exid,
-			 exstrtime , 
-			 exendtime , 
-			 exstradderss , 
-			 exendadderss , 
-			 exvehicle , 
-			 trsum , 
-			 mail , 
-			 crosum , 
-			 getaccsum , 
-			 subsidy , 
-			 othsum , 
-			 "sum" ,
-			 adduid ,
-			 addtime ,
-			 status ,
-			 summary
-		)
-		values
-		<foreach collection="list" item="expList" separator=",">
-		(
-
+			insert into tb_travel_expense
+			(
+				 travelid,
+				 exid,
+				 exstrtime ,
+				 exendtime ,
+				 exstradderss ,
+				 exendadderss ,
+				 exvehicle ,
+				 trsum ,
+				 mail ,
+				 crosum ,
+				 getaccsum ,
+				 subsidy ,
+				 othsum ,
+				 "sum" ,
+				 adduid ,
+				 addtime ,
+				 status ,
+				 summary
+			)
+			values
+			<foreach collection="list" item="expList" separator=",">
+			(
 			<choose>
 				<when test="expList.travelid != null and expList.travelid!=''">
 					#{expList.travelid},
@@ -298,7 +297,7 @@
 					</when>
 				</choose>
 			</set>
-			where exid = #{exlist.exid}
+			where travelid = #{exlist.travelid}
 		</foreach>
 	</update>
 

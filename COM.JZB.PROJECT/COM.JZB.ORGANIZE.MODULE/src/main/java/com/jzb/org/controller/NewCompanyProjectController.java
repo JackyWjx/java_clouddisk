@@ -100,7 +100,11 @@ public class NewCompanyProjectController {
             return response;
     }
 
-
+    /**
+     * @Author sapientia
+     * @Date 18:05 2019/12/12
+     * @Description 获取单位下的人
+     **/
     @RequestMapping(value = "/queryCompanyNameBycid" , method = RequestMethod.POST)
     @CrossOrigin
     public Response queryCompanyNameBycid(@RequestBody Map<String, Object> param){
