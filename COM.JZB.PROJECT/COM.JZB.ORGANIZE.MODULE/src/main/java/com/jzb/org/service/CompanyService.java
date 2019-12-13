@@ -881,4 +881,8 @@ public class CompanyService {
         }
         return count;
     }
+
+    public int delCompany(Map<String, Object> param) {
+        return companyMapper.delCompany(param);
+    }
 }

@@ -5,10 +5,42 @@
 <mapper namespace="com.jzb.org.dao.TbTrackUserMapper">
     <!--新建跟进人员记录-->
     <insert id="addTrackUser" parameterType="java.util.Map" >
-        insert into tb_track_user_list (trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackcid,trackproid,
+        insert into tb_track_user_list (isservice,nextadvance,abdialogue,trackoutput,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackcid,trackproid,
         trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
         adduid,status,summary,addtime)
         values (
+        <choose>
+            <when test="isservice != null and isservice = ''">
+                #{isservice},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="nextadvance != null and nextadvance = ''">
+                #{nextadvance},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="abdialogue != null and abdialogue = ''">
+                #{abdialogue},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackoutput != null and trackoutput = ''">
+                #{trackoutput},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{trackres},
         #{trackoutput},
         #{abdialoge},
@@ -48,7 +80,7 @@
     
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
-        select trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
+        select isservice,nextadvance,abdialogue,trackoutput,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
         from tb_track_user_list where status = '1'
         and trackvalue = #{trackvalue}
         <if test="startTime != null and startTime!= ''">
@@ -175,6 +207,18 @@
     <update id="updTrackUser" parameterType="java.util.Map">
         update tb_track_user_list
         set
+        <if test="isservice != null and isservice != ''">
+            isservice = #{isservice},
+        </if>
+        <if test="nextadvance != null and nextadvance != ''">
+            nextadvance = #{nextadvance},
+        </if>
+        <if test="abdialogue != null and abdialogue != ''">
+            abdialogue = #{abdialogue},
+        </if>
+        <if test="trackoutput != null and trackoutput != ''">
+            trackoutput = #{trackoutput},
+        </if>
         <if test="trackres != null and trackres != ''">
             trackres = #{trackres},
         </if>

@@ -85,8 +85,7 @@
         d.cid = c.cid
         where
         d.uid = #{uid}
-        and c.cid is not null
-    </select>
+        and c.cid is not null    </select>
 
     <!-- 获取企业下部门数 -->
     <select id="queryDepartmentCount" parameterType="java.util.Map"
@@ -932,6 +931,12 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         updtime = #{addtime}
     </insert>
 
+    <!--删除企业单位-->
+    <update id="delCompany" parameterType="java.util.Map" >
+        update tb_company_list set status = '2' where cid = #{cid};
+        update tb_company_common set status = '2' where cid = #{cid};
+        update tb_common_company_list set status = '2' where cid = #{cid};
+    </update>
     <!--管理员创建供应商单位-->
     <insert id="insertCompanySupplier" parameterType="java.util.Map">
         INSERT INTO tb_company_supplier (cid, supid, idx, adduid, addtime, updtime, status, summary)
