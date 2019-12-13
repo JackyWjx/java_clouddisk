@@ -369,12 +369,13 @@
 
     <!--根据用户姓名或手机号获取用户部门信息和在职状态-->
     <select id="queryDeptUser" resultType="java.util.Map">
-        SELECT
+        SELECT DISTINCT
         du.uid,
+        du.cid,
+        du.cdid,
         du.cname,
         du.phone,
         du.mail,
-        du.cdid,
         cd.cname AS dept,
         du.status,
         CASE
@@ -382,13 +383,15 @@
         WHEN du.uid THEN
         1 ELSE 2
         END AS isduid,
-        to_char(to_timestamp(du.addtime/1000),'yyyy-MM-dd HH24:MI:SS') as addtime
+        to_char( to_timestamp( du.addtime / 1000 ), 'yyyy-MM-dd HH24:MI:SS' ) AS addtime
         FROM
         tb_company_dept cd
         INNER JOIN tb_dept_user du ON cd.status = '1'
         AND du.cid = cd.cid
         AND du.cdid = cd.cdid
-        WHERE du.status != '4'
+        WHERE
+        du.status != '4'
+        AND du.addtime IN ( SELECT MAX ( addtime ) FROM tb_dept_user WHERE status = '1' GROUP BY uid, cid, cdid )
         <if test=" cid !=null and cid !='' ">and cd.cid = #{cid}</if>
         <if test=" cdid !=null and cdid !='' ">and cd.cdid=#{cdid}</if>
         <if test=" status !=null and status !='' ">and du.status=#{status}</if>
