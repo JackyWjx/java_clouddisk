@@ -37,4 +37,6 @@ public interface TbCityMapper {
      * @author kuangbin
      */
     Map<String, Object> queryRegionInfo(Map<String, Object> param);
+
+    Map<String, Object> queryProvinceNameByid(Map<String, Object> param);
 }

@@ -689,15 +689,15 @@ public class TbTravelController {
                 JzbPageConvert.setPageRows(param);
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
                 for (int i = 0, a = list.size();i < a ;i++) {
-                    if(list.get(i).get("trsum") != null || list.get(i).get("trsum") != " ")  list.get(i).put("trsum",JzbDataType.getInteger(list.get(i).get("trsum")));
-                    if(list.get(i).get("exstrtime") != null || list.get(i).get("exstrtime") != "")  list.get(i).put("exstrtime",JzbDataType.getInteger(list.get(i).get("exstrtime")));
-                    if(list.get(i).get("exendtime") != null || list.get(i).get("exendtime") != "") list.get(i).put("exendtime",JzbDataType.getInteger(list.get(i).get("exendtime")));
-                    if(list.get(i).get("mail") != null || list.get(i).get("mail") != "") list.get(i).put("mail",JzbDataType.getInteger(list.get(i).get("mail")));
-                    if(list.get(i).get("crosum") != null || list.get(i).get("crosum") != "")  list.get(i).put("crosum",JzbDataType.getInteger(list.get(i).get("crosum")));
-                    if(list.get(i).get("getaccsum") != null || list.get(i).get("getaccsum") != "") list.get(i).put("getaccsum",JzbDataType.getInteger(list.get(i).get("getaccsum")));
-                    if(list.get(i).get("subsidy") != null || list.get(i).get("subsidy") != "")  list.get(i).put("subsidy",JzbDataType.getInteger(list.get(i).get("subsidy")));
-                    if(list.get(i).get("othsum") != null  ||list.get(i).get("othsum") != "")   list.get(i).put("othsum",JzbDataType.getInteger(list.get(i).get("othsum")));
-                    if(list.get(i).get("sum") != null || list.get(i).get("sum") != "")  list.get(i).put("sum",JzbDataType.getInteger(list.get(i).get("sum")));
+                    if(JzbTools.isEmpty(list.get(i).get("trsum")))  list.get(i).put("trsum",JzbDataType.getInteger(list.get(i).get("trsum")));
+                    if(JzbTools.isEmpty(list.get(i).get("exstrtime")))  list.get(i).put("exstrtime",JzbDataType.getInteger(list.get(i).get("exstrtime")));
+                    if(JzbTools.isEmpty(list.get(i).get("exendtime"))) list.get(i).put("exendtime",JzbDataType.getInteger(list.get(i).get("exendtime")));
+                    if(JzbTools.isEmpty(list.get(i).get("mail"))) list.get(i).put("mail",JzbDataType.getInteger(list.get(i).get("mail")));
+                    if(JzbTools.isEmpty(list.get(i).get("crosum")))  list.get(i).put("crosum",JzbDataType.getInteger(list.get(i).get("crosum")));
+                    if(JzbTools.isEmpty(list.get(i).get("getaccsum"))) list.get(i).put("getaccsum",JzbDataType.getInteger(list.get(i).get("getaccsum")));
+                    if(JzbTools.isEmpty(list.get(i).get("subsidy")))  list.get(i).put("subsidy",JzbDataType.getInteger(list.get(i).get("subsidy")));
+                    if(JzbTools.isEmpty(list.get(i).get("othsum")))   list.get(i).put("othsum",JzbDataType.getInteger(list.get(i).get("othsum")));
+                    if(JzbTools.isEmpty(list.get(i).get("sum")))  list.get(i).put("sum",JzbDataType.getInteger(list.get(i).get("sum")));
                     list.get(i).put("travelid", list.get(i).get("travelid").toString().trim());
                     list.get(i).put("exid", JzbRandom.getRandomChar(12));
                     list.get(i).put("addtime", System.currentTimeMillis());
@@ -748,15 +748,15 @@ public class TbTravelController {
                 JzbPageConvert.setPageRows(param);
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
                 for (int i = 0, a = list.size();i < a ;i++) {
-                    if(list.get(i).get("trsum") != null || list.get(i).get("trsum") != " ")  list.get(i).put("trsum",JzbDataType.getInteger(list.get(i).get("trsum")));
-                    if(list.get(i).get("exstrtime") != null || list.get(i).get("exstrtime") != "")  list.get(i).put("exstrtime",JzbDataType.getInteger(list.get(i).get("exstrtime")));
-                    if(list.get(i).get("exendtime") != null || list.get(i).get("exendtime") != "") list.get(i).put("exendtime",JzbDataType.getInteger(list.get(i).get("exendtime")));
-                    if(list.get(i).get("mail") != null || list.get(i).get("mail") != "") list.get(i).put("mail",JzbDataType.getInteger(list.get(i).get("mail")));
-                    if(list.get(i).get("crosum") != null || list.get(i).get("crosum") != "")  list.get(i).put("crosum",JzbDataType.getInteger(list.get(i).get("crosum")));
-                    if(list.get(i).get("getaccsum") != null || list.get(i).get("getaccsum") != "") list.get(i).put("getaccsum",JzbDataType.getInteger(list.get(i).get("getaccsum")));
-                    if(list.get(i).get("subsidy") != null || list.get(i).get("subsidy") != "")  list.get(i).put("subsidy",JzbDataType.getInteger(list.get(i).get("subsidy")));
-                    if(list.get(i).get("othsum") != null  ||list.get(i).get("othsum") != "")   list.get(i).put("othsum",JzbDataType.getInteger(list.get(i).get("othsum")));
-                    if(list.get(i).get("sum") != null || list.get(i).get("sum") != "")  list.get(i).put("sum",JzbDataType.getInteger(list.get(i).get("sum")));
+                    if(JzbTools.isEmpty(list.get(i).get("trsum")))  list.get(i).put("trsum",JzbDataType.getInteger(list.get(i).get("trsum")));
+                    if(JzbTools.isEmpty(list.get(i).get("exstrtime")))  list.get(i).put("exstrtime",JzbDataType.getInteger(list.get(i).get("exstrtime")));
+                    if(JzbTools.isEmpty(list.get(i).get("exendtime"))) list.get(i).put("exendtime",JzbDataType.getInteger(list.get(i).get("exendtime")));
+                    if(JzbTools.isEmpty(list.get(i).get("mail"))) list.get(i).put("mail",JzbDataType.getInteger(list.get(i).get("mail")));
+                    if(JzbTools.isEmpty(list.get(i).get("crosum")))  list.get(i).put("crosum",JzbDataType.getInteger(list.get(i).get("crosum")));
+                    if(JzbTools.isEmpty(list.get(i).get("getaccsum"))) list.get(i).put("getaccsum",JzbDataType.getInteger(list.get(i).get("getaccsum")));
+                    if(JzbTools.isEmpty(list.get(i).get("subsidy")))  list.get(i).put("subsidy",JzbDataType.getInteger(list.get(i).get("subsidy")));
+                    if(JzbTools.isEmpty(list.get(i).get("othsum")))   list.get(i).put("othsum",JzbDataType.getInteger(list.get(i).get("othsum")));
+                    if(JzbTools.isEmpty(list.get(i).get("sum")))  list.get(i).put("sum",JzbDataType.getInteger(list.get(i).get("sum")));
                 }
                 tbTravelExpenseService.updateTravelExpense(list);
                 response = Response.getResponseSuccess(userInfo);
