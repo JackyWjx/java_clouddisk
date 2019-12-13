@@ -145,6 +145,56 @@ WHERE
         from
         (
         select * from (
+        select * from (
+        SELECT
+        DISTINCT
+        tcc.cid,
+        tcc.uid,
+        (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) dictvalue,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
+        FROM
+        tb_company_common tcc
+        INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+        AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
+        WHERE
+        tcc.status != '4'
+        ) a where 1=1
+        <if test="statuss != null and statuss != ''">
+            and a.status = #{statuss}
+        </if>
+        <if test="region!=null and region !=''">
+            and a.region=#{region}
+        </if>
+        <if test="uid!=null and uid !=''">
+            and a.uid=#{uid}
+        </if>
+        <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
+            and a.dictvalue=#{dictvalue}
+        </if>
+        <if test="keyword!=null and keyword !=''">
+            and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
+        </if>
+        <if test="province != null and province != ''">
+            and a.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        UNION
+        select * from (
         SELECT
         DISTINCT
         tcc.cid,
@@ -183,15 +233,13 @@ WHERE
         <if test="keyword!=null and keyword !=''">
             and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
         </if>
-        <if test="uid!=null and uid !=''">
-            and a.uid=#{uid}
-        </if>
         <if test="province != null and province != ''">
             and a.region IN
             <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
                 #{item.region}
             </foreach>
         </if>
+        ) as c
         ) as num
     </select>
 
@@ -239,6 +287,56 @@ WHERE
 
     <!-- 所有业主-业主列表查询 -->
     <select id="getCompanyCommoms" parameterType="java.util.Map" resultType="java.util.Map">
+     select * from (
+        select * from (
+        SELECT
+        DISTINCT
+        tcc.cid,
+        tcc.uid,
+        (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) dictvalue,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
+        FROM
+        tb_company_common tcc
+        INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+        AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
+        WHERE
+        tcc.status != '4'
+        ) a where 1=1
+        <if test="statuss != null and statuss != ''">
+            and a.status = #{statuss}
+        </if>
+        <if test="region!=null and region !=''">
+            and a.region=#{region}
+        </if>
+        <if test="uid!=null and uid !=''">
+            and a.uid=#{uid}
+        </if>
+        <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
+            and a.dictvalue=#{dictvalue}
+        </if>
+        <if test="keyword!=null and keyword !=''">
+            and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
+        </if>
+        <if test="province != null and province != ''">
+            and a.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        UNION
         select * from (
         SELECT
         DISTINCT
@@ -272,9 +370,6 @@ WHERE
         <if test="region!=null and region !=''">
             and a.region=#{region}
         </if>
-        <if test="uid!=null and uid !=''">
-            and a.uid=#{uid}
-        </if>
         <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
             and a.dictvalue=#{dictvalue}
         </if>
@@ -287,6 +382,7 @@ WHERE
                 #{item.region}
             </foreach>
         </if>
+        ) as c
         limit
         #{pagesize}
         offset

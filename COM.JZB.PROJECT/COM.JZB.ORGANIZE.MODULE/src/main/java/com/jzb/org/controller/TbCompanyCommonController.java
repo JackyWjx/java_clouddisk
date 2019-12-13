@@ -452,9 +452,18 @@ public class TbCompanyCommonController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
             } else {
-
-                // 设置参数
-                JzbPageConvert.setPageRows(param);
+                if (param.get("status").equals("")) {
+                    param.put("status", '1');
+                    param.put("statuss", '2');
+                } else if (param.get("status").equals("1")) {
+                    param.put("status", '1');
+                    param.put("statuss", '3');
+                } else {
+                    param.put("status", '3');
+                    param.put("statuss", '2');
+                }
+                    // 设置参数
+                    JzbPageConvert.setPageRows(param);
                 param.put("uid", userInfo.get("uid"));
                 // 获取list
                 List<Map<String, Object>> list = tbCompanyCommonService.getCompanyCommoms(param);

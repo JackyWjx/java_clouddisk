@@ -351,4 +351,5 @@ public interface CompanyMapper {
      */
     int insertCompanySupplier(Map<String, Object> param);
 
+    int delCompany(Map<String, Object> param);
 } // End interface CompanyMapper

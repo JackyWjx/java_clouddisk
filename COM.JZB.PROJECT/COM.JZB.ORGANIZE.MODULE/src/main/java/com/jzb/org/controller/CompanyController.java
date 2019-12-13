@@ -14,6 +14,7 @@ import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.service.CompanyService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.dev.ReSave;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -411,6 +412,28 @@ public class CompanyController {
         }
         return result;
     }
+
+
+    /**
+     * 删除企业单位
+     * @param param
+     * @return
+     */
+   @RequestMapping(value = "/delCompany",method = RequestMethod.POST)
+   @CrossOrigin
+   public Response delCompany(@RequestBody Map<String,Object> param){
+       Response response;
+       try {
+           Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
+           int count = companyService.delCompany(param);
+           response = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
+       } catch (Exception e) {
+           JzbTools.logError(e);
+           response = Response.getResponseError();
+       }
+    return response;
+
+   }
 
     /**
      * 根据企业ID获取当前企业的超级管理员

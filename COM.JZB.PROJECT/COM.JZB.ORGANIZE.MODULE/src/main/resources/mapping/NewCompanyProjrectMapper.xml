@@ -17,8 +17,7 @@
 
     <!--根据公司id查询项目信息-->
     <select id="queryCompanyByid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone
---         ,porjcetra
+        select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
          from tb_company_project where cid=#{cid}
          limit #{pagesize}  offset #{pageno}
     </select>
@@ -34,6 +33,11 @@
         select count(1) from tb_common_project_info where  projectid=#{projectid}
     </select>
 
+    <!--根据projectid查询单位名称-->
+    <select id="queryPronameByid" resultType="java.util.Map" parameterType="java.util.Map">
+        select projectname from tb_company_project where projectid=#{projectid} and status = '1'
+    </select>
+
     <!--修改单位-->
     <update id="updateCommonCompanyList" parameterType="java.util.Map">
         update tb_common_company_list
@@ -41,7 +45,7 @@
         <if test=" supervise != null and supervise != ''"> supervise=#{ supervise},</if>
         <if test=" orgrelation != null and orgrelation != ''"> orgrelation=#{ orgrelation},</if>
         <if test=" prodesc != null and prodesc != ''"> prodesc=#{ prodesc},</if>
-        <if test=" prolist != null and prolist != ''"> prolist=#{ prolist}</if>
+        <if test=" prolist != null and prolist != ''"> prolist=#{ prolist},</if>
         <if test=" uid != null and uid != ''"> upduid=#{uid},</if>
         <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
         where status ='1' and cid=#{cid}
@@ -60,6 +64,7 @@
             <if test=" tenderresultcompany != null and tenderresultcompany != ''"> tenderresultcompany=#{ tenderresultcompany},</if>
             <if test=" tenderagent != null and tenderagent != ''"> tenderagent=#{ tenderagent},</if>
             <if test=" agentphone != null and agentphone != ''"> agentphone=#{ agentphone},</if>
+            <if test="porjcetra ! = null and porjcetra !=''">porjcetra=#{porjcetra},</if>
             <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>
             <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
         where status ='1' and projectid=#{projectid}

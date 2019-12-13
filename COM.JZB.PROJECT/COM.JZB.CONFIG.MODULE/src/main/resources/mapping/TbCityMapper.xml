@@ -192,7 +192,7 @@
         </choose>
     </select>
 
-    <!--根据地区名称获取地区ID信息-->
+    <!--根据地区ID获取地区名称信息-->
     <select id="queryRegionInfo" parameterType="java.util.Map" resultType="java.util.Map">
         select
         creaid,
@@ -211,8 +211,4 @@
         creaid = #{region}
     </select>
 
-    <!--根据省id获取省的名称-->
-    <select id="queryProvinceNameByid" parameterType="java.util.Map" resultType="java.util.Map">
-        select province where status = '1' and pcode = #{trregion}
-    </select>
 </mapper>
