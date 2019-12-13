@@ -1,6 +1,5 @@
 package com.jzb.auth.controller;
 
-import com.jzb.auth.dao.PersonBoardMapper;
 import com.jzb.auth.service.PersonBoardService;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.jnlp.PersistenceService;
 import java.util.Map;
 
 /**

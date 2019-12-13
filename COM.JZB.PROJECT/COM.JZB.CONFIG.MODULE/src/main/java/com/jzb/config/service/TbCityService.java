@@ -113,4 +113,8 @@ public class TbCityService {
         }
         return region;
     }
+
+    public Map<String, Object> queryProvinceNameByid(Map<String, Object> param) {
+        return tbCityMapper.queryProvinceNameByid(param);
+    }
 }

@@ -85,6 +85,7 @@
         d.cid = c.cid
         where
         d.uid = #{uid}
+        and c.cid is not null
     </select>
 
     <!-- 获取企业下部门数 -->
