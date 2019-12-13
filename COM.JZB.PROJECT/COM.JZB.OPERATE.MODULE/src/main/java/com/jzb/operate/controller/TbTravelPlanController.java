@@ -167,6 +167,7 @@ public class TbTravelPlanController {
                     infoMap.put("adduid",param.get("adduid"));
                     infoMap.put("travelid",param.get("travelid"));
                     infoMap.put("deid",detailsMap.get("deid"));
+                    infoMap.put("reshid",null);
                     infoMap.put("status",1);//默认状态1
                     infoMap.put("inid",JzbRandom.getRandomChar(19));
                     infoMap.put("addtime",System.currentTimeMillis());
