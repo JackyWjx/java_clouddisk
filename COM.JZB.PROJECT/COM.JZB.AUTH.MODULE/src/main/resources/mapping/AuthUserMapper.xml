@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.auth.dao.AuthUserMapper">
 
-    <select id="queryPersionByName" parameterType="java.util.Map"  resultType="java.lang.Integer">
+    <select id="queryPersionByName" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_user_list where uid = #{uid} and cname like CONCAT('%',#{person},'%')
     </select>
 
@@ -127,7 +127,7 @@
                     tb_user_key
                 WHERE
                     ktid = '1'
-                    AND status = '1'
+                    AND (status = '1' or status='8')
                     AND keyid =#{phone}
 
     </select>
