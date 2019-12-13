@@ -139,61 +139,59 @@
 	<insert id="save" parameterType="java.util.Map">
 		insert into tb_travel_info
 		(
-			 travelid ,
-			 deid ,
-			 inid ,
-			 cid ,
-			 cname ,
-			 supervise ,
-			 prodesc ,
-			 prolist ,
-			 projectid ,
-			 projectname ,
-			 tendercompany ,
-			 tendername ,
-			 projecttype ,
-			 promail ,
-			 projectras ,
-			 tenderphone ,
-			 tenderresultcompany ,
-			 tendertime ,
-			 tenderagent ,
-			 relation ,
-			 podeperson ,
-			 podephone ,
-			 podejob ,
-			 podenature ,
-			 npodeperson ,
-			 npodephone ,
-			 npodejob ,
-			 npodenature ,
-			 setb ,
-			 sepr ,
-			 seli ,
-			 recname ,
-			 reluname ,
-			 relphone ,
-			 brandname ,
-			 contrast ,
-			 mail ,
-			 nreluname ,
-			 nrelphone ,
-			 nbrandname ,
-			 ncontrast ,
-			 nmail ,
-			 reshid ,
-			 reshname ,
-			 reshphone ,
-			 lineuname ,
-			 linejob ,
-			 linephone ,
-			 linenature ,
-			 adduid ,
-			 addtime ,
-			 upduid ,
-			 updtime ,
-			 status ,
-			 summary
+		travelid ,
+		deid ,
+		inid ,
+		cid ,
+		cname ,
+		supervise ,
+		prodesc ,
+		prolist ,
+		projectid ,
+		projectname ,
+		tendercompany ,
+		tendername ,
+		projecttype ,
+		promail ,
+		projectras ,
+		tenderphone ,
+		tenderresultcompany ,
+		tendertime ,
+		tenderagent ,
+		relation ,
+		podeperson ,
+		podephone ,
+		podejob ,
+		podenature ,
+		npodeperson ,
+		npodephone ,
+		npodejob ,
+		npodenature ,
+		setb ,
+		sepr ,
+		seli ,
+		recname ,
+		reluname ,
+		relphone ,
+		brandname ,
+		contrast ,
+		mail ,
+		nreluname ,
+		nrelphone ,
+		nbrandname ,
+		ncontrast ,
+		nmail ,
+		reshid ,
+		reshname ,
+		reshphone ,
+		lineuname ,
+		linejob ,
+		linephone ,
+		linenature ,
+		adduid ,
+		addtime ,
+		status ,
+		summary
 		)
 		values
 		(
@@ -239,14 +237,7 @@
 				null ,
 			</otherwise>
 		</choose>
-		<choose>
-			<when test="travelid != null and travelid !=''">
-				#{travelid},
-			</when>
-			<otherwise>
-				null ,
-			</otherwise>
-		</choose>
+
 		<choose>
 			<when test="supervise != null and supervise !=''">
 				#{supervise},
@@ -482,6 +473,14 @@
 				null ,
 			</otherwise>
 		</choose>
+			<choose>
+				<when test="brandname != null and brandname !=''">
+					#{brandname},
+				</when>
+				<otherwise>
+					null ,
+				</otherwise>
+			</choose>
 		<choose>
 			<when test="contrast != null and contrast !=''">
 				#{contrast},
@@ -557,7 +556,7 @@
 		</choose>
 		<choose>
 			<when test="reshphone != null and reshphone !=''">
-				#{setb},
+				#{reshphone},
 			</when>
 			<otherwise>
 				null ,
@@ -611,22 +610,7 @@
 				null ,
 			</otherwise>
 		</choose>
-		<choose>
-			<when test="upduid != null and upduid !=''">
-				#{upduid},
-			</when>
-			<otherwise>
-				null ,
-			</otherwise>
-		</choose>
-		<choose>
-			<when test="updtime != null and updtime !=''">
-				#{updtime},
-			</when>
-			<otherwise>
-				null ,
-			</otherwise>
-		</choose>
+
 		<choose>
 			<when test="status != null and status !=''">
 				#{status},

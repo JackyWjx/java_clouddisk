@@ -216,6 +216,7 @@ public class TbTravelPlanController {
             travelPlanService.addTravelRecord(param);
             response = Response.getResponseSuccess(userInfo);
 
+
             //   response = new Response();
         } catch (Exception ex) {
             JzbTools.logError(ex);
