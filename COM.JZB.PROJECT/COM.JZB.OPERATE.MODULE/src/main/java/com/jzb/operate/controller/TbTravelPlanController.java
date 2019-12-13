@@ -545,7 +545,7 @@ public class TbTravelPlanController {
                         travelMap.put("approvers","");
                     }
                     whereParam.put("uids",travelMap.get("truids"));
-                    resApi = tbDeptUserListApi.getUsernameList(whereParam);
+                    resApi = tbDeptUserListApi.searchInvitee(whereParam);
                     String unameStr = (String) resApi.getResponseEntity();
                     travelMap.put("approvers",unameStr);
                     // 2.根据查询出来的travelid 查询 出差记录详情
@@ -559,7 +559,7 @@ public class TbTravelPlanController {
                             travelMap.put("trpeers","");
                         }
                         query.put("uids",detialsMap.get("trpeers"));
-                        resApi = tbDeptUserListApi.getUsernameList(query);
+                        resApi = tbDeptUserListApi.searchInvitee(query);
                         String trpeers = (String) resApi.getResponseEntity();
                         detialsMap.put("trpeers",trpeers);
                         // 出差区域
