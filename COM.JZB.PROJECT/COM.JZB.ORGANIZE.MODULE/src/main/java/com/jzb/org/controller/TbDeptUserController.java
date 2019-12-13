@@ -174,4 +174,45 @@ public class TbDeptUserController {
         }
         return response;
     }
+
+
+    /**
+     * 根据uid集合获取多个用户名称
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getUsernameList",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUsernameList(@RequestBody Map<String,Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        boolean flag = true;
+        String  api="/userInfo/getUsernameList";
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            String unames = tbDeptUserService.getUsernameByUids(param);
+            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            response.setResponseEntity(unames);
+
+        } catch (Exception e) {
+            flag=false;
+            // 返回错误
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getUsernameList Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
 }

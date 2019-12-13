@@ -2,7 +2,6 @@ package com.jzb.operate.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.jzb.base.data.JzbDataType;
-import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -10,7 +9,6 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
-import com.jzb.operate.api.auth.UserInfoApi;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.api.org.NewTbCompanyListApi;
@@ -56,9 +54,6 @@ public class TbTravelPlanController {
 
     @Autowired
     private TbTravelRecordService tbTravelRecordService;
-
-    @Autowired
-    UserInfoApi userInfoApi;
 
     @Autowired
     NewTbCompanyListApi newTbCompanyListApi;
@@ -527,7 +522,7 @@ public class TbTravelPlanController {
                         travelMap.put("approvers","");
                     }
                     whereParam.put("unames",travelMap.get("truids"));
-                    resApi = userInfoApi.searchInvitee(param);
+                    resApi = tbDeptUserListApi.searchInvitee(param);
                     String unameStr = (String) resApi.getResponseEntity();
                     travelMap.put("approvers",unameStr);
                     // 2.根据查询出来的travelid 查询 出差详情记录
@@ -541,7 +536,7 @@ public class TbTravelPlanController {
                             travelMap.put("trpeers","");
                         }
                         query.put("unames",detialsMap.get("trpeers"));
-                        resApi = userInfoApi.searchInvitee(query);
+                        resApi = tbDeptUserListApi.searchInvitee(query);
                         String trpeers = (String) resApi.getResponseEntity();
                         detialsMap.put("trpeers",trpeers);
                         // 出差区域
@@ -613,6 +608,7 @@ public class TbTravelPlanController {
         }
         return result;
     }
+
 
 
 }

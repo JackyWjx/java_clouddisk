@@ -18,4 +18,11 @@
     <select id="queryPersonNameByuid" parameterType="java.util.Map" resultType="java.util.Map">
        select DISTINCT cname as uname from tb_dept_user  where status='1' and uid = #{truid}
     </select>
+
+    <select id="getUsernameByUids" parameterType="java.util.Map"  resultType="java.lang.String">
+        SELECT string_agg(uname,',') as unames from tb_dept_user WHERE uid IN
+        <foreach item="item" index="index" collection="uids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

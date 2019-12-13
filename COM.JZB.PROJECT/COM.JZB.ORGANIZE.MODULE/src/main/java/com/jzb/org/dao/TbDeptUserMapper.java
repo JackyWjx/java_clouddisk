@@ -16,4 +16,14 @@ public interface TbDeptUserMapper {
     List<Map<String, Object>> queryOtherPersonBycid(Map<String, Object> param);
 
     List<Map<String, Object>> queryPersonNameByuid(Map<String, Object> param);
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/13 10:14
+     *  @Description:
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    String getUsernameByUids(Map<String, Object> whereMap);
 }

@@ -49,11 +49,10 @@
 	</select>
 
     <select id="getMaxApid" resultType="java.lang.String">
+
         select apid from tb_travel_approval
-            where idx = (
-                select max(idx) from tb_travel_approval
-                where travelid = #{travelId}
-                )
+            where travelid = #{travelId} order by idx desc limit 1
+
     </select>
 
     <insert id="save" parameterType="java.util.Map">

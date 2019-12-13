@@ -44,4 +44,16 @@ public interface TbDeptUserListApi {
     @RequestMapping(value = "/queryPersonNameByuid", method = RequestMethod.POST)
     @CrossOrigin
     public Response queryPersonNameByuid(@RequestBody Map<String, Object> param);
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/13 10:18
+     *  @Description: 查询同行人名
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    @RequestMapping(value = "/getUsernameList", method = RequestMethod.POST)
+    @CrossOrigin
+    Response searchInvitee(@RequestBody Map<String, Object> param);
 }
