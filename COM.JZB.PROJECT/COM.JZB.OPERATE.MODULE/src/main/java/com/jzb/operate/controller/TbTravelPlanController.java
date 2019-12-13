@@ -164,7 +164,6 @@ public class TbTravelPlanController {
                 //一般travelinfolist的长度为1
                 for( Map<String,Object> infoMap : travelinfolist){
                     // tendertime时间需要前端传值,暂时用系统时间戳代替
-                    infoMap.put("tendertime",System.currentTimeMillis());
                     infoMap.put("adduid",param.get("adduid"));
                     infoMap.put("travelid",param.get("travelid"));
                     infoMap.put("deid",detailsMap.get("deid"));
