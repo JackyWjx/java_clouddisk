@@ -79,7 +79,14 @@
                 #{addtime},
                 #{adduid},
                 #{status},
-                #{summary},
+                <choose>
+					<when test="summary != null and summary != ''" >
+						#{summary},
+					</when>
+					<otherwise>
+						null,
+					</otherwise>
+				</choose>
                 #{version}
                 )
     </insert>

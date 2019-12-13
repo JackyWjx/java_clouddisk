@@ -132,10 +132,11 @@ public class TbTravelPlanController {
             param.put("travelid",JzbRandom.getRandomChar(19));
             param.put("aptype",1);//1出差 2 报销
             param.put("version",JzbRandom.getRandom(8));
-            param.put("status",1);//默认状态1
+            param.put("status",'1');//默认状态'1'
 
             //始末时间默认为第一条记录的时间
-            long temp = getTimestamp(detailsList.get(0).get("trtime").toString());
+
+            long temp = getTimestamp(JzbDataType.getString(detailsList.get(0).get("trtime")));
             long startTime = temp;
             long endTime = temp;
 
@@ -152,7 +153,7 @@ public class TbTravelPlanController {
                 List<Integer> prindexLst = (List<Integer>) detailsMap.get("produce");
                 detailsMap.put("produce",PrindexUtil.setPrindex(prindexLst));
                 //出差详情--出差时间转化处理
-                long trTime = getTimestamp(detailsMap.get("trtime").toString());
+                long trTime = getTimestamp(JzbDataType.getString(detailsMap.get("trtime")));
                 detailsMap.put("trtime",trTime);
                 //统计始末时间
                 startTime = startTime < trTime ? startTime : trTime;
@@ -231,7 +232,7 @@ public class TbTravelPlanController {
 
         return response;
     }
-
+    // 日期转时间戳
     private long getTimestamp(String str) throws ParseException {
         String dateStr = str;
         dateStr = dateStr.replace("Z", " UTC");
@@ -323,11 +324,13 @@ public class TbTravelPlanController {
             List<Map<String, Object>> detailsList = (List) param.get("list");
 
             //统计时间// 始末时间默认为第一条记录的时间
-            long temp = JzbDataType.getLong(detailsList.get(0).get("trtime"));
+            //long temp = JzbDataType.getLong(detailsList.get(0).get("trtime")); 前端时间组件需要特殊处理一下
+            long temp = getTimestamp(JzbDataType.getString(detailsList.get(0).get("trtime")));
             long startTime = temp;
             long endTime = temp;
             for(Map<String, Object> detailsMap: detailsList){
-                long trTime = JzbDataType.getLong(detailsMap.get("trtime"));
+                //long trTime = JzbDataType.getLong(detailsMap.get("trtime")); 这种方式获取行不通
+                long trTime = getTimestamp(JzbDataType.getString(detailsMap.get("trtime")));
                 //统计始末时间
                 startTime = startTime < trTime ? startTime : trTime;
                 endTime = endTime > trTime ? endTime : trTime;
@@ -341,7 +344,7 @@ public class TbTravelPlanController {
                 List<Map<String,Object>> travelinfolist = (List<Map<String, Object>>) detailsMap.get("travelinfolist");
                 //一般travelinfolist的长度为1
                 for( Map<String,Object> infoMap : travelinfolist){
-
+                    infoMap.put("tendertime",JzbDataType.getLong(detailsMap.get("tendertime"))); //招标时间转化
                     infoMap.put("updtime",System.currentTimeMillis());
                     travelInfoService.update(infoMap);
                 }
@@ -349,7 +352,26 @@ public class TbTravelPlanController {
                 //获取并保存出差资料list
                 List<Map<String,Object>> traveldatalist  = (List<Map<String, Object>>) detailsMap.get("traveldatalist");
                 for(Map<String,Object> dataMap : traveldatalist){
-
+                    dataMap.put("coou",JSONArray.toJSONString(dataMap.get("coou")));
+                    dataMap.put("coppt",JSONArray.toJSONString(dataMap.get("coppt")));
+                    dataMap.put("couage",JSONArray.toJSONString(dataMap.get("couage")));
+                    dataMap.put("cocustomer",JSONArray.toJSONString(dataMap.get("cocustomer")));
+                    dataMap.put("coframe",JSONArray.toJSONString(dataMap.get("coframe")));
+                    dataMap.put("copropaganda",JSONArray.toJSONString(dataMap.get("copropaganda")));
+                    dataMap.put("contrast",JSONArray.toJSONString(dataMap.get("contrast")));
+                    dataMap.put("card",JSONArray.toJSONString(dataMap.get("card")));
+                    dataMap.put("account",JSONArray.toJSONString(dataMap.get("account")));
+                    dataMap.put("speechcraft",JSONArray.toJSONString(dataMap.get("speechcraft")));
+                    dataMap.put("signin",JSONArray.toJSONString(dataMap.get("signin")));
+                    dataMap.put("newsletter",JSONArray.toJSONString(dataMap.get("newsletter")));
+                    dataMap.put("train",JSONArray.toJSONString(dataMap.get("train")));
+                    dataMap.put("implement",JSONArray.toJSONString(dataMap.get("implement")));
+                    dataMap.put("offer",JSONArray.toJSONString(dataMap.get("offer")));
+                    dataMap.put("plan",JSONArray.toJSONString(dataMap.get("plan")));
+                    dataMap.put("invitation",JSONArray.toJSONString(dataMap.get("invitation")));
+                    dataMap.put("reviewed",JSONArray.toJSONString(dataMap.get("reviewed")));
+                    dataMap.put("cureviewed",JSONArray.toJSONString(dataMap.get("cureviewed")));
+                    dataMap.put("contract",JSONArray.toJSONString(dataMap.get("contract")));
                     dataMap.put("updtime",System.currentTimeMillis());
                     travelDataService.update(dataMap);
                 }
@@ -512,20 +534,20 @@ public class TbTravelPlanController {
                     Date beginTime = sdf.parse(JzbDataType.getString(param.get("endTime")));
                     param.put("endTime", beginTime.getTime());
                 }
-                // 得到结果集
-                List<Map<String, Object>> recordList = tbTravelRecordService.getTravelRecordListByUid(param);
+                // 得到出差记录结果集
+                List<Map<String, Object>> recordList = travelPlanService.getTravelRecordListByUid(param);
                 Response resApi;
                 for (Map<String,Object> travelMap: recordList) {
-                    // 1.根据查询出来的truids(审批人员id集合)调用用户Aip查询审批人员名称用于界面展示
+                    // 1.根据查询出来的truids(审批人员id集合)调用tbDeptUserListApi查询审批人员名称用于界面展示
                     Map<String,Object> whereParam = new HashMap<>();
                     if(JzbTools.isEmpty(travelMap.get("truids"))){
                         travelMap.put("approvers","");
                     }
-                    whereParam.put("unames",travelMap.get("truids"));
-                    resApi = tbDeptUserListApi.searchInvitee(param);
+                    whereParam.put("uids",travelMap.get("truids"));
+                    resApi = tbDeptUserListApi.getUsernameList(whereParam);
                     String unameStr = (String) resApi.getResponseEntity();
                     travelMap.put("approvers",unameStr);
-                    // 2.根据查询出来的travelid 查询 出差详情记录
+                    // 2.根据查询出来的travelid 查询 出差记录详情
                     whereParam.put("travelid",travelMap.get("travelid"));
                     List<Map<String,Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(whereParam);
 
@@ -535,15 +557,16 @@ public class TbTravelPlanController {
                         if(JzbTools.isEmpty(detialsMap.get("trpeers"))){
                             travelMap.put("trpeers","");
                         }
-                        query.put("unames",detialsMap.get("trpeers"));
-                        resApi = tbDeptUserListApi.searchInvitee(query);
+                        query.put("uids",detialsMap.get("trpeers"));
+                        resApi = tbDeptUserListApi.getUsernameList(query);
                         String trpeers = (String) resApi.getResponseEntity();
                         detialsMap.put("trpeers",trpeers);
                         // 出差区域
-                        query.put("",detialsMap.get("trregion"));
-                        resApi = regionBaseApi.getCityJson(query);
-                        String travelCity = (String) resApi.getResponseEntity();
-                        detialsMap.put("travelCity",travelCity);
+                        query.put("region",detialsMap.get("trregion"));
+                        resApi = regionBaseApi.getRegionInfo(query);
+                       // Map<String, Object> regionID = (Map<String, Object>) resApi.getResponseEntity();
+
+                        detialsMap.put("travelCity",resApi.getResponseEntity());
                         //获取单位名称
                         query.put("cid",detialsMap.get("cid"));
                         resApi = newTbCompanyListApi.queryCompanyNameBycid(query);
@@ -579,7 +602,7 @@ public class TbTravelPlanController {
                 }
 
                 // 得到总数
-                int count = tbTravelRecordService.getTravelRecordCountByUid(param);
+                int count = travelPlanService.getTravelRecordCountByUid(param);
 
                 // 定义分页  pageinfo
                 PageInfo pi = new PageInfo();

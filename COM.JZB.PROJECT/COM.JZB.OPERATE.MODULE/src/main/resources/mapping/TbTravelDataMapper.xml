@@ -337,6 +337,7 @@
 	<update id="update" parameterType="java.util.Map">
 		update tb_travel_data 
 		<set>
+			<trim suffixOverrides=",">
 			<if test="travelid != null"> travelid  = #{travelid}, </if>
 			<if test="deid != null"> deid  = #{deid}, </if>
 			<if test="coou != null"> coou  = #{coou}, </if>
@@ -363,6 +364,7 @@
 			<if test="adduid != null"> adduid  = #{adduid}, </if>
 			<if test="status != null"> status  = #{status}, </if>
 			<if test="summary != null"> summary  = #{summary}</if>
+			</trim>
 		</set>
 		where did = #{did}
 	</update>

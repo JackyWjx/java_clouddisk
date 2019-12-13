@@ -56,7 +56,7 @@ public interface TbTravelPlanMapper {
      * @param param
      * @return
      */
-    List<Map<String, Object>> getTravelDetials(Map<String, Object> param);
+//    List<Map<String, Object>> getTravelDetials(Map<String, Object> param);
 
     /**
      * 根据出差id查询出差记录
@@ -71,4 +71,25 @@ public interface TbTravelPlanMapper {
      * @return
      */
     List<Map<String, Object>> queryTravelDetailsByTravelid(Map<String, Object> param);
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/13 14:04
+     *  @Description: 获取出差记录列表
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    List<Map<String, Object>> queryTravelRecordByUid(Map<String, Object> param);
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/13 14:09
+     *  @Description: 获取出差记录列表总数
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    int queryTravelRecordCountByUid(Map<String, Object> param);
 }

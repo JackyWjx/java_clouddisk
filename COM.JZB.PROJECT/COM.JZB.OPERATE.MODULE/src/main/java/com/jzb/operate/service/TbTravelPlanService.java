@@ -96,4 +96,30 @@ public class TbTravelPlanService {
     public Map<String, Object> queryTravelRecordByTravelid(Map<String, Object> map){
         return travelPlanMapper.queryTravelRecordByTravelid(map);
     }
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/13 14:03
+     *  @Description: 获取出差记录列表
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    public List<Map<String, Object>> getTravelRecordListByUid(Map<String, Object> param) {
+        return travelPlanMapper.queryTravelRecordByUid(param);
+    }
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/13 14:08
+     *  @Description:  获取出差记录列表总数
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    public int getTravelRecordCountByUid(Map<String, Object> param) {
+        return travelPlanMapper.queryTravelRecordCountByUid(param);
+    }
 }
