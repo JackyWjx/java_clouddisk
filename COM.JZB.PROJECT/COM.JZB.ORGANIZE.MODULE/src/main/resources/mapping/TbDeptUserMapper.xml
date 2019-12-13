@@ -20,9 +20,9 @@
     </select>
 
     <select id="getUsernameByUids" parameterType="java.util.Map"  resultType="java.lang.String">
-        SELECT string_agg(uname,',') as unames from tb_dept_user WHERE status='1' and uid IN
-        <foreach item="item" index="index" collection="uids" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+    SELECT string_agg(uname,',') as unames from tb_dept_user WHERE uid IN
+    <foreach item="item" index="index" collection="uids" open="(" separator="," close=")">
+        #{item}
+    </foreach>
     </select>
 </mapper>

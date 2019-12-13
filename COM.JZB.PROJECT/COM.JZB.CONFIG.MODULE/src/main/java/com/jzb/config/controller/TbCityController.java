@@ -365,24 +365,4 @@ public class TbCityController {
         }
         return result;
     }
-    
-    /**
-     * @Author sapientia
-     * @Date 10:35 根据省id获取省名称
-     * @Description        
-     **/
-    @RequestMapping(value = "/queryProvinceNameByid", method = RequestMethod.POST)
-    @CrossOrigin
-    public Response queryProvinceNameByid(@RequestBody Map<String, Object> param) {
-        Response result;
-        try {
-            Map<String, Object> regionID = tbCityService.queryProvinceNameByid(param);
-            result = Response.getResponseSuccess();
-            result.setResponseEntity(regionID);
-        } catch (Exception e) {
-            JzbTools.logError(e);
-            result = Response.getResponseError();
-        }
-        return result;
-    }
 }

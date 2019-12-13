@@ -54,4 +54,14 @@ public interface NewTbCompanyListApi {
     @PostMapping("/updateCommonCompanyList")
     @CrossOrigin
     public Response updateCommonCompanyList(@RequestBody Map<String, Object> param);
+
+
+    /**
+     * @Author sapientia
+     * @Date 19:48 2019/12/13
+     * @Description 根据projectid查询projectname
+     **/
+    @PostMapping("/queryPronameByid")
+    @Transactional
+    public Response queryPronameByid(@RequestBody Map<String, Object> param);
 }

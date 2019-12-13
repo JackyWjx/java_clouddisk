@@ -49,4 +49,8 @@ public class NewCompanyProjectService {
     public List<Map<String, Object>> queryCompanyNameBycid(Map<String, Object> param) {
         return  newCompanyProjectMapper.queryCompanyNameBycid(param);
     }
+
+    public List<Map<String, Object>> queryPronameByid(Map<String, Object> param) {
+        return newCompanyProjectMapper.queryPronameByid(param);
+    }
 }

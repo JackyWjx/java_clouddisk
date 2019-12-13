@@ -33,4 +33,6 @@ public interface NewCompanyProjectMapper {
     int countProjectInfo(Map<String, Object> param);
 
     List<Map<String, Object>> queryCompanyNameBycid(Map<String, Object> param);
+
+    List<Map<String, Object>> queryPronameByid(Map<String, Object> param);
 }
