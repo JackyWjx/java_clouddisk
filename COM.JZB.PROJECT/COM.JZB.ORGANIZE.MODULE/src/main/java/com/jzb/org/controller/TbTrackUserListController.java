@@ -146,11 +146,7 @@ public class TbTrackUserListController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            // 如果获取参数userinfo不为空的话
-            if (JzbCheckParam.haveEmpty(param, new String[]{"keyword"})) {
-                response = Response.getResponseError();
-                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTrackUserListByKeywords Method", "param is NULL"));
-            } else {
+
                 // 定义list放uid和cid
                 List<Map<String, Object>> list = new ArrayList<>();
                 // 定义map便于list添加对象
@@ -210,7 +206,6 @@ public class TbTrackUserListController {
                 pageInfo.setTotal(tbTrackUserListService.findTrackListCountByKeywords(param));
                 // 返回分页对象
                 response.setPageInfo(pageInfo);
-            }
         } catch (Exception ex) {
             // 异常信息
             flag = false;
