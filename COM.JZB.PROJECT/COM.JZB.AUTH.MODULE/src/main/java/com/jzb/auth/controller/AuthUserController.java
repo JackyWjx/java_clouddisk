@@ -149,6 +149,29 @@ public class AuthUserController {
         return response;
     } //
 
+
+
+    /**
+     * 根据regid 或者phone 获取用户id
+     *
+     * @author kuangbin
+     */
+    @PostMapping(value = "/getUidByPhoneOrRegid")
+    @CrossOrigin
+    public Response getUidByPhoneOrRegid(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            String s = userService.queryUidByPhoneOrRegid(param);
+            response=Response.getResponseSuccess();
+            response.setResponseEntity(s);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    } //
+
+
     /**
      * 更改个人认证信息
      *

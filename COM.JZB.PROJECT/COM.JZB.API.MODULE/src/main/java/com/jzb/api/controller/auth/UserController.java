@@ -82,7 +82,15 @@ public class UserController {
             String uid = param.get("uid").toString();
             String idType = param.get("idtype").toString();
             String pwd = param.get("pwd").toString();
-
+            String regex = "^1[3|4|5|8|9][0-9]\\d{8}$";
+            Map<String, Object> map = new HashMap();
+            if (uid.matches(regex)) {
+                map.put("phone",uid);
+            }else {
+                map.put("regid",uid);
+            }
+            Response uidResponse = authApi.getUidByPhoneOrRegid(map);
+            uid=JzbDataType.getString(uidResponse.getResponseEntity());
             // 获取SESSION
             String session = authService.userLogin(uid, pwd);
             JzbTools.logInfo("=============>>", "SESSION", session);

@@ -146,32 +146,32 @@ public class TbTrackUserListController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
+            // 如果获取参数userinfo不为空的话
+            if (param.get("keyword") == null) {
+                response = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTrackUserListByKeywords Method", "param is NULL"));
+            } else {
 
                 // 定义list放uid和cid
                 List<Map<String, Object>> list = new ArrayList<>();
                 // 定义map便于list添加对象
                 Map<String, Object> map = new HashMap<>();
-                // 配置参数
-                if (!JzbCheckParam.haveEmpty(param, new String[]{"beginTime"})) {
-                    param.put("beginTime", JzbDateUtil.getDate(param.get("beginTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
-                }
-                // 配置参数
-                if (!JzbCheckParam.haveEmpty(param, new String[]{"endTime"})) {
-                    param.put("endTime", JzbDateUtil.getDate(param.get("endTime").toString(), JzbDateStr.yyyy_MM_dd_HH_mm_ss).getTime());
-                }
-                // 根据关键字查询出来的单位id
-                List<Map<String, Object>> cnameLike = tbTrackUserListService.findCnameLike(param);
-                for (int i = 0, l = cnameLike.size(); i < l; i++) {
-                    map = new HashMap<>();
-                    map.put("value", cnameLike.get(i).get("cid"));
-                    list.add(map);
-                }
-                // 根据关键字查询出来的用户id
-                List<Map<String, Object>> unameLike = tbTrackUserListService.findUnameLike(param);
-                for (int i = 0, l = unameLike.size(); i < l; i++) {
-                    map = new HashMap<>();
-                    map.put("value", unameLike.get(i).get("uid"));
-                    list.add(map);
+
+                if (!JzbCheckParam.haveEmpty(param, new String[]{"keyword"})) {
+                    // 根据关键字查询出来的单位id
+                    List<Map<String, Object>> cnameLike = tbTrackUserListService.findCnameLike(param);
+                    for (int i = 0, l = cnameLike.size(); i < l; i++) {
+                        map = new HashMap<>();
+                        map.put("value", cnameLike.get(i).get("cid"));
+                        list.add(map);
+                    }
+                    // 根据关键字查询出来的用户id
+                    List<Map<String, Object>> unameLike = tbTrackUserListService.findUnameLike(param);
+                    for (int i = 0, l = unameLike.size(); i < l; i++) {
+                        map = new HashMap<>();
+                        map.put("value", unameLike.get(i).get("uid"));
+                        list.add(map);
+                    }
                 }
                 // 把list放到参数中用于查询数据
                 param.put("list", list);
@@ -206,6 +206,7 @@ public class TbTrackUserListController {
                 pageInfo.setTotal(tbTrackUserListService.findTrackListCountByKeywords(param));
                 // 返回分页对象
                 response.setPageInfo(pageInfo);
+            }
         } catch (Exception ex) {
             // 异常信息
             flag = false;
@@ -325,7 +326,7 @@ public class TbTrackUserListController {
                     }
 
                     // 设置值
-                    cell=sheet.getRow(i + 1).createCell(j);
+                    cell = sheet.getRow(i + 1).createCell(j);
                     cell.setCellValue(value);
                     cell.setCellStyle(contextStyle);
                 }
@@ -347,7 +348,7 @@ public class TbTrackUserListController {
     }
 
     // 创建文本样式
-    public static XSSFCellStyle genContextStyle(XSSFWorkbook workbook){
+    public static XSSFCellStyle genContextStyle(XSSFWorkbook workbook) {
         XSSFCellStyle style = workbook.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);//文本水平居中显示
         style.setVerticalAlignment(VerticalAlignment.CENTER);//文本竖直居中显示

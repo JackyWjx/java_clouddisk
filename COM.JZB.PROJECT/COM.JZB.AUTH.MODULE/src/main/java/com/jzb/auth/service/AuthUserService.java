@@ -57,6 +57,16 @@ public class AuthUserService {
         return userMapper.queryPersionByName(param) > 0 ? true : false;
     }
 
+
+    /**
+     * 查uid czd add
+     * @param param
+     * @return
+     */
+    public String queryUidByPhoneOrRegid(Map<String,Object> param){
+        return userMapper.queryUidByPhoneOrRegid(param);
+    }
+
     /**
      * 认证修改用户数据
      *
