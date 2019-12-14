@@ -129,12 +129,14 @@
 
     <!-- 模糊查询用户名 -->
     <select id="findUnameLike" parameterType="java.util.Map" resultType="java.util.Map">
-        select uid,cname from tb_dept_user where cname ~ #{keyword}
+        select uid,cname from tb_dept_user where status='1'
+        <if test="keyword!=''">and cname ~ #{keyword}</if>
     </select>
 
     <!-- 模糊查询单位名称 -->
     <select id="findCnameLike" parameterType="java.util.Map" resultType="java.util.Map">
-        select cid,cname from tb_company_list where cname ~ #{keyword}
+        select cid,cname from tb_company_list where status='1'
+        <if test="keyword!=''">and cname ~ #{keyword}</if>
     </select>
 
 </mapper>
