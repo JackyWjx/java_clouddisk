@@ -605,9 +605,8 @@
 
     <!-- 修改出差记录 -->
     <update id="updateTravelRecord" parameterType="java.util.Map">
-        update tb_travel_record
-        <trim prefix="set" suffixOverrides=","
-              suffix=" where travelid=#{travelid} and (status = '1' or status = '3')  ">
+        update tb_travel_record set
+        <trim  suffixOverrides=",">
             <if test="uid!='' and uid !=null">
                 uid=#{uid},
             </if>
@@ -645,17 +644,17 @@
                 status=#{status},
             </if>
             <if test="summary!='' and summary !=null">
-                summary=#{summary},
+                summary=#{summary}
             </if>
         </trim>
+        where travelid=#{travelid} and (status = '1' or status = '3')
     </update>
 
 
     <!-- 修改出差详情 -->
     <update id="updateTravelDetials" parameterType="java.util.Map">
-        update tb_travel_record_deta
-        <trim prefix="set" suffixOverrides=","
-              suffix=" where deid=#{deid}"><!--and (status = '1' or status = '3') -->
+        update tb_travel_record_deta set
+        <trim  suffixOverrides=","><!--and (status = '1' or status = '3') -->
             <if test="detialsid!='' and detialsid !=null">
                 detialsid=#{detialsid},
             </if>
@@ -720,9 +719,10 @@
                 status=#{status},
             </if>
             <if test="summary!='' and summary !=null">
-                summary=#{summary},
+                summary=#{summary}
             </if>
         </trim>
+        where deid=#{deid}
     </update>
 
 
@@ -742,8 +742,8 @@
         SELECT
         tb1.travelid as travelid,
         tb1.uname as uname,
-        tb1.orgtime as begintime,
-        tb1.endtime as endtime,
+        to_char(TO_TIMESTAMP(tb1.orgtime/1000), 'YYYY-MM-DD') as orgtime,
+        to_char(TO_TIMESTAMP(tb1.endtime/1000), 'YYYY-MM-DD') as endtime,
         tb1.fare as fare,
         tb1.expenses as expenses,
         tb1."version",

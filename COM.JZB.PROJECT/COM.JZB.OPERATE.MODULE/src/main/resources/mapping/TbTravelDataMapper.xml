@@ -8,7 +8,7 @@
 	</select>
 
 	<select id="list" resultType="java.util.Map">
-		select  id , travelid , deid , did , coou , coppt , couage , cocustomer , coframe , copropaganda , contrast , card , account , speechcraft , signin , newsletter , train , implement , offer , contract , plan , invitation , reviewed , cureviewed , addtime , adduid , status , summary  from tb_travel_data
+		select   coou , coppt , couage , cocustomer , coframe , copropaganda , contrast , card , account , speechcraft , signin , newsletter , train , implement , offer , contract , plan , invitation , reviewed , cureviewed  from tb_travel_data
         <where>
 		  <if test="id != null and id != ''"> and id = #{id} </if>
 		  <if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>
@@ -338,8 +338,8 @@
 		update tb_travel_data 
 		<set>
 			<trim suffixOverrides=",">
-			<if test="travelid != null"> travelid  = #{travelid}, </if>
-			<if test="deid != null"> deid  = #{deid}, </if>
+			<!--<if test="travelid != null"> travelid  = #{travelid}, </if>-->
+				<!--<if test="deid != null"> deid  = #{deid}, </if>-->
 			<if test="coou != null"> coou  = #{coou}, </if>
 			<if test="coppt != null"> coppt  = #{coppt}, </if>
 			<if test="couage != null"> couage  = #{couage}, </if>
@@ -366,7 +366,8 @@
 			<if test="summary != null"> summary  = #{summary}</if>
 			</trim>
 		</set>
-		where did = #{did}
+		<!-- where did = #{did}-->
+		where deid = #{deid}
 	</update>
 	
 	<delete id="remove">
