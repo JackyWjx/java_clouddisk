@@ -635,8 +635,8 @@
 		update tb_travel_info
 		<set>
 			<trim suffixOverrides=",">
-			<if test="travelid != null"> travelid  = #{travelid}, </if>
-			<if test="deid != null"> deid  = #{deid}, </if>
+			<!--<if test="travelid != null"> travelid  = #{travelid}, </if>-->
+			<!--<if test="deid != null"> deid  = #{deid}, </if>-->
 			<!--			<if test="inid != null"> inid  = #{inid}, </if>-->
 			<if test="cid != null"> cid  = #{cid}, </if>
 			<if test="cname != null"> cname  = #{cname}, </if>
@@ -687,13 +687,14 @@
 			<if test="linenature != null"> linenature  = #{linenature}, </if>
 			<if test="adduid != null"> adduid  = #{adduid}, </if>
 			<if test="addtime != null"> addtime  = #{addtime}, </if>
-			<if test="upduid != null"> upduid  = #{upduid}, </if>
 			<if test="updtime != null"> updtime  = #{updtime}, </if>
-			<if test="status != null"> status  = #{status}, </if>
-			<if test="summary != null"> summary  = #{summary}</if>
+				<if test="status != null"> status  = #{status}, </if>
+				<if test="summary != null"> summary  = #{summary},</if>
+				<if test="upduid != null"> upduid  = #{upduid}</if>
 			</trim>
 		</set>
-		where inid = #{inid}
+		<!--where inid = #{inid} -->
+		where deid = #{deid}
 	</update>
 
 	<delete id="remove">

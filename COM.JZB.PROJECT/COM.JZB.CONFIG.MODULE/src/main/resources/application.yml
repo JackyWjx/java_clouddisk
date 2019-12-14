@@ -1,5 +1,5 @@
 server:
-  port: 8506
+  port: 7506
 spring:
   application:
     name: jzb-config
