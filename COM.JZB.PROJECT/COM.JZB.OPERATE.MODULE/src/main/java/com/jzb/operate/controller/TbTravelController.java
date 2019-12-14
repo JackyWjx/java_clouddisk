@@ -58,6 +58,8 @@ public class TbTravelController {
     @Autowired
     private RegionBaseApi regionBaseApi;
 
+    @Autowired
+    TbTravelProduceService travelProduceService;
     /**
      * 日志记录对象
      */
@@ -146,9 +148,11 @@ public class TbTravelController {
                         relist.get(j).put("daList",daList);
                         relist.get(j).put("infoList",infoList);
                         //获取产出情况
-                        List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce();
-                        List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(relist.get(j).get("produce")),prolist);
+                        //List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce();
+                        List<Map<String,Object>> produceMaps = travelProduceService.list(null);
+                        List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(relist.get(j).get("produce")),produceMaps);
                         relist.get(j).put("prindex",prindex);
+                        relist.get(j).put("produceMaps",produceMaps);
                     }
                     list.get(i).put("reList",relist);
                 }
@@ -1060,9 +1064,10 @@ public class TbTravelController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{ "pagesize","pageno"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{ "pagesize","pageno","cid"})) {
                 response = Response.getResponseError();
             } else {
+                JzbPageConvert.setPageRows(param);
                 param.put("uid",userInfo.get("uid"));
                 List<Map<String,Object>> list = tbTravelService.queryTravelList(param);
                 for(int i = 0, a =list.size();i < a;i++){
