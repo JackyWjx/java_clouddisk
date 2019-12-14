@@ -21,6 +21,12 @@ public interface AuthUserMapper {
     Map<String, Object> queryUserInfo(Map<String, Object> param);
 
     /**
+     * 查uid czd add
+     * @param param
+     * @return
+     */
+    String queryUidByPhoneOrRegid(Map<String,Object> param);
+    /**
      * 根据用户名 uid 模糊匹配是否是我所需要的数据
      *
      * hanbin

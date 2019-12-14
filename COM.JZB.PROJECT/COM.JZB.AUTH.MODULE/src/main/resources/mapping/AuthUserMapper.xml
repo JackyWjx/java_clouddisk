@@ -8,6 +8,25 @@
         select count(1) from tb_user_list where uid = #{uid} and cname like CONCAT('%',#{person},'%')
     </select>
 
+    <!--查询根据手机号or regid 查询uid-->
+    <select id="queryUidByPhoneOrRegid" parameterType="java.util.Map" resultType="java.lang.String">
+    SELECT
+        tul.uid
+    FROM
+        tb_user_list tul
+        LEFT JOIN tb_user_key tuk ON tul.uid = tuk.uid
+    WHERE
+        <if test="phone!=null">
+            tul.relphone = #{phone}
+        </if>
+        <if test="regid!=null">
+            tul.regid = #{regid}
+        </if>
+        AND tul.status = '1'
+        AND tul.uid = tuk.uid
+        AND tuk.status IN ( '1', '8' ) limit 1;
+    </select>
+
     <!--获取用户基础数据-->
     <select id="queryUserInfo" parameterType="java.util.Map"
             resultType="java.util.Map">
@@ -286,7 +305,7 @@
     <select id="queryUserByValue" parameterType="java.util.Map"
             resultType="java.util.Map">
         SELECT k.uid FROM
-            (SELECT uid FROM tb_user_key WHERE ktid = #{ktid} AND keyid = #{keyid} AND status in ('1','8')) k
+            (SELECT uid FROM tb_user_key WHERE ktid = #{ktid} AND uid = #{keyid} AND status in ('1','8')) k
                 INNER JOIN tb_user_list u ON k.uid = u.uid;
     </select>
     <!--查询用户所有权限-->
