@@ -317,9 +317,10 @@ public class TbTravelController {
                     }
 
                     //获取产出情况
-                    List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce();
-                    List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),prolist);
-                    list.get(i).put("prindex",prindex);
+                    //List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce();
+                    List<Map<String,Object>> produceMaps = travelProduceService.list(null);
+                    //List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),prolist);
+                    list.get(i).put("produceMaps",produceMaps);
                     list.get(i).put("daList", daList);
                     list.get(i).put("infoList", infoList);
                     list.get(i).put("monList",monlist);
