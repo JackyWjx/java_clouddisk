@@ -157,19 +157,21 @@ public class TbTrackUserListController {
                 // 定义map便于list添加对象
                 Map<String, Object> map = new HashMap<>();
 
-                // 根据关键字查询出来的单位id
-                List<Map<String, Object>> cnameLike = tbTrackUserListService.findCnameLike(param);
-                for (int i = 0, l = cnameLike.size(); i < l; i++) {
-                    map = new HashMap<>();
-                    map.put("value", cnameLike.get(i).get("cid"));
-                    list.add(map);
-                }
-                // 根据关键字查询出来的用户id
-                List<Map<String, Object>> unameLike = tbTrackUserListService.findUnameLike(param);
-                for (int i = 0, l = unameLike.size(); i < l; i++) {
-                    map = new HashMap<>();
-                    map.put("value", unameLike.get(i).get("uid"));
-                    list.add(map);
+                if (!JzbCheckParam.haveEmpty(param, new String[]{"keyword"})) {
+                    // 根据关键字查询出来的单位id
+                    List<Map<String, Object>> cnameLike = tbTrackUserListService.findCnameLike(param);
+                    for (int i = 0, l = cnameLike.size(); i < l; i++) {
+                        map = new HashMap<>();
+                        map.put("value", cnameLike.get(i).get("cid"));
+                        list.add(map);
+                    }
+                    // 根据关键字查询出来的用户id
+                    List<Map<String, Object>> unameLike = tbTrackUserListService.findUnameLike(param);
+                    for (int i = 0, l = unameLike.size(); i < l; i++) {
+                        map = new HashMap<>();
+                        map.put("value", unameLike.get(i).get("uid"));
+                        list.add(map);
+                    }
                 }
                 // 把list放到参数中用于查询数据
                 param.put("list", list);
