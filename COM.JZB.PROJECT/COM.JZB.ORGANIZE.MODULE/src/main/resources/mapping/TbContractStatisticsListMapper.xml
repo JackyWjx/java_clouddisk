@@ -26,6 +26,7 @@
         signdate,
         subcname,
         conimportant,
+        saveword,
         contype,
         yntable,
         condesc
@@ -80,6 +81,7 @@
             <if test="signdate != null and signdate!=''">signdate=#{signdate} ,</if>
             <if test="subcname != null and subcname!=''">subcname=#{subcname} ,</if>
             <if test="conimportant != null and conimportant!=''">conimportant=#{conimportant} ,</if>
+            <if test="saveword != null and saveword!=''">saveword=#{saveword} ,</if>
             <if test="contype != null and contype!=''">contype=#{contype} ,</if>
             <if test="yntable != null and yntable!=''">yntable=#{yntable} ,</if>
             <if test="condesc != null and condesc!=''">condesc=#{condesc} ,</if>
@@ -96,7 +98,7 @@
     <!-- 添加到合同库 -->
     <insert id="addToContractStatistics" parameterType="java.util.Map">
         insert into tb_contract_statistics_list
-        (staid,conid,conname,sales,ownid,region,proname,projid,concname,conperiod,amount,invoicemoney,returnmoney,collectmoney,signdate,subcname,conimportant,contype,yntable,condesc,adduid,addtime,upduid,updtime,status,summary)
+        (staid,conid,conname,sales,ownid,region,proname,projid,concname,conperiod,amount,invoicemoney,returnmoney,collectmoney,signdate,subcname,conimportant,saveword,contype,yntable,condesc,adduid,addtime,upduid,updtime,status,summary)
         values (
         #{staid},
         #{conid},
@@ -187,6 +189,14 @@
         <choose>
             <when test="conimportant!=null and conimportant!=''">
                 #{conimportant},
+            </when>
+            <otherwise>
+                NULL,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="saveword!=null and saveword!=''">
+                #{saveword},
             </when>
             <otherwise>
                 NULL,

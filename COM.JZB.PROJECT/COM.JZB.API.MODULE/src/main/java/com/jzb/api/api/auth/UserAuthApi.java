@@ -12,6 +12,16 @@ import java.util.Map;
 @FeignClient(name = "jzb-auth")
 @RequestMapping(value = "/auth")
 public interface UserAuthApi {
+
+    /**
+     * 根据regid 或者phone 获取用户id
+     *
+     * @param param 请求参数
+     */
+    @RequestMapping(value = "/getUidByPhoneOrRegid", method = RequestMethod.POST)
+    public Response getUidByPhoneOrRegid(@RequestBody Map<String, Object> param);
+
+
     /**
      * 获取用户TOKEN
      *
