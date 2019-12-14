@@ -64,7 +64,8 @@
             <if test=" tenderresultcompany != null and tenderresultcompany != ''"> tenderresultcompany=#{ tenderresultcompany},</if>
             <if test=" tenderagent != null and tenderagent != ''"> tenderagent=#{ tenderagent},</if>
             <if test=" agentphone != null and agentphone != ''"> agentphone=#{ agentphone},</if>
-            <if test="porjcetra ! = null and porjcetra !=''">porjcetra=#{porjcetra},</if>
+            <if test=" porjcetra != null and porjcetra !=''">porjcetra=#{porjcetra},</if>
+            <if test=" relation != null and relation !=''">relation=#{relation},</if>
             <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>
             <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
         where status ='1' and projectid=#{projectid}
