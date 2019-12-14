@@ -72,6 +72,12 @@
         WHERE
         status = '1'
         and isservice='0'
+        <if test="beginTime!=null and beginTime !=''">
+            and addtime &gt; #{beginTime}
+        </if>
+        <if test="endTime!=null and endTime !=''">
+            and addtime &lt; #{endTime}
+        </if>
         <choose>
             <when test="list!=null and list.size()>0">
                 and trackuid in
@@ -84,19 +90,9 @@
                     #{item.value}
                 </foreach>
             </when>
-
             <otherwise>
-                and 1=2
             </otherwise>
         </choose>
-        <if test="beginTime!=null and beginTime !=''">
-            and addtime &gt; #{beginTime}
-        </if>
-
-        <if test="endTime!=null and endTime !=''">
-            and addtime &lt; #{endTime}
-        </if>
-
         <if test="page!=null and page!=''">
             limit #{pagesize} offset #{pageno}
         </if>
@@ -108,6 +104,12 @@
         select count(1) FROM tb_track_user_list
         WHERE status='1'
         and isservice='0'
+        <if test="beginTime!=null and beginTime !=''">
+            and addtime &gt; #{beginTime}
+        </if>
+        <if test="endTime!=null and endTime !=''">
+            and addtime &lt; #{endTime}
+        </if>
         <choose>
             <when test="list!=null and list.size()>0">
                 and trackuid in
@@ -120,19 +122,9 @@
                     #{item.value}
                 </foreach>
             </when>
-
             <otherwise>
-                and 1=2
             </otherwise>
         </choose>
-
-        <if test="beginTime!=null and beginTime !=''">
-            and addtime &gt; #{beginTime}
-        </if>
-
-        <if test="endTime!=null and endTime !=''">
-            and addtime &lt; #{beginTime}
-        </if>
     </select>
 
     <!-- 模糊查询用户名 -->

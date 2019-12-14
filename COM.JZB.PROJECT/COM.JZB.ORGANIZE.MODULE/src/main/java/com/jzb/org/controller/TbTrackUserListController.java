@@ -146,6 +146,11 @@ public class TbTrackUserListController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
+            // 如果获取参数userinfo不为空的话
+            if (param.get("keyword") == null) {
+                response = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getTrackUserListByKeywords Method", "param is NULL"));
+            } else {
 
                 // 定义list放uid和cid
                 List<Map<String, Object>> list = new ArrayList<>();
@@ -199,6 +204,7 @@ public class TbTrackUserListController {
                 pageInfo.setTotal(tbTrackUserListService.findTrackListCountByKeywords(param));
                 // 返回分页对象
                 response.setPageInfo(pageInfo);
+            }
         } catch (Exception ex) {
             // 异常信息
             flag = false;
@@ -318,7 +324,7 @@ public class TbTrackUserListController {
                     }
 
                     // 设置值
-                    cell=sheet.getRow(i + 1).createCell(j);
+                    cell = sheet.getRow(i + 1).createCell(j);
                     cell.setCellValue(value);
                     cell.setCellStyle(contextStyle);
                 }
@@ -340,7 +346,7 @@ public class TbTrackUserListController {
     }
 
     // 创建文本样式
-    public static XSSFCellStyle genContextStyle(XSSFWorkbook workbook){
+    public static XSSFCellStyle genContextStyle(XSSFWorkbook workbook) {
         XSSFCellStyle style = workbook.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);//文本水平居中显示
         style.setVerticalAlignment(VerticalAlignment.CENTER);//文本竖直居中显示
