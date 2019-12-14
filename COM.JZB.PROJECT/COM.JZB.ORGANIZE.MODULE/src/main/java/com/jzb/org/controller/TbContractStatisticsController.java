@@ -91,16 +91,16 @@ public class TbContractStatisticsController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"conid", "conname", "sales", "ownid", "proname"})) {
                 response = Response.getResponseError();
             } else {
-                param.put("adduid",userInfo.get("uid").toString());
-                param.put("addtime",System.currentTimeMillis());
+                param.put("adduid", userInfo.get("uid").toString());
+                param.put("addtime", System.currentTimeMillis());
                 param.put("staid", JzbRandom.getRandomCharLow(7));
                 // 执行添加方法
                 int count = tbContractStatisticsService.addToContractStatistics(param);
                 // 修改状态
-                if(count>0){
-                    Map<String,Object> map=new HashMap<>();
-                    map.put("contid",param.get("conid").toString());
-                    map.put("upduid",userInfo.get("uid").toString());
+                if (count > 0) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("contid", param.get("conid").toString());
+                    map.put("upduid", userInfo.get("uid").toString());
                     tbCompanyContractService.updateCompanyContractStatus(map);
                 }
                 // 根据添加结果返回结果
@@ -376,9 +376,9 @@ public class TbContractStatisticsController {
                             value = contractList.get(i).get("conid") == null ? "" : contractList.get(i).get("conid").toString();
                             break;
                         case 2:
-                            String province = map.get("province") == null ? null : map.get("province").toString();
-                            String city = map.get("city") == null ? "" : "/" + map.get("city").toString();
-                            String county = map.get("county") == null ? "" : "/" + map.get("county").toString();
+                            String province = map == null || map.get("province") == null ? null : map.get("province").toString();
+                            String city = map == null || map.get("city") == null ? "" : "/" + map.get("city").toString();
+                            String county = map == null || map.get("county") == null ? "" : "/" + map.get("county").toString();
                             value = province + city + county;
                             break;
                         case 3:
