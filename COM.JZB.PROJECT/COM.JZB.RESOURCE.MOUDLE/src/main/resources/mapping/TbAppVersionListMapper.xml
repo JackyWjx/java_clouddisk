@@ -7,11 +7,11 @@
     <!-- 查询版本 -->
     <select id="queryAppVersion" resultType="java.util.Map">
         SELECT
-            vername AS versionName,
-            vercode AS versionCode,
-            verdesc AS description,
-            isupdate AS upgradeType,
-            verurl AS filePath
+            vername,
+            vercode,
+            verdesc,
+            isupdate,
+            verurl
         FROM
             tb_app_version_list
         WHERE
