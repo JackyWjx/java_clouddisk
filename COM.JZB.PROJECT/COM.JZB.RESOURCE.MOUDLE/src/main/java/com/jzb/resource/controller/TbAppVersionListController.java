@@ -53,7 +53,7 @@ public class TbAppVersionListController {
             /** 命名规范 */
             newMap.put("versionName",map.get("vername"));
             newMap.put("versionCode",map.get("vercode"));
-            newMap.put("description",map.get("verdesc"));
+            newMap.put("description",JzbDataType.getString(map.get("verdesc")).replace("\\n","\n"));
             newMap.put("upgradeType", JzbDataType.getInteger(map.get("isupdate")));
             newMap.put("filePath",map.get("verurl"));
             response = Response.getResponseSuccess();
