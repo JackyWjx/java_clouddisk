@@ -30,7 +30,11 @@ public class TbAppVersionListController {
      */
     private final static Logger logger = LoggerFactory.getLogger(TbAppVersionListController.class);
 
-
+    /**
+     * 获取App 版本信息
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/getNewAppVersion", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
