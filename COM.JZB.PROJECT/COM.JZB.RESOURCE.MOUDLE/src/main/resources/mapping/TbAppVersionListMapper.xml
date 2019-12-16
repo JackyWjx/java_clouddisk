@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbAppVersionListMapper">
+
+    <!-- 查询版本 -->
+    <select id="queryAppVersion" resultType="java.util.Map">
+        SELECT
+            vername AS versionName,
+            vercode AS versionCode,
+            verdesc AS description,
+            isupdate AS upgradeType,
+            verurl AS filePath
+        FROM
+            tb_app_version_list
+        WHERE
+            status = '1'
+        ORDER BY
+            vercode DESC
+            LIMIT 1
+    </select>
+
+</mapper>
