@@ -12,12 +12,10 @@ import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.NewTbCompanyListApi;
 import com.jzb.operate.api.org.TbDeptUserListApi;
 import com.jzb.operate.api.org.TbTrackUserListApi;
-import com.jzb.operate.service.TbTravelApprovalService;
 import com.jzb.operate.service.TbTravelExpenseService;
 import com.jzb.operate.service.TbTravelProduceService;
 import com.jzb.operate.service.TbTravelService;
 import com.jzb.operate.util.PrindexUtil;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
-import static com.jzb.operate.util.PrindexUtil.getPrindex;
-import static com.jzb.operate.util.PrindexUtil.setPrindex;
 
 /**
  * @Author sapientia
@@ -48,9 +43,6 @@ public class TbTravelController {
 
     @Autowired
     private TbTravelExpenseService tbTravelExpenseService;
-
-    @Autowired
-    private TbTravelApprovalService tbTravelApprovalService;
 
     @Autowired
     private TbDeptUserListApi tbDeptUserListApi;
@@ -1049,6 +1041,11 @@ public class TbTravelController {
 //        return response;
 //    }
 
+    /**
+     * @Author sapientia
+     * @Date 14:09 2019/12/13
+     * @Description 根据用户id查询出差数据
+     **/
     @RequestMapping(value = "/queryTravelDetaByuid",method = RequestMethod.POST)
     @CrossOrigin
     @Transactional
