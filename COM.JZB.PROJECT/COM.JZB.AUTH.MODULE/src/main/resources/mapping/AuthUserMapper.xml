@@ -47,6 +47,7 @@
             ul.updtime,
             ul.status,
             ul.summary,
+            ul.olduid,
             ui.age,
             ui.content,
             ui.origin,
