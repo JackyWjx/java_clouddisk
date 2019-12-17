@@ -82,7 +82,7 @@ public class UserController {
             String uid = param.get("uid").toString();
             String idType = param.get("idtype").toString();
             String pwd = param.get("pwd").toString();
-            String regex = "^1[3|4|5|8|9][0-9]\\d{8}$";
+            String regex = "^1[3|4|5|6|7|8|9][0-9]\\d{8}$";
             Map<String, Object> map = new HashMap();
             if (uid.matches(regex)) {
                 map.put("phone",uid);

@@ -4,7 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.org.dao.ProjectTypeMapper">
     <select id="queryProjectType" resultType="java.util.Map">
-        select * from tb_project_type where status = '1' ORDER BY addtime desc
+        select id,typeid,cname,typedesc,idx,adduid,
+        to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd') as addtime,
+        upduid,updtime,status,summary
+        from tb_project_type where status = '1' ORDER BY addtime desc
         <choose>
             <when test="pagesize!=null and pagesize!=''">
                 LIMIT #{pagesize} OFFSET #{start}

@@ -23,7 +23,7 @@ import java.util.Map;
  * @other
  */
 @RestController
-@RequestMapping(value = "/org/cockpit",method = RequestMethod.POST)
+@RequestMapping(value = "/org/cockpit")
 public class CockpitController {
     @Autowired
     CockpitService cockpitService;
@@ -31,7 +31,7 @@ public class CockpitController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(TbCommonProjectInfoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(CockpitController.class);
 
 
 

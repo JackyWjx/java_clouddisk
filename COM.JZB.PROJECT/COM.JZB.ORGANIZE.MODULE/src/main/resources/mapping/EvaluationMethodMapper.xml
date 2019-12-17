@@ -4,7 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.org.dao.EvaluationMethodMapper">
     <select id="queryEvaluationMethod" resultType="java.util.Map">
-        select * from tb_tendering_judge where status = '1' ORDER BY id
+        select id,typeid,cname,typedesc,idx,adduid,to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd') as addtime,
+        upduid,to_char(to_timestamp(updtime / 1000), 'yyyy-MM-dd') as updtime,status,summary
+         from tb_tendering_judge where status = '1' ORDER BY id
         <choose>
             <when test="pagesize!=null and pagesize!=''">
                 LIMIT #{pagesize} OFFSET #{pageno}

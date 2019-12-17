@@ -39,6 +39,7 @@ import java.util.Map;
 
 /**
  * @author chenzhengduan
+ * @desc 合同统计信息
  */
 @RestController
 @RequestMapping(value = "/org/contractStatistics")
@@ -58,6 +59,7 @@ public class TbContractStatisticsController {
 
     @Autowired
     private TbCompanyContractService tbCompanyContractService;
+
     /**
      * 日志记录对象
      */
@@ -74,44 +76,64 @@ public class TbContractStatisticsController {
     @CrossOrigin
     @Transactional
     public Response addToContractStatistics(@RequestBody Map<String, Object> param) {
+        /**  定义返回值 */
         Response response;
+
+        /**  定义对象接收接口调用人信息 */
         Map<String, Object> userInfo = null;
+
+        /**  定义接口记录Api 路径为当前 Controller-->method */
         String api = "/org/contractStatistics/addToContractStatistics";
+
+        /**  为接口结束记录日志时判断  在catch{} 里改变值 */
         boolean flag = true;
+
         try {
-            // 如果获取参数userinfo不为空的话
+            /** 如果获取参数userinfo不为空 则记录正常信息 */
             if (param.get("userinfo") != null) {
+                /**  接收用户信息 */
                 userInfo = (Map<String, Object>) param.get("userinfo");
+
+                /**  接口开始的第一次记录 打印接口信息，用户信息*/
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
+
+                /**  接口开始的第一次记录 打印接口信息，没有用户信息则为""*/
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            // 验证指定参数为空则返回error
+
+            /** 验证指定参数为空则返回error */
             if (JzbCheckParam.haveEmpty(param, new String[]{"conid", "conname", "sales", "ownid", "proname"})) {
                 response = Response.getResponseError();
             } else {
+
+                /**  为sql填充参数 */
                 param.put("adduid", userInfo.get("uid").toString());
                 param.put("addtime", System.currentTimeMillis());
                 param.put("staid", JzbRandom.getRandomCharLow(7));
-                // 执行添加方法
+
+                /**  执行添加方法 */
                 int count = tbContractStatisticsService.addToContractStatistics(param);
-                // 修改状态
+
+                /**  合同提交到合同库后需改状态为已入库 */
                 if (count > 0) {
                     Map<String, Object> map = new HashMap<>();
                     map.put("contid", param.get("conid").toString());
                     map.put("upduid", userInfo.get("uid").toString());
                     tbCompanyContractService.updateCompanyContractStatus(map);
                 }
-                // 根据添加结果返回结果
+                /** 根据添加结果返回接口结果 */
                 response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
 
             }
         } catch (Exception ex) {
+
             flag = false;
             JzbTools.logError(ex);
             response = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addToContractStatistics Method", ex.toString()));
+
         }
         if (userInfo != null) {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
