@@ -85,12 +85,12 @@ public class OpenPageController {
                 Map<String, Object> map1 = new HashMap<>();
                 if (md5.equals(param.get("checkcode"))) {
                     map.put("uid", param.get("uid"));
+                    //从缓存中查询用户信息
                     Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(map);
                     Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
-                    map1.put("cname", Entity.get("cname"));
                     map1.put("cid", Entity.get("cid"));
-                    map1.put("phone", Entity.get("phone"));
                     map1.put("uid", Entity.get("uid"));
+                    map1.put("cname", Entity.get("cname"));
                 }
                 result = Response.getResponseSuccess();
                 result.setResponseEntity(map1);
