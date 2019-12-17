@@ -30,5 +30,5 @@ public interface TbTravelApprovalMapper {
 	
 	int batchRemove(String[] ids);
 
-	String getMaxApid(String travelId);
+	String getMaxApid(Map<String, Object> map);
 }

@@ -122,4 +122,25 @@ public class TbTravelPlanService {
     public int getTravelRecordCountByUid(Map<String, Object> param) {
         return travelPlanMapper.queryTravelRecordCountByUid(param);
     }
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/16 11:26
+     *  @Description: 获取出差审批记录列表总数
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    public int getTravelApprovalRecordCountByUid(Map<String, Object> param) {
+        return travelPlanMapper.queryTravelApprovalRecordCountByUid(param);
+    }
+
+    public List<Map<String, Object>> queryTravelApprovalRecordByUid(Map<String, Object> param) {
+        return  travelPlanMapper.queryTravelApprovalRecordByUid(param);
+    }
+
+    public int setDetailsStatusByTravelid(Map<String, Object> param) {
+      return   travelPlanMapper.setDetailsStatusByTravelid(param);
+    }
 }

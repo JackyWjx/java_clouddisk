@@ -51,5 +51,16 @@ public class TbTravelInfoService {
 	public int batchRemove(Integer[] ids){
 		return travelInfoDao.batchRemove(ids);
 	}
-	
+	/**
+	 *  @author: gongWei
+	 *  @Date:  2019/12/16 15:45
+	 *  @Description:
+	 *  @Param:
+	 *  @Return:
+	 *  @Exception:
+	 */
+
+    public int setStatusByTravelid(Map<String, Object> param) {
+		return travelInfoDao.setStatusByTravelid(param);
+    }
 }

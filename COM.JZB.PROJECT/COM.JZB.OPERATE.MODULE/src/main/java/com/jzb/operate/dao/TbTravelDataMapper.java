@@ -28,4 +28,6 @@ public interface TbTravelDataMapper {
 	int remove(Integer id);
 	
 	int batchRemove(Integer[] ids);
+
+    int setStatusByTravelid(Map<String, Object> param);
 }

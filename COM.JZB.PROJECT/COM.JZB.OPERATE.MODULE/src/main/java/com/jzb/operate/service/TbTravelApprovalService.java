@@ -50,11 +50,11 @@ public class TbTravelApprovalService {
 
 	/**
 	 * 通过travelId获取审批级别最高的Apid
-	 * @param travelId
+	 * @param map
 	 * @return
 	 */
-	public String getMaxIdxApid(String travelId){
-		return travelApprovalDao.getMaxApid(travelId);
+	public String getMaxIdxApid(Map<String, Object> map){
+		return travelApprovalDao.getMaxApid(map);
 	}
 	
 	public int batchRemove(String[] ids){

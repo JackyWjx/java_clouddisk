@@ -92,4 +92,25 @@ public interface TbTravelPlanMapper {
      *  @Exception:
      */
     int queryTravelRecordCountByUid(Map<String, Object> param);
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/16 11:27
+     *  @Description: 获取出差审批记录列表总数
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    int queryTravelApprovalRecordCountByUid(Map<String, Object> param);
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/16 11:41
+     *  @Description: 获取出差审批记录列表
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    List<Map<String, Object>> queryTravelApprovalRecordByUid(Map<String, Object> param);
+
+    int setDetailsStatusByTravelid(Map<String, Object> param);
 }
