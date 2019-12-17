@@ -114,7 +114,7 @@ public class TbTravelController {
 
                         // 获取同行人名称
                         Map<String,Object> uidMap =new HashMap<>();
-                        uidMap.put("uids",reList.get(i).get("trpeers"));
+                        uidMap.put("uids",reList.get(j).get("trpeers"));
                         uidMap.put("userinfo",userInfo);
                         Response uRes = tbDeptUserListApi.searchInvitee(uidMap);
                         String unameStr = uRes.getResponseEntity().toString();
@@ -122,9 +122,9 @@ public class TbTravelController {
 
                         // 获取出差区域信息
                         Map<String,Object> regionMap = new HashMap<>();
-                        regionMap.put("region",reList.get(i).get("trregion"));
+                        regionMap.put("region",reList.get(j).get("trregion"));
                         Response region = regionBaseApi.getRegionInfo(regionMap);
-                        reList.get(i).put("trregionList",region.getResponseEntity());
+                        reList.get(j).put("trregionList",region.getResponseEntity());
 
                         // 获取资料及情报
                         Map<String,Object> recMap =new HashMap<>();
@@ -140,7 +140,7 @@ public class TbTravelController {
                                 String prolist = infoList.get(l).get("prolist").toString();
                                 String[] split = prolist.split(",");
                                 proListMap.put("prolist",split);
-                                infoList.get(i).put("prolist",proListMap);
+                                infoList.get(l).put("prolist",proListMap);
                             }
                         }
                         reList.get(j).put("daList",daList);
@@ -246,7 +246,7 @@ public class TbTravelController {
                             String prolist = infoList.get(l).get("prolist").toString();
                             String[] split = prolist.split(",");
                             proListMap.put("prolist",split);
-                            infoList.get(i).put("prolist",proListMap);
+                            infoList.get(l).put("prolist",proListMap);
                         }
                     }
                     // 获取产出情况
@@ -330,7 +330,7 @@ public class TbTravelController {
                                 String prolist = infoList.get(l).get("prolist").toString();
                                 String[] split = prolist.split(",");
                                 proListMap.put("prolist",split);
-                                infoList.get(i).put("prolist",proListMap);
+                                infoList.get(l).put("prolist",proListMap);
                             }
                         }
                         // 获取项目产出
@@ -943,53 +943,6 @@ public class TbTravelController {
         }
         return response;
     }
-
-//    /**
-//     * @Author sapientia
-//     * @Date 11:35 2019/12/12
-//     * @Description 获取审批状态
-//     **/
-//    @RequestMapping(value = "/queryApprovelStatus",method = RequestMethod.POST)
-//    @CrossOrigin
-//    @Transactional
-//    public Response queryApprovelStatus(@RequestBody Map<String, Object> param) {
-//        Response response;
-//
-//        Map<String, Object> userInfo = null;
-//        String api = "/operate/reimburseSystem/queryApprovelStatus";
-//        boolean flag = true;
-//        try {
-//            if (param.get("userinfo") != null) {
-//                userInfo = (Map<String, Object>) param.get("userinfo");
-//                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-//                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
-//            } else {
-//                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
-//            }
-//            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid","version"})) {
-//                response = Response.getResponseError();
-//            } else {
-//                //通过travelid获取审批列表信息
-//                List<Map<String,Object>> list = tbTravelService.queryTravelApproval(param);
-//                response = Response.getResponseSuccess(userInfo);
-//                PageInfo pageInfo = new PageInfo();
-//                pageInfo.setList(list);
-//                response.setPageInfo(pageInfo);
-//            }
-//        } catch (Exception ex) {
-//            flag = false;
-//            JzbTools.logError(ex);
-//            response = Response.getResponseError();
-//            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryDetaBycid Method", ex.toString()));
-//        }
-//        if (userInfo != null) {
-//            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
-//                    userInfo.get("msgTag").toString(), "User Login Message"));
-//        } else {
-//            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
-//        }
-//        return response;
-//    }
 
     /**
      * @Author sapientia

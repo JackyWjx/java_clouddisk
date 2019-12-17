@@ -82,7 +82,7 @@ public class NewCompanyProjectController {
                                 String prolist = infoList.get(l).get("prolist").toString();
                                 String[] split = prolist.split(",");
                                 proListMap.put("prolist",split);
-                                infoList.get(i).put("prolist",proListMap);
+                                infoList.get(l).put("prolist",proListMap);
                             }
                         }
                         list.get(j).put("infoList", infoList);
