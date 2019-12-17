@@ -81,13 +81,9 @@
 	<update id="update" parameterType="java.util.Map">
 		update tb_travel_approval 
 		<set>
-			<if test="idx != null"> idx  = #{idx}, </if>
-			<if test="truid != null"> truid  = #{truid}, </if>
 			<if test="trtime != null"> trtime  = #{trtime}, </if>
 			<if test="trcomment != null"> trcomment  = #{trcomment}, </if>
 			<if test="trstatus != null"> trstatus  = #{trstatus}, </if>
-			<if test="addtime != null"> addtime  = #{addtime}, </if>
-			<if test="adduid != null"> adduid  = #{adduid}, </if>
 			<if test="status != null"> status  = #{status}, </if>
 			<if test="summary != null"> summary  = #{summary}, </if>
 			<if test="newVersion != null"> version  = #{newVersion}</if>
