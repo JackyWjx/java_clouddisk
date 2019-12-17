@@ -1,8 +1,8 @@
 package com.jzb.auth.api.redis;
 
 import com.jzb.base.message.Response;
-import org.json.JSONObject;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +15,7 @@ import java.util.Map;
  */
 @FeignClient(name = "jzb-redis")
 @RequestMapping(value = "/redis/user")
+@Repository
 public interface UserRedisApi {
     /**
      * 更新缓存中的过时用户信息
