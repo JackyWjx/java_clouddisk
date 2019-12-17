@@ -48,10 +48,10 @@
 		  		</where>
 	</select>
 
-    <select id="getMaxApid" resultType="java.lang.String">
+    <select id="getMaxApid" resultType="java.lang.String" parameterType="java.util.Map">
 
         select apid from tb_travel_approval
-            where travelid = #{travelId} order by idx desc limit 1
+            where travelid = #{travelid} and version = #{version} order by idx desc limit 1
 
     </select>
 
@@ -61,32 +61,19 @@
          apid,
          idx,
          truid,
-         trtime,
-         trcomment,
          trstatus,
          addtime,
          adduid,
          status,
-         summary,
          version)
         values (#{travelid},
                 #{apid},
                 #{idx},
                 #{truid},
-                #{trtime},
-                #{trcomment},
                 #{trstatus},
                 #{addtime},
                 #{adduid},
                 #{status},
-                <choose>
-					<when test="summary != null and summary != ''" >
-						#{summary},
-					</when>
-					<otherwise>
-						null,
-					</otherwise>
-				</choose>
                 #{version}
                 )
     </insert>
@@ -94,8 +81,6 @@
 	<update id="update" parameterType="java.util.Map">
 		update tb_travel_approval 
 		<set>
-			<if test="travelid != null"> travelid  = #{travelid}, </if>
-<!--			<if test="apid != null"> apid  = #{apid}, </if>-->
 			<if test="idx != null"> idx  = #{idx}, </if>
 			<if test="truid != null"> truid  = #{truid}, </if>
 			<if test="trtime != null"> trtime  = #{trtime}, </if>
@@ -105,9 +90,22 @@
 			<if test="adduid != null"> adduid  = #{adduid}, </if>
 			<if test="status != null"> status  = #{status}, </if>
 			<if test="summary != null"> summary  = #{summary}, </if>
-			<if test="version != null"> version  = #{version}</if>
+			<if test="newVersion != null"> version  = #{newVersion}</if>
 		</set>
-		where apid = #{apid}
+		<where>
+			<if test=" apid != '' and apid != null  ">
+				and apid = #{apid}
+			</if>
+
+			<if test="version != '' and version != null">
+				and version = #{version}
+			</if>
+
+			<if test="idx != null and idx != ''">
+				and idx = #{idx} and travelid = #{travelid}
+			</if>
+		</where>
+
 	</update>
 	
 	<delete id="remove">

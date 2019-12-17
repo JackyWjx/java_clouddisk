@@ -647,11 +647,12 @@
                 summary=#{summary}
             </if>
         </trim>
-        where travelid=#{travelid} and (status = '1' or status = '3')
+        where travelid=#{travelid}
+        <!--and (status = '1' or status = '3')-->
     </update>
 
 
-    <!-- 修改出差详情 -->
+<!-- 修改出差详情 -->
     <update id="updateTravelDetials" parameterType="java.util.Map">
         update tb_travel_record_deta set
         <trim  suffixOverrides=","><!--and (status = '1' or status = '3') -->
@@ -747,14 +748,16 @@
         tb1.fare as fare,
         tb1.expenses as expenses,
         tb1."version",
+        tb1.status,
         string_agg(tb2.truid, ',') as truids,
-        string_agg(to_char(tb2.trstatus,'1'), ',') as trstatus
-
-        from tb_travel_record tb1 LEFT JOIN tb_travel_approval tb2 on  tb1.travelid = tb2.travelid
+        string_agg(to_char(tb2.trstatus,'9'), ',') as trstatus
+        from tb_travel_record tb1
+        LEFT JOIN tb_travel_approval tb2
+        on  tb1.travelid = tb2.travelid and tb1."version" = tb2."version"
         <where>
             tb1.status != '2'
             <if test="uid != null and uid != '' ">
-                and uid = #{uid}
+                and tb1.uid = #{uid}
             </if>
             <if test="beginTime != null and beginTime != '' ">
                 and orgtime &gt;= #{beginTime}
@@ -765,18 +768,64 @@
             <if test="curcid !=null and curcid!=''">
                 and curcid=#{curcid}
             </if>
+
         </where>
+
         GROUP BY tb1.travelid,tb1.uname,tb1.orgtime,
         tb1.endtime,
         tb1.fare,
         tb1.expenses,
-        tb1."version"
+        tb1."version",
+        tb1.status
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
     <select id="queryTravelRecordCountByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_travel_record
         WHERE
-        uid =#{ uid }
+        uid =#{ uid } and status != '2'
     </select>
+
+    <select id="queryTravelApprovalRecordCountByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_travel_approval
+        WHERE
+        truid =#{ uid } and (trstatus = '2' or trstatus = '3')
+    </select>
+
+
+    <select id="queryTravelApprovalRecordByUid" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        tb1.travelid as travelid,
+        tb1.uname as uname,
+        to_char(TO_TIMESTAMP(tb1.orgtime/1000), 'YYYY-MM-DD') as orgtime,
+        to_char(TO_TIMESTAMP(tb1.endtime/1000), 'YYYY-MM-DD') as endtime,
+        tb1.fare as fare,
+        tb1.expenses as expenses,
+        tb1."version",
+        tb2.idx,
+        tb2.apid,
+        tb2.trstatus as trstatus
+        from tb_travel_record tb1
+        INNER JOIN tb_travel_approval tb2
+        on  tb1.travelid = tb2.travelid and tb1."version" = tb2."version"
+        <where>
+            tb1.status != '2'
+            and (tb2.trstatus = '2' or tb2.trstatus = '3')
+            <if test="uid != null and uid != '' ">
+                and tb2.truid = #{uid}
+            </if>
+            <if test="beginTime != null and beginTime != '' ">
+                and tb1.orgtime &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and tb1.endtime &lt;= #{endTime}
+            </if>
+
+        </where>
+        LIMIT #{pagesize} OFFSET #{pageno}
+    </select>
+
+    <update id="setDetailsStatusByTravelid" parameterType="java.util.Map" >
+		update tb_travel_record_deta set status  = #{status} where travelid = #{travelid}
+	</update>
 </mapper>

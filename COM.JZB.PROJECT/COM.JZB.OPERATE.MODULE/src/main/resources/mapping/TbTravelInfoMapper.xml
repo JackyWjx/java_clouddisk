@@ -708,4 +708,8 @@
 		</foreach>
 	</delete>
 
+	<update id="setStatusByTravelid" parameterType="java.util.Map" >
+		update tb_travel_info set status  = #{status} where travelid = #{travelid}
+	</update>
+
 </mapper>
