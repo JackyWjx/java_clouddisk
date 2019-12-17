@@ -39,6 +39,7 @@ import java.util.Map;
 
 /**
  * @author chenzhengduan
+ * @desc 合同统计信息
  */
 @RestController
 @RequestMapping(value = "/org/contractStatistics")
@@ -58,6 +59,7 @@ public class TbContractStatisticsController {
 
     @Autowired
     private TbCompanyContractService tbCompanyContractService;
+
     /**
      * 日志记录对象
      */
@@ -74,12 +76,13 @@ public class TbContractStatisticsController {
     @CrossOrigin
     @Transactional
     public Response addToContractStatistics(@RequestBody Map<String, Object> param) {
+        /**  定义返回值 */
         Response response;
         Map<String, Object> userInfo = null;
         String api = "/org/contractStatistics/addToContractStatistics";
         boolean flag = true;
         try {
-            // 如果获取参数userinfo不为空的话
+            /** 如果获取参数userinfo不为空 则记录正常信息 */
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
@@ -87,7 +90,7 @@ public class TbContractStatisticsController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            // 验证指定参数为空则返回error
+            /** 验证指定参数为空则返回error */
             if (JzbCheckParam.haveEmpty(param, new String[]{"conid", "conname", "sales", "ownid", "proname"})) {
                 response = Response.getResponseError();
             } else {
@@ -96,11 +99,14 @@ public class TbContractStatisticsController {
                 param.put("staid", JzbRandom.getRandomCharLow(7));
                 // 执行添加方法
                 int count = tbContractStatisticsService.addToContractStatistics(param);
+
                 // 修改状态
                 if (count > 0) {
+
                     Map<String, Object> map = new HashMap<>();
                     map.put("contid", param.get("conid").toString());
                     map.put("upduid", userInfo.get("uid").toString());
+
                     tbCompanyContractService.updateCompanyContractStatus(map);
                 }
                 // 根据添加结果返回结果
