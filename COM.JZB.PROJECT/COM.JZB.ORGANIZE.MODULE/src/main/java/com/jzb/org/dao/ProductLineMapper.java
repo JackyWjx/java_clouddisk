@@ -212,5 +212,18 @@ public interface ProductLineMapper {
 
     List<Map<String, Object>> queryProductPageLists(Map<String, Object> param);
 
+    /**
+     * CRM菜单管理-计支宝电脑端-全界面，应用新增
+     * @param param
+     * @return
+     */
+    int addOrgApplication(Map<String, Object> param);
 
+    List<Map<String, Object>> getOrgApplication(Map<String,Object> param);
+
+    /**
+     * 添加企业产品
+     * @param param
+     */
+    void addProductList(Map<String, Object> param);
 } // End interface CompanyMapper

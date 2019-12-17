@@ -331,6 +331,27 @@ public class ProductLineService {
             param.put("addtime", addtime);
             param.put("updtime", addtime);
             param.put("status", '1');
+            if (param.get("appid") != null && param.get("appid") != "") {
+                Map<String, Object> map = new HashMap<>();
+                map.put("appid", param.get("appid"));
+                //查询出来应用  添加到产品表中
+                List<Map<String,Object>> list = getOrgApplication(map);
+                param.put("pid", param.get("appid"));
+                param.put("plid", param.get("appline"));
+                //添加产品
+                for (int i = 0; i < list.size(); i++) {
+                    long time = System.currentTimeMillis();
+                    list.get(i).put("pid", param.get("appid"));
+                    list.get(i).put("addtime", time);
+                    list.get(i).put("updtime", time);
+                    list.get(i).put("cname", list.get(i).get("appname"));
+                    list.get(i).put("cid", param.get("cid"));
+                    list.get(i).put("ouid", param.get("uid"));
+                    list.get(i).put("upduid", param.get("uid"));
+                    list.get(i).put("plid", list.get(i).get("appline"));
+                    productLineMapper.addProductList(list.get(i));
+                }
+            }
             // 加入菜单表
             count = productLineMapper.insertProductMenu(param);
         } catch (Exception ex) {
@@ -506,5 +527,26 @@ public class ProductLineService {
         // 加入查询状态
         param.put("status", "1");
         return productLineMapper.queryProductPageLists(param);
+    }
+
+    /**
+     * CRM菜单管理-计支宝电脑端-全界面，应用新增
+     * @param param
+     * @return
+     */
+    public int addOrgApplication(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("addtime", time);
+        param.put("updtime", time);
+        param.put("appid", JzbRandom.getRandomCharCap(11));
+        return productLineMapper.addOrgApplication(param);
+    }
+
+    /**
+     * 获取全界面的应用
+     * @return
+     */
+    public List<Map<String, Object>> getOrgApplication(Map<String,Object> param) {
+        return productLineMapper.getOrgApplication(param);
     }
 }

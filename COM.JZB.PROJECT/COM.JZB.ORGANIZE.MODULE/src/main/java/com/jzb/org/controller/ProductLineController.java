@@ -2,8 +2,10 @@ package com.jzb.org.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.deserializer.StringFieldDeserializer;
 import com.jzb.base.constant.JzbStatusConstant;
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -13,6 +15,10 @@ import com.jzb.org.api.open.OpenPageApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.service.ProductLineService;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import org.apache.commons.collections.map.HashedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +51,12 @@ public class ProductLineController {
      */
     @Autowired
     private OpenPageApi openPageApi;
+
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(ProductLineController.class);
 
     /**
      * CRM菜单管理-记支宝电脑端
@@ -129,20 +141,23 @@ public class ProductLineController {
         Response result;
         try {
             List<Map<String, Object>> productMenuList = productLineService.getCompanyMenuList(param);
+
             List<Map<String, Object>> productPageList = productLineService.getCompanyPageList(param);
             // 设置树结构
             Response response = setTreeStructure(productPageList, productMenuList, param);
             //遍历集合拿到里面的值
-            List<Map<String,Object>> list = response.getPageInfo().getList();
+            List<Map<String, Object>> list = response.getPageInfo().getList();
 
             //获取应用列表的菜单
             param.put("count", 0);
             param.put("value", "");
+            //获取开放平台的应用
             Response response1 = openPageApi.searchOrgApplications(param);
-            List<Map<String,Object>> pageInfo =  response1.getPageInfo().getList();
+            List<Map<String, Object>> pageInfo = response1.getPageInfo().getList();
+            //循环遍历把有应用的菜单和页面放在应用下面
             for (int i = 0; i < list.size(); i++) {
                 int count = 0;
-                for (int j = 0; j <pageInfo.size(); j++) {
+                for (int j = 0; j < pageInfo.size(); j++) {
                     if (list.get(i).get("pid").equals(pageInfo.get(j).get("appid"))) {
                         if (pageInfo.get(j).get("children") == null) {
                             pageInfo.get(j).put("children", new ArrayList<Map<String, Object>>());
@@ -160,7 +175,7 @@ public class ProductLineController {
                     pageInfo.add(list.get(i));
                 }
             }
-           List<Map<String,Object>> objects = new ArrayList<>();
+            List<Map<String, Object>> objects = new ArrayList<>();
             for (int i = 0; i < pageInfo.size(); i++) {
                 if (pageInfo.get(i).get("children") == null && pageInfo.get(i).get("appid") != null) {
                     pageInfo.get(i).clear();
@@ -169,13 +184,88 @@ public class ProductLineController {
                     objects.add(pageInfo.get(i));
                 }
             }
+            //获取全界面添加的应用
+            Map<String, Object> map = new HashMap<>();
+            ArrayList<Object> arrayList = new ArrayList<>();
+            ArrayList<Object> arrayLists = new ArrayList<>();
+            List<Map<String, Object>> getOrgApplicationList = productLineService.getOrgApplication(map);
+            for (int i = 0; i < getOrgApplicationList.size(); i++) {
+                getOrgApplicationList.get(i).put("cname", getOrgApplicationList.get(i).get("appname"));
+                getOrgApplicationList.get(i).put("type", "3");
+                for (int j = 0; j < objects.size(); j++) {
+                    if (getOrgApplicationList.get(i).get("appid").equals(objects.get(j).get("pid"))) {
+                        if (getOrgApplicationList.get(i).get("children") == null) {
+                            getOrgApplicationList.get(i).put("children", new ArrayList<Map<String, Object>>());
+                        }
+                        List<Map<String, Object>> children = (List<Map<String, Object>>) getOrgApplicationList.get(i).get("children");
+                        children.add(objects.get(j));
+                        objects.get(j).put("idx", "0123");
+                    }
+                }
+                arrayLists.add(getOrgApplicationList.get(i));
+            }
 
+            for (int i = 0; i < objects.size(); i++) {
+                if (!(objects.get(i).get("idx") != null && objects.get(i).get("idx").equals("0123"))) {
+                    arrayList.add(objects.get(i));
+                }
+            }
+            for (int i = 0; i < arrayLists.size(); i++) {
+                arrayList.add(arrayLists.get(i));
+            }
 
             result = Response.getResponseSuccess();
-            result.setResponseEntity(objects);
+            result.setResponseEntity(arrayList);
         } catch (Exception ex) {
             JzbTools.logError(ex);
             result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * CRM菜单管理-计支宝电脑端-全界面，应用的新增
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/addOrgApplication", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addOrgApplication(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/addOrgApplication";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if (JzbCheckParam.haveEmpty(param, new String[]{"appname"})) {
+                result = Response.getResponseError();
+            } else {
+                param.put("ouid", userInfo.get("uid"));
+                param.put("cid", userInfo.get("cid"));
+                int count = productLineService.addOrgApplication(param);
+                //响应结果
+                result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addOrgApplication Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -260,6 +350,7 @@ public class ProductLineController {
             // 获取用户信息
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("cid", userInfo.get("cid"));
             int maybe = JzbDataType.getInteger(param.get("maybe"));
             int count;
             // maybe为1代表新增菜单
@@ -574,7 +665,7 @@ public class ProductLineController {
             // 获取用户信息
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             int count = productLineService.modifyProductMenu(param);
-            if (count  > 0) {
+            if (count > 0) {
                 // 判断缓存中是否存在产品数并删除
                 comHasMenuTree(param);
                 result = Response.getResponseSuccess(userInfo);
