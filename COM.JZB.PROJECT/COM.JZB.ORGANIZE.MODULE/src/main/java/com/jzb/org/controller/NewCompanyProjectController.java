@@ -67,17 +67,27 @@ public class NewCompanyProjectController {
                     proMap.put("pagesize",param.get("pagesize"));
                     proMap.put("cid", list.get(i).get("cid").toString().trim());
                     //获取单位下的项目
-                    List<Map<String, Object>> prolist = newCompanyProjectService.queryCompanyByid(proMap);
-                    for (int j = 0,b = prolist.size(); j < b; j++) {
+                    List<Map<String, Object>> proList = newCompanyProjectService.queryCompanyByid(proMap);
+                    for (int j = 0,b = proList.size(); j < b; j++) {
                         Map<String, Object> infoMap = new HashMap<>();
                         infoMap.put("pageno",param.get("pageno"));
                         infoMap.put("pagesize",param.get("pagesize"));
-                        infoMap.put("projectid", prolist.get(j).get("projectid").toString().trim());
+                        infoMap.put("projectid", proList.get(j).get("projectid").toString().trim());
                         //获取项目下的情报
-                        List<Map<String, Object>> infolist = newCompanyProjectService.queryCompanyByProjectid(infoMap);
-                        list.get(j).put("infoList", infolist);
+                        List<Map<String, Object>> infoList = newCompanyProjectService.queryCompanyByProjectid(infoMap);
+                        for (int l = 0, d = infoList.size();l < d;l++){
+                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                                Map<String,Object> proListMap =new HashMap<>();
+                                proListMap.put("prolist",infoList.get(l).get("prolist"));
+                                String prolist = infoList.get(l).get("prolist").toString();
+                                String[] split = prolist.split(",");
+                                proListMap.put("prolist",split);
+                                infoList.get(i).put("prolist",proListMap);
+                            }
+                        }
+                        list.get(j).put("infoList", infoList);
                     }
-                    list.get(i).put("relist", prolist);
+                    list.get(i).put("reList", proList);
                 }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();

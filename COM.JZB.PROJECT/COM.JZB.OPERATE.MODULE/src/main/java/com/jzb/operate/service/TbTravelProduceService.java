@@ -52,5 +52,9 @@ public class TbTravelProduceService {
 	public int batchRemove(Integer[] ids){
 		return travelProduceDao.batchRemove(ids);
 	}
+
+	public List<Map<String,Object>> queryProduce(Map<String, Object> map){
+		return travelProduceDao.queryProduce(map);
+	}
 	
 }

@@ -1,7 +1,5 @@
 package com.jzb.operate.service;
 
-import com.jzb.base.data.JzbDataType;
-import com.jzb.base.message.Response;
 import com.jzb.operate.dao.TbTravelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,76 +18,63 @@ public class TbTravelService {
     @Autowired
     private TbTravelMapper tbTravelMapper;
 
+    /** 查询出差详情*/
     public List<Map<String, Object>> queryTravelList(Map<String, Object> map) {
-
         return tbTravelMapper.queryTravelList(map);
     }
 
-    public List<Map<String, Object>> queryTravelListDeta(Map<String, Object> map) {
-        return tbTravelMapper.queryTravelListDeta(map);
-    }
-
+    /** 查询出差资料*/
     public List<Map<String, Object>> queryTravelData(Map<String, Object> map) {
         return tbTravelMapper.queryTravelData(map);
     }
 
+    /** 查询出差情报*/
     public List<Map<String, Object>> queryTravelInfo(Map<String, Object> map) {
         return tbTravelMapper.queryTravelInfo(map);
     }
 
-    public int  updateTravelFare(Map<String, Object> map) {
-        return tbTravelMapper.updateTravelFare(map);
-    }
-
-    public List<Map<String, Object>> queryTrackUserList(Map<String, Object> map) {
-        return tbTravelMapper.queryTravelListDeta(map);
-    }
-
+    /** 设置删除状态*/
     public int setDeleteStatus(Map<String, Object> map) {
         return tbTravelMapper.setDeleteStatus(map);
     }
 
-    public List<Map<String, Object>> queryTrackUserListByid(Map<String, Object> map) {
-        return tbTravelMapper.queryTravelInfo(map);
-    }
-
+    /** 获取出差记录条数*/
     public int countAllList(Map<String, Object> param) {
         return tbTravelMapper.countAllList(param);
     }
 
+    /** 查询所有出差记录*/
     public List<Map<String, Object>> queryAllTravelList(Map<String, Object> param) {
         return tbTravelMapper.queryAllTravelList(param);
     }
 
+    /** 获取出差详情条数*/
     public int countTravelList(Map<String, Object> param) {
         return tbTravelMapper.countTravelList(param);
     }
 
-    public int countTravelListDeta(Map<String, Object> param) {
-        return tbTravelMapper.countTravelListDeta(param);
-    }
-
+    /** 获取情报条数*/
     public int countTravelInfo(Map<String, Object> param) {
         return tbTravelMapper.countTravelInfo(param);
     }
 
+    /**查询审批记录 */
     public List<Map<String, Object>> queryTravelApproval(Map<String, Object> param) {
         return  tbTravelMapper.queryTravelApproval(param);
     }
 
+    /** 查询产出情况*/
     public List<Map<String, Object>> queryTravelProduce() {
         return tbTravelMapper.queryTravelProduce();
     }
 
+    /** 设置撤回状态*/
     public int setRecallStatus(Map<String, Object> param) {
         return tbTravelMapper.setRecallStatus(param);
     }
 
+    /** 查询出差详情bycid*/
     public List<Map<String, Object>> queryDetaBycid(Map<String, Object> param) {
         return tbTravelMapper.queryDetaBycid(param);
-    }
-
-    public List<Map<String, Object>> queryProduceByPrindex(Map<String, Object> param) {
-        return tbTravelMapper.queryProduceByPrindex(param);
     }
 }

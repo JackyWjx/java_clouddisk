@@ -29,4 +29,6 @@ public interface TbTravelProduceMapper {
 	int remove(Integer id);
 	
 	int batchRemove(Integer[] ids);
+
+	List<Map<String,Object>> queryProduce(Map<String, Object> map);
 }

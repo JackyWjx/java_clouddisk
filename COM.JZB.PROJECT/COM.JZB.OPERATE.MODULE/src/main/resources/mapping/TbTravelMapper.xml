@@ -8,10 +8,10 @@
     <select id="queryAllTravelList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",version
         from tb_travel_record where status='1' and uid=#{uid}
-        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid} </when></choose>
-        <choose><when test="aptype != null and aptype !=''">and aptype = #{aptype}</when></choose>
-        <choose><when test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </when></choose>
-        <choose><when test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </when></choose>
+        <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
+        <if test="aptype != null and aptype !=''">and aptype = #{aptype}</if>
+        <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
+        <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
          limit #{pagesize}  offset #{pageno}
     </select>
     
@@ -20,44 +20,60 @@
     <select id="countAllList" resultType="int" parameterType="java.util.Map">
         SELECT count(1)
         from tb_travel_record where status='1'and uid=#{uid}
+        <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
+        <if test="aptype != null and aptype !=''">and aptype = #{aptype}</if>
+        <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
+        <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
     </select>
 
 
     <!--  查询出差记录详情   -->
     <select id="queryTravelList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT * from tb_travel_record_deta where status='1'
-        <choose><when test="uid != null and uid != ''">and uid = #{uid}</when></choose>
-        <choose><when test="cid != null and cid != ''">and cid = #{cid}</when></choose>
-        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid}</when></choose>
-        <choose><when test="orgtime != null and orgtime != ''">and <![CDATA[orgtime>=#{orgtime} ]]></when></choose>
-        <choose><when test="endtime != null and endtime != ''">and <![CDATA[endtime<=#{endtime} ]]></when></choose>
+        SELECT
+        deid,
+        travelid,
+        uid,
+        cid,
+        projectid,
+        did,
+        trpeers,
+        trdefense,
+        trtime,
+        trtype,
+        trregion,
+        trgoal,
+        trip,
+        produce,
+        fare,
+        expenses,
+        amount,
+        addtime,
+        adduid,
+        updtime,
+        upduid,
+        status,
+        summary
+        from tb_travel_record_deta where status='1'
+        <if test="uid != null and uid != ''">and uid = #{uid}</if>
+        <if test="cid != null and cid != ''">and cid = #{cid}</if>
+        <if test="travelid != null and travelid != ''">and travelid = #{travelid}</if>
+        <if test="deid != null and deid != ''">and deid = #{deid}</if>
+        <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
+        <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
         limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--  查询出差记录详情总条数  -->
     <select id="countTravelList" resultType="int" parameterType="java.util.Map">
         SELECT count(1) from tb_travel_record_deta where status='1'
-        <choose><when test="uid != null and uid != ''">and uid = #{uid}</when></choose>
-        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid}</when></choose>
-        <choose><when test="orgtime != null and orgtime != ''">and <![CDATA[orgtime>=#{orgtime} ]]></when></choose>
-        <choose><when test="endtime != null and endtime != ''">and <![CDATA[endtime<=#{endtime} ]]></when></choose>
+        <if test="uid != null and uid != ''">and uid = #{uid}</if>
+        <if test="cid != null and cid != ''">and cid = #{cid}</if>
+        <if test="travelid != null and travelid != ''">and travelid = #{travelid}</if>
+        <if test="deid != null and deid != ''">and deid = #{deid}</if>
+        <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
+        <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
     </select>
 
-    <!--  查询出差详情记录   -->
-    <select id="queryTravelListDeta" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_travel_record_deta where status='1'
-        <choose><when test="uid != null and uid != ''">and uid = #{uid}</when></choose>
-        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid}</when></choose>
-        <choose><when test="deid != null and deid != ''">and deid = #{deid}</when></choose>
-    </select>
-
-    <!--  查询出差详情记录条数   -->
-    <select id="countTravelListDeta" resultType="int" parameterType="java.util.Map">
-        select count(*) from tb_travel_record_deta where status='1'
-        <choose><when test="uid != null and uid != ''">and uid = #{uid}</when></choose>
-        <choose><when test="travelid != null and travelid != ''">and travelid = #{travelid}</when></choose>
-        <choose><when test="deid != null and deid != ''">and deid = #{deid}</when></choose>
-    </select>
 
     <!--根据cid获取出差详情-->
     <select id="queryDetaBycid" resultType="java.util.Map" parameterType="java.util.Map">
@@ -88,49 +104,108 @@
         card,
         account
          from  tb_travel_data where status ='1'
-        <choose><when test="deid != null and deid != ''">and deid = #{deid}</when></choose>
-        <choose><when test="did != null and did != ''">and did = #{did}</when></choose>
-        <choose><when test="coou != null and coou != ''">coou like CONCAT('%',#{coou},'%')</when></choose>
-        <choose><when test="coppt != null and coppt != ''">coppt like CONCAT('%',#{coppt},'%')</when></choose>
-        <choose><when test="couage != null and couage != ''">couage like CONCAT('%',#{couage},'%')</when></choose>
-        <choose><when test="cocustomer != null and cocustomer != ''">cocustomer like CONCAT('%',#{cocustomer},'%')</when></choose>
-        <choose><when test="coframe != null and coframe != ''">coframe like CONCAT('%',#{coframe},'%')</when></choose>
-        <choose><when test="contrast != null and contrast != ''">contrast like CONCAT('%',#{contrast},'%')</when></choose>
-        <choose><when test="copropaganda != null and copropaganda != ''">copropaganda like CONCAT('%',#{copropaganda},'%')</when></choose>
-        <choose><when test="card != null and card != ''">card like CONCAT('%',#{card},'%')</when></choose>
-        <choose><when test="account != null and account != ''">account like CONCAT('%',#{account},'%')</when></choose>
-        <choose><when test="speechcraft != null and speechcraft != ''">speechcraft like CONCAT('%',#{speechcraft},'%')</when></choose>
-        <choose><when test="signin != null and signin != ''">signin like CONCAT('%',#{signin},'%')</when></choose>
-        <choose><when test="newsletter != null and newsletter != ''">newsletter like CONCAT('%',#{newsletter},'%')</when></choose>
-        <choose><when test="train != null and train != ''">train like CONCAT('%',#{train},'%')</when></choose>
-        <choose><when test="implement != null and implement != ''">implement like CONCAT('%',#{implement},'%')</when></choose>
-        <choose><when test="offer != null and offer != ''">offer like CONCAT('%',#{offer},'%')</when></choose>
-        <choose><when test="contract != null and contract != ''">contract like CONCAT('%',#{contract},'%')</when></choose>
-        <choose><when test="plan != null and plan != ''">plan like CONCAT('%',#{plan},'%')</when></choose>
-        <choose><when test="invitation != null and invitation != ''">invitation like CONCAT('%',#{invitation},'%')</when></choose>
-        <choose><when test="reviewed != null and reviewed != ''">reviewed like CONCAT('%',#{reviewed},'%')</when></choose>
-        <choose><when test="cureviewed != null and cureviewed != ''">cureviewed like CONCAT('%',#{cureviewed},'%')</when></choose>
+        <if test="travelid != null and travelid != ''">and travelid = #{travelid}</if>
+        <if test="deid != null and deid != ''">and deid = #{deid}</if>
+        <if test="did != null and did != ''">and did = #{did}</if>
+        <if test="coou != null and coou != ''">coou like CONCAT('%',#{coou},'%')</if>
+        <if test="coppt != null and coppt != ''">coppt like CONCAT('%',#{coppt},'%')</if>
+        <if test="couage != null and couage != ''">couage like CONCAT('%',#{couage},'%')</if>
+        <if test="cocustomer != null and cocustomer != ''">cocustomer like CONCAT('%',#{cocustomer},'%')</if>
+        <if test="coframe != null and coframe != ''">coframe like CONCAT('%',#{coframe},'%')</if>
+        <if test="contrast != null and contrast != ''">contrast like CONCAT('%',#{contrast},'%')</if>
+        <if test="copropaganda != null and copropaganda != ''">copropaganda like CONCAT('%',#{copropaganda},'%')</if>
+        <if test="card != null and card != ''">card like CONCAT('%',#{card},'%')</if>
+        <if test="account != null and account != ''">account like CONCAT('%',#{account},'%')</if>
+        <if test="speechcraft != null and speechcraft != ''">speechcraft like CONCAT('%',#{speechcraft},'%')</if>
+        <if test="signin != null and signin != ''">signin like CONCAT('%',#{signin},'%')</if>
+        <if test="newsletter != null and newsletter != ''">newsletter like CONCAT('%',#{newsletter},'%')</if>
+        <if test="train != null and train != ''">train like CONCAT('%',#{train},'%')</if>
+        <if test="implement != null and implement != ''">implement like CONCAT('%',#{implement},'%')</if>
+        <if test="offer != null and offer != ''">offer like CONCAT('%',#{offer},'%')</if>
+        <if test="contract != null and contract != ''">contract like CONCAT('%',#{contract},'%')</if>
+        <if test="plan != null and plan != ''">plan like CONCAT('%',#{plan},'%')</if>
+        <if test="invitation != null and invitation != ''">invitation like CONCAT('%',#{invitation},'%')</if>
+        <if test="reviewed != null and reviewed != ''">reviewed like CONCAT('%',#{reviewed},'%')</if>
+        <if test="cureviewed != null and cureviewed != ''">cureviewed like CONCAT('%',#{cureviewed},'%')</if>
     </select>
 
     <!--查询出差情报表-->
     <select id="queryTravelInfo" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from  tb_travel_info where deid=#{deid}
-        <choose><when test="cid != null and cid != ''">and cid=#{cid}</when></choose>
-        <choose><when test="projectid != null and projectid != ''">and projectid=#{projectid}</when></choose>
+        select
+        travelid,
+        deid,
+        inid,
+        cid,
+        cname,
+        supervise,
+        prodesc,
+        prolist,
+        projectid,
+        projectname,
+        tendercompany,
+        tendername
+        ,projecttype
+        ,promail
+        ,projectras
+        ,tenderphone
+        ,tenderresultcompany
+        ,tendertime
+        ,tenderagent
+        ,relation
+        ,idx
+        ,podeperson
+        ,podephone
+        ,podejob
+        ,podenature
+        ,npodeperson
+        ,npodephone
+        ,npodejob
+        ,npodenature
+        ,setb
+        ,sepr
+        ,seli
+        ,recname
+        ,reluname
+        ,relphone
+        ,brandname
+        ,contrast
+        ,mail
+        ,nreluname
+        ,nrelphone
+        ,nbrandname
+        ,ncontrast
+        ,nmail
+        ,reshid
+        ,reshname
+        ,reshphone
+        ,lineuname
+        ,linejob
+        ,linephone
+        ,linenature
+        ,adduid
+        ,addtime
+        ,upduid
+        ,updtime
+        ,status
+        ,summary
+        from  tb_travel_info where deid=#{deid}
+        <if test="cid != null and cid != ''">and cid=#{cid}</if>
+        <if test="projectid != null and projectid != ''">and projectid=#{projectid}</if>
     </select>
+
 
     <!--查询出差情报表-->
     <select id="countTravelInfo" resultType="int" parameterType="java.util.Map">
         select count(1) from  tb_travel_info where deid=#{deid}
-        <choose><when test="cid != null and cid != ''">and cid=#{cid}</when></choose>
-        <choose><when test="projectid != null and projectid != ''">and projectid=#{projectid}</when></choose>
+        <if test="cid != null and cid != ''">and cid=#{cid}</if>
+        <if test="projectid != null and projectid != ''">and projectid=#{projectid}</if>
     </select>
 
     <!--查询审批状态-->
     <select id="queryTravelApproval" resultType="java.util.Map" parameterType="java.util.Map">
         select  apid,trstatus,truid,status,version,idx from tb_travel_approval where  travelid = #{travelid}
-        <choose><when test="trstatus != null and trstatus != ''">and trstatus = #{trstatus}</when></choose>
-        <choose><when test="version != null and version != ''">and version = #{version}</when></choose>
+        <if test="trstatus != null and trstatus != ''">and trstatus = #{trstatus}</if>
+        <if test="version != null and version != ''">and version = #{version}</if>
         order by idx asc
     </select>
 
@@ -138,21 +213,6 @@
     <select id="queryTravelProduce" resultType="java.util.Map" >
         select  prindex from tb_travel_produce where status = '1'
     </select>
-
-    <select id="queryProduceByPrindex" resultType="java.util.Map" parameterType="java.util.Map">
-        select  prname,idx from tb_travel_produce where status = '1' and prindex = #{prindex}
-    </select>
-
-    <!--根据出差id修改出差报销金额-->
-    <update id="updateTravelFare"  parameterType="java.util.Map">
-        update tb_travel_record
-        <trim prefix="set" suffixOverrides=","
-              suffix="where travelid=#{travelid}">
-            <if test="fare != null and fare != '' ">fare=#{fare},</if>
-            <if test="expenses != null and expenses != '' ">expenses=#{expenses},</if>
-            <if test="sum != null and sum != '' ">"sum"=#{sum}</if>
-        </trim>
-    </update>
 
     <!-- 设置删除状态-->
     <update id="setDeleteStatus" parameterType="java.util.Map">

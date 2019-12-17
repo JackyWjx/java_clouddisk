@@ -27,6 +27,7 @@ import java.util.*;
 /**
  * @Author sapientia
  * @Date 2019/12/2 11:21
+ * @Description   总结报销
  */
 @RestController
 @RequestMapping(value = "/operate/reimburseSystem")
@@ -85,68 +86,75 @@ public class TbTravelController {
                 param.put("uid",userInfo.get("uid"));
                 List<Map<String, Object>> list = tbTravelService.queryAllTravelList(param);
                 for(int i = 0 , a = list.size(); i < a;i++){
-                    Map<String,Object> appmap =new HashMap<>();
-                    appmap.put("travelid",list.get(i).get("travelid").toString().trim());
-                    appmap.put("version",list.get(i).get("version").toString().trim());
-                    //获取审批状态
-                    List<Map<String, Object>> applist = tbTravelService.queryTravelApproval(appmap);
-                    for(Map<String,Object> usermap:applist){
-                        Map<String,Object> umap = new HashMap<>();
-                        umap.put("truid",usermap.get("truid"));
-                        umap.put("userinfo",userInfo);
-                        Response res = tbDeptUserListApi.queryPersonNameByuid(umap);
+                    Map<String,Object> appMap =new HashMap<>();
+                    appMap.put("travelid",list.get(i).get("travelid").toString().trim());
+                    appMap.put("version",list.get(i).get("version").toString().trim());
+                    // 获取审批状态
+                    List<Map<String, Object>> appList = tbTravelService.queryTravelApproval(appMap);
+                    for(int k = 0, c = appList.size();k < c;k ++){
+                        Map<String,Object> uMap = new HashMap<>();
+                        uMap.put("truid",appList.get(k).get("truid"));
+                        uMap.put("userinfo",userInfo);
+                        Response res = tbDeptUserListApi.queryPersonNameByuid(uMap);
                         List<Map<String,Object>> userList = res.getPageInfo().getList();
-                        usermap.put("userList",userList);
+                        appList.get(k).put("userList",userList);
                     }
-                    list.get(i).put("applist",applist);
+                    list.get(i).put("appList",appList);
 
-                    //获取出差详情
-                    List<Map<String, Object>> relist = tbTravelService.queryTravelListDeta(appmap);
-                    for(int j = 0 ,b =relist.size(); j < b ;j++){
-                        //获取单位名称
-                        Map<String,Object> camap =new HashMap<>();
-                        camap.put("cid",relist.get(j).get("cid").toString().trim());
-                        camap.put("userinfo",userInfo);
-                        Response res = newTbCompanyListApi.queryCompanyNameBycid(camap);
-                        List<Map<String,Object>> calist = res.getPageInfo().getList();
-                        relist.get(j).put("calist",calist);
+                    // 获取出差详情
+                    List<Map<String, Object>> reList = tbTravelService.queryTravelList(appMap);
+                    for(int j = 0 ,b =reList.size(); j < b ;j++){
+                        // 获取单位名称
+                        Map<String,Object> caMap =new HashMap<>();
+                        caMap.put("cid",reList.get(j).get("cid").toString().trim());
+                        caMap.put("userinfo",userInfo);
+                        Response res = newTbCompanyListApi.queryCompanyNameBycid(caMap);
+                        List<Map<String,Object>> caList = res.getPageInfo().getList();
+                        reList.get(j).put("caList",caList);
 
-                        //获取同行人名称
-                        Map<String,Object> uidmap =new HashMap<>();
-                        uidmap.put("uids",relist.get(i).get("trpeers"));
-                        uidmap.put("userinfo",userInfo);
-                        Response ures = tbDeptUserListApi.searchInvitee(uidmap);
-                        String unameStr = (String) ures.getResponseEntity();
-                        relist.get(j).put("peersList",unameStr);
+                        // 获取同行人名称
+                        Map<String,Object> uidMap =new HashMap<>();
+                        uidMap.put("uids",reList.get(i).get("trpeers"));
+                        uidMap.put("userinfo",userInfo);
+                        Response uRes = tbDeptUserListApi.searchInvitee(uidMap);
+                        String unameStr = uRes.getResponseEntity().toString();
+                        reList.get(j).put("peersList",unameStr);
 
-                        //获取出差区域信息
-                        Map<String,Object> regionmap = new HashMap<>();
-                        regionmap.put("region",relist.get(i).get("trregion"));
-                        Response region = regionBaseApi.getRegionInfo(regionmap);
-                        relist.get(i).put("trregionList",region.getResponseEntity());
+                        // 获取出差区域信息
+                        Map<String,Object> regionMap = new HashMap<>();
+                        regionMap.put("region",reList.get(i).get("trregion"));
+                        Response region = regionBaseApi.getRegionInfo(regionMap);
+                        reList.get(i).put("trregionList",region.getResponseEntity());
 
-                        //获取资料及情报
-                        Map<String,Object> recmap =new HashMap<>();
-                        recmap.put("deid",relist.get(j).get("deid").toString().trim());
+                        // 获取资料及情报
+                        Map<String,Object> recMap =new HashMap<>();
+                        recMap.put("deid",reList.get(j).get("deid").toString().trim());
                         // 通过出差详情id  获取出差资料信息
-                        List<Map<String, Object>> daList = tbTravelService.queryTravelData(recmap);
-                        //通过出差详情id  获取出差情报信息
-                        List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recmap);
-                        for (Map map : infoList){
-                            String prolist = (String) map.get("prolist");
-                            String[] split = prolist.split(",");
-                            map.put("prolist",split);
+                        List<Map<String, Object>> daList = tbTravelService.queryTravelData(recMap);
+                        // 通过出差详情id  获取出差情报信息
+                        List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recMap);
+                        for (int l = 0, d = infoList.size();l < d;l++){
+                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                                Map<String,Object> proListMap =new HashMap<>();
+                                proListMap.put("prolist",infoList.get(l).get("prolist"));
+                                String prolist = infoList.get(l).get("prolist").toString();
+                                String[] split = prolist.split(",");
+                                proListMap.put("prolist",split);
+                                infoList.get(i).put("prolist",proListMap);
+                            }
                         }
-                        relist.get(j).put("daList",daList);
-                        relist.get(j).put("infoList",infoList);
-                        //获取产出情况
-                        //List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce();
-                        List<Map<String,Object>> produceMaps = travelProduceService.list(null);
-                        List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(relist.get(j).get("produce")),produceMaps);
-                        relist.get(j).put("prindex",prindex);
-                        relist.get(j).put("produceMaps",produceMaps);
+                        reList.get(j).put("daList",daList);
+                        reList.get(j).put("infoList",infoList);
+                        // 获取产出情况
+                        List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
+                        List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(reList.get(j).get("produce")),proList);
+                        Map<String,Object> prindexMap =new HashMap<>();
+                        prindexMap.put("prindex",prindexList);
+                        List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                        reList.get(j).put("prindex",prindexList);
+                        reList.get(j).put("produceMaps",priList);
                     }
-                    list.get(i).put("reList",relist);
+                    list.get(i).put("reList",reList);
                 }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
@@ -169,77 +177,6 @@ public class TbTravelController {
         return response;
     }
 
-//   /**
-//    * @Author sapientia
-//    * @Date 10:49 2019/12/2
-//    * @Description 根据出差id查询出差详情列表
-//    **/
-//    @RequestMapping(value = "/queryTravelListBytrid" ,method = RequestMethod.POST)
-//    @CrossOrigin
-//    public Response queryTravelListBytrid(@RequestBody Map<String, Object> param) {
-//        Response response;
-//        Map<String, Object> userInfo = null;
-//        String api = "/operate/reimburseSystem/queryTravelListBytrid";
-//        boolean flag = true;
-//        try {
-//            if (param.get("userinfo") != null) {
-//                userInfo = (Map<String, Object>) param.get("userinfo");
-//                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-//                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
-//            } else {
-//                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
-//            }
-//            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","travelid"})) {
-//                response = Response.getResponseError();
-//            } else {
-//                JzbPageConvert.setPageRows(param);
-//                param.put("travelid",param.get("travelid").toString().trim());
-//                // 获取出差详情列表
-//                List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
-//                for(int i = 0 ,a =list.size(); i < a ;i++){
-//                    //获取单位名称
-//                    Map<String,Object> camap =new HashMap<>();
-//                    camap.put("cid",list.get(i).get("cid"));
-//                    camap.put("userinfo",userInfo);
-//                    Response res = newTbCompanyListApi.queryCompanyNameBycid(camap);
-//                    List<Map<String,Object>> calist = res.getPageInfo().getList();
-//                    list.get(i).put("calist",calist);
-//
-//                    //获取资料及情报
-//                    Map<String,Object> recmap =new HashMap<>();
-//                    recmap.put("deid",list.get(i).get("deid"));
-//                    // 通过出差详情id  获取出差资料信息
-//                    List<Map<String, Object>> daList = tbTravelService.queryTravelData(recmap);
-//                    //通过出差详情id  获取出差情报信息
-//                    List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recmap);
-//                    list.get(i).put("daList",daList);
-//                    list.get(i).put("infoList",infoList);
-//
-////                    //获取产出
-////                    Map<String,Object> promap = new HashMap<>();
-////                    promap.put("produce",list.get(i).get("produce"));
-//
-//                }
-//                response = Response.getResponseSuccess(userInfo);
-//                PageInfo pageInfo = new PageInfo();
-//                pageInfo.setList(list);
-//                pageInfo.setTotal(tbTravelService.countTravelList(param));
-//                response.setPageInfo(pageInfo);
-//            }
-//        } catch (Exception ex) {
-//            flag = false;
-//            JzbTools.logError(ex);
-//            response = Response.getResponseError();
-//            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryTravelListBytrid Method", ex.toString()));
-//        }
-//        if (userInfo != null) {
-//            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
-//                    userInfo.get("msgTag").toString(), "User Login Message"));
-//        } else {
-//            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
-//        }
-//        return response;
-//    }
 
     /**
      * @Author sapientia
@@ -265,57 +202,64 @@ public class TbTravelController {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
-                //获取出差记录
+                // 获取出差记录
                 param.put("uid", userInfo.get("uid"));
                 param.put("travelid", param.get("travelid").toString().trim());
                 List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                 for (int i = 0, a = list.size(); i < a;i++) {
-                    //获取单位名称
-                    Map<String, Object> camap = new HashMap<>();
-                    camap.put("cid", list.get(i).get("cid").toString().trim());
-                    camap.put("userinfo", userInfo);
-                    Response res = newTbCompanyListApi.queryCompanyNameBycid(camap);
-                    List<Map<String, Object>> calist = res.getPageInfo().getList();
-                    list.get(i).put("calist", calist);
+                    // 获取单位名称
+                    Map<String, Object> caMap = new HashMap<>();
+                    caMap.put("cid", list.get(i).get("cid").toString().trim());
+                    caMap.put("userinfo", userInfo);
+                    Response res = newTbCompanyListApi.queryCompanyNameBycid(caMap);
+                    List<Map<String, Object>> caList = res.getPageInfo().getList();
+                    list.get(i).put("caList", caList);
 
-                    //获取同行人名称
-                    Map<String,Object> uidmap =new HashMap<>();
-                    uidmap.put("uids",list.get(i).get("trpeers"));
-                    uidmap.put("userinfo",userInfo);
-                    Response ures = tbDeptUserListApi.searchInvitee(uidmap);
-                    String unameStr = (String) ures.getResponseEntity();
+                    // 获取同行人名称
+                    Map<String,Object> uidMap =new HashMap<>();
+                    uidMap.put("uids",list.get(i).get("trpeers"));
+                    uidMap.put("userinfo",userInfo);
+                    Response uRes = tbDeptUserListApi.searchInvitee(uidMap);
+                    String unameStr = uRes.getResponseEntity().toString();
                     list.get(i).put("peersList",unameStr);
 
 
-                    //获取出差区域信息
-                    Map<String,Object> regionmap = new HashMap<>();
-                    regionmap.put("region",list.get(i).get("trregion"));
-                    Response region = regionBaseApi.getRegionInfo(regionmap);
+                    // 获取出差区域信息
+                    Map<String,Object> regionMap = new HashMap<>();
+                    regionMap.put("region",list.get(i).get("trregion"));
+                    Response region = regionBaseApi.getRegionInfo(regionMap);
                     list.get(i).put("trregionList",region.getResponseEntity());
 
-                    //获取出差记录
-                    List<Map<String, Object>> monlist = tbTravelService.queryAllTravelList(param);
-                    //获取资料及情报
-                    Map<String, Object> recmap = new HashMap<>();
-                    recmap.put("deid", list.get(i).get("deid").toString().trim());
+                    // 获取出差记录的花费及行程
+                    List<Map<String, Object>> monList = tbTravelService.queryAllTravelList(param);
+                    // 获取资料及情报
+                    Map<String, Object> recMap = new HashMap<>();
+                    recMap.put("deid", list.get(i).get("deid").toString().trim());
                     // 通过出差详情id  获取出差资料信息
-                    List<Map<String, Object>> daList = tbTravelService.queryTravelData(recmap);
-                    //通过出差详情id  获取出差情报信息
-                    List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recmap);
-                    for (Map map : infoList){
-                        String prolist = (String) map.get("prolist");
-                        String[] split = prolist.split(",");
-                        map.put("prolist",split);
+                    List<Map<String, Object>> daList = tbTravelService.queryTravelData(recMap);
+                    // 通过出差详情id  获取出差情报信息
+                    List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recMap);
+                    for (int l = 0, d = infoList.size();l < d;l++){
+                        if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                            Map<String,Object> proListMap =new HashMap<>();
+                            proListMap.put("prolist",infoList.get(l).get("prolist"));
+                            String prolist = infoList.get(l).get("prolist").toString();
+                            String[] split = prolist.split(",");
+                            proListMap.put("prolist",split);
+                            infoList.get(i).put("prolist",proListMap);
+                        }
                     }
-
-                    //获取产出情况
-                    //List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce();
-                    List<Map<String,Object>> produceMaps = travelProduceService.list(null);
-                    //List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),prolist);
-                    list.get(i).put("produceMaps",produceMaps);
+                    // 获取产出情况
+                    List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
+                    List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),proList);
+                    Map<String,Object> prindexMap =new HashMap<>();
+                    prindexMap.put("prindex",prindexList);
+                    List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                    list.get(i).put("prindex",prindexList);
+                    list.get(i).put("produceMaps",priList);
                     list.get(i).put("daList", daList);
                     list.get(i).put("infoList", infoList);
-                    list.get(i).put("monList",monlist);
+                    list.get(i).put("monList",monList);
                 }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
@@ -367,40 +311,45 @@ public class TbTravelController {
                     param.put("uid",userInfo.get("uid"));
                     param.put("deid",param.get("deid").toString().trim());
                     // 获取出差详情
-                    List<Map<String, Object>> list = tbTravelService.queryTravelListDeta(param);
+                    List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                     for(int i = 0,a = list.size();i < a;i++){
-                        Map<String, Object> promap = new HashMap<>();
-                        promap.put("list",list);
-                        promap.put("userinfo",userInfo);
-                        promap.put("pageno",param.get("pageno"));
-                        promap.put("pagesize",param.get("pagesize"));
-                        promap.put("cid",list.get(i).get("cid"));
-                        promap.put("projectid",list.get(i).get("projectid"));
+                        Map<String, Object> proMap = new HashMap<>();
+                        proMap.put("list",list);
+                        proMap.put("userinfo",userInfo);
+                        proMap.put("pageno",param.get("pageno"));
+                        proMap.put("pagesize",param.get("pagesize"));
+                        proMap.put("cid",list.get(i).get("cid"));
+                        proMap.put("projectid",list.get(i).get("projectid"));
 
-                        //获取情报
-                        List<Map<String, Object>> infolist = tbTravelService.queryTravelInfo(param);
-                        for (Map map : infolist){
-                            String prolist = (String) map.get("prolist");
-                            String[] split = prolist.split(",");
-                            map.put("prolist",split);
+                        // 获取情报
+                        List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(param);
+                        for (int l = 0, d = infoList.size();l < d;l++){
+                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                                Map<String,Object> proListMap =new HashMap<>();
+                                proListMap.put("prolist",infoList.get(l).get("prolist"));
+                                String prolist = infoList.get(l).get("prolist").toString();
+                                String[] split = prolist.split(",");
+                                proListMap.put("prolist",split);
+                                infoList.get(i).put("prolist",proListMap);
+                            }
                         }
-                        //获取产出
-                        Response res = newTbCompanyListApi.queryCompanyByid(promap);
+                        // 获取项目产出
+                        Response res = newTbCompanyListApi.queryCompanyByid(proMap);
                         List<Map<String, Object>> resList = res.getPageInfo().getList();
-                        for (Map map : resList){
-                            String prolist = (String) map.get("prolist");
-                            String[] split = prolist.split(",");
-                            map.put("prolist",split);
-                        }
-                        //获取产出情况
-                        List<Map<String,Object>>  prolist = tbTravelService.queryTravelProduce();
-                        List<Integer> prindex = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),prolist);
-                        list.get(i).put("prindex",prindex);
-                        list.get(i).put("infoList",infolist);
+                        // 获取产出情况
+                        List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
+                        List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),proList);
+                        Map<String,Object> prindexMap =new HashMap<>();
+                        prindexMap.put("prindex",prindexList);
+                        List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                        list.get(i).put("prindex",prindexList);
+                        list.get(i).put("produceMaps",priList);
+                        list.get(i).put("infoList",infoList);
                         list.get(i).put("resList", resList);
                     }
                     response = Response.getResponseSuccess(userInfo);
                     PageInfo pageInfo = new PageInfo();
+                    pageInfo.setTotal(tbTravelService.countTravelInfo(param));
                     pageInfo.setList(list);
                     response.setPageInfo(pageInfo);
                 }
@@ -486,9 +435,9 @@ public class TbTravelController {
                 param.put("uid",userInfo.get("uid"));
                 param.put("uname",userInfo.get("uname"));
                 param.put("travelid",param.get("travelid").toString().trim());
-                List<Map<String,Object>> list =tbTravelService.queryTravelListDeta(param);
+                List<Map<String,Object>> list =tbTravelService.queryTravelList(param);
                 for (int i = 0 ,a = list.size(); i < a ; i++){
-                    // 根据申请人 单位 拜访时间 查询跟进记录\
+                    // 根据申请人 单位 拜访时间 查询跟进记录
                     Map<String, Object> dataMap = new HashMap();
                     dataMap.put("userinfo",userInfo);
                     dataMap.put("list", list);
@@ -835,11 +784,11 @@ public class TbTravelController {
             } else {
                 JzbPageConvert.setPageRows(param);
                 param.put("travelid",param.get("travelid").toString().trim());
-                //获取报销单详情
-                List<Map<String, Object>> explist = tbTravelExpenseService.queryTravelExpenseByid(param);
+                // 获取报销单详情
+                List<Map<String, Object>> expList = tbTravelExpenseService.queryTravelExpenseByid(param);
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
-                pageInfo.setList(explist);
+                pageInfo.setList(expList);
                 response.setPageInfo(pageInfo);
             }
         } catch (Exception ex) {
@@ -967,12 +916,13 @@ public class TbTravelController {
                 response = Response.getResponseError();
             } else {
                 param.put("uid",userInfo.get("uid"));
+                // 根据cid获取出差信息
                 List<Map<String,Object>> list = tbTravelService.queryDetaBycid(param);
                for(int i = 0, a =list.size();i < a;i++){
-                   Map<String,Object> damap = new HashMap<>();
-                   damap.put("did",list.get(i).get("did").toString().trim());
-                   List<Map<String,Object>> dalist = tbTravelService.queryTravelData(damap);
-                   list.get(i).put("daList",dalist);
+                   Map<String,Object> daMap = new HashMap<>();
+                   daMap.put("did",list.get(i).get("did").toString().trim());
+                   List<Map<String,Object>> daList = tbTravelService.queryTravelData(daMap);
+                   list.get(i).put("daList",daList);
                }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
@@ -1069,12 +1019,12 @@ public class TbTravelController {
                 param.put("uid",userInfo.get("uid"));
                 List<Map<String,Object>> list = tbTravelService.queryTravelList(param);
                 for(int i = 0, a =list.size();i < a;i++){
-                    Map<String,Object> damap = new HashMap<>();
-                    damap.put("projectid",list.get(i).get("projectid").toString().trim());
-                    damap.put("userinfo",userInfo);
-                    Response res = newTbCompanyListApi.queryPronameByid(damap);
-                    List<Map<String,Object>> prolist = res.getPageInfo().getList();
-                    list.get(i).put("prolist",prolist);
+                    Map<String,Object> daMap = new HashMap<>();
+                    daMap.put("projectid",list.get(i).get("projectid").toString().trim());
+                    daMap.put("userinfo",userInfo);
+                    Response res = newTbCompanyListApi.queryPronameByid(daMap);
+                    List<Map<String,Object>> proList = res.getPageInfo().getList();
+                    list.get(i).put("proList",proList);
                     list.get(i).put("uname",userInfo.get("cname"));
                 }
                 response = Response.getResponseSuccess(userInfo);
