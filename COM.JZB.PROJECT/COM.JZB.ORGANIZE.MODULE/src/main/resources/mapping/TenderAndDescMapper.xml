@@ -5,7 +5,7 @@
 <mapper namespace="com.jzb.org.dao.TenderAndDescMapper">
     <!--查询招标-->
     <select id="queryTenderMessage" resultType="Map">
-        select  id,tendid,title,certificate,( SELECT cname FROM tb_project_type WHERE typeid = B.projecttype ) projecttype,( SELECT cname FROM tb_tendering_judge   WHERE typeid = B.evaluation )  evaluation,type,provice,city,opendate,(select infourl from  tb_tendering_result_info where tendid=B.tendid ),(select content from  tb_tendering_result_info where tendid=B.tendid )
+       select  id,tendid,title,certificate,( SELECT cname FROM tb_project_type WHERE typeid = B.projecttype ) projecttype,( SELECT cname FROM tb_tendering_judge   WHERE typeid = B.evaluation )  evaluation,type,provice,city, to_char(to_timestamp(opendate / 1000), 'yyyy-MM-dd') as opendate,(select infourl from  tb_tendering_result_info where tendid=B.tendid ),(select content from  tb_tendering_result_info where tendid=B.tendid )
          from tb_project_tendering_list B WHERE  status = '1' order by opendate desc LIMIT #{pagesize} OFFSET #{pageno}
     </select>
     <!--查询最大招标-->
@@ -15,9 +15,9 @@
     </select>
     <!--查询全部-->
     <select id="queryAllTenderAndDescMessage" resultType="Map">
-        select id,tendid,title,certificate, ( SELECT cname FROM tb_project_type WHERE typeid = A.projecttype ) projecttype, ( SELECT cname FROM tb_tendering_judge   WHERE typeid = 666 ) AS evaluation,type,provice,city,opendate,(select infourl from  tb_tendering_result_info where tendid=A.tendid ),(select content from  tb_tendering_result_info where tendid=A.tendid ) as context from tb_tendering_result_list A where status='1'
+        select id,tendid,title,certificate, ( SELECT cname FROM tb_project_type WHERE typeid = A.projecttype ) projecttype, ( SELECT cname FROM tb_tendering_judge   WHERE typeid = 666 ) AS evaluation,type,provice,city,to_char(to_timestamp(opendate / 1000), 'yyyy-MM-dd') as opendate,(select infourl from  tb_tendering_result_info where tendid=A.tendid ),(select content from  tb_tendering_result_info where tendid=A.tendid ) as context from tb_tendering_result_list A where status='1'
         union
-        select id,tendid,title,certificate,( SELECT cname FROM tb_project_type WHERE typeid = B.projecttype ) projecttype,( SELECT cname FROM tb_tendering_judge   WHERE typeid = B.evaluation )  evaluation,type,provice,city,opendate,(select infourl from  tb_project_tendering_info where tendid=B.tendid ),(select content from  tb_project_tendering_info where tendid=B.tendid ) as context from tb_project_tendering_list B where status='1'
+        select id,tendid,title,certificate,( SELECT cname FROM tb_project_type WHERE typeid = B.projecttype ) projecttype,( SELECT cname FROM tb_tendering_judge   WHERE typeid = B.evaluation )  evaluation,type,provice,city,to_char(to_timestamp(opendate / 1000), 'yyyy-MM-dd') as opendate,(select infourl from  tb_project_tendering_info where tendid=B.tendid ),(select content from  tb_project_tendering_info where tendid=B.tendid ) as context from tb_project_tendering_list B where status='1'
         order by opendate desc
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
