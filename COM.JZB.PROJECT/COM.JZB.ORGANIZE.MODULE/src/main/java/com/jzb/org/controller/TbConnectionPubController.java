@@ -33,7 +33,7 @@ public class TbConnectionPubController {
     /**
      * 日志记录对象
      */
-    private final static Logger logger = LoggerFactory.getLogger(TbCommonProjectInfoController.class);
+    private final static Logger logger = LoggerFactory.getLogger(TbConnectionPubController.class);
 
     // 查询发帖信息
     @RequestMapping("/getConnectionList")
