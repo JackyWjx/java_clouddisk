@@ -749,8 +749,9 @@
         tb1.expenses as expenses,
         tb1."version",
         tb1.status,
-        string_agg(tb2.truid, ',') as truids,
-        string_agg(to_char(tb2.trstatus,'9'), ',') as trstatus
+        string_agg(tb2.truid,',') as truids,
+        string_agg(to_char(tb2.idx,'9'),',') as idxs,
+        string_agg(to_char(tb2.trstatus,'9'),',') as trstatus
         from tb_travel_record tb1
         LEFT JOIN tb_travel_approval tb2
         on  tb1.travelid = tb2.travelid and tb1."version" = tb2."version"
@@ -819,6 +820,9 @@
             </if>
             <if test="endTime != null and endTime != '' ">
                 and tb1.endtime &lt;= #{endTime}
+            </if>
+            <if test="aptype != '' and aptype!=null"  >
+                and tb1.aptype = #{aptype}
             </if>
 
         </where>

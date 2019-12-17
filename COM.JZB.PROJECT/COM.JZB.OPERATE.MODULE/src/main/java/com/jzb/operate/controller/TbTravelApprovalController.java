@@ -83,7 +83,7 @@ public class TbTravelApprovalController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"list", "travelid", "version", "aptype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list", "travelid", "version"})) {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> approvalList = (List<Map<String, Object>>) param.get("list");
@@ -343,7 +343,6 @@ public class TbTravelApprovalController {
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("uid", userInfo.get("uid"));
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
@@ -351,6 +350,7 @@ public class TbTravelApprovalController {
             }
 
             if (JzbCheckParam.allNotEmpty(param, new String[]{"uid", "pagesize", "pageno"})) {
+                param.put("uid", userInfo.get("uid"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 // 设置分页
                 JzbPageConvert.setPageRows(param);

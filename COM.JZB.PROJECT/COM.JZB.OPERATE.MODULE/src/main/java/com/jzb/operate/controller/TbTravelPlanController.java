@@ -513,7 +513,7 @@ public class TbTravelPlanController {
                 //获取并保存情报收集list
                 List<Map<String, Object>> travelInfoList = (List<Map<String, Object>>) detailsList.get(i).get("travelinfolist");
                 //一般travelinfolist的长度为1
-                for (int j = 0,b=travelInfoList.size(); j < b; j++) {
+                for (int j = 0, b = travelInfoList.size(); j < b; j++) {
                     travelInfoList.get(j).put("updtime", System.currentTimeMillis());
                     travelInfoList.get(j).put("deid", detailsList.get(i).get("deid"));
                     travelInfoService.update(travelInfoList.get(j));
@@ -846,10 +846,14 @@ public class TbTravelPlanController {
                         String unameStr = (String) resApi.getResponseEntity();
                         String[] unames = unameStr.split(",");
                         String[] trStatus = recordList.get(i).get("trstatus").toString().split(",");
+                        String[] idxs = recordList.get(i).get("idxs").toString().split(",");
                         List<ApproverVO> approverVOList = new ArrayList<>();
-                        for (int h = 0; h < unames.length; h++) {
-                            approverVOList.add(new ApproverVO(unames[h], trStatus[h]));
+                        for (int h = 0; h < trStatus.length; h++) {
+                            approverVOList.add(new ApproverVO(unames[h], trStatus[h].trim(), JzbDataType.getInteger(idxs[h].trim())));
                         }
+                        // 按idx排序
+                        Collections.sort(approverVOList, Comparator.comparing(ApproverVO::getIdx));
+                        System.out.println(approverVOList);
                         recordList.get(i).put("approvers", approverVOList);
                     }
                     // 2.根据查询出来的travelid 查询 出差记录详情
@@ -938,5 +942,6 @@ public class TbTravelPlanController {
         }
         return response;
     }
+
 
 }

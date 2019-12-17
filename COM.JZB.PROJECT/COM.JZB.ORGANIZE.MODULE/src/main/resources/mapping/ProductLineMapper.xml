@@ -80,7 +80,6 @@
         WHERE
         m.parentid = '000000000000000'
         AND c.status = #{status}
-
         UNION ALL
         SELECT
         tpm.pid,
@@ -941,5 +940,205 @@
             </choose>
             )
         </foreach>
+    </insert>
+
+    <!--CRM菜单管理-计支宝电脑端-全界面，应用新增-->
+    <insert id="addOrgApplication" parameterType="java.util.Map">
+         insert into
+         tb_org_application
+         (appid, appline, devtype, apptype, cid, appname, applogo,
+         appdesc, appurl, appips, manurl, ouid, addtime, updtime, status, summary)
+         values (
+          #{appid},
+          <choose>
+          <when test="appline != null and appline != ''">
+              #{appline},
+          </when>
+           <otherwise>
+               null,
+           </otherwise>
+          </choose>
+        <choose>
+            <when test="devtype != null and devtype != ''">
+                #{devtype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="apptype != null and apptype != ''">
+                #{apptype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+               #{cid},
+               #{appname},
+        <choose>
+            <when test="applogo != null and applogo != ''">
+                #{applogo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="appdesc != null and appdesc != ''">
+                #{appdesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="appurl != null and appurl != ''">
+                #{appurl},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="appips != null and appips != ''">
+                #{appips},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="manurl != null and manurl != ''">
+                #{manurl},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+               #{ouid},
+               #{addtime},
+               #{updtime},
+        <choose>
+            <when test="status != null and status != ''">
+                #{status},
+            </when>
+            <otherwise>
+                1,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null and summary != ''">
+                #{summary}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
+               )
+    </insert>
+    <!--获取全界面添加的应用-->
+    <select id="getOrgApplication" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        *
+        from
+        tb_org_application
+        where
+        status = '1'
+        <if test="appid != null and appid != ''">
+            and appid = #{appid}
+        </if>
+    </select>
+
+    <insert id="addProductList" parameterType="java.util.Map">
+        INSERT INTO
+        tb_product_list
+        (upduid,appid,appname,cid, plid, cname, pid, idx, logo, photo, pdesc, manager, ouid, addtime, updtime, status, summary)
+        VALUES
+        (
+        #{upduid},
+        #{appid},
+        #{appname},
+        #{cid},
+        cast(#{plid} as integer),
+        #{cname},
+        #{pid},
+        <choose>
+            <when test="idx != null and idx != ''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1)+1 from tb_product_list),
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="logo != null and logo != ''">
+                #{logo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="photo != null and photo != ''">
+                #{photo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pdesc != null and pdesc != ''">
+                #{pdesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="manager != null and manager != ''">
+                #{manager},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{ouid},
+        #{addtime},
+        #{updtime},
+        <choose>
+            <when test="status != null and status != ''">
+                #{status}
+            </when>
+            <otherwise>
+                '1'
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null and summary != ''">
+                ,#{summary}
+            </when>
+            <otherwise>
+                ,null
+            </otherwise>
+        </choose>
+        )on conflict(pid) do update
+        set
+        <if test="upduid!= null and upduid != ''">upduid = #{upduid},</if>
+        <if test="appid!= null and appid != ''">appid = #{appid},</if>
+        <if test="appname!= null and appname != ''">appname = #{appname},</if>
+        <if test="cid!= null and cid != ''">cid = #{cid},</if>
+        <if test="plid!= null and plid != ''">plid = cast(#{plid} as integer),</if>
+        <if test="cname!= null and cname != ''">cname = #{cname},</if>
+        <if test="pid!= null and pid != ''">pid = #{pid},</if>
+        <if test="logo!= null and logo != ''">logo = #{logo},</if>
+        <if test="photo!= null and photo != ''">photo = #{photo},</if>
+        <if test="pdesc!= null and pdesc != ''">pdesc = #{pdesc},</if>
+        <if test="manager!= null and manager != ''">manager = #{manager},</if>
+        <if test="ouid!= null and ouid != ''">ouid = #{ouid},</if>
+        <if test="addtime!= null and addtime != ''">addtime = #{addtime},</if>
+        <if test="status!= null and status != ''">status = #{status},</if>
+        <if test="summary!= null and summary != ''">summary = #{summary},</if>
+        <if test="updtime!= null and updtime != ''">updtime = #{updtime}</if>
     </insert>
 </mapper>
