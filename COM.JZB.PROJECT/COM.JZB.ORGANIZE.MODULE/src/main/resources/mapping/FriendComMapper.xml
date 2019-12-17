@@ -53,7 +53,7 @@
          ) au ON au.cid = cf.cid
         WHERE (du.cname LIKE '%${value}%' OR cl.cname LIKE '%${value}%')
         AND cf.status in ('1','2')
-        order by cl.id)aaa  order by status,jointime LIMIT #{pagesize} OFFSET #{start}
+        order by cl.regtime)aaa  order by status,jointime LIMIT #{pagesize} OFFSET #{start}
     </select>
     <!--通过负责人或者单位名称查伙伴单位数据总数-->
     <select id="searchFriendComByValueCount" resultType="java.lang.Integer">

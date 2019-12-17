@@ -52,7 +52,6 @@ public class CockpitService {
             }
             param.put("list",list);
         }
-
         return cockpitMapper.getInfo(param);
     }
 
