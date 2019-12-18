@@ -6,44 +6,61 @@
 
     <!-- 查询公海单位 不做条件-->
     <select id="queryCompanyCommon" resultType="java.util.Map" parameterType="java.util.Map">
-SELECT DISTINCT
-	tcc.cid,
-	tcc.uid,
-	( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid LIMIT 1 ) sales,
-	tcc.status,
-	tcl.cname,
-	tcl.manager,
-	tcl.region,
-	tdu.cname AS username,
-	tdu.phone AS userphone,
-	(select cname from tb_dept_user where uid=(select dictvalue from tb_company_property where typeid='t000000' and cid=tcc.cid  GROUP BY dictvalue limit 1 ) limit 1) as service,
-	( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' LIMIT 1 ) AS companyLevel,
-	tcl.authid
-FROM
-	tb_company_common tcc
-	INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
-	LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
-	AND tdu.uid = tcl.manager
-WHERE
-	tcc.status = '2'
-    <if test="uid !='JZBDCDCJZBDC'">
-        and tcc.uid=#{uid}
-    </if>
-        limit #{pagesize} offset #{pageno}
+        select * from (
+        SELECT
+        DISTINCT
+        tcc.cid,
+        tpcl.oneheader,
+        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) companyLevel,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
+        FROM
+        tb_common_company_list tcc
+        INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
+        LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+        AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
+        WHERE
+        tcc.status = '2'
+        ) a where 1=1
+        <if test="uid != null and uid != '' uid !='JZBDCDCJZBDC'">
+            and a.oneheader = #{uid}
+        </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
     </select>
 
     <!-- 查询公海单位 不做条件-->
     <select id="queryCompanyCommonCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-        SELECT count(1)
+        select * from (
+        SELECT
+        count (1)
         FROM
-        tb_company_common tcc
+        tb_common_company_list tcc
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
         LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
         AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status = '2'
-        <if test="uid !='JZBDCDCJZBDC' and uid !=null ">
-            and tcc.uid=#{uid}
+        ) a where 1=1
+        <if test="uid != null and uid != '' uid !='JZBDCDCJZBDC'">
+            and a.oneheader = #{uid}
         </if>
     </select>
 
@@ -56,30 +73,35 @@ WHERE
     <!-- 查询已分配的业主  带条件 -->
     <select id="queryCompanyCommonByKeyWord" parameterType="java.util.Map" resultType="java.util.Map">
         select * from (
-        SELECT DISTINCT
+        SELECT
+        DISTINCT
         tcc.cid,
-        tcc.uid,
-        ( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid LIMIT 1 ) sales,
+        tpcl.oneheader,
+        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
         tcl.region,
-        tdu.cname AS username,
-        tdu.phone AS userphone,
-        (select cname from tb_dept_user where uid=(select dictvalue from tb_company_property where typeid='t000000' and cid=tcc.cid GROUP BY dictvalue limit 1 ) limit 1) as service,
-        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' LIMIT 1 ) AS companyLevel,
-        tcl.authid
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) companyLevel,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
         FROM
-        tb_company_common tcc
+        tb_common_company_list tcc
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
         LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
         AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status = '2'
         ) a where 1=1
-
-        <if test="uid!=null and uid !='' and uid!='JZBDCDCJZBDC'">
-            and a.uid=#{uid}
+        <if test="uid != null and uid != '' uid !='JZBDCDCJZBDC'">
+            and a.oneheader = #{uid}
         </if>
         <if test="region!=null and region !=''">
             and a.region=#{region}
@@ -96,24 +118,30 @@ WHERE
     <!-- 查询已分配的业主  带条件 -->
     <select id="queryCompanyCommonByKeyWordCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from (
-        SELECT DISTINCT
+        SELECT
+        DISTINCT
         tcc.cid,
-        tcc.uid,
-        ( SELECT cname FROM tb_dept_user WHERE uid = tcc.uid LIMIT 1 ) sales,
+        tpcl.oneheader,
+        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
         tcl.region,
-        tdu.cname AS username,
-        tdu.phone AS userphone,
-        (select cname from tb_dept_user where uid=(select dictvalue from tb_company_property where typeid='t000000' and cid=tcc.cid GROUP BY dictvalue limit 1 ) limit 1) as service,
-        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' LIMIT 1 ) AS companyLevel,
-        tcl.authid
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) companyLevel,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
         FROM
-        tb_company_common tcc
+        tb_common_company_list tcc
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
         LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
         AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status = '2'
         ) a where 1=1
