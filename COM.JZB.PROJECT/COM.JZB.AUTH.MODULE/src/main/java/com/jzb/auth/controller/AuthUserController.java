@@ -297,6 +297,31 @@ public class AuthUserController {
         }
         return result;
     } // End updateUserPassword
+    /**
+     * 根据原密码进行用户密码修改
+     */
+    @PostMapping("/modifyPasswordByPasswd")
+    @CrossOrigin
+    public Response modifyPasswordByPasswd(@RequestBody Map<String, Object> param) {
+        Response result;
+        int count = 0;
+        try {
+        if(!JzbTools.isEmpty(param.get("passwd")) && !JzbTools.isEmpty(param.get("uid")) && !JzbTools.isEmpty("newpassword")){
+               String oldPasswd = userService.getInitPassWd(param);
+                boolean matches = password().matches((CharSequence) param.get("passwd"), oldPasswd);
+                if (matches){
+                    param.put("passwd",oldPasswd);
+                     count = userService.updateUserPassword(param);
+                }
+            }
+            result = count == 1 ? Response.getResponseSuccess() : Response.getResponseError();
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    } //
+
 
     /**
      * 根据联系方式或者ID获取用户信息

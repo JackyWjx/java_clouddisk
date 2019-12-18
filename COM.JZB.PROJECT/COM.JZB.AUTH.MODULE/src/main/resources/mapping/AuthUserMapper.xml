@@ -431,4 +431,9 @@
         offset
         #{pageno}
     </select>
+
+    <!--根据用户id查询密码-->
+    <select id="getInitPassWd" parameterType="java.util.Map" resultType="java.lang.String">
+        select passwd from tb_user_list where uid = #{uid} and status = '1'
+    </select>
 </mapper>

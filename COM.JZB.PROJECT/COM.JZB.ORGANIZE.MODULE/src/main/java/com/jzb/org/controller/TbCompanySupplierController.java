@@ -185,7 +185,7 @@ public class TbCompanySupplierController {
                 String name = JzbDataType.getString(param.get("cname"));
                 String s = HttpConnectionURL.post(url, name);
                 Map<String, Object> parse  =(Map<String, Object>) JSON.parse(s);
-                 if(parse.get("code").equals("200")) {
+                 if(parse != null && parse.get("code").equals("200")) {
                      result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
                      result.setResponseEntity(parse);
                  }
