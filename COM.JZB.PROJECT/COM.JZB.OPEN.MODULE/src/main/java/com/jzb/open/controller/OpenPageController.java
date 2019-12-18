@@ -37,6 +37,9 @@ public class OpenPageController {
     private OpenPageService openPageService;
 
 
+
+    
+
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
 
