@@ -6,10 +6,10 @@
 
     <!--  查询出差记录   -->
     <select id="queryAllTravelList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",version
-        from tb_travel_record where status='1' and uid=#{uid}
+        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",rebversion
+        from tb_travel_record where rebstatus='1'  and aptype = '2'
+        <if test="uid != null and uid != ''">and uid=#{uid} </if>
         <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
-        <if test="aptype != null and aptype !=''">and aptype = #{aptype}</if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
         <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
          limit #{pagesize}  offset #{pageno}
@@ -19,9 +19,8 @@
     <!--查询出差记录总条数-->
     <select id="countAllList" resultType="int" parameterType="java.util.Map">
         SELECT count(1)
-        from tb_travel_record where status='1'and uid=#{uid}
+        from tb_travel_record where rebstatus='1' and uid=#{uid} and aptype = '2'
         <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
-        <if test="aptype != null and aptype !=''">and aptype = #{aptype}</if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
         <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
     </select>
@@ -38,7 +37,7 @@
         did,
         trpeers,
         trdefense,
-        trtime,
+        to_char(to_timestamp(trtime / 1000), 'yyyy-MM-dd HH:mm:SS') as trtime,
         trtype,
         trregion,
         trgoal,
@@ -205,7 +204,7 @@
     <select id="queryTravelApproval" resultType="java.util.Map" parameterType="java.util.Map">
         select  apid,trstatus,truid,status,version,idx from tb_travel_approval where  travelid = #{travelid}
         <if test="trstatus != null and trstatus != ''">and trstatus = #{trstatus}</if>
-        <if test="version != null and version != ''">and version = #{version}</if>
+        <if test="version != null and version != ''">and version = #{rebversion}</if>
         order by idx asc
     </select>
 
@@ -225,11 +224,7 @@
 
     <!-- 设置撤回状态-->
     <update id="setRecallStatus" parameterType="java.util.Map">
-        update tb_travel_record set status='3',version=#{version} where travelid=#{travelid};
-        update tb_travel_record_deta set status='3' where travelid=#{travelid};
-        update tb_travel_data set status='3' where travelid=#{travelid};
-        update tb_travel_info set status='3' where travelid=#{travelid};
-        update tb_travel_expense set status='3' where travelid=#{travelid}
+        update tb_travel_record set rebstatus='3',rebversion=#{rebversion} where travelid=#{travelid};
     </update>
 
 </mapper>
