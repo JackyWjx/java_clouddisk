@@ -227,7 +227,6 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/importControlExcel", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/importCompanyTemplate", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/importCompanyCommon", "");
-        GATEWAY_WHITE_LIST.put("/JZB-ORG/org/dept/getDeptList", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/dept/getDeptLists", "");
         //---- end org
 

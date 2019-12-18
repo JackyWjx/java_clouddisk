@@ -5,7 +5,7 @@
 <mapper namespace="com.jzb.org.dao.TbTrackUserMapper">
     <!--新建跟进人员记录-->
     <insert id="addTrackUser" parameterType="java.util.Map" >
-        insert into tb_track_user_list (isservice,nextadvance,abdialogue,trackoutput,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackcid,trackproid,
+        insert into tb_track_user_list (isservice,nextadvance,abdialogue,trackoutput,trackres,excontent,trackdesc,trackcid,trackproid,
         trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
         adduid,status,summary,addtime)
         values (
@@ -41,16 +41,62 @@
                 null,
             </otherwise>
         </choose>
-        #{trackres},
-        #{trackoutput},
-        #{abdialoge},
-        #{nextadvance},
-        #{excontent},
-        #{trackdesc},
-        #{trackcid},
-        #{trackproid},
-        #{trackvalue},
-        #{trackid},
+        <choose>
+            <when test="trackres != null and trackres = ''">
+                #{trackres},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="excontent != null and excontent = ''">
+                #{excontent},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackdesc != null and trackdesc = ''">
+                #{trackdesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackcid != null and trackcid = ''">
+                #{trackcid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackproid != null and trackproid = ''">
+                #{trackproid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackvalue != null and trackvalue = ''">
+                #{trackvalue},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackid != null and trackid = ''">
+                #{trackid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="tracktime != null and tracktime != ''">
                #{tracktime},
@@ -59,11 +105,46 @@
                  0,
              </otherwise>
         </choose>
-        #{trackuname},
-        #{tracktype},
-        #{customer},
-        #{trackcontent},
-        #{image},
+        <choose>
+            <when test="trackuname != null and trackuname = ''">
+                #{trackuname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tracktype != null and tracktype = ''">
+                #{tracktype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="customer != null and customer = ''">
+                #{customer},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackcontent != null and trackcontent = ''">
+                #{trackcontent},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="image != null and image = ''">
+                #{image},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{adduid},
         #{status},
         <choose>
@@ -80,7 +161,7 @@
     
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
-        select isservice,nextadvance,abdialogue,trackoutput,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
+        select isservice,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
         from tb_track_user_list where status = '1'
         and trackvalue = #{trackvalue}
         <if test="startTime != null and startTime!= ''">
@@ -209,15 +290,6 @@
         set
         <if test="isservice != null and isservice != ''">
             isservice = #{isservice},
-        </if>
-        <if test="nextadvance != null and nextadvance != ''">
-            nextadvance = #{nextadvance},
-        </if>
-        <if test="abdialogue != null and abdialogue != ''">
-            abdialogue = #{abdialogue},
-        </if>
-        <if test="trackoutput != null and trackoutput != ''">
-            trackoutput = #{trackoutput},
         </if>
         <if test="trackres != null and trackres != ''">
             trackres = #{trackres},
