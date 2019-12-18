@@ -194,11 +194,15 @@
             endtime,
             aptype,
             ccuid,
-            version,
             addtime,
             adduid,
             status,
-            summary
+            summary,
+            trip,
+            traversion,
+            rebversion,
+            trastatus,
+            rebstatus
             )
             values
             (
@@ -267,14 +271,7 @@
                     null ,
                 </otherwise>
             </choose>
-            <choose>
-                <when test="version != null and version!=''">
-                    #{version},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
+
             <choose>
                 <when test="addtime != null and addtime!=''">
                     #{addtime},
@@ -301,12 +298,52 @@
             </choose>
             <choose>
                 <when test="summary != null and summary!=''">
-                    #{summary}
+                    #{summary},
                 </when>
                 <otherwise>
-                    null
+                    null,
                 </otherwise>
             </choose>
+            <choose>
+                <when test="trip != null and trip!=''">
+                    #{trip},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+        <choose>
+            <when test="traversion != null and traversion!=''">
+                #{traversion},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="rebversion != null and rebversion!=''">
+                #{rebversion},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trastatus != null and trastatus!=''">
+                #{trastatus},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="rebstatus != null and rebstatus!=''">
+                #{rebstatus}
+            </when>
+            <otherwise>
+                null
+            </otherwise>
+        </choose>
             )
     </insert>
 
@@ -631,9 +668,6 @@
             <if test="ccuid!='' and ccuid !=null">
                 ccuid=#{ccuid},
             </if>
-            <if test="version!='' and version !=null">
-                version=#{version},
-            </if>
             <if test="addtime!='' and addtime !=null">
                 addtime=#{addtime},
             </if>
@@ -645,6 +679,18 @@
             </if>
             <if test="summary!='' and summary !=null">
                 summary=#{summary}
+            </if>
+            <if test="traversion!='' and traversion !=null">
+                traversion=#{traversion},
+            </if>
+            <if test="rebversion!='' and rebversion !=null">
+                rebversion=#{rebversion},
+            </if>
+            <if test="trastatus!='' and trastatus !=null">
+                trastatus=#{trastatus},
+            </if>
+            <if test="rebstatus!='' and rebstatus !=null">
+                rebstatus=#{rebstatus},
             </if>
         </trim>
         where travelid=#{travelid}
@@ -739,6 +785,7 @@
         where travelid=#{travelid}
     </select>
 
+    <!-- 根据Uid获取出差申请记录   -->
     <select id="queryTravelRecordByUid" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
         tb1.travelid as travelid,
@@ -747,14 +794,15 @@
         to_char(TO_TIMESTAMP(tb1.endtime/1000), 'YYYY-MM-DD') as endtime,
         tb1.fare as fare,
         tb1.expenses as expenses,
-        tb1."version",
-        tb1.status,
+        tb1.traversion as "version",
+        tb1.trastatus as status,
         string_agg(tb2.truid,',') as truids,
         string_agg(to_char(tb2.idx,'9'),',') as idxs,
         string_agg(to_char(tb2.trstatus,'9'),',') as trstatus
         from tb_travel_record tb1
         LEFT JOIN tb_travel_approval tb2
-        on  tb1.travelid = tb2.travelid and tb1."version" = tb2."version"
+        on  tb1.travelid = tb2.travelid
+        and tb1.traversion = tb2."version"
         <where>
             tb1.status != '2'
             <if test="uid != null and uid != '' ">
@@ -776,24 +824,26 @@
         tb1.endtime,
         tb1.fare,
         tb1.expenses,
-        tb1."version",
-        tb1.status
+        tb1.traversion,
+        tb1.trastatus
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
+    <!-- 根据Uid获取出差申请记录数   -->
     <select id="queryTravelRecordCountByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_travel_record
         WHERE
         uid =#{ uid } and status != '2'
     </select>
 
+    <!-- 根据Uid获取出差审批记录数   -->
     <select id="queryTravelApprovalRecordCountByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_travel_approval
         WHERE
         truid =#{ uid } and (trstatus = '2' or trstatus = '3')
     </select>
 
-
+    <!-- 根据Uid获取出差审批记录   -->
     <select id="queryTravelApprovalRecordByUid" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
         tb1.travelid as travelid,
@@ -802,13 +852,16 @@
         to_char(TO_TIMESTAMP(tb1.endtime/1000), 'YYYY-MM-DD') as endtime,
         tb1.fare as fare,
         tb1.expenses as expenses,
-        tb1."version",
+        tb1.traversion as status,
         tb2.idx,
         tb2.apid,
         tb2.trstatus as trstatus
         from tb_travel_record tb1
         INNER JOIN tb_travel_approval tb2
-        on  tb1.travelid = tb2.travelid and tb1."version" = tb2."version"
+        on  tb1.travelid = tb2.travelid
+
+        and tb1.traversion = tb2."version"
+
         <where>
             tb1.status != '2'
             and (tb2.trstatus = '2' or tb2.trstatus = '3')
@@ -821,7 +874,7 @@
             <if test="endTime != null and endTime != '' ">
                 and tb1.endtime &lt;= #{endTime}
             </if>
-            <if test="aptype != '' and aptype!=null"  >
+            <if test="aptype == 2"  >
                 and tb1.aptype = #{aptype}
             </if>
 
@@ -829,6 +882,7 @@
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
+    <!-- 根据 Travelid设置出差详情表状态  -->
     <update id="setDetailsStatusByTravelid" parameterType="java.util.Map" >
 		update tb_travel_record_deta set status  = #{status} where travelid = #{travelid}
 	</update>
