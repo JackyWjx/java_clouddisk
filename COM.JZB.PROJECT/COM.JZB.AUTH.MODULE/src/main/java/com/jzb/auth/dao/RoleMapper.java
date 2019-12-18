@@ -1,6 +1,7 @@
 package com.jzb.auth.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedHashMap;
@@ -242,7 +243,7 @@ public interface RoleMapper {
      * @Author: DingSC
      * @DateTime: 2019/9/3 10:30
      */
-    int insertUserRole(List<Map<String, Object>> map);
+    int insertUserRole( List<Map<String, Object>> map);
 
     /**
      * 批量修改用户角色表状态
