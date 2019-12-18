@@ -272,20 +272,13 @@ WHERE
 
     <!--分配业务员-->
     <update id="updateCompanys" parameterType="java.util.Map">
-        update
-        tb_private_company_list
-        set
-        <if test="status != null and status != ''">
-            status = #{status},
-        </if>
-        <if test="uid != null and uid != ''">
-            oneheader = #{uid}
-        </if>
-        where
-        cid = #{cid};
 
         update tb_common_company_list
         set status='2' where cid=#{cid};
+
+        insert into tb_private_company_list (cid,tracktype,oneheader,status,addtime)
+        values (#{cid},1,#{uid},1,#{addtime});
+
     </update>
 
 
