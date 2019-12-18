@@ -453,14 +453,14 @@ public class TbCompanyCommonController {
                 result = Response.getResponseError();
             } else {
                 if (param.get("status").equals("")) {
-                    param.put("status", '1');
-                    param.put("statuss", '2');
+                    param.put("status", '2');
+                    param.put("statuss", '1');
                 } else if (param.get("status").equals("1")) {
-                    param.put("status", '1');
-                    param.put("statuss", '3');
-                } else {
                     param.put("status", '3');
-                    param.put("statuss", '2');
+                    param.put("statuss", '1');
+                } else {
+                    param.put("status", '2');
+                    param.put("statuss", '3');
                 }
                     // 设置参数
                     JzbPageConvert.setPageRows(param);

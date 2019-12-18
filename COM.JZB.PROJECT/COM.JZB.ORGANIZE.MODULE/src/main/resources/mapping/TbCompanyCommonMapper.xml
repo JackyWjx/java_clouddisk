@@ -149,8 +149,8 @@ WHERE
         SELECT
         DISTINCT
         tcc.cid,
-        tcc.uid,
-        (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
+        '' as oneheader,
+        '' as sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
@@ -163,7 +163,7 @@ WHERE
         tcl.relmail,
         tci.address
         FROM
-        tb_company_common tcc
+        tb_common_company_list tcc
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
         LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
         AND tdu.uid = tcl.manager
@@ -177,9 +177,6 @@ WHERE
         </if>
         <if test="region!=null and region !=''">
             and a.region=#{region}
-        </if>
-        <if test="uid!=null and uid !=''">
-            and a.uid=#{uid}
         </if>
         <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
             and a.dictvalue=#{dictvalue}
@@ -198,8 +195,8 @@ WHERE
         SELECT
         DISTINCT
         tcc.cid,
-        tcc.uid,
-        (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
+        tpcl.oneheader,
+        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
@@ -212,8 +209,9 @@ WHERE
         tcl.relmail,
         tci.address
         FROM
-        tb_company_common tcc
+        tb_common_company_list tcc
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
         LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
         AND tdu.uid = tcl.manager
         LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
@@ -226,6 +224,9 @@ WHERE
         </if>
         <if test="region!=null and region !=''">
             and a.region=#{region}
+        </if>
+        <if test="uid != null and uid != ''">
+            and a.oneheader = #{uid}
         </if>
         <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
             and a.dictvalue=#{dictvalue}
@@ -287,13 +288,13 @@ WHERE
 
     <!-- 所有业主-业主列表查询 -->
     <select id="getCompanyCommoms" parameterType="java.util.Map" resultType="java.util.Map">
-     select * from (
+        select * from (
         select * from (
         SELECT
         DISTINCT
         tcc.cid,
-        tcc.uid,
-        (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
+        '' as oneheader,
+        '' as sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
@@ -306,7 +307,7 @@ WHERE
         tcl.relmail,
         tci.address
         FROM
-        tb_company_common tcc
+        tb_common_company_list tcc
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
         LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
         AND tdu.uid = tcl.manager
@@ -320,9 +321,6 @@ WHERE
         </if>
         <if test="region!=null and region !=''">
             and a.region=#{region}
-        </if>
-        <if test="uid!=null and uid !=''">
-            and a.uid=#{uid}
         </if>
         <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
             and a.dictvalue=#{dictvalue}
@@ -341,8 +339,8 @@ WHERE
         SELECT
         DISTINCT
         tcc.cid,
-        tcc.uid,
-        (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
+        tpcl.oneheader,
+        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
@@ -355,8 +353,9 @@ WHERE
         tcl.relmail,
         tci.address
         FROM
-        tb_company_common tcc
+        tb_common_company_list tcc
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
         LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
         AND tdu.uid = tcl.manager
         LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
@@ -369,6 +368,9 @@ WHERE
         </if>
         <if test="region!=null and region !=''">
             and a.region=#{region}
+        </if>
+        <if test="uid != null and uid != ''">
+            and a.oneheader = #{uid}
         </if>
         <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
             and a.dictvalue=#{dictvalue}

@@ -305,7 +305,11 @@ public class ProductLineService {
             param.put("mid", mid);
             param.put("addtime", addtime);
             param.put("updtime", addtime);
-            param.put("status", '3');
+            if (param.get("\uD83D\uDE01") != null && param.get("\uD83D\uDE01") .equals("1")) {
+                param.put("status", '3');
+            } else {
+                param.put("status", '1');
+            }
             // 加入菜单表
             count = productLineMapper.insertProductMenu(param);
         } catch (Exception ex) {
