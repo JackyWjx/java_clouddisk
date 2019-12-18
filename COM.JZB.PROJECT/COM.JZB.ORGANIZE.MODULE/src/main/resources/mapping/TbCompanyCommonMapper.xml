@@ -34,7 +34,7 @@
         WHERE
         tcc.status = '2'
         ) a where 1=1
-        <if test="uid != null and uid != '' uid !='JZBDCDCJZBDC'">
+        <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
             and a.oneheader = #{uid}
         </if>
         limit
@@ -45,9 +45,23 @@
 
     <!-- 查询公海单位 不做条件-->
     <select id="queryCompanyCommonCount" resultType="java.lang.Integer" parameterType="java.util.Map">
-        select * from (
+        select count(1) from (
         SELECT
-        count (1)
+        DISTINCT
+        tcc.cid,
+        tpcl.oneheader,
+        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) companyLevel,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
         FROM
         tb_common_company_list tcc
         INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
@@ -59,7 +73,7 @@
         WHERE
         tcc.status = '2'
         ) a where 1=1
-        <if test="uid != null and uid != '' uid !='JZBDCDCJZBDC'">
+        <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
             and a.oneheader = #{uid}
         </if>
     </select>
@@ -100,7 +114,7 @@
         WHERE
         tcc.status = '2'
         ) a where 1=1
-        <if test="uid != null and uid != '' uid !='JZBDCDCJZBDC'">
+        <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
             and a.oneheader = #{uid}
         </if>
         <if test="region!=null and region !=''">
@@ -147,7 +161,7 @@
         ) a where 1=1
 
         <if test="uid!=null and uid !='' and uid!='JZBDCDCJZBDC'">
-            and a.uid=#{uid}
+            and a.oneheader=#{uid}
         </if>
         <if test="region!=null and region !=''">
             and a.region=#{region}
