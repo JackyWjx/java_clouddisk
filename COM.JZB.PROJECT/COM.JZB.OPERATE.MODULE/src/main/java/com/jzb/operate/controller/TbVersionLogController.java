@@ -199,10 +199,10 @@ public class TbVersionLogController {
                 response = Response.getResponseError();
             } else {
                 param.put("ouid", userInfo.get("uid"));
-                param.put("vsndate",JzbDateUtil.getDate(JzbDataType.getString(param.get("vsndate")),JzbDateStr.yyyy_MM_dd).getTime());
-                param.put("gadate",JzbDateUtil.getDate(JzbDataType.getString(param.get("gadate")),JzbDateStr.yyyy_MM_dd).getTime());
-                param.put("addtime",System.currentTimeMillis());
-                param.put("adduid",userInfo.get("uid"));
+                param.put("vsndate", JzbDateUtil.getDate(JzbDataType.getString(param.get("vsndate")), JzbDateStr.yyyy_MM_dd).getTime());
+                param.put("gadate", JzbDateUtil.getDate(JzbDataType.getString(param.get("gadate")), JzbDateStr.yyyy_MM_dd).getTime());
+                param.put("addtime", System.currentTimeMillis());
+                param.put("adduid", userInfo.get("uid"));
                 response = tbVersionLogService.saveVersionLog(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
@@ -248,6 +248,12 @@ public class TbVersionLogController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"id"})) {
                 response = Response.getResponseError();
             } else {
+                if (param.get("vsndate") != null) {
+                    param.put("vsndate", JzbDateUtil.getDate(JzbDataType.getString(param.get("vsndate")), JzbDateStr.yyyy_MM_dd).getTime());
+                }
+                if (param.get("gadate") != null) {
+                    param.put("gadate", JzbDateUtil.getDate(JzbDataType.getString(param.get("gadate")), JzbDateStr.yyyy_MM_dd).getTime());
+                }
                 response = tbVersionLogService.upVersionLog(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
@@ -267,6 +273,7 @@ public class TbVersionLogController {
 
     /**
      * 删除日志信息
+     *
      * @param param
      * @return
      */

@@ -129,6 +129,12 @@
             <when test="vsncode != null">,vsncode = #{vsncode}</when>
         </choose>
         <choose>
+            <when test="vsndate != null">,vsndate = #{vsndate}</when>
+        </choose>
+        <choose>
+            <when test="gadate != null">,gadate = #{gadate}</when>
+        </choose>
+        <choose>
             <when test="vsnnote != null">,vsnnote = #{vsnnote}</when>
         </choose>
         <choose>
