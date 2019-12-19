@@ -6,6 +6,7 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.NewTbCompanyListApi;
@@ -19,6 +20,7 @@ import com.jzb.operate.util.PrindexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -171,12 +173,12 @@ public class TbAsApproverController {
         }
         return response;
     }
-    
-    
+
+
     /**
      * @Author sapientia
      * @Date 18:04 2019/12/18
-     * @Description 申请单     
+     * @Description 申请单
      **/
     @RequestMapping(value = "/queryTravelListBytrid" ,method = RequestMethod.POST)
     @CrossOrigin
@@ -260,7 +262,7 @@ public class TbAsApproverController {
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(list);
-                pageInfo.setTotal(tbTravelService.countTravelInfo(param));
+                pageInfo.setTotal(tbAsApproverService.countAsApprover(param));
                 response.setPageInfo(pageInfo);
             }
         } catch (Exception ex) {
@@ -277,8 +279,8 @@ public class TbAsApproverController {
         }
         return response;
     }
-    
-    
+
+
     /**
      * @Author sapientia
      * @Date 18:07 2019/12/18
@@ -412,7 +414,7 @@ public class TbAsApproverController {
                         list.get(i).put("reList", reList);
                         list.get(i).put("uname",userMap.get("cname"));
                     }
-                    userList.get(m).put("list",list);
+                    userList.get(m).put("trList",list);
                 }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
@@ -481,4 +483,48 @@ public class TbAsApproverController {
         }
         return response;
     }
+
+
+    /**
+     * @Author sapientia
+     * @Date 9:22 2019/12/19
+     * @Description 设置审批退回状态
+     **/
+    @RequestMapping(value = "/setReturnStatus",method = RequestMethod.POST)
+    @CrossOrigin
+    @Transactional
+    public Response setReturnStatus(@RequestBody Map<String, Object> param) {
+        Response response;
+
+        Map<String, Object> userInfo = null;
+        String api = "/operate/reimburseSystem/setReturnStatus";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid"})) {
+                response = Response.getResponseError();
+            } else {
+                response = tbAsApproverService.setReturnStatus(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "setReturnStatus Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
 }

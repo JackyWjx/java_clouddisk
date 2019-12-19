@@ -52,4 +52,6 @@ public interface TbTravelMapper {
     //查询出差详情bycid
     List<Map<String, Object>> queryDetaBycid(Map<String, Object> param);
 
+    int updateRebStatus(List<Map<String, Object>> param);
+
 }

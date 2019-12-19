@@ -483,7 +483,7 @@ public class TbTravelController {
     /**
      * @Author sapientia
      * @Date 11:36 2019/12/5
-     * @Description 设置出差记录删除状态
+     * @Description 设置报销单删除状态
      **/
     @RequestMapping(value = "/setDeleteStatus" ,method = RequestMethod.POST)
     @CrossOrigin
@@ -693,6 +693,7 @@ public class TbTravelController {
                     list.get(i).put("status", 1);//默认状态1
                 }
                 tbTravelExpenseService.saveTravelExpense(list);
+                tbTravelService.updateRebStatus(list);
                 response = Response.getResponseSuccess(userInfo);
             }
         } catch (Exception ex) {

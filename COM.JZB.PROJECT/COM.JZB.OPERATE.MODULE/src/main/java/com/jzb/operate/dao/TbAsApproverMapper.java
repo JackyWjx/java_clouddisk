@@ -11,4 +11,8 @@ import java.util.Map;
 public interface TbAsApproverMapper {
 
     List<Map<String, Object>> queryAsApprover(Map<String, Object> param);
+
+    int setReturnStatus(Map<String, Object> param);
+
+    int countAsApprover(Map<String, Object> param);
 }

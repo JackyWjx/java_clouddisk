@@ -6,8 +6,8 @@
 
     <!--  查询出差记录   -->
     <select id="queryAllTravelList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",rebversion
-        from tb_travel_record where rebstatus='1'  and aptype = '2'
+        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",rebversion,rebstatus
+        from tb_travel_record where  aptype = '2' and  (rebstatus='1'or rebstatus='2')
         <if test="uid != null and uid != ''">and uid=#{uid} </if>
         <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
@@ -213,18 +213,20 @@
         select  prindex from tb_travel_produce where status = '1'
     </select>
 
-    <!-- 设置删除状态-->
+    <!-- 设置报销单删除状态-->
     <update id="setDeleteStatus" parameterType="java.util.Map">
-        update tb_travel_record  set status = '2' where travelid=#{travelid};
-        update tb_travel_record_deta set status ='2'where travelid=#{travelid};
-        update tb_travel_data set status='2' where travelid=#{travelid};
-        update tb_travel_info set status='2' where travelid=#{travelid};
         update tb_travel_expense set status='2' where travelid=#{travelid}
+        update tb_travel_record set rebstatus='0' where travelid=#{travelid};
     </update>
 
     <!-- 设置撤回状态-->
     <update id="setRecallStatus" parameterType="java.util.Map">
-        update tb_travel_record set rebstatus='3',rebversion=#{rebversion} where travelid=#{travelid};
+        update tb_travel_record set rebstatus='1',rebversion=#{rebversion} where travelid=#{travelid};
+    </update>
+
+    <!--更新报销状态-->
+    <update id="updateRebStatus" parameterType="java.util.List">
+        update tb_travel_record set rebstatus = '1' where travelid=#{travelid};
     </update>
 
 </mapper>

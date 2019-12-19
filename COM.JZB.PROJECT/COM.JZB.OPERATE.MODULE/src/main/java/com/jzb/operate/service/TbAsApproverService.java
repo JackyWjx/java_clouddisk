@@ -1,5 +1,6 @@
 package com.jzb.operate.service;
 
+import com.jzb.base.message.Response;
 import com.jzb.operate.dao.TbAsApproverMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,4 +23,15 @@ public class TbAsApproverService {
     public List<Map<String, Object>> queryAsApprover(Map<String, Object> param) {
         return tbAsApproverMapper.queryAsApprover(param);
     }
+
+    /** 审批人审批退回*/
+    public int setReturnStatus(Map<String, Object> param) {
+        return tbAsApproverMapper.setReturnStatus(param);
+    }
+
+    /** 作为审批人收到的待审批记录条数*/
+    public  int countAsApprover(Map<String, Object> param){
+        return tbAsApproverMapper.countAsApprover(param);
+    }
+
 }
