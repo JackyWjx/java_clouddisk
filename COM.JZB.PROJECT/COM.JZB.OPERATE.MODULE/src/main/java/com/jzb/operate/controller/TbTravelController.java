@@ -355,6 +355,8 @@ public class TbTravelController {
                             list.get(i).put("prindex", prindexList);
                             list.get(i).put("produceMaps", priList);
                         }
+                        list.get(i).put("infoList",infoList);
+                        list.get(i).put("resList",resList);
                     }
                     response = Response.getResponseSuccess(userInfo);
                     PageInfo pageInfo = new PageInfo();
@@ -450,6 +452,7 @@ public class TbTravelController {
                     Map<String, Object> dataMap = new HashMap();
                     dataMap.put("userinfo",userInfo);
                     dataMap.put("list", list);
+                    dataMap.put("uid",userInfo.get("uid"));
                     dataMap.put("pageno",param.get("pageno"));
                     dataMap.put("pagesize",param.get("pagesize"));
                     dataMap.put("cid",list.get(i).get("cid"));
@@ -818,47 +821,6 @@ public class TbTravelController {
         return response;
     }
 
-    /**
-     * @Author sapientia
-     * @Date 11:21 2019/12/6
-     * @Description 设置报销单删除状态
-     **/
-    @RequestMapping(value = "/setExpenseDeleteStatus",method = RequestMethod.POST)
-    @CrossOrigin
-    @Transactional
-    public Response setExpenseDeleteStatus(@RequestBody Map<String, Object> param) {
-        Response response;
-        Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/setExpenseDeleteStatus";
-        boolean flag = true;
-        try {
-            if (param.get("userinfo") != null) {
-                userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
-            } else {
-                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
-            }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid" })) {
-                response = Response.getResponseError();
-            } else {
-                param.put("travelid",param.get("travelid").toString().trim());
-                response = tbTravelExpenseService.setExpenseDeleteStatus(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
-            }
-        } catch (Exception ex) {
-            flag = false;
-            JzbTools.logError(ex);
-            response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "setExpenseDeleteStatus Method", ex.toString()));
-        }
-        if (userInfo != null) {
-            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
-                    userInfo.get("msgTag").toString(), "User Login Message"));
-        } else {
-            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
-        }
-        return response;
-    }
 
     /**
      * @Author sapientia
