@@ -346,14 +346,31 @@
         select
         trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
         from tb_track_user_list
-        where customer = #{customer}
-        and status = '1'
+        where
+         status = '1'
         and tracktype in (4,8,16)
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
         </if>
         <if test="twelve != null and twelve != ''">
             and addtime &lt;= #{twelve}
+        </if>
+        <if test="customer != null and customer != ''">
+            and customer = #{customer}
+        </if>
+        <if test="cdid != null and cdid != ''">
+            and customer in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="cid != null and manager != null and cid != '' and manager != ''">
+            and customer in(
+            select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
+            )
         </if>
         order by addtime desc
     </select>
@@ -375,8 +392,8 @@
     <select id="getHandleStage" parameterType="java.util.Map" resultType="java.util.Map">
        select trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
         from tb_track_user_list
-        where customer = #{customer}
-        and status = '1'
+        where
+        status = '1'
         and trackres = #{trackeres}
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
@@ -384,6 +401,24 @@
         <if test="twelve != null and twelve != ''">
             and addtime &lt;= #{twelve}
         </if>
+        <if test="customer != null and customer != ''">
+            and customer = #{customer}
+        </if>
+        <if test="cdid != null and cdid != ''">
+            and customer in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="cid != null and manager != null and cid != '' and manager != ''">
+            and customer in(
+            select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
+            )
+        </if>
+
     </select>
     
 </mapper>

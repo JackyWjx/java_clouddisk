@@ -136,7 +136,7 @@ public class TbTrackUserService {
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
             param.put("customer",param.get("adduid"));
         }
-        if (!JzbTools.isEmpty(param.get("cid"))){
+        if (!JzbTools.isEmpty(param.get("cdid"))){
             List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
             for (int i = 0; i < list.size(); i++) {
                 list.get(i).remove("pcdid");
@@ -215,6 +215,19 @@ public class TbTrackUserService {
             param.put("customer",param.get("adduid"));
         }
         param.putAll(map);
+        if (JzbTools.isEmpty(param.get("customer")) &&
+                JzbTools.isEmpty(param.get("cdid")) &&
+                JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
+            param.put("customer",param.get("adduid"));
+        }
+        if (!JzbTools.isEmpty(param.get("cid"))){
+            List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).remove("pcdid");
+                list.get(i).remove("idx");
+            }
+            param.put("list",list);
+        }
         return userMapper.getContactList(param);
     }
 
@@ -256,8 +269,18 @@ public class TbTrackUserService {
         }else {
             param.putAll(map);
         }
-        if (JzbTools.isEmpty(param.get("customer"))){
+        if (JzbTools.isEmpty(param.get("customer")) &&
+                JzbTools.isEmpty(param.get("cdid")) &&
+                JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
             param.put("customer",param.get("adduid"));
+        }//todo
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).remove("pcdid");
+                list.get(i).remove("idx");
+            }
+            param.put("list",list);
         }
         return userMapper.getHandleStage(param);
     }
