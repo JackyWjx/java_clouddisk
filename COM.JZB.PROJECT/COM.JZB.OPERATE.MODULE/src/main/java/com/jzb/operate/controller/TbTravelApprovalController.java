@@ -203,7 +203,7 @@ public class TbTravelApprovalController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version","atype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version","aptype"})) {
                 response = Response.getResponseError();
             } else {
                 Integer isOk = (Integer) param.get("isOk");
@@ -231,7 +231,8 @@ public class TbTravelApprovalController {
                         count = travelApprovalService.update(query);
                     }else if (i > 0 && isLast)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
                         query.put("rebversion",JzbRandom.getRandom(8));
-                        query.put("atype",2);
+                        query.put("rebstatus","1");
+                        query.put("aptype",2);
                         query.put("travelid",param.get("travelid"));
                         count = travelPlanService.updateTravelRecord(query);
                     }

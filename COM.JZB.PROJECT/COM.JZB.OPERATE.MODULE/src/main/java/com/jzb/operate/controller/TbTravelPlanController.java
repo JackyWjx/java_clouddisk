@@ -342,7 +342,7 @@ public class TbTravelPlanController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid","atype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid","aptype"})) {
                 response = Response.getResponseError();
             } else {
                 String randomVersion = JzbRandom.getRandom(8);
