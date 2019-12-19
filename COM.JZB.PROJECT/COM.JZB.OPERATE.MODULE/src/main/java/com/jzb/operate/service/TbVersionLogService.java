@@ -56,7 +56,6 @@ public class TbVersionLogService {
      *  添加
      */
     public int  saveVersionLog(Map<String , Object> map){
-        map.put("vsndate",System.currentTimeMillis());
         map.put("status",1);
         return  mapper.insertVersionLog(map);
     }

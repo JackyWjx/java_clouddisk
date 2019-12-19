@@ -75,8 +75,8 @@ public class TbVersionLogController {
                 List<Map<String, Object>> list = tbVersionLogService.queryVersionLog(param);
                 for (int i = 0, l = list.size(); i < l; i++) {
                     /**  转换时间 */
-                    list.get(i).put("gadate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("gadate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
-                    list.get(i).put("vsndate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("vsndate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                    list.get(i).put("gadate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("gadate")), JzbDateStr.yyyy_MM_dd));
+                    list.get(i).put("vsndate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("vsndate")), JzbDateStr.yyyy_MM_dd));
 
                     /**  获取用户id去缓存区查 */
                     param.put("uid", list.get(i).get("ouid"));
@@ -141,8 +141,8 @@ public class TbVersionLogController {
 
                 for (int i = 0, l = list.size(); i < l; i++) {
                     /**  转换时间 */
-                    list.get(i).put("gadate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("gadate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
-                    list.get(i).put("vsndate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("vsndate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                    list.get(i).put("gadate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("gadate")), JzbDateStr.yyyy_MM_dd));
+                    list.get(i).put("vsndate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("vsndate")), JzbDateStr.yyyy_MM_dd));
 
                     /**  获取用户id去缓存区查 */
                     param.put("uid", list.get(i).get("ouid"));
@@ -199,6 +199,10 @@ public class TbVersionLogController {
                 response = Response.getResponseError();
             } else {
                 param.put("ouid", userInfo.get("uid"));
+                param.put("vsndate", JzbDateUtil.getDate(JzbDataType.getString(param.get("vsndate")), JzbDateStr.yyyy_MM_dd).getTime());
+                param.put("gadate", JzbDateUtil.getDate(JzbDataType.getString(param.get("gadate")), JzbDateStr.yyyy_MM_dd).getTime());
+                param.put("addtime", System.currentTimeMillis());
+                param.put("adduid", userInfo.get("uid"));
                 response = tbVersionLogService.saveVersionLog(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
@@ -244,6 +248,12 @@ public class TbVersionLogController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"id"})) {
                 response = Response.getResponseError();
             } else {
+                if (param.get("vsndate") != null) {
+                    param.put("vsndate", JzbDateUtil.getDate(JzbDataType.getString(param.get("vsndate")), JzbDateStr.yyyy_MM_dd).getTime());
+                }
+                if (param.get("gadate") != null) {
+                    param.put("gadate", JzbDateUtil.getDate(JzbDataType.getString(param.get("gadate")), JzbDateStr.yyyy_MM_dd).getTime());
+                }
                 response = tbVersionLogService.upVersionLog(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
@@ -263,6 +273,7 @@ public class TbVersionLogController {
 
     /**
      * 删除日志信息
+     *
      * @param param
      * @return
      */
