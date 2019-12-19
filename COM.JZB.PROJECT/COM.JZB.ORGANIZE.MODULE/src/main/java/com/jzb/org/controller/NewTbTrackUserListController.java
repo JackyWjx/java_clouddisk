@@ -52,11 +52,10 @@ public class NewTbTrackUserListController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","list"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","list","uid"})) {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
-                param.put("uid",userInfo.get("uid"));
                 // 获取进度情况
                 List<Map<String, Object>> list = newTbTrackUserListService.queryTrackUserListByKey(param);
                 response = Response.getResponseSuccess(param);

@@ -197,4 +197,13 @@ public interface AuthUserMapper {
      * @author kuangbin
      */
     List<Map<String, Object>> searchUserNameList(Map<String, Object> param);
+
+    /*
+     * @Author Reed
+     * @Description 根据用户id查询密码
+     * @Date 15:07 2019/12/18
+     * @Param [param]
+     * @return java.lang.String
+    **/
+    String getInitPassWd(Map<String, Object> param);
 } // End interface AuthUserMapper

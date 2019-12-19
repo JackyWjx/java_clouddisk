@@ -10,7 +10,7 @@
         adduid,status,summary,addtime)
         values (
         <choose>
-            <when test="isservice != null and isservice = ''">
+            <when test="isservice != null and isservice != ''">
                 #{isservice},
             </when>
             <otherwise>
@@ -18,7 +18,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="nextadvance != null and nextadvance = ''">
+            <when test="nextadvance != null and nextadvance != ''">
                 #{nextadvance},
             </when>
             <otherwise>
@@ -26,7 +26,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="abdialogue != null and abdialogue = ''">
+            <when test="abdialogue != null and abdialogue != ''">
                 #{abdialogue},
             </when>
             <otherwise>
@@ -34,7 +34,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackoutput != null and trackoutput = ''">
+            <when test="trackoutput != null and trackoutput != ''">
                 #{trackoutput},
             </when>
             <otherwise>
@@ -42,7 +42,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackres != null and trackres = ''">
+            <when test="trackres != null and trackres != ''">
                 #{trackres},
             </when>
             <otherwise>
@@ -50,7 +50,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="excontent != null and excontent = ''">
+            <when test="excontent != null and excontent != ''">
                 #{excontent},
             </when>
             <otherwise>
@@ -58,7 +58,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackdesc != null and trackdesc = ''">
+            <when test="trackdesc != null and trackdesc != ''">
                 #{trackdesc},
             </when>
             <otherwise>
@@ -66,7 +66,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackcid != null and trackcid = ''">
+            <when test="trackcid != null and trackcid != ''">
                 #{trackcid},
             </when>
             <otherwise>
@@ -74,7 +74,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackproid != null and trackproid = ''">
+            <when test="trackproid != null and trackproid != ''">
                 #{trackproid},
             </when>
             <otherwise>
@@ -82,7 +82,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackvalue != null and trackvalue = ''">
+            <when test="trackvalue != null and trackvalue != ''">
                 #{trackvalue},
             </when>
             <otherwise>
@@ -90,7 +90,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackid != null and trackid = ''">
+            <when test="trackid != null and trackid != ''">
                 #{trackid},
             </when>
             <otherwise>
@@ -106,7 +106,7 @@
              </otherwise>
         </choose>
         <choose>
-            <when test="trackuname != null and trackuname = ''">
+            <when test="trackuname != null and trackuname != ''">
                 #{trackuname},
             </when>
             <otherwise>
@@ -114,15 +114,15 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="tracktype != null and tracktype = ''">
+            <when test="tracktype != null and tracktype != ''">
                 #{tracktype},
             </when>
             <otherwise>
-                null,
+                0,
             </otherwise>
         </choose>
         <choose>
-            <when test="customer != null and customer = ''">
+            <when test="customer != null and customer != ''">
                 #{customer},
             </when>
             <otherwise>
@@ -130,7 +130,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackcontent != null and trackcontent = ''">
+            <when test="trackcontent != null and trackcontent != ''">
                 #{trackcontent},
             </when>
             <otherwise>
@@ -138,7 +138,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="image != null and image = ''">
+            <when test="image != null and image != ''">
                 #{image},
             </when>
             <otherwise>

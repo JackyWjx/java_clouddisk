@@ -121,6 +121,8 @@ public class AuthUserService {
         return count;
     }
 
+
+
     /**
      * 加解密对象
      *
@@ -360,5 +362,9 @@ public class AuthUserService {
         param = setPageSize(param);
         param.put("status", "1");
         return userMapper.searchUserNameList(param);
+    }
+
+    public String getInitPassWd(Map<String, Object> param) {
+        return userMapper.getInitPassWd(param);
     }
 } // End class AuthUserService

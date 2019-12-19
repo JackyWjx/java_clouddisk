@@ -77,4 +77,5 @@ public class TbTravelService {
     public List<Map<String, Object>> queryDetaBycid(Map<String, Object> param) {
         return tbTravelMapper.queryDetaBycid(param);
     }
+
 }

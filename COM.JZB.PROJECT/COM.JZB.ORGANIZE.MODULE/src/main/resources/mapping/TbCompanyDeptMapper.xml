@@ -9,8 +9,7 @@
         SELECT
         DISTINCT
         tcc.cid,
-        tcc.uid,
-        (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
+        (select cname from tb_dept_user where uid=tcc.oneheader limit 1) sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
@@ -24,16 +23,14 @@
         FROM
         tb_company_dept tcd
         LEFT JOIN tb_dept_user tdu ON tcd.cdid = tdu.cdid
-        LEFT JOIN tb_company_common tcc ON tdu.uid = tcc.uid
+        LEFT JOIN tb_private_company_list tcc ON tcc.oneheader = tdu.uid
         LEFT JOIN tb_company_list tcl ON tcl.cid = tcc.cid
         LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
         WHERE
         tcc.status != '4'
         ) a where 1=1
         and a.duid = #{uid}
-        <if test="status != null and status != ''">
-            and a.status = #{status}
-        </if>
+            and a.status = '1'
         <if test="region!=null and region !=''">
             and a.region=#{region}
         </if>
@@ -61,35 +58,32 @@
           count(1)
           from
           (
-          select * from (
-          SELECT
-          DISTINCT
-          tcc.cid,
-          tcc.uid,
-          (select cname from tb_dept_user where uid=tcc.uid limit 1) sales,
-          tcc.status,
-          tcl.cname,
-          tcl.manager,
-          tcl.region,
-          tdu.phone userphone,
-          ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) dictvalue,
-          tcl.authid,
-          tcl.logo,
-          tcl.relmail,
-		  tcd.duid
-          FROM
-		  tb_company_dept tcd
-          LEFT JOIN tb_dept_user tdu ON tcd.cdid = tdu.cdid
-          LEFT JOIN  tb_company_common tcc ON tdu.uid = tcc.uid
-          LEFT JOIN tb_company_list tcl ON tcl.cid = tcc.cid
-          LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
-          WHERE
-          tcc.status != '4'
-          ) a where 1=1
-		   and a.duid = #{uid}
-        <if test="status != null and status != ''">
-            and a.status = #{status}
-        </if>
+        select * from (
+        SELECT
+        DISTINCT
+        tcc.cid,
+        (select cname from tb_dept_user where uid=tcc.oneheader limit 1) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) dictvalue,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tcd.duid
+        FROM
+        tb_company_dept tcd
+        LEFT JOIN tb_dept_user tdu ON tcd.cdid = tdu.cdid
+        LEFT JOIN tb_private_company_list tcc ON tcc.oneheader = tdu.uid
+        LEFT JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        WHERE
+        tcc.status != '4'
+        ) a where 1=1
+        and a.duid = #{uid}
+        and a.status = '1'
         <if test="region!=null and region !=''">
             and a.region=#{region}
         </if>
