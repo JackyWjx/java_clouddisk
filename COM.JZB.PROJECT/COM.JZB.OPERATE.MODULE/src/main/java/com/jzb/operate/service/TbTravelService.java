@@ -79,7 +79,7 @@ public class TbTravelService {
     }
 
     /** 设置报销单添加成功信息*/
-    public int updateRebStatus(List<Map<String, Object>> param){
+    public int updateRebStatus(Map<String, Object> param){
         return tbTravelMapper.updateRebStatus(param);
     }
 

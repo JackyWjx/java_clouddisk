@@ -143,13 +143,15 @@ public class TbAsApproverController {
                         reList.get(j).put("daList",daList);
                         reList.get(j).put("infoList",infoList);
                         // 获取产出情况
-                        List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
-                        List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(reList.get(j).get("produce")),proList);
-                        Map<String,Object> prindexMap =new HashMap<>();
-                        prindexMap.put("prindex",prindexList);
-                        List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
-                        reList.get(j).put("prindex",prindexList);
-                        reList.get(j).put("produceMaps",priList);
+                        if(!JzbTools.isEmpty(reList.get(j).get("produce"))) {
+                            List<Map<String, Object>> proList = tbTravelService.queryTravelProduce();
+                            List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(reList.get(j).get("produce")), proList);
+                            Map<String, Object> prindexMap = new HashMap<>();
+                            prindexMap.put("prindex", prindexList);
+                            List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                            reList.get(j).put("prindex", prindexList);
+                            reList.get(j).put("produceMaps", priList);
+                        }
                     }
                     list.get(i).put("reList",reList);
                 }
@@ -248,13 +250,16 @@ public class TbAsApproverController {
                         }
                     }
                     // 获取产出情况
-                    List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
-                    List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),proList);
-                    Map<String,Object> prindexMap =new HashMap<>();
-                    prindexMap.put("prindex",prindexList);
-                    List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
-                    list.get(i).put("prindex",prindexList);
-                    list.get(i).put("produceMaps",priList);
+                    // 获取产出情况
+                    if(!JzbTools.isEmpty(list.get(i).get("produce"))) {
+                        List<Map<String, Object>> proList = tbTravelService.queryTravelProduce();
+                        List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")), proList);
+                        Map<String, Object> prindexMap = new HashMap<>();
+                        prindexMap.put("prindex", prindexList);
+                        List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                        list.get(i).put("prindex", prindexList);
+                        list.get(i).put("produceMaps", priList);
+                    }
                     list.get(i).put("daList", daList);
                     list.get(i).put("infoList", infoList);
                     list.get(i).put("monList",monList);
@@ -333,13 +338,15 @@ public class TbAsApproverController {
                     Response res = newTbCompanyListApi.queryCompanyByid(proMap);
                     List<Map<String, Object>> resList = res.getPageInfo().getList();
                     // 获取产出情况
-                    List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
-                    List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),proList);
-                    Map<String,Object> prindexMap =new HashMap<>();
-                    prindexMap.put("prindex",prindexList);
-                    List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
-                    list.get(i).put("prindex",prindexList);
-                    list.get(i).put("produceMaps",priList);
+                    if(!JzbTools.isEmpty(list.get(i).get("produce"))) {
+                        List<Map<String, Object>> proList = tbTravelService.queryTravelProduce();
+                        List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")), proList);
+                        Map<String, Object> prindexMap = new HashMap<>();
+                        prindexMap.put("prindex", prindexList);
+                        List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                        list.get(i).put("prindex", prindexList);
+                        list.get(i).put("produceMaps", priList);
+                    }
                     list.get(i).put("infoList",infoList);
                     list.get(i).put("resList", resList);
                 }
@@ -497,7 +504,7 @@ public class TbAsApproverController {
         Response response;
 
         Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/setReturnStatus";
+        String api = "/operate/approvalSystem/setReturnStatus";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {

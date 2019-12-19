@@ -7,7 +7,7 @@
     <!--  查询出差记录   -->
     <select id="queryAllTravelList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",rebversion,rebstatus
-        from tb_travel_record where  aptype = '2' and  (rebstatus='1'or rebstatus='2')
+        from tb_travel_record where  aptype = '2'
         <if test="uid != null and uid != ''">and uid=#{uid} </if>
         <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
@@ -225,7 +225,7 @@
     </update>
 
     <!--更新报销状态-->
-    <update id="updateRebStatus" parameterType="java.util.List">
+    <update id="updateRebStatus" parameterType="java.util.Map">
         update tb_travel_record set rebstatus = '1' where travelid=#{travelid};
     </update>
 

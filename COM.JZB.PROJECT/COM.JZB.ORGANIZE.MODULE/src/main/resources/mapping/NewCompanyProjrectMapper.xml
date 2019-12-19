@@ -6,13 +6,13 @@
 
     <!--根据公司id查询公司信息-->
     <select id="queryCommonCompanyListBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,cname,supervise,orgrelation,prodesc,prolist from tb_common_company_list where status='1' and cid=#{cid}
+        select cid,cname,supervise,orgrelation,prodesc,prolist from tb_common_company_list where cid=#{cid}
         limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--根据公司id查询公司名称-->
     <select id="queryCompanyNameBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,cname from tb_common_company_list where status='1' and cid=#{cid}
+        select cid,cname from tb_common_company_list where  cid=#{cid}
     </select>
 
     <!--根据公司id查询项目信息-->
