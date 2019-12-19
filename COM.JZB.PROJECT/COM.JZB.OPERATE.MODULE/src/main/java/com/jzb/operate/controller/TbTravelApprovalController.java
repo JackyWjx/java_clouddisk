@@ -105,22 +105,6 @@ public class TbTravelApprovalController {
                     approvalList.get(i).put("version", param.get("version"));
                     travelApprovalService.save(approvalList.get(i));
                 }
-//                for (Map<String, Object> approval : approvalList) {
-//
-//                    approval.put("travelid", param.get("travelid"));
-//                    approval.put("apid", JzbRandom.getRandomChar(12));
-//                    Integer idx = (Integer) approval.get("idx");
-//                    if (idx == 1) {
-//                        approval.put("trstatus", 2);
-//                    } else {
-//                        approval.put("trstatus", 1);
-//                    }
-//                    approval.put("addtime", System.currentTimeMillis());
-//                    approval.put("adduid", userInfo.get("uid"));
-//                    approval.put("status", "1");
-//                    approval.put("version", param.get("version"));
-//                    travelApprovalService.save(approval);
-//                }
                 // 添加抄送人
                 List<String> ccuidList = (List<String>) param.get("ccuid");
                 param.put("ccuid", ccuidList.toString());
@@ -231,7 +215,7 @@ public class TbTravelApprovalController {
                         count = travelApprovalService.update(query);
                     }else if (i > 0 && isLast)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
                         query.put("rebversion",JzbRandom.getRandom(8));
-                        query.put("rebstatus","1");
+//                        query.put("rebstatus","1");
                         query.put("aptype",2);
                         query.put("travelid",param.get("travelid"));
                         count = travelPlanService.updateTravelRecord(query);
