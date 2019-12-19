@@ -46,10 +46,18 @@
 
     <!-- 添加日志 -->
     <insert id="insertVersionLog" parameterType="java.util.Map">
-        INSERT INTO PUBLIC.tb_version_log ( pid, vsnen, vsncn, vsnno, vsncode, vsnnote, vsndate, vsndesc, ouid, tuid,
+        INSERT INTO PUBLIC.tb_version_log (adduid,addtime, pid, vsnen, vsncn, vsnno, vsncode, vsnnote, vsndate, vsndesc, ouid, tuid,
         gadate, status, summary )
         VALUES
         (
+        <choose>
+            <when test="adduid != null">#{adduid},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null">#{addtime},</when>
+            <otherwise>null,</otherwise>
+        </choose>
         <choose>
             <when test="pid != null">#{pid},</when>
             <otherwise>null,</otherwise>
@@ -79,15 +87,15 @@
             <otherwise>null,</otherwise>
         </choose>
         <choose>
-            <when test="vsndate != null">#{vsndesc},</when>
+            <when test="vsndesc != null">#{vsndesc},</when>
             <otherwise>null,</otherwise>
         </choose>
         <choose>
-            <when test="vsndate != null">#{ouid},</when>
+            <when test="ouid != null">#{ouid},</when>
             <otherwise>null,</otherwise>
         </choose>
         <choose>
-            <when test="vsndate != null">#{tuid},</when>
+            <when test="tuid != null">#{tuid},</when>
             <otherwise>null,</otherwise>
         </choose>
         <choose>
