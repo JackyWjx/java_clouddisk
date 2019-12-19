@@ -224,13 +224,13 @@ public class TbTravelApprovalController {
                     Map<String, Object> uMap = new HashMap<>();
                     String randomVersion = JzbRandom.getRandom(8);
                     if(apType == 1){
-                        // 更新 出差版本号
+                        // 更新 出差版本号 和 出差申请状态
                         uMap.put("traversion", randomVersion);
-                        uMap.put("trastatus", 3);
+                        uMap.put("trastatus", 1);
                     }else {
-                        // 更新 报销版本号
+                        // 更新 报销版本号 和 报销申请状态
                         uMap.put("rebversion", randomVersion);
-                        uMap.put("rebstatus", 3);
+                        uMap.put("rebstatus", 1);
                     }
                     uMap.put("travelid",param.get("travelid"));
                     count = travelPlanService.updateTravelRecord(uMap);
