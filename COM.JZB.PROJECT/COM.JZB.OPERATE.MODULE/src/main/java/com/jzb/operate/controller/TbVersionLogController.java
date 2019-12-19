@@ -262,10 +262,14 @@ public class TbVersionLogController {
     }
 
     /**
-     * 禁用
+     * 删除日志信息
+     * @param param
+     * @return
      */
     @RequestMapping(value = "/removeVersionLog", method = RequestMethod.POST)
     @ResponseBody
+    @Transactional
+    @CrossOrigin
     public Response removeVersionLog(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
