@@ -319,7 +319,7 @@ public class TbTravelPlanController {
     }
 
     /**
-     * 撤回 status = 3
+     * 撤回
      *
      * @param param
      * @return
@@ -342,7 +342,7 @@ public class TbTravelPlanController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid","atype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid","aptype"})) {
                 response = Response.getResponseError();
             } else {
                 String randomVersion = JzbRandom.getRandom(8);
@@ -351,11 +351,11 @@ public class TbTravelPlanController {
                 if(apType == 1){
                     // 更新 出差版本号
                     param.put("traversion", randomVersion);
-                    param.put("trastatus", 3);
+                    param.put("trastatus", 1);
                 }else  {
                     // 更新 报销版本号
                     param.put("rebversion", randomVersion);
-                    param.put("rebstatus", 3);
+                    param.put("rebstatus", 1);
                 }
 //                param.put("status", 4);
 //                param.put("version", JzbRandom.getRandom(8));

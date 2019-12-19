@@ -105,22 +105,6 @@ public class TbTravelApprovalController {
                     approvalList.get(i).put("version", param.get("version"));
                     travelApprovalService.save(approvalList.get(i));
                 }
-//                for (Map<String, Object> approval : approvalList) {
-//
-//                    approval.put("travelid", param.get("travelid"));
-//                    approval.put("apid", JzbRandom.getRandomChar(12));
-//                    Integer idx = (Integer) approval.get("idx");
-//                    if (idx == 1) {
-//                        approval.put("trstatus", 2);
-//                    } else {
-//                        approval.put("trstatus", 1);
-//                    }
-//                    approval.put("addtime", System.currentTimeMillis());
-//                    approval.put("adduid", userInfo.get("uid"));
-//                    approval.put("status", "1");
-//                    approval.put("version", param.get("version"));
-//                    travelApprovalService.save(approval);
-//                }
                 // 添加抄送人
                 List<String> ccuidList = (List<String>) param.get("ccuid");
                 param.put("ccuid", ccuidList.toString());
@@ -203,7 +187,7 @@ public class TbTravelApprovalController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version","atype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version","aptype"})) {
                 response = Response.getResponseError();
             } else {
                 Integer isOk = (Integer) param.get("isOk");
@@ -231,7 +215,8 @@ public class TbTravelApprovalController {
                         count = travelApprovalService.update(query);
                     }else if (i > 0 && isLast)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
                         query.put("rebversion",JzbRandom.getRandom(8));
-                        query.put("atype",2);
+//                        query.put("rebstatus","1");
+                        query.put("aptype",2);
                         query.put("travelid",param.get("travelid"));
                         count = travelPlanService.updateTravelRecord(query);
                     }
@@ -239,13 +224,13 @@ public class TbTravelApprovalController {
                     Map<String, Object> uMap = new HashMap<>();
                     String randomVersion = JzbRandom.getRandom(8);
                     if(apType == 1){
-                        // 更新 出差版本号
+                        // 更新 出差版本号 和 出差申请状态
                         uMap.put("traversion", randomVersion);
-                        uMap.put("trastatus", 3);
+                        uMap.put("trastatus", 1);
                     }else {
-                        // 更新 报销版本号
+                        // 更新 报销版本号 和 报销申请状态
                         uMap.put("rebversion", randomVersion);
-                        uMap.put("rebstatus", 3);
+                        uMap.put("rebstatus", 1);
                     }
                     uMap.put("travelid",param.get("travelid"));
                     count = travelPlanService.updateTravelRecord(uMap);

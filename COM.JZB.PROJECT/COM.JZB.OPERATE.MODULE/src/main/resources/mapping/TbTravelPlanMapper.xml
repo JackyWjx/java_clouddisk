@@ -855,6 +855,7 @@
         tb1.traversion as status,
         tb2.idx,
         tb2.apid,
+        tb2."version",
         tb2.trstatus as trstatus
         from tb_travel_record tb1
         INNER JOIN tb_travel_approval tb2
