@@ -89,6 +89,7 @@ public class CommonUserService {
         return userMapper.cancelCompanyUser(param);
     }
 
+    // 用户查询已关联单位
     public List<Map<String, Object>> queryRelCommonUser(Map<String, Object> param) {
         param.put("isrelation",1);
         return userMapper.queryRelCommonUser(param);

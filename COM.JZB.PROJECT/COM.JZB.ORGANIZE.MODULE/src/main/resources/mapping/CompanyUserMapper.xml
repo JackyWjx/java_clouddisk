@@ -253,6 +253,8 @@
     <!--点击业主下的项目获取项目列表-->
     <select id="queryCompanyProjectList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
+        prouname,
+        prouphone,
         cid,
         projectid,
         projectname,
@@ -267,6 +269,16 @@
         wintime,
         buildstime,
         buildetime,
+        tendercompany,
+        projecttype,
+        mail,
+        tenderresultcompany,
+        tenderagent,
+        agent,
+        agentphone,
+        porjcetra,
+        relation,
+        isrelation,
         to_char(to_timestamp(addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
         summary
         FROM

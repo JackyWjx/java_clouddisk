@@ -377,7 +377,7 @@
 
     <!--获取历史有效客户数量-->
     <select id="getClient" parameterType="java.util.Map" resultType="java.lang.Integer">
-        select count(1) from tb_private_company_list where oneheader = #{adduid} or twoheader = #{adduid}
+        select count(1) from tb_private_company_list where (oneheader = #{adduid} or twoheader = #{adduid})
         and status = '1'
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
