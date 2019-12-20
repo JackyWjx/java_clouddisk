@@ -306,11 +306,11 @@ public class TbAsApproverController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","travelid" })) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","deid" })) {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
-                param.put("travelid",param.get("travelid").toString().trim());
+                param.put("deid",param.get("deid").toString().trim());
                 // 获取出差详情
                 List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                 for(int i = 0,a = list.size();i < a;i++){
@@ -322,9 +322,9 @@ public class TbAsApproverController {
                     proMap.put("projectid",list.get(i).get("projectid"));
 
                     // 获取情报
-                    Map<String, Object> deMap = new HashMap<>();
-                    deMap.put("deid",list.get(i).get("deid"));
-                    List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(deMap);
+//                    Map<String, Object> deMap = new HashMap<>();
+//                    deMap.put("deid",list.get(i).get("deid"));
+                    List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(param);
                     for (int l = 0, d = infoList.size();l < d;l++){
                         if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                             Map<String,Object> proListMap =new HashMap<>();
