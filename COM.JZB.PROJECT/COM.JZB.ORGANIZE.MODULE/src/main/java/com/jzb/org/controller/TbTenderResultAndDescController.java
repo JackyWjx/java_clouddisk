@@ -324,4 +324,47 @@ public class TbTenderResultAndDescController {
         return response;
     }
 
+    /**
+     * 修改前发送请求查询
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getTenderMessageBeforePut", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Response getTenderMessageBeforePut(@RequestBody Map<String, Object> param) {
+        Response response;
+        boolean flag = true;
+        Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+        String api = "/org/TenderMessage/getTenderMessageBeforePut";
+        try {
+            userInfo = (Map<String, Object>) param.get("userinfo");
+            if (param.get("userinfo") != null) {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.error(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            Map<String,Object> map = null;
+            if(JzbCheckParam.allNotEmpty(param,new String[]{"type","tendid"})){
+                map = tenderResultAndDescService.getTenderMessageBeforeUpdate(param);
+            }
+            response = Response.getResponseSuccess(userInfo);
+            response.setResponseEntity(map);
+        } catch (Exception e) {
+            flag = false;
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getApiLogger(api, "2", "ERROR",
+                    userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "招投标删除异常"));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
 }

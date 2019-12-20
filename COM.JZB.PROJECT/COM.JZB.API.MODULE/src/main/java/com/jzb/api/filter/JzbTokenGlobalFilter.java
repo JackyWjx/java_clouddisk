@@ -192,6 +192,8 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/policyDom/getSeo", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/city/setCityList", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/appVersion/getNewAppVersion", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/uploader/chunk", "");
+//        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/uploader/mergeFile", "");
 
         //---- end resource
 
