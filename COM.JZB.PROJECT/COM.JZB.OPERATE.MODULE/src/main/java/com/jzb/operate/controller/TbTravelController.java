@@ -313,17 +313,16 @@ public class TbTravelController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","deid" })) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","travelid" })) {
                 response = Response.getResponseError();
             } else {
                     JzbPageConvert.setPageRows(param);
                     param.put("uid",userInfo.get("uid"));
-                    param.put("deid",param.get("deid").toString().trim());
+                    param.put("travelid",param.get("travelid").toString().trim());
                     // 获取出差详情
                     List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                     for(int i = 0,a = list.size();i < a;i++){
                         Map<String, Object> proMap = new HashMap<>();
-                        proMap.put("list",list);
                         proMap.put("userinfo",userInfo);
                         proMap.put("pageno",param.get("pageno"));
                         proMap.put("pagesize",param.get("pagesize"));
@@ -331,7 +330,9 @@ public class TbTravelController {
                         proMap.put("projectid",list.get(i).get("projectid"));
 
                         // 获取情报
-                        List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(param);
+                        Map<String, Object> deMap = new HashMap<>();
+                        deMap.put("deid",list.get(i).get("deid"));
+                        List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(deMap);
                         for (int l = 0, d = infoList.size();l < d;l++){
                             if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                                 Map<String,Object> proListMap =new HashMap<>();
@@ -451,7 +452,6 @@ public class TbTravelController {
                     // 根据申请人 单位 拜访时间 查询跟进记录
                     Map<String, Object> dataMap = new HashMap();
                     dataMap.put("userinfo",userInfo);
-                    dataMap.put("list", list);
                     dataMap.put("uid",userInfo.get("uid"));
                     dataMap.put("pageno",param.get("pageno"));
                     dataMap.put("pagesize",param.get("pagesize"));

@@ -306,16 +306,15 @@ public class TbAsApproverController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","deid" })) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","travelid" })) {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
-                param.put("deid",param.get("deid").toString().trim());
+                param.put("travelid",param.get("travelid").toString().trim());
                 // 获取出差详情
                 List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                 for(int i = 0,a = list.size();i < a;i++){
                     Map<String, Object> proMap = new HashMap<>();
-                    proMap.put("list",list);
                     proMap.put("userinfo",userInfo);
                     proMap.put("pageno",param.get("pageno"));
                     proMap.put("pagesize",param.get("pagesize"));
@@ -323,7 +322,9 @@ public class TbAsApproverController {
                     proMap.put("projectid",list.get(i).get("projectid"));
 
                     // 获取情报
-                    List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(param);
+                    Map<String, Object> deMap = new HashMap<>();
+                    deMap.put("deid",list.get(i).get("deid"));
+                    List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(deMap);
                     for (int l = 0, d = infoList.size();l < d;l++){
                         if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                             Map<String,Object> proListMap =new HashMap<>();
@@ -400,7 +401,6 @@ public class TbAsApproverController {
                 for(int m = 0,n = userList.size();m < n;m ++){
                     Map<String, Object> userMap = new HashMap<>();
                     userMap.put("uid",userList.get(m).get("uid"));
-                    userMap.put("uname",userList.get(m).get("uid"));
                     userMap.put("travelid",param.get("travelid").toString().trim());
                     List<Map<String,Object>> list =tbTravelService.queryTravelList(userMap);
                     for (int i = 0 ,a = list.size(); i < a ; i++){
@@ -408,7 +408,6 @@ public class TbAsApproverController {
                         Map<String, Object> dataMap = new HashMap();
                         dataMap.put("userinfo",userInfo);
                         dataMap.put("uid",userMap.get("uid"));
-                        dataMap.put("list", list);
                         dataMap.put("pageno",param.get("pageno"));
                         dataMap.put("pagesize",param.get("pagesize"));
                         dataMap.put("cid",list.get(i).get("cid"));
@@ -419,7 +418,7 @@ public class TbAsApproverController {
                         List<Map<String, Object>> reList = res.getPageInfo().getList();
                         list.get(i).put("caList", caList);
                         list.get(i).put("reList", reList);
-                        list.get(i).put("uname",userMap.get("cname"));
+                        list.get(i).put("uname",userList.get(m).get("uname"));
                     }
                     userList.get(m).put("trList",list);
                 }
