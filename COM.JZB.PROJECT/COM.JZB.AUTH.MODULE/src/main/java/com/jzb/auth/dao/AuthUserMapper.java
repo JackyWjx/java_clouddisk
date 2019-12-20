@@ -70,6 +70,14 @@ public interface AuthUserMapper {
     List<Map> searchSendCode(Map map);
 
     /**
+     * 跟据手机号查询注册表中信息
+     *
+     * @param map
+     * @return
+     */
+    List<Map> searchSendCodeByRelphone(Map map);
+
+    /**
      * 新增用户信息,用户注册信息
      *
      * @param map

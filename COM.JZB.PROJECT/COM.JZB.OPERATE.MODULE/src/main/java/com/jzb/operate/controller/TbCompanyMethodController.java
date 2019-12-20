@@ -154,10 +154,10 @@ public class TbCompanyMethodController {
                     // set default JSON and childern node
                     JSONObject node = new JSONObject();
                     node.put("methodid", record.get("methodid").toString());
-                    node.put("cname", record.get("cname").toString());
+                    node.put("cname", JzbDataType.getString(record.get("cname")));
                     node.put("parentid", parentId);
                     node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
-                    node.put("days", record.get("days").toString());
+                    node.put("days", JzbDataType.getString(record.get("days")));
                     node.put("plantime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("plantime")), JzbDateStr.yyyy_MM_dd));
                     node.put("children", new JSONArray());
                     if (JzbTools.isEmpty(record.get("score"))) {

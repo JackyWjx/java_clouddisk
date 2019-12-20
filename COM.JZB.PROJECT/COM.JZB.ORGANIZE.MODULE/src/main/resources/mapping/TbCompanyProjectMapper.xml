@@ -94,6 +94,9 @@
         tb_company_project
         where
         status = '1'
+        <if test="cid != null and cid != ''">
+            and cid = #{cid}
+        </if>
         <if test="keyword != null and keyword != ''">
             and tendername ~ #{keyword} or tenderphone ~ #{keyword}
         </if>

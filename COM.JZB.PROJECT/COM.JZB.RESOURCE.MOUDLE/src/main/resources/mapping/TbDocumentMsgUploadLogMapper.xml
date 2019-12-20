@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbDocumentMsgUploadLogMapper">
+    <insert id="insertBreakPointLog" parameterType="Map">
+        insert into tb_document_msg_upload_log (chunknumber,chunksize,currentchunksize,totalsize,uniquefileid,filename,relativepath,totalchunks,extension,uid,infotime)
+        values (#{chunkNumber},#{chunkSize},#{currentChunkSize},#{totalSize},#{identifier},#{filename},#{relativePath},#{totalChunks},#{type},#{uid},#{addtime})
+    </insert>
+    <update id="updateBreakPointLog" parameterType="Map">
+        update tb_document_msg_upload_log
+        set chunknumber = #{chunkNumber},chunksize = #{chunkSize},currentchunksize=#{currentChunkSize},totalsize=#{totalSize},uniquefileid=#{identifier},filename=#{filename},
+        relativepath=#{relativePath},totalchunks=#{totalChunks},extension=#{extension},uid=#{uid},infotime=#{infotime}
+    </update>
+    <select id="selectBreakPointLog" resultType="com.jzb.base.entity.uploader.Chunk">
+        select id,chunknumber,chunksize,currentchunksize,totalsize,filename,relativepath,totalchunks,extension,uid,infotime
+        from tb_document_msg_upload_log where uniquefileid = #{identifier} and chunkNumber = #{chunkNumber}
+    </select>
+
+</mapper>

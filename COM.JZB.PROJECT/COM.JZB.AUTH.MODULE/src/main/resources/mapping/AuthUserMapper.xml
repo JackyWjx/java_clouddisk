@@ -151,6 +151,17 @@
                     AND keyid =#{phone}
 
     </select>
+
+    <!--跟据手机号查询注册表中信息 -->
+    <select id="searchSendCodeByRelphone" resultType="java.util.Map">
+      select id,uid from tb_user_key where ktid = '1' AND (status = '1' or status='8') and uid = (select uid from tb_user_list where relphone=#{phone} LIMIT 1)
+    </select>
+
+
+
+
+
+
     <!--最后六位身份证号-->
     <select id="idCardLastSix" resultType="java.util.Map">
         	SELECT uid,idcard FROM tb_user_list  WHERE RIGHT(idcard,6) =#{idcard} and uid=#{uid} and authid !=0

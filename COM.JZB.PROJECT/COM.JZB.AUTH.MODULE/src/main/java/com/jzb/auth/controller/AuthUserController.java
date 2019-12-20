@@ -1,6 +1,5 @@
 package com.jzb.auth.controller;
 
-import com.jzb.auth.api.organize.CompanyApi;
 import com.jzb.auth.api.redis.UserRedisApi;
 import com.jzb.auth.config.AuthConfigProperties;
 import com.jzb.auth.service.AuthUserLoginService;
@@ -12,8 +11,8 @@ import com.jzb.base.message.JzbReturnCode;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
-import com.jzb.base.util.JzbTools;
 import com.jzb.base.util.JzbIdEntification;
+import com.jzb.base.util.JzbTools;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * 业务控制层
@@ -56,7 +52,6 @@ public class AuthUserController {
     @Autowired
     private AuthConfigProperties authConfig;
 
-
     /**
      * 模糊查询用户名
      *
@@ -67,12 +62,12 @@ public class AuthUserController {
     public Response getPersionByName(@RequestBody Map<String, Object> param) {
         Response response;
         try {
-            List<Map<String , Object>> list  = (List<Map<String, Object>>) param.get("list");
-            for(int  i = 0 ;i < list.size();i++){
-                Map<String, Object> umap =  new HashMap<>();
-                umap.put("person",param.get("person"));
-                umap.put("uid",list.get(i).get("uid"));
-                if(!userService.queryPersionByName(umap)){
+            List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> umap = new HashMap<>();
+                umap.put("person", param.get("person"));
+                umap.put("uid", list.get(i).get("uid"));
+                if (!userService.queryPersionByName(umap)) {
                     list.remove(i);
                 }
             }
@@ -98,24 +93,24 @@ public class AuthUserController {
         try {
             // 获取用户资料
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            if (JzbDataType.isEmpty(JzbDataType.getString(param.get("uid")))){
+            if (JzbDataType.isEmpty(JzbDataType.getString(param.get("uid")))) {
 //                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
                 param.put("uid", param.get("uid"));
             }
             Map<String, Object> resuMap = userService.getUserInfo(param);
             if (!JzbTools.isEmpty(resuMap)) {
-                if (!comHasUserKey(resuMap)){
+                if (!comHasUserKey(resuMap)) {
                     // 添加增加缓存必要的参数
                     resuMap.put("token", "token");
                     resuMap.put("timeout", "1800000");
-                    resuMap.put("phone",JzbDataType.getString(param.get("phone")));
+                    resuMap.put("phone", JzbDataType.getString(param.get("phone")));
                     userRedisApi.cacheUserInfo(resuMap);
                 }
             }
             Response res = userRedisApi.getCacheUserInfo(resuMap);
-            if(param.containsKey("userinfo")){
+            if (param.containsKey("userinfo")) {
                 response = Response.getResponseSuccess(userInfo);
-            }else{
+            } else {
                 response = Response.getResponseSuccess();
             }
             response.setResponseEntity(res.getResponseEntity());
@@ -149,8 +144,6 @@ public class AuthUserController {
         return response;
     } //
 
-
-
     /**
      * 根据regid 或者phone 获取用户id
      *
@@ -162,7 +155,7 @@ public class AuthUserController {
         Response response;
         try {
             String s = userService.queryUidByPhoneOrRegid(param);
-            response=Response.getResponseSuccess();
+            response = Response.getResponseSuccess();
             response.setResponseEntity(s);
         } catch (Exception e) {
             JzbTools.logError(e);
@@ -170,7 +163,6 @@ public class AuthUserController {
         }
         return response;
     } //
-
 
     /**
      * 更改个人认证信息
@@ -297,6 +289,7 @@ public class AuthUserController {
         }
         return result;
     } // End updateUserPassword
+
     /**
      * 根据原密码进行用户密码修改
      */
@@ -306,12 +299,12 @@ public class AuthUserController {
         Response result;
         int count = 0;
         try {
-        if(!JzbTools.isEmpty(param.get("passwd")) && !JzbTools.isEmpty(param.get("uid")) && !JzbTools.isEmpty("newpassword")){
-               String oldPasswd = userService.getInitPassWd(param);
+            if (!JzbTools.isEmpty(param.get("passwd")) && !JzbTools.isEmpty(param.get("uid")) && !JzbTools.isEmpty("newpassword")) {
+                String oldPasswd = userService.getInitPassWd(param);
                 boolean matches = password().matches((CharSequence) param.get("passwd"), oldPasswd);
-                if (matches){
-                    param.put("passwd",oldPasswd);
-                     count = userService.updateUserPassword(param);
+                if (matches) {
+                    param.put("passwd", oldPasswd);
+                    count = userService.updateUserPassword(param);
                 }
             }
             result = count == 1 ? Response.getResponseSuccess() : Response.getResponseError();
@@ -321,7 +314,6 @@ public class AuthUserController {
         }
         return result;
     } //
-
 
     /**
      * 根据联系方式或者ID获取用户信息
@@ -365,7 +357,6 @@ public class AuthUserController {
         return result;
     }//End newUserLogin
 
-
     /**
      * 发送验证码
      *
@@ -382,6 +373,8 @@ public class AuthUserController {
             int a = 1;
             //发送找回密码验证码
             int b = 2;
+            //发送修改手机号验证码
+            int c = 3;
             Map<String, Object> message;
             if (type == a) {
                 //注册模板
@@ -401,6 +394,17 @@ public class AuthUserController {
                 int code = JzbDataType.getInteger(message.get("code"));
                 if (code == 0) {
                     // 没有token
+                    result = Response.getResponseSuccess();
+                    message.remove("code");
+                } else {
+                    result = Response.getResponseError();
+                }
+            }else if (type==c){
+                //修改手机号码模板
+                param.put("groupid", "7010");
+                message = userLoginService.sendMessageByRelphone(param);
+                int code = JzbDataType.getInteger(message.get("code"));
+                if (code == 0) {
                     result = Response.getResponseSuccess();
                     message.remove("code");
                 } else {
@@ -438,7 +442,6 @@ public class AuthUserController {
         }
         return result;
     }//End userVerify
-
 
     /**
      * 注册的第二步操作创建用户
