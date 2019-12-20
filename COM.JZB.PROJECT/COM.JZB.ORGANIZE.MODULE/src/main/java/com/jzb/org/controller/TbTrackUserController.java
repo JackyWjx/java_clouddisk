@@ -281,7 +281,7 @@ public class TbTrackUserController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            param.put("uid",userInfo.get("uid"));
+            param.put("adduid",userInfo.get("uid"));
             List<Map<String, Object>> List = userService.getHandleCount(param);
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
