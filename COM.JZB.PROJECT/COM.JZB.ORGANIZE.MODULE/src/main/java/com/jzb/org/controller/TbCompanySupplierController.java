@@ -2,7 +2,6 @@ package com.jzb.org.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
-import com.jzb.base.io.http.ApacheHttpClient;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -11,16 +10,13 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.TbCompanySupplierService;
 import com.jzb.org.util.HttpConnectionURL;
-import com.jzb.org.util.HttpConnectionURLFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -295,8 +291,8 @@ public class TbCompanySupplierController {
                 Map<String, Object> backMap  =(Map<String, Object>) JSON.parse(bFront);
                 if(!JzbTools.isEmpty(frontMap) && frontMap.get("code").equals("200") && !JzbTools.isEmpty(backMap) && backMap.get("code").equals("200")) {
                     Map<String,Object> m = new HashMap<>();
-                    m.put("front",sFront);
-                    m.put("back",bFront);
+                    m.put("front",frontMap);
+                    m.put("back",backMap);
                     result = Response.getResponseSuccess();
                     result.setResponseEntity(m);
                 }
