@@ -77,4 +77,10 @@ public class TbTravelService {
     public List<Map<String, Object>> queryDetaBycid(Map<String, Object> param) {
         return tbTravelMapper.queryDetaBycid(param);
     }
+
+    /** 设置报销单添加成功信息*/
+    public int updateRebStatus(Map<String, Object> param){
+        return tbTravelMapper.updateRebStatus(param);
+    }
+
 }

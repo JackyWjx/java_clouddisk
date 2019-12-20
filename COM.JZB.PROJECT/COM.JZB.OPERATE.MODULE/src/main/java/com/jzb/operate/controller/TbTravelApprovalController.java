@@ -83,10 +83,12 @@ public class TbTravelApprovalController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"list", "travelid", "version", "aptype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list", "travelid", "version","aptype"})) {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> approvalList = (List<Map<String, Object>>) param.get("list");
+                //获取审批类型
+                Integer apType = JzbDataType.getInteger(param.get("aptype"));
 
                 for (int i = 0, a = approvalList.size(); i < a; i++) {
                     approvalList.get(i).put("travelid", param.get("travelid"));
@@ -103,26 +105,14 @@ public class TbTravelApprovalController {
                     approvalList.get(i).put("version", param.get("version"));
                     travelApprovalService.save(approvalList.get(i));
                 }
-//                for (Map<String, Object> approval : approvalList) {
-//
-//                    approval.put("travelid", param.get("travelid"));
-//                    approval.put("apid", JzbRandom.getRandomChar(12));
-//                    Integer idx = (Integer) approval.get("idx");
-//                    if (idx == 1) {
-//                        approval.put("trstatus", 2);
-//                    } else {
-//                        approval.put("trstatus", 1);
-//                    }
-//                    approval.put("addtime", System.currentTimeMillis());
-//                    approval.put("adduid", userInfo.get("uid"));
-//                    approval.put("status", "1");
-//                    approval.put("version", param.get("version"));
-//                    travelApprovalService.save(approval);
-//                }
                 // 添加抄送人
                 List<String> ccuidList = (List<String>) param.get("ccuid");
                 param.put("ccuid", ccuidList.toString());
-                param.put("status", "3");
+                if(apType == 1){
+                    param.put("trastatus", "2"); // 设置出差状态
+                }else {
+                    param.put("rebstatus", "2"); //设置报销状态
+                }
                 travelPlanService.updateTravelRecord(param);
                 response = Response.getResponseSuccess(userInfo);
             }
@@ -197,10 +187,12 @@ public class TbTravelApprovalController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version","aptype"})) {
                 response = Response.getResponseError();
             } else {
                 Integer isOk = (Integer) param.get("isOk");
+                //获取审批类型
+                Integer apType = JzbDataType.getInteger(param.get("aptype"));
                 int count = 0;
                 if (isOk == 1) {// 同意
                     Map<String, Object> whereMap = new HashMap<>();
@@ -213,25 +205,33 @@ public class TbTravelApprovalController {
                     //判断是否是最后一个审批人
                     String lastApid = travelApprovalService.getMaxIdxApid(param);
                     boolean isLast = param.get("apid").equals(lastApid);
+                    Map<String, Object> query = new HashMap<>();
                     if (i > 0 && !isLast) { // 将下一个审批人的审批状态改为2
-                        Map<String, Object> query = new HashMap<>();
                         query.put("idx", (Integer) param.get("idx") + 1);
                         query.put("travelid", param.get("travelid"));
                         query.put("version", param.get("version"));
                         query.put("trstatus", 2);
                         query.put("trtime", System.currentTimeMillis());
                         count = travelApprovalService.update(query);
+                    }else if (i > 0 && isLast)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
+                        query.put("rebversion",JzbRandom.getRandom(8));
+//                        query.put("rebstatus","1");
+                        query.put("aptype",2);
+                        query.put("travelid",param.get("travelid"));
+                        count = travelPlanService.updateTravelRecord(query);
                     }
                 } else {// 退回
                     Map<String, Object> uMap = new HashMap<>();
-//                    uMap.put("trstatus", 4);
-                    //更新审批记录版本号
                     String randomVersion = JzbRandom.getRandom(8);
-//                    uMap.put("newVersion", randomVersion);
-//                    travelApprovalService.update(uMap);
-                    // 更新 出差记录版本号
-                    uMap.put("version", randomVersion);
-                    uMap.put("status", 4);
+                    if(apType == 1){
+                        // 更新 出差版本号 和 出差申请状态
+                        uMap.put("traversion", randomVersion);
+                        uMap.put("trastatus", 1);
+                    }else {
+                        // 更新 报销版本号 和 报销申请状态
+                        uMap.put("rebversion", randomVersion);
+                        uMap.put("rebstatus", 1);
+                    }
                     uMap.put("travelid",param.get("travelid"));
                     count = travelPlanService.updateTravelRecord(uMap);
                 }
@@ -343,7 +343,6 @@ public class TbTravelApprovalController {
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("uid", userInfo.get("uid"));
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
@@ -351,6 +350,7 @@ public class TbTravelApprovalController {
             }
 
             if (JzbCheckParam.allNotEmpty(param, new String[]{"uid", "pagesize", "pageno"})) {
+                param.put("uid", userInfo.get("uid"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 // 设置分页
                 JzbPageConvert.setPageRows(param);

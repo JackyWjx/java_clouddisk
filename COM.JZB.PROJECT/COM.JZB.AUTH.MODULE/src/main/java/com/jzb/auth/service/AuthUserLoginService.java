@@ -236,7 +236,7 @@ public class AuthUserLoginService {
      * @param map
      * @return
      */
-    public Map<String, Object> registrationTwo(Map<String, Object> map) {
+    public Map<String, Object>  registrationTwo(Map<String, Object> map) {
         Map<String, Object> response = new HashMap(4);
         String phone = map.get("phone") == null ? "" : map.get("phone").toString();
         String name = map.get("name") == null ? "" : map.get("name").toString();

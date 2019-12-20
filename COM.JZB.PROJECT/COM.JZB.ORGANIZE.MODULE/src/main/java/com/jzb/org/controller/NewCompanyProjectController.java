@@ -54,7 +54,7 @@ public class NewCompanyProjectController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "list"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "cid"})) {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
@@ -82,7 +82,7 @@ public class NewCompanyProjectController {
                                 String prolist = infoList.get(l).get("prolist").toString();
                                 String[] split = prolist.split(",");
                                 proListMap.put("prolist",split);
-                                infoList.get(i).put("prolist",proListMap);
+                                infoList.get(l).put("prolist",proListMap);
                             }
                         }
                         list.get(j).put("infoList", infoList);

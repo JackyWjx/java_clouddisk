@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.operate.dao.TbAsApproverMapper">
+
+    <!--查询作为审批人的记录-->
+    <select id="queryAsApprover" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        tb1.travelid as travelid,
+        tb1.uid as uid,
+        tb1.uname as uname,
+        tb1.orgtime as orgtime,
+        tb1.endtime as endtime,
+        tb1.fare as fare,
+        tb1.expenses as expenses,
+        tb1.sum as "sum",
+        tb1.rebversion,
+        tb2.idx,
+        tb2.apid,
+        tb2.trstatus as trstatus
+        from tb_travel_record tb1
+        INNER JOIN tb_travel_approval tb2
+        on  tb1.travelid = tb2.travelid and tb1.rebversion= tb2."version"
+        <where>
+            tb1.rebstatus != '1'
+            and (tb2.trstatus = '2' or tb2.trstatus = '3')
+            <if test="uid != null and uid != '' ">
+                and tb2.truid = #{uid}
+            </if>
+            <if test="travelid != null and travelid != '' ">
+                and tb1.travelid = #{travelid}
+            </if>
+            <if test="beginTime != null and beginTime != '' ">
+                and tb1.orgtime &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and tb1.endtime &lt;= #{endTime}
+            </if>
+            <if test="aptype != '' and aptype!=null"  >
+                and tb1.aptype = #{aptype}
+            </if>
+        </where>
+        LIMIT #{pagesize} OFFSET #{pageno}
+    </select>
+
+
+    <select id="countAsApprover" resultType="int" parameterType="java.util.Map">
+        SELECT count(1)
+        from tb_travel_record tb1
+        INNER JOIN tb_travel_approval tb2
+        on  tb1.travelid = tb2.travelid and tb1.rebversion= tb2."version"
+        <where>
+            tb1.rebstatus != '1'
+            and (tb2.trstatus = '2' or tb2.trstatus = '3')
+            <if test="uid != null and uid != '' ">
+                and tb2.truid = #{uid}
+            </if>
+            <if test="travelid != null and travelid != '' ">
+                and tb1.travelid = #{travelid}
+            </if>
+            <if test="beginTime != null and beginTime != '' ">
+                and tb1.orgtime &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and tb1.endtime &lt;= #{endTime}
+            </if>
+            <if test="aptype != '' and aptype!=null"  >
+                and tb1.aptype = #{aptype}
+            </if>
+        </where>
+    </select>
+
+    <update id="setReturnStatus"  parameterType="java.util.Map" >
+        update tb_travel_approval set trstatus ='4' where travelid =#{travelid}
+    </update>
+
+</mapper>

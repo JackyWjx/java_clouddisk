@@ -85,33 +85,46 @@ public class UserController {
             String regex = "^1[3|4|5|6|7|8|9][0-9]\\d{8}$";
             Map<String, Object> map = new HashMap();
             if (uid.matches(regex)) {
-                map.put("phone",uid);
-            }else {
-                map.put("regid",uid);
+                map.put("phone", uid);
+            } else {
+                map.put("regid", uid);
             }
             Response uidResponse = authApi.getUidByPhoneOrRegid(map);
-            uid=JzbDataType.getString(uidResponse.getResponseEntity());
-            // 获取SESSION
-            String session = authService.userLogin(uid, pwd);
-            JzbTools.logInfo("=============>>", "SESSION", session);
-            // 验证appid
-            if (!JzbTools.isEmpty(session)) {
-                Map<String, String> token = authService.getToken(session, uid, idType, appId, appSecret);
-                JzbTools.logInfo("==================>>", "TOKEN", token == null ? "NULL" : token.toString());
-                if (token != null) {
-                    result = Response.getResponseSuccess();
-                    result.setToken(token.get("token"));
-                    result.setSession(token.get("session"));
-                    token.remove("token");
-                    token.remove("session");
-                    result.setResponseEntity(token);
+
+            if (uidResponse.getResponseEntity() != null) {
+                uid = JzbDataType.getString(uidResponse.getResponseEntity());
+                // 获取SESSION
+                String session = authService.userLogin(uid, pwd);
+                JzbTools.logInfo("=============>>", "SESSION", session);
+                // 验证appid
+                if (!JzbTools.isEmpty(session)) {
+                    Map<String, String> token = authService.getToken(session, uid, idType, appId, appSecret);
+                    JzbTools.logInfo("==================>>", "TOKEN", token == null ? "NULL" : token.toString());
+                    if (token != null) {
+                        result = Response.getResponseSuccess();
+                        result.setToken(token.get("token"));
+                        result.setSession(token.get("session"));
+                        token.remove("token");
+                        token.remove("session");
+                        result.setResponseEntity(token);
+                    } else {
+                        JzbTools.logError("===========================>>", "Get Token Failed");
+                        result = Response.getResponseError();
+                    }
                 } else {
-                    JzbTools.logError("===========================>>", "Get Token Failed");
+                    // 错误
                     result = Response.getResponseError();
+                    Map<String, Object> resultMap = new HashMap<>();
+                    resultMap.put("code", 402);
+                    resultMap.put("message", "用户名或密码错误！！");
+                    result.setResponseEntity(resultMap);
                 }
             } else {
-                // 错误
                 result = Response.getResponseError();
+                Map<String, Object> resultMap = new HashMap<>();
+                resultMap.put("code", 401);
+                resultMap.put("message", "用户名或密码错误！");
+                result.setResponseEntity(resultMap);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

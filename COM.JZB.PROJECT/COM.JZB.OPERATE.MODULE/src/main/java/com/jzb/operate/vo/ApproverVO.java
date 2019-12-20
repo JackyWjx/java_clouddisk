@@ -12,9 +12,12 @@ public class ApproverVO {
 
     private String approveStatus;
 
-    public ApproverVO(String approveName, String approveStatus) {
+    private int idx;
+
+    public ApproverVO(String approveName, String approveStatus, int idx) {
         this.approveName = approveName;
         this.approveStatus = approveStatus;
+        this.idx = idx;
     }
 
     public String getApproveName() {
@@ -31,5 +34,22 @@ public class ApproverVO {
 
     public void setApproveStatus(String approveStatus) {
         this.approveStatus = approveStatus;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public void setIdx(int idx) {
+        this.idx = idx;
+    }
+
+    @Override
+    public String toString() {
+        return "ApproverVO{" +
+                "approveName='" + approveName + '\'' +
+                ", approveStatus='" + approveStatus + '\'' +
+                ", idx=" + idx +
+                '}';
     }
 }

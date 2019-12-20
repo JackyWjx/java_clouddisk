@@ -2,7 +2,6 @@ package com.jzb.open.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
-import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
@@ -10,15 +9,14 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.open.api.auth.UserAuthApi;
 import com.jzb.open.api.org.CompanyApi;
 import com.jzb.open.api.redis.UserRedisServiceApi;
 import com.jzb.open.service.OpenPageService;
-import com.sun.org.apache.xpath.internal.objects.XString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.security.provider.MD5;
 
 
 import java.util.*;
@@ -43,13 +41,15 @@ public class OpenPageController {
     @Autowired
     private CompanyApi companyApi;
 
+    @Autowired
+    private UserAuthApi userAuthApi;
     /**
      * 日志记录对象
      */
     private final static Logger logger = LoggerFactory.getLogger(OpenPageController.class);
 
     /**
-     * 根据token和appkey，appsecret 数据库中进行对比，如果相同则返回给前端用信息
+     * 根据checkcode和appkey，appsecret 数据库中进行对比，如果相同则返回给前端用信息
      *
      * @param param
      * @return
@@ -85,12 +85,12 @@ public class OpenPageController {
                 Map<String, Object> map1 = new HashMap<>();
                 if (md5.equals(param.get("checkcode"))) {
                     map.put("uid", param.get("uid"));
+                    //从缓存中查询用户信息
                     Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(map);
                     Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
-                    map1.put("cname", Entity.get("cname"));
                     map1.put("cid", Entity.get("cid"));
-                    map1.put("phone", Entity.get("phone"));
                     map1.put("uid", Entity.get("uid"));
+                    map1.put("cname", Entity.get("cname"));
                 }
                 result = Response.getResponseSuccess();
                 result.setResponseEntity(map1);
@@ -110,6 +110,61 @@ public class OpenPageController {
         }
         return result;
     }
+
+    /**
+     * 根据token进行对比 如果第三方传过来的token正确 则返回用户信息给第三方进行登录
+     *
+     * 单点登录
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getUserId",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserId(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/open/page/getUserId";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            //如果指定参数为空 则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"token"})) {
+                result = Response.getResponseError();
+            } else {
+                Response response = userAuthApi.checkToken(param);
+                Map<String,Object> entity = (Map<String, Object>) response.getResponseEntity();
+                /** 如果token验证真确有用用户信息返回则返回成功信息*/
+                if (entity != null && entity.size() > 0) {
+                    result = Response.getResponseSuccess();
+                    result.setResponseEntity(entity);
+                } else {
+                    //否则返回错误信息
+                    result = Response.getResponseError();
+                }
+            }
+        } catch (Exception ex) {
+            //打印错误信息
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getUserId Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 
 
     /**

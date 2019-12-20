@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import sun.security.krb5.internal.tools.Ktab;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -104,6 +103,21 @@ public class TbTravelPlanController {
         return response;
     }
 
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/20 11:47
+     *  @Description: 根据单位id(cid)获取情报信息来源数据
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/getTravelInfoList",method = RequestMethod.POST)
+    public Response getTravelInfoList(Map<String,Object> param){
+        return  newTbCompanyListApi.queryCompanyByid(param);
+    }
+
     /**
      * @author: gongWei
      * @Date: 2019/12/17 10:11
@@ -138,8 +152,10 @@ public class TbTravelPlanController {
             param.put("adduid", userInfo.get("uid"));
             param.put("travelid", JzbRandom.getRandomChar(19));
             param.put("aptype", 1);//1出差 2 报销
-            param.put("version", JzbRandom.getRandom(8));
-            param.put("status", '1');//默认状态'1'
+            param.put("traversion", JzbRandom.getRandom(8)); // 出差版本号
+            param.put("status", "1");//默认状态'1'
+            param.put("trastatus","1"); // 出差默认状态
+            param.put("rebstatus","0"); // 报销默认状态
 
             //始末时间默认为第一条记录的时间
 
@@ -318,7 +334,7 @@ public class TbTravelPlanController {
     }
 
     /**
-     * 撤回 status = 4
+     * 撤回
      *
      * @param param
      * @return
@@ -341,11 +357,23 @@ public class TbTravelPlanController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid","aptype"})) {
                 response = Response.getResponseError();
             } else {
-                param.put("status", 4);
-                param.put("version", JzbRandom.getRandom(8));
+                String randomVersion = JzbRandom.getRandom(8);
+                //获取审批类型
+                Integer apType = JzbDataType.getInteger(param.get("aptype"));
+                if(apType == 1){
+                    // 更新 出差版本号
+                    param.put("traversion", randomVersion);
+                    param.put("trastatus", 1);
+                }else  {
+                    // 更新 报销版本号
+                    param.put("rebversion", randomVersion);
+                    param.put("rebstatus", 1);
+                }
+//                param.put("status", 4);
+//                param.put("version", JzbRandom.getRandom(8));
                 response = travelPlanService.updateTravelRecord(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
@@ -513,7 +541,7 @@ public class TbTravelPlanController {
                 //获取并保存情报收集list
                 List<Map<String, Object>> travelInfoList = (List<Map<String, Object>>) detailsList.get(i).get("travelinfolist");
                 //一般travelinfolist的长度为1
-                for (int j = 0,b=travelInfoList.size(); j < b; j++) {
+                for (int j = 0, b = travelInfoList.size(); j < b; j++) {
                     travelInfoList.get(j).put("updtime", System.currentTimeMillis());
                     travelInfoList.get(j).put("deid", detailsList.get(i).get("deid"));
                     travelInfoService.update(travelInfoList.get(j));
@@ -840,16 +868,25 @@ public class TbTravelPlanController {
                     if (ObjectUtils.isEmpty(recordList.get(i).get("truids"))) {
                         recordList.get(i).put("approvers", null);
                     } else {
-                        whereParam.put("userinfo", param.get("userinfo"));
-                        whereParam.put("uids", recordList.get(i).get("truids"));
-                        resApi = tbDeptUserListApi.searchInvitee(whereParam);
-                        String unameStr = (String) resApi.getResponseEntity();
-                        String[] unames = unameStr.split(",");
-                        String[] trStatus = recordList.get(i).get("trstatus").toString().split(",");
-                        List<ApproverVO> approverVOList = new ArrayList<>();
-                        for (int h = 0; h < unames.length; h++) {
-                            approverVOList.add(new ApproverVO(unames[h], trStatus[h]));
+                        String[] truids = recordList.get(i).get("truids").toString().split(",");
+                        String[] unames = new String[truids.length];
+                        for (int n = 0 , m = truids.length; n < m; n++) {
+                            Map<String, Object> uParam = new HashMap<>();
+                            uParam.put("userinfo", userInfo);
+                            uParam.put("truid", truids[n]);
+                            resApi = tbDeptUserListApi.queryPersonNameByuid(uParam);
+                            Map<String, Object> objectMap = (Map<String, Object>) resApi.getPageInfo().getList().get(0);
+                            String unameStr = objectMap.get("uname").toString();
+                            unames[n] = unameStr;
                         }
+                        String[] trStatus = recordList.get(i).get("trstatus").toString().split(",");
+                        String[] idxs = recordList.get(i).get("idxs").toString().split(",");
+                        List<ApproverVO> approverVOList = new ArrayList<>();
+                        for (int h = 0; h < trStatus.length; h++) {
+                            approverVOList.add(new ApproverVO(unames[h], trStatus[h].trim(), JzbDataType.getInteger(idxs[h].trim())));
+                        }
+                        // 按idx排序
+                        Collections.sort(approverVOList, Comparator.comparing(ApproverVO::getIdx));
                         recordList.get(i).put("approvers", approverVOList);
                     }
                     // 2.根据查询出来的travelid 查询 出差记录详情
@@ -938,5 +975,7 @@ public class TbTravelPlanController {
         }
         return response;
     }
+
+
 
 }

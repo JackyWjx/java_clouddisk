@@ -47,7 +47,7 @@
                     #{method.parentid},
                 </when>
                 <otherwise>
-                    NULL ,
+                    '0000000' ,
                 </otherwise>
             </choose>
             <choose>

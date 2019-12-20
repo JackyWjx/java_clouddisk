@@ -5,12 +5,12 @@
 <mapper namespace="com.jzb.org.dao.TbTrackUserMapper">
     <!--新建跟进人员记录-->
     <insert id="addTrackUser" parameterType="java.util.Map" >
-        insert into tb_track_user_list (isservice,nextadvance,abdialogue,trackoutput,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackcid,trackproid,
+        insert into tb_track_user_list (isservice,nextadvance,abdialogue,trackoutput,trackres,excontent,trackdesc,trackcid,trackproid,
         trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
         adduid,status,summary,addtime)
         values (
         <choose>
-            <when test="isservice != null and isservice = ''">
+            <when test="isservice != null and isservice != ''">
                 #{isservice},
             </when>
             <otherwise>
@@ -18,7 +18,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="nextadvance != null and nextadvance = ''">
+            <when test="nextadvance != null and nextadvance != ''">
                 #{nextadvance},
             </when>
             <otherwise>
@@ -26,7 +26,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="abdialogue != null and abdialogue = ''">
+            <when test="abdialogue != null and abdialogue != ''">
                 #{abdialogue},
             </when>
             <otherwise>
@@ -34,23 +34,69 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="trackoutput != null and trackoutput = ''">
+            <when test="trackoutput != null and trackoutput != ''">
                 #{trackoutput},
             </when>
             <otherwise>
                 null,
             </otherwise>
         </choose>
-        #{trackres},
-        #{trackoutput},
-        #{abdialoge},
-        #{nextadvance},
-        #{excontent},
-        #{trackdesc},
-        #{trackcid},
-        #{trackproid},
-        #{trackvalue},
-        #{trackid},
+        <choose>
+            <when test="trackres != null and trackres != ''">
+                #{trackres},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="excontent != null and excontent != ''">
+                #{excontent},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackdesc != null and trackdesc != ''">
+                #{trackdesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackcid != null and trackcid != ''">
+                #{trackcid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackproid != null and trackproid != ''">
+                #{trackproid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackvalue != null and trackvalue != ''">
+                #{trackvalue},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackid != null and trackid != ''">
+                #{trackid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="tracktime != null and tracktime != ''">
                #{tracktime},
@@ -59,11 +105,46 @@
                  0,
              </otherwise>
         </choose>
-        #{trackuname},
-        #{tracktype},
-        #{customer},
-        #{trackcontent},
-        #{image},
+        <choose>
+            <when test="trackuname != null and trackuname != ''">
+                #{trackuname},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="tracktype != null and tracktype != ''">
+                #{tracktype},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="customer != null and customer != ''">
+                #{customer},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackcontent != null and trackcontent != ''">
+                #{trackcontent},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="image != null and image != ''">
+                #{image},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{adduid},
         #{status},
         <choose>
@@ -80,7 +161,7 @@
     
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
-        select isservice,nextadvance,abdialogue,trackoutput,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
+        select isservice,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
         from tb_track_user_list where status = '1'
         and trackvalue = #{trackvalue}
         <if test="startTime != null and startTime!= ''">
@@ -210,15 +291,6 @@
         <if test="isservice != null and isservice != ''">
             isservice = #{isservice},
         </if>
-        <if test="nextadvance != null and nextadvance != ''">
-            nextadvance = #{nextadvance},
-        </if>
-        <if test="abdialogue != null and abdialogue != ''">
-            abdialogue = #{abdialogue},
-        </if>
-        <if test="trackoutput != null and trackoutput != ''">
-            trackoutput = #{trackoutput},
-        </if>
         <if test="trackres != null and trackres != ''">
             trackres = #{trackres},
         </if>
@@ -274,14 +346,31 @@
         select
         trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
         from tb_track_user_list
-        where customer = #{customer}
-        and status = '1'
+        where
+         status = '1'
         and tracktype in (4,8,16)
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
         </if>
         <if test="twelve != null and twelve != ''">
             and addtime &lt;= #{twelve}
+        </if>
+        <if test="customer != null and customer != ''">
+            and customer = #{customer}
+        </if>
+        <if test="cdid != null and cdid != ''">
+            and customer in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="cid != null and manager != null and cid != '' and manager != ''">
+            and customer in(
+            select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
+            )
         </if>
         order by addtime desc
     </select>
@@ -303,8 +392,8 @@
     <select id="getHandleStage" parameterType="java.util.Map" resultType="java.util.Map">
        select trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary
         from tb_track_user_list
-        where customer = #{customer}
-        and status = '1'
+        where
+        status = '1'
         and trackres = #{trackeres}
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
@@ -312,6 +401,24 @@
         <if test="twelve != null and twelve != ''">
             and addtime &lt;= #{twelve}
         </if>
+        <if test="customer != null and customer != ''">
+            and customer = #{customer}
+        </if>
+        <if test="cdid != null and cdid != ''">
+            and customer in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="cid != null and manager != null and cid != '' and manager != ''">
+            and customer in(
+            select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
+            )
+        </if>
+
     </select>
     
 </mapper>

@@ -4,57 +4,151 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.operate.dao.TbVersionLogMapper">
 
+    <!--查询日志信息-->
     <select id="queryVersionLog" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_version_log where status = '1'  limit #{rows}  offset #{page}
+        select id,pid,vsnen,vsncn,vsnno,vsncode,vsnnote,vsndate,vsndesc,ouid,tuid,gadate from tb_version_log where status = '1'  limit #{pagesize}  offset #{pageno}
     </select>
 
+    <!-- 查询总数 -->
     <select id="queryVersionLogCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_version_log where status = '1'
     </select>
 
+    <!-- 搜索日志 -->
     <select id="searchVersionLog" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_version_log where status = '1'
-        and vsndesc like CONCAT('%',#{keys},'%')
-        limit #{rows}  offset #{page}
+        select id,pid,vsnen,vsncn,vsnno,vsncode,vsnnote,vsndate,vsndesc,ouid,tuid,gadate from tb_version_log where
+        status = '1'
+        <if test="keyword!=null and keyword !=''">
+            and (vsncn ~ #{keyword} or vsndesc ~ #{keyword})
+        </if>
+        <if test="beginTime !=null and beginTime!=''">
+            and gadate &gt;= #{beginTime}
+        </if>
+        <if test="endTime !=null and endTime!=''">
+            and gadate &lt;= #{endTime}
+        </if>
+        limit #{pagesize} offset #{pageno}
     </select>
 
+    <!-- 搜索日志总数 -->
     <select id="searchVersionLogCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_version_log where status = '1'
-        and vsndesc like CONCAT('%',#{keys},'%')
+        <if test="keyword!=null and keyword !=''">
+            and (vsncn ~ #{keyword} or vsndesc ~ #{keyword})
+        </if>
+        <if test="beginTime !=null and beginTime!=''">
+            and gadate &gt;= #{beginTime}
+        </if>
+        <if test="endTime !=null and endTime!=''">
+            and gadate &lt;= #{endTime}
+        </if>
     </select>
 
+    <!-- 添加日志 -->
     <insert id="insertVersionLog" parameterType="java.util.Map">
-        INSERT INTO PUBLIC.tb_version_log ( pid, vsnen, vsncn, vsnno, vsncode, vsnnote, vsndate, vsndesc, ouid, tuid, gadate, status, summary )
+        INSERT INTO PUBLIC.tb_version_log (adduid,addtime, pid, vsnen, vsncn, vsnno, vsncode, vsnnote, vsndate, vsndesc, ouid, tuid,
+        gadate, status, summary )
         VALUES
-	    (#{pid},
-	    <choose><when test="vsnen != null">#{vsnen},</when><otherwise>null,</otherwise></choose>
-	     #{vsncn},
-	     #{vsnno},
-	     #{vsncode},
-	     #{vsnnote},
-	     #{vsndate},
-	     #{vsndesc},
-	     #{ouid},
-	     #{tuid},
-	     #{gadate},
-	     #{status},
-        <choose><when test="summary != null">#{summary}</when><otherwise>null</otherwise></choose>);
+        (
+        <choose>
+            <when test="adduid != null">#{adduid},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="addtime != null">#{addtime},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="pid != null">#{pid},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="vsnen != null">#{vsnen},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="vsncn != null">#{vsncn},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="vsnno != null">#{vsnno},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="vsncode != null">#{vsncode},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="vsnnote != null">#{vsnnote},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="vsndate != null">#{vsndate},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="vsndesc != null">#{vsndesc},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="ouid != null">#{ouid},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="tuid != null">#{tuid},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="gadate != null">#{gadate},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="status != null">#{status},</when>
+            <otherwise>null,</otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null">#{summary}</when>
+            <otherwise>null</otherwise>
+        </choose>
+        );
     </insert>
 
+    <!-- 修改日志信息 -->
     <update id="updateVersionLog" parameterType="java.util.Map">
         update tb_version_log set status = '1'
-        <choose><when test="vsnen != null">,vsnen = #{vsnen}</when></choose>
-        <choose><when test="vsncn != null">,vsncn = #{vsnen}</when></choose>
-        <choose><when test="vsnno != null">,vsnno = #{vsnen}</when></choose>
-        <choose><when test="vsncode != null">,vsncode = #{vsnen}</when></choose>
-        <choose><when test="vsnnote != null">,vsnnote = #{vsnen}</when></choose>
-        <choose><when test="vsndesc != null">,vsndesc = #{vsnen}</when></choose>
-        <choose><when test="pid != null">,pid = #{vsnen}</when></choose>
+        <choose>
+            <when test="vsnen != null">,vsnen = #{vsnen}</when>
+        </choose>
+        <choose>
+            <when test="vsncn != null">,vsncn = #{vsncn}</when>
+        </choose>
+        <choose>
+            <when test="vsnno != null">,vsnno = #{vsnno}</when>
+        </choose>
+        <choose>
+            <when test="vsncode != null">,vsncode = #{vsncode}</when>
+        </choose>
+        <choose>
+            <when test="vsndate != null">,vsndate = #{vsndate}</when>
+        </choose>
+        <choose>
+            <when test="gadate != null">,gadate = #{gadate}</when>
+        </choose>
+        <choose>
+            <when test="vsnnote != null">,vsnnote = #{vsnnote}</when>
+        </choose>
+        <choose>
+            <when test="vsndesc != null">,vsndesc = #{vsndesc}</when>
+        </choose>
+        <choose>
+            <when test="pid != null">,pid = #{pid}</when>
+        </choose>
         where id = #{id}
     </update>
 
+    <!-- 删除日志 -->
     <update id="deleteVersionLog" parameterType="java.util.Map">
-        update tb_version_log  set status = '0' where id = #{id}
+        update tb_version_log  set status = '2' where id = #{id}
     </update>
 
 </mapper>
