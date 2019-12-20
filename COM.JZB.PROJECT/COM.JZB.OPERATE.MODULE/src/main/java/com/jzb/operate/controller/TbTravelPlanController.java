@@ -103,6 +103,21 @@ public class TbTravelPlanController {
         return response;
     }
 
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/20 11:47
+     *  @Description: 根据单位id(cid)获取情报信息来源数据
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/getTravelInfoList",method = RequestMethod.POST)
+    public Response getTravelInfoList(Map<String,Object> param){
+        return  newTbCompanyListApi.queryCompanyByid(param);
+    }
+
     /**
      * @author: gongWei
      * @Date: 2019/12/17 10:11
