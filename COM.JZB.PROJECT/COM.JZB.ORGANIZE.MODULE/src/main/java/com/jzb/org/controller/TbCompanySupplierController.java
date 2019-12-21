@@ -200,7 +200,7 @@ public class TbCompanySupplierController {
     }
 
     /**
-     * 单位认证-营业执照//todo
+     * 单位认证-营业执照//
      * 一键认证
      *
      * @author chenhui
