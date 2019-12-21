@@ -139,6 +139,7 @@
         supervise,
         prodesc,
         prolist,
+        orgrelation,
         projectid,
         projectname,
         tendercompany,
@@ -229,7 +230,7 @@
         update tb_travel_record set rebstatus = '1' where travelid=#{travelid};
     </update>
 
-
+    <!--修改情报-->
     <update id="updateInfoList" parameterType="java.util.Map">
         update tb_travel_info
         <set>
@@ -237,6 +238,7 @@
                 <if test="supervise != null"> supervise  = #{supervise}, </if>
                 <if test="prodesc != null"> prodesc  = #{prodesc}, </if>
                 <if test="prolist != null"> prolist  = #{prolist}, </if>
+                <if test="orgrelation != null"> orgrelation  = #{orgrelation}, </if>
                 <if test="tendercompany != null"> tendercompany  = #{tendercompany}, </if>
                 <if test="tendername != null"> tendername  = #{tendername}, </if>
                 <if test="projecttype != null"> projecttype  = #{projecttype}, </if>
