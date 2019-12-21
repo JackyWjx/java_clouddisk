@@ -94,11 +94,13 @@ public class OpenPageController {
                 if (md5.equals(param.get("checkcode"))) {
                     map.put("uid", param.get("uid"));
                     //从缓存中查询用户信息
+                    Response response = getCid(map);
+                    Map<String,Object> entity = (Map<String, Object>) response.getResponseEntity();
                     Response cacheUserInfo = userAuthApi.getUserInfo(map);
                     Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
-                    map1.put("cid", Entity.get("cid"));
                     map1.put("uid", Entity.get("uid"));
                     map1.put("cname", Entity.get("cname"));
+                    map1.put("cid", Entity.get("cid"));
                 }
                 result = Response.getResponseSuccess();
                 result.setResponseEntity(map1);
@@ -175,6 +177,28 @@ public class OpenPageController {
     }
 
     /**
+     * 登录时获取企业id
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCid",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCid(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            response = Response.getResponseSuccess();
+            Map<Object, Object> map = new HashMap<>();
+            map.put("cid", param.get("cid"));
+            response.setResponseEntity(map);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+
+    /**
      * 调第三方接口传给我项目信息
      * @param param
      * @return
@@ -196,10 +220,10 @@ public class OpenPageController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             param.put("uid", userInfo.get("uid"));
-            Response cacheUserInfo = userAuthApi.getUserInfo(param);
-            Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
-            String cid = Entity.get("cid").toString();
-            String uid = Entity.get("uid").toString();
+            /*Response cacheUserInfo = userAuthApi.getUserInfo(param);*/
+            /*Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();*/
+            String cid = param.get("uid").toString();
+            String uid = param.get("cid").toString();
             //调用第三方接口
             String sr = sendPost("http://bhz.jizhibao.com.cn/Api/GetProjListV3", "uid" +"="+ uid + "&" + "cid" +"="+ cid);
             //把返回值转成JSON格式
