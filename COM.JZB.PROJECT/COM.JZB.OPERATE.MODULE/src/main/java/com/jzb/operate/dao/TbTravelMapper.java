@@ -54,4 +54,5 @@ public interface TbTravelMapper {
 
     int updateRebStatus(Map<String, Object> param);
 
+    int updateInfoList(Map<String, Object> param);
 }

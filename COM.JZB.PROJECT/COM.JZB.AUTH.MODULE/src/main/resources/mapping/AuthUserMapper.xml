@@ -22,7 +22,7 @@
         <if test="regid!=null">
             tul.regid = #{regid}
         </if>
-        AND tul.status = '1'
+        AND tul.status IN ( '1', '8' )
         AND tul.uid = tuk.uid
         AND tuk.status IN ( '1', '8' ) limit 1;
     </select>

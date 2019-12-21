@@ -229,4 +229,65 @@
         update tb_travel_record set rebstatus = '1' where travelid=#{travelid};
     </update>
 
+
+    <update id="updateInfoList" parameterType="java.util.Map">
+        update tb_travel_info
+        <set>
+            <trim suffixOverrides=",">
+                <if test="supervise != null"> supervise  = #{supervise}, </if>
+                <if test="prodesc != null"> prodesc  = #{prodesc}, </if>
+                <if test="prolist != null"> prolist  = #{prolist}, </if>
+                <if test="tendercompany != null"> tendercompany  = #{tendercompany}, </if>
+                <if test="tendername != null"> tendername  = #{tendername}, </if>
+                <if test="projecttype != null"> projecttype  = #{projecttype}, </if>
+                <if test="promail != null"> promail  = #{promail}, </if>
+                <if test="projectras != null"> projectras  = #{projectras}, </if>
+                <if test="tenderphone != null"> tenderphone  = #{tenderphone}, </if>
+                <if test="tenderresultcompany != null"> tenderresultcompany  = #{tenderresultcompany}, </if>
+                <if test="tendertime != null"> tendertime  = #{tendertime}, </if>
+                <if test="tenderagent != null"> tenderagent  = #{tenderagent}, </if>
+                <if test="relation != null"> relation  = #{relation}, </if>
+                <if test="idx != null"> idx  = #{idx}, </if>
+                <if test="podeperson != null"> podeperson  = #{podeperson}, </if>
+                <if test="podephone != null"> podephone  = #{podephone}, </if>
+                <if test="podejob != null"> podejob  = #{podejob}, </if>
+                <if test="podenature != null"> podenature  = #{podenature}, </if>
+                <if test="npodeperson != null"> npodeperson  = #{npodeperson}, </if>
+                <if test="npodephone != null"> npodephone  = #{npodephone}, </if>
+                <if test="npodejob != null"> npodejob  = #{npodejob}, </if>
+                <if test="npodenature != null"> npodenature  = #{npodenature}, </if>
+                <if test="setb != null"> setb  = #{setb}, </if>
+                <if test="sepr != null"> sepr  = #{sepr}, </if>
+                <if test="seli != null"> seli  = #{seli}, </if>
+                <if test="recname != null"> recname  = #{recname}, </if>
+                <if test="reluname != null"> reluname  = #{reluname}, </if>
+                <if test="relphone != null"> relphone  = #{relphone}, </if>
+                <if test="brandname != null"> brandname  = #{brandname}, </if>
+                <if test="contrast != null"> contrast  = #{contrast}, </if>
+                <if test="mail != null"> mail  = #{mail}, </if>
+                <if test="nreluname != null"> nreluname  = #{nreluname}, </if>
+                <if test="nrelphone != null"> nrelphone  = #{nrelphone}, </if>
+                <if test="nbrandname != null"> nbrandname  = #{nbrandname}, </if>
+                <if test="ncontrast != null"> ncontrast  = #{ncontrast}, </if>
+                <if test="nmail != null"> nmail  = #{nmail}, </if>
+                <if test="reshid != null"> reshid  = #{reshid}, </if>
+                <if test="reshname != null"> reshname  = #{reshname}, </if>
+                <if test="reshphone != null"> reshphone  = #{reshphone}, </if>
+                <if test="lineuname != null"> lineuname  = #{lineuname}, </if>
+                <if test="linejob != null"> linejob  = #{linejob}, </if>
+                <if test="linephone != null"> linephone  = #{linephone}, </if>
+                <if test="linenature != null"> linenature  = #{linenature}, </if>
+                <if test="adduid != null"> adduid  = #{adduid}, </if>
+                <if test="addtime != null"> addtime  = #{addtime}, </if>
+                <if test="updtime != null"> updtime  = #{updtime}, </if>
+                <if test="summary != null"> summary  = #{summary},</if>
+                <if test="upduid != null"> upduid  = #{upduid}</if>
+            </trim>
+        </set>
+        where
+        status ='1'
+        <if test="cid != null and cid !=''"> and cid = #{cid}</if>
+        <if test="projectid != null and projectid !=''"> and projectid = #{projectid}</if>
+    </update>
+
 </mapper>

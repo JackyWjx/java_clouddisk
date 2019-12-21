@@ -107,7 +107,7 @@ public class TbTravelPlanController {
     /**
      *  @author: gongWei
      *  @Date:  2019/12/20 11:47
-     *  @Description: 根据单位id(cid)获取情报信息来源数据
+     *  @Description: 根据单位id(cid)获取 情报收集--单位信息来源数据
      *  @Param:
      *  @Return:
      *  @Exception:
@@ -115,9 +115,27 @@ public class TbTravelPlanController {
     @CrossOrigin
     @RequestMapping(value = "/getTravelInfoList",method = RequestMethod.POST)
     public Response getTravelInfoList(@RequestBody Map<String, Object> param){
-        param.put("pagesize",20);
-        param.put("pageno",1);
-        return  newTbCompanyListApi.queryCompanyByid(param);
+        Response response;
+        param.put("userinfo",param.get("userinfo"));
+        response = newTbCompanyListApi.getCompanyInfoByCid(param);
+        return  response;
+    }
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/20 11:47
+     *  @Description: 根据项目id(projectId)获取  情报收集--项目信息来源数据
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/getProjectInfoList",method = RequestMethod.POST)
+    public Response getProjectInfoList(@RequestBody Map<String, Object> param){
+        Response response;
+        param.put("userinfo",param.get("userinfo"));
+        response = newTbCompanyListApi.getProjectInfoList(param);
+        return  response;
     }
 
     /**
@@ -166,72 +184,6 @@ public class TbTravelPlanController {
             long endTime = temp;
 
             //遍历细节集合
-//            for (Map<String, Object> detailsMap : detailsList) {
-//
-//                detailsMap.put("deid", JzbRandom.getRandomChar(19));
-//                detailsMap.put("travelid", param.get("travelid"));
-//                detailsMap.put("uid", param.get("uid"));
-//                detailsMap.put("addtime", System.currentTimeMillis());
-//                detailsMap.put("status", 1);//默认状态1
-//                // prindex加密处理
-//
-//                List<Integer> prindexLst = (List<Integer>) detailsMap.get("produce");
-//                detailsMap.put("produce", PrindexUtil.setPrindex(prindexLst));
-//
-//                //出差详情--出差时间转化处理
-//                long trTime = getTimestamp(JzbDataType.getString(detailsMap.get("trtime")));
-//                detailsMap.put("trtime", trTime);
-//                //统计始末时间
-//                startTime = startTime < trTime ? startTime : trTime;
-//                endTime = endTime > trTime ? endTime : trTime;
-//
-//                //获取并保存情报收集list
-//                List<Map<String, Object>> travelinfolist = (List<Map<String, Object>>) detailsMap.get("travelinfolist");
-//                //一般travelinfolist的长度为1
-//                for (Map<String, Object> infoMap : travelinfolist) {
-//                    infoMap.put("adduid", param.get("adduid"));
-//                    infoMap.put("travelid", param.get("travelid"));
-//                    infoMap.put("deid", detailsMap.get("deid"));
-//                    infoMap.put("reshid", null); // 此除应为前端传参,现因 项目关系人来源暂不明确,故暂存null值处理
-//                    infoMap.put("status", 1);//默认状态1
-//                    infoMap.put("inid", JzbRandom.getRandomChar(19));
-//                    infoMap.put("addtime", System.currentTimeMillis());
-//                    travelInfoService.save(infoMap);
-//                }
-//
-//                //获取并保存出差资料list
-//                List<Map<String, Object>> traveldatalist = (List<Map<String, Object>>) detailsMap.get("traveldatalist");
-//                for (Map<String, Object> dataMap : traveldatalist) {
-//                    dataMap.put("coou", JSONArray.toJSONString(dataMap.get("coou")));
-//                    dataMap.put("coppt", JSONArray.toJSONString(dataMap.get("coppt")));
-//                    dataMap.put("couage", JSONArray.toJSONString(dataMap.get("couage")));
-//                    dataMap.put("cocustomer", JSONArray.toJSONString(dataMap.get("cocustomer")));
-//                    dataMap.put("coframe", JSONArray.toJSONString(dataMap.get("coframe")));
-//                    dataMap.put("copropaganda", JSONArray.toJSONString(dataMap.get("copropaganda")));
-//                    dataMap.put("contrast", JSONArray.toJSONString(dataMap.get("contrast")));
-//                    dataMap.put("card", JSONArray.toJSONString(dataMap.get("card")));
-//                    dataMap.put("account", JSONArray.toJSONString(dataMap.get("account")));
-//                    dataMap.put("speechcraft", JSONArray.toJSONString(dataMap.get("speechcraft")));
-//                    dataMap.put("signin", JSONArray.toJSONString(dataMap.get("signin")));
-//                    dataMap.put("newsletter", JSONArray.toJSONString(dataMap.get("newsletter")));
-//                    dataMap.put("train", JSONArray.toJSONString(dataMap.get("train")));
-//                    dataMap.put("implement", JSONArray.toJSONString(dataMap.get("implement")));
-//                    dataMap.put("offer", JSONArray.toJSONString(dataMap.get("offer")));
-//                    dataMap.put("plan", JSONArray.toJSONString(dataMap.get("plan")));
-//                    dataMap.put("invitation", JSONArray.toJSONString(dataMap.get("invitation")));
-//                    dataMap.put("reviewed", JSONArray.toJSONString(dataMap.get("reviewed")));
-//                    dataMap.put("cureviewed", JSONArray.toJSONString(dataMap.get("cureviewed")));
-//                    dataMap.put("contract", JSONArray.toJSONString(dataMap.get("contract")));
-//                    dataMap.put("adduid", param.get("adduid"));
-//                    dataMap.put("travelid", param.get("travelid"));
-//                    dataMap.put("deid", detailsMap.get("deid"));
-//                    dataMap.put("did", JzbRandom.getRandomChar(19));
-//                    dataMap.put("addtime", System.currentTimeMillis());
-//                    dataMap.put("status", 1);//默认状态1
-//
-//                    travelDataService.save(dataMap);
-//                }
-//            }
             for (int i = 0, a = detailsList.size(); i < a; i++) {
 
                 detailsList.get(i).put("deid", JzbRandom.getRandomChar(19));
@@ -258,11 +210,22 @@ public class TbTravelPlanController {
                     travelinfolist.get(j).put("adduid", param.get("adduid"));
                     travelinfolist.get(j).put("travelid", param.get("travelid"));
                     travelinfolist.get(j).put("deid", detailsList.get(i).get("deid"));
-                    travelinfolist.get(j).put("reshid", null); // 此除应为前端传参,现因 项目关系人来源暂不明确,故暂存null值处理
+//                    travelinfolist.get(j).put("reshid", null);
                     travelinfolist.get(j).put("status", 1);//默认状态1
                     travelinfolist.get(j).put("inid", JzbRandom.getRandomChar(19));
                     travelinfolist.get(j).put("addtime", System.currentTimeMillis());
-                    travelInfoService.save(travelinfolist.get(j));
+                    int okCount = travelInfoService.save(travelinfolist.get(j));
+                    if(okCount > 0){
+                        Map<String,Object> apiMap = new HashMap<>();
+                        apiMap.put("cid", travelinfolist.get(j).get("cid"));
+                        newTbCompanyListApi.updateCommonCompanyList(apiMap); // 更新 tb_common_company_list 信息
+                        if(!ObjectUtils.isEmpty(travelinfolist.get(j).get("projectid"))){
+                            apiMap.put("projectid",travelinfolist.get(j).get("projectid"));
+                            newTbCompanyListApi.updateCompanyProject(apiMap); //更新 tb_company_project 信息
+                            newTbCompanyListApi.updateCompanyProjectInfo(apiMap); // 更新 tb_common_project_info 信息
+                        }
+
+                    }
                 }
 
                 //获取并保存出差资料list
@@ -472,58 +435,6 @@ public class TbTravelPlanController {
             long temp = sdf.parse(JzbDataType.getString(detailsList.get(0).get("trtime"))).getTime();
             long startTime = temp;
             long endTime = temp;
-//            for (Map<String, Object> detailsMap : detailsList) {
-//                long trTime = sdf.parse(JzbDataType.getString(detailsMap.get("trtime"))).getTime();
-//
-//                //统计始末时间
-//                startTime = startTime < trTime ? startTime : trTime;
-//                endTime = endTime > trTime ? endTime : trTime;
-//                // prindex加密处理
-//
-//                List<Integer> prindexLst = (List<Integer>) detailsMap.get("produce");
-//                detailsMap.put("trtime", trTime);
-//                detailsMap.put("produce", PrindexUtil.setPrindex(prindexLst));
-//
-//                travelPlanService.updateTravelDetials(detailsMap);
-//
-//                //获取并保存情报收集list
-//                List<Map<String, Object>> travelinfolist = (List<Map<String, Object>>) detailsMap.get("travelinfolist");
-//                //一般travelinfolist的长度为1
-//                for (Map<String, Object> infoMap : travelinfolist) {
-//                    infoMap.put("updtime", System.currentTimeMillis());
-//                    infoMap.put("deid", detailsMap.get("deid"));
-//                    travelInfoService.update(infoMap);
-//                }
-//
-//                //获取并保存出差资料list
-//                List<Map<String, Object>> traveldatalist = (List<Map<String, Object>>) detailsMap.get("traveldatalist");
-//                for (Map<String, Object> dataMap : traveldatalist) {
-//                    dataMap.put("coou", JSONArray.toJSONString(dataMap.get("coou")));
-//                    dataMap.put("coppt", JSONArray.toJSONString(dataMap.get("coppt")));
-//                    dataMap.put("couage", JSONArray.toJSONString(dataMap.get("couage")));
-//                    dataMap.put("cocustomer", JSONArray.toJSONString(dataMap.get("cocustomer")));
-//                    dataMap.put("coframe", JSONArray.toJSONString(dataMap.get("coframe")));
-//                    dataMap.put("copropaganda", JSONArray.toJSONString(dataMap.get("copropaganda")));
-//                    dataMap.put("contrast", JSONArray.toJSONString(dataMap.get("contrast")));
-//                    dataMap.put("card", JSONArray.toJSONString(dataMap.get("card")));
-//                    dataMap.put("account", JSONArray.toJSONString(dataMap.get("account")));
-//                    dataMap.put("speechcraft", JSONArray.toJSONString(dataMap.get("speechcraft")));
-//                    dataMap.put("signin", JSONArray.toJSONString(dataMap.get("signin")));
-//                    dataMap.put("newsletter", JSONArray.toJSONString(dataMap.get("newsletter")));
-//                    dataMap.put("train", JSONArray.toJSONString(dataMap.get("train")));
-//                    dataMap.put("implement", JSONArray.toJSONString(dataMap.get("implement")));
-//                    dataMap.put("offer", JSONArray.toJSONString(dataMap.get("offer")));
-//                    dataMap.put("plan", JSONArray.toJSONString(dataMap.get("plan")));
-//                    dataMap.put("invitation", JSONArray.toJSONString(dataMap.get("invitation")));
-//                    dataMap.put("reviewed", JSONArray.toJSONString(dataMap.get("reviewed")));
-//                    dataMap.put("cureviewed", JSONArray.toJSONString(dataMap.get("cureviewed")));
-//                    dataMap.put("contract", JSONArray.toJSONString(dataMap.get("contract")));
-//                    dataMap.put("updtime", System.currentTimeMillis());
-//                    dataMap.put("deid", detailsMap.get("deid"));
-//                    travelDataService.update(dataMap);
-//                }
-//            }
-
             for (int i = 0, a = detailsList.size(); i < a; i++) {
                 long trTime = sdf.parse(JzbDataType.getString(detailsList.get(i).get("trtime"))).getTime();
 
@@ -543,7 +454,18 @@ public class TbTravelPlanController {
                 for (int j = 0, b = travelInfoList.size(); j < b; j++) {
                     travelInfoList.get(j).put("updtime", System.currentTimeMillis());
                     travelInfoList.get(j).put("deid", detailsList.get(i).get("deid"));
-                    travelInfoService.update(travelInfoList.get(j));
+                    int okCount = travelInfoService.update(travelInfoList.get(j));
+                    if(okCount > 0){
+                        Map<String,Object> apiMap = new HashMap<>();
+                        apiMap.put("cid", travelInfoList.get(j).get("cid"));
+                        newTbCompanyListApi.updateCommonCompanyList(apiMap); // 更新 tb_common_company_list 信息
+                        if(!ObjectUtils.isEmpty(travelInfoList.get(j).get("projectid"))){
+                            apiMap.put("projectid",travelInfoList.get(j).get("projectid"));
+                            newTbCompanyListApi.updateCompanyProject(apiMap); //更新 tb_company_project 信息
+                            newTbCompanyListApi.updateCompanyProjectInfo(apiMap); // 更新 tb_common_project_info 信息
+                        }
+
+                    }
                 }
 
                 //获取并保存出差资料list

@@ -165,7 +165,8 @@ public class TbCompanyMethodController {
                     } else {
                         node.put("score", record.get("score").toString());
                     }
-                    node.put("days", record.get("days").toString());
+
+                    node.put("days", JzbDataType.getString(record.get("days")));
 
                     // if root node
                     if (parentId.equals(firstParent)) {

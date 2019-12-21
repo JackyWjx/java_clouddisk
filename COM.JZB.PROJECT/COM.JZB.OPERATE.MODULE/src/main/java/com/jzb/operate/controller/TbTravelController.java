@@ -86,20 +86,22 @@ public class TbTravelController {
                 param.put("uid",userInfo.get("uid"));
                 List<Map<String, Object>> list = tbTravelService.queryAllTravelList(param);
                 for(int i = 0 , a = list.size(); i < a;i++){
-                    Map<String,Object> appMap =new HashMap<>();
-                    appMap.put("travelid",list.get(i).get("travelid").toString().trim());
-                    appMap.put("rebversion",list.get(i).get("rebversion").toString().trim());
-                    // 获取审批状态
-                    List<Map<String, Object>> appList = tbTravelService.queryTravelApproval(appMap);
-                    for(int k = 0, c = appList.size();k < c;k ++){
-                        Map<String,Object> uMap = new HashMap<>();
-                        uMap.put("truid",appList.get(k).get("truid"));
-                        uMap.put("userinfo",userInfo);
-                        Response res = tbDeptUserListApi.queryPersonNameByuid(uMap);
-                        List<Map<String,Object>> userList = res.getPageInfo().getList();
-                        appList.get(k).put("userList",userList);
+                    Map<String, Object> appMap = new HashMap<>();
+                    appMap.put("travelid", list.get(i).get("travelid").toString().trim());
+                    if(list.get(i).get("rebstatus").equals("2")) {
+                        appMap.put("rebversion", list.get(i).get("rebversion").toString().trim());
+                        // 获取审批状态
+                        List<Map<String, Object>> appList = tbTravelService.queryTravelApproval(appMap);
+                        for (int k = 0, c = appList.size(); k < c; k++) {
+                            Map<String, Object> uMap = new HashMap<>();
+                            uMap.put("truid", appList.get(k).get("truid"));
+                            uMap.put("userinfo", userInfo);
+                            Response res = tbDeptUserListApi.queryPersonNameByuid(uMap);
+                            List<Map<String, Object>> userList = res.getPageInfo().getList();
+                            appList.get(k).put("userList", userList);
+                        }
+                        list.get(i).put("appList", appList);
                     }
-                    list.get(i).put("appList",appList);
 
                     // 获取出差详情
                     List<Map<String, Object>> reList = tbTravelService.queryTravelList(appMap);
@@ -313,26 +315,19 @@ public class TbTravelController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","deid" })) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","travelid" })) {
                 response = Response.getResponseError();
             } else {
                     JzbPageConvert.setPageRows(param);
                     param.put("uid",userInfo.get("uid"));
-                    param.put("deid",param.get("deid").toString().trim());
+                    param.put("travelid",param.get("travelid").toString().trim());
                     // 获取出差详情
                     List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                     for(int i = 0,a = list.size();i < a;i++){
-                        Map<String, Object> proMap = new HashMap<>();
-                        proMap.put("userinfo",userInfo);
-                        proMap.put("pageno",param.get("pageno"));
-                        proMap.put("pagesize",param.get("pagesize"));
-                        proMap.put("cid",list.get(i).get("cid"));
-                        proMap.put("projectid",list.get(i).get("projectid"));
-
-//                        // 获取情报
-//                        Map<String, Object> deMap = new HashMap<>();
-//                        deMap.put("deid",list.get(i).get("deid"));
-                        List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(param);
+                        // 获取情报
+                        Map<String, Object> deMap = new HashMap<>();
+                        deMap.put("deid",list.get(i).get("deid"));
+                        List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(deMap);
                         for (int l = 0, d = infoList.size();l < d;l++){
                             if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                                 Map<String,Object> proListMap =new HashMap<>();
@@ -344,9 +339,17 @@ public class TbTravelController {
                             }
                         }
                         // 获取项目产出
+                        Map<String, Object> proMap = new HashMap<>();
+                        proMap.put("userinfo",userInfo);
+                        proMap.put("pageno",param.get("pageno"));
+                        proMap.put("pagesize",param.get("pagesize"));
+                        proMap.put("cid",list.get(i).get("cid"));
+                        if(!JzbTools.isEmpty(list.get(i).get("projectid"))) {
+                            proMap.put("projectid", list.get(i).get("projectid"));
+                        }
                         Response res = newTbCompanyListApi.queryCompanyByid(proMap);
                         List<Map<String, Object>> resList = res.getPageInfo().getList();
-                        // 获取产出情况
+                        // 获取产出资料
                         if(!JzbTools.isEmpty(list.get(i).get("produce"))) {
                             List<Map<String, Object>> proList = tbTravelService.queryTravelProduce();
                             List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")), proList);
@@ -361,7 +364,7 @@ public class TbTravelController {
                     }
                     response = Response.getResponseSuccess(userInfo);
                     PageInfo pageInfo = new PageInfo();
-                    pageInfo.setTotal(tbTravelService.countTravelInfo(param));
+                    pageInfo.setTotal(tbTravelService.countTravelList(param));
                     pageInfo.setList(list);
                     response.setPageInfo(pageInfo);
                 }
@@ -556,7 +559,14 @@ public class TbTravelController {
             } else {
                 param.put("cid",param.get("cid").toString().trim());
                 param.put("userinfo",userInfo);
-                response = newTbCompanyListApi.updateCommonCompanyList(param);
+                Response res = newTbCompanyListApi.updateCommonCompanyList(param);
+                if(res.getServerResult().getResultCode() == 200){
+                    param.put("updtime" ,System.currentTimeMillis());
+                    param.put("upduid",userInfo.get("uid"));
+                    response = tbTravelService.updateInfoList(param) > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
+                }else {
+                    return Response.getResponseError();
+                }
             }
         } catch (Exception ex) {
             flag = false;
@@ -599,7 +609,14 @@ public class TbTravelController {
             } else {
                 param.put("projectid",param.get("projectid").toString().trim());
                 param.put("userinfo",userInfo);
-                response = newTbCompanyListApi.updateCompanyProject(param);
+                Response res = newTbCompanyListApi.updateCompanyProject(param);
+                if(res.getServerResult().getResultCode() == 200){
+                    param.put("updtime" ,System.currentTimeMillis());
+                    param.put("upduid",userInfo.get("uid"));
+                    response = tbTravelService.updateInfoList(param) > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
+                }else {
+                    return Response.getResponseError();
+                }
             }
         } catch (Exception ex) {
             flag = false;
@@ -642,7 +659,14 @@ public class TbTravelController {
                 JzbPageConvert.setPageRows(param);
                 param.put("projectid",param.get("projectid").toString().trim());
                 param.put("userinfo",userInfo);
-                response = newTbCompanyListApi.updateCompanyProjectInfo(param);
+                Response res = newTbCompanyListApi.updateCompanyProjectInfo(param);
+                if(res.getServerResult().getResultCode() == 200){
+                    param.put("updtime" ,System.currentTimeMillis());
+                    param.put("upduid",userInfo.get("uid"));
+                    response = tbTravelService.updateInfoList(param) > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
+                }else {
+                    return Response.getResponseError();
+                }
             }
         } catch (Exception ex) {
             flag = false;
