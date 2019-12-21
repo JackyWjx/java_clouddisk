@@ -8,9 +8,11 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.TbDocumentMsgFileInfoService;
+import com.jzb.resource.service.TbDocumentMsgLookfileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -29,10 +31,13 @@ import java.util.Map;
 public class FileMenuController {
 
     //起始路径
-    private String href = "F://files/销售部";
+    //private String href = "F://files";
 
     @Autowired
     private TbDocumentMsgFileInfoService tbDocumentMsgFileInfoService;
+
+    @Autowired
+    private TbDocumentMsgLookfileService tbDocumentMsgLookfileService;
 
     /**
      * 日志记录对象
@@ -49,7 +54,7 @@ public class FileMenuController {
     @RequestMapping(value = "/getFileMenu", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public Response getFileMenu(Map<String, Object> param) {
+    public Response getFileMenu(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
         String api = "/resource/fileMenu/getFileMenu";
@@ -63,9 +68,7 @@ public class FileMenuController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             //判断路径是否为起始路径
-            if (JzbCheckParam.haveEmpty(param, new String[]{"href"})) {
-                param.put("href", href);
-            }
+
             List<FileInfo> fileInfo = tbDocumentMsgFileInfoService.getFileInfo(param);
             for (int k = 0, c = fileInfo.size(); k < c; k++) {
                 String directory = fileInfo.get(k).getLocation();
@@ -81,6 +84,8 @@ public class FileMenuController {
             }
             response = Response.getResponseSuccess();
             response.setResponseEntity(fileInfo);
+
+
         } catch (Exception ex) {
             flag = false;
             JzbTools.logError(ex);
@@ -111,18 +116,24 @@ public class FileMenuController {
         String api = "/resource/fileMenu/addFileMenu";
         boolean flag = true;
         try {
-            userInfo = (Map<String, Object>) param.get("userinfo");
             if (param != null && param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
+            String fid = JzbRandom.getRandomChar(19);
             param.put("path", param.get("href") + "/" + param.get("name"));
-            param.put("uid", "前端传");
+            param.put("uid", userInfo.get("uid"));
             param.put("addtime", System.currentTimeMillis());
-            param.put("uniquefileid", JzbRandom.getRandomChar(19));
+            param.put("uniquefileid", fid);
             response = tbDocumentMsgFileInfoService.addFileMenu(param) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            List<Map<String,Object>> list = new ArrayList<>();
+            Map<String,Object> fidMap = new HashMap<>();
+            fidMap.put("uniquefileid",fid);
+            list.add(fidMap);
+            tbDocumentMsgLookfileService.addLookHistory(list,JzbDataType.getString(userInfo.get("uid")),3);
         } catch (Exception ex) {
             flag = false;
             JzbTools.logError(ex);
@@ -147,14 +158,15 @@ public class FileMenuController {
     @RequestMapping(value = "/putFileMenu", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
+    @Transactional
     public Response putFileMenu(@RequestBody Map<String, Object> param) {
         Response response = null;
         Map<String, Object> userInfo = null;
         String api = "/resource/fileMenu/putFileMenu";
         boolean flag = true;
         try {
-            userInfo = (Map<String, Object>) param.get("userinfo");
             if (param != null && param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
@@ -162,6 +174,7 @@ public class FileMenuController {
             }
             if (JzbCheckParam.allNotEmpty(param, new String[]{"type", "name", "uniquefileid"})) {
                 //前端传输全部参数
+                param.put("uptime", System.currentTimeMillis());
                 if (JzbDataType.getInteger(param.get("type")) == 1) {
                     //这是文件夹
 
@@ -195,20 +208,27 @@ public class FileMenuController {
                             }
                             result.add(list.get(i));
                         }
-                        response = tbDocumentMsgFileInfoService.batchHierarchyUpdate(result) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+                        if(result.size()>0){
+                            response = tbDocumentMsgFileInfoService.batchHierarchyUpdate(result) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+                            tbDocumentMsgLookfileService.addLookHistory(result,JzbDataType.getString(userInfo.get("uid")),2);
+                        }else {
+                            response=Response.getResponseSuccess(userInfo);
+                        }
                     }
                     //进行修改备注操作
                     tbDocumentMsgFileInfoService.updateItselfFileInfo(param);
-                    response = Response.getResponseSuccess();
+
                 } else if (JzbDataType.getInteger(param.get("type")) == 0) {
                     //这是文件
-                    param.put("uid", "前端传");
-                    param.put("uptime", System.currentTimeMillis());
                     response = tbDocumentMsgFileInfoService.putFileMenu(param) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
                 } else {
                     response = Response.getResponseError();
                 }
-
+                List<Map<String,Object>> list = new ArrayList<>();
+                Map<String,Object> fidMap = new HashMap<>();
+                fidMap.put("uniquefileid",param.get("uniquefileid"));
+                list.add(fidMap);
+                tbDocumentMsgLookfileService.addLookHistory(list,JzbDataType.getString(userInfo.get("uid")),2);
             } else {
                 response = Response.getResponseError();
             }
@@ -242,7 +262,8 @@ public class FileMenuController {
         String api = "/resource/fileMenu/putFileMenuStatus";
         boolean flag = true;
         try {
-
+            userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("uid",userInfo.get("uid"));
             if (JzbCheckParam.allNotEmpty(param, new String[]{"type", "uniquefileid"})) {
                 //前端传输全部参数
                 if (JzbDataType.getInteger(param.get("type")) == 1) {
@@ -254,8 +275,12 @@ public class FileMenuController {
                     tbDocumentMsgFileInfoService.delFileInfo(param);
                     //查询所有信息
                     List<Map<String, Object>> list = tbDocumentMsgFileInfoService.queryAllInfo(map);
-
-                    response = tbDocumentMsgFileInfoService.batchHierarchyDelete(list) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+                    if(list.size()>0){
+                        response = tbDocumentMsgFileInfoService.batchHierarchyDelete(list) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+                        tbDocumentMsgLookfileService.addLookHistory(list,JzbDataType.getString(userInfo.get("uid")),4);
+                    }else {
+                        response=Response.getResponseSuccess();
+                    }
 
                 } else if (JzbDataType.getInteger(param.get("type")) == 0) {
 
@@ -263,10 +288,16 @@ public class FileMenuController {
                 } else {
                     response = Response.getResponseError();
                 }
+                List<Map<String,Object>> list = new ArrayList<>();
+                Map<String,Object> fidMap = new HashMap<>();
+                fidMap.put("uniquefileid",param.get("uniquefileid"));
+                list.add(fidMap);
+                tbDocumentMsgLookfileService.addLookHistory(list,JzbDataType.getString(userInfo.get("uid")),4);
 
             } else {
                 response = Response.getResponseError();
             }
+
         } catch (Exception ex) {
             flag = false;
             JzbTools.logError(ex);

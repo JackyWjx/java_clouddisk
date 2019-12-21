@@ -64,4 +64,29 @@ public interface NewTbCompanyListApi {
     @PostMapping("/queryPronameByid")
     @Transactional
     public Response queryPronameByid(@RequestBody Map<String, Object> param);
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/21 17:35
+     *  @Description:
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    @PostMapping("/getCompanyInfoByCid")
+    @CrossOrigin
+    Response getCompanyInfoByCid(@RequestBody Map<String, Object> param);
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/21 17:35
+     *  @Description:
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    @PostMapping("/getProjectInfoList")
+    @CrossOrigin
+    Response getProjectInfoList(@RequestBody Map<String, Object> param);
 }
