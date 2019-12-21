@@ -153,14 +153,11 @@ public class AuthUserLoginService {
         if (verify(telNumber, type)) {
             List<Map> loList = userMapper.searchSendCodeByRelphone(map);
             if (loList.size() > 0) {
-                //获取用户id和发送短信
-                String uid = loList.get(0).get("uid").toString();
+                result.put("code", "1");
+            } else {
                 Response rul = sendSmsCode(map, telNumber, size);
                 result.put("code", "0");
-                result.put("uid", uid);
                 result.put("serverResult", rul.getServerResult());
-            } else {
-                result.put("code", "3");
             }
         } else {
             result.put("code", "2");

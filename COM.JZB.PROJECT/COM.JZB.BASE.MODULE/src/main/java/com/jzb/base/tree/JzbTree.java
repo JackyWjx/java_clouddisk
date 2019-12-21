@@ -102,10 +102,10 @@ public class JzbTree {
      * 将数据相同的合并字段存入list中
      *
      * @param list     需要处理的数据
-     * @param main     主干字段, main的key从0开始累计，value是字段名称
-     * @param id       主干id
-     * @param merge    需要合并的字段,merge的key从0开始累计，value是字段名称
-     * @param listName 生成的list姓名
+     *      * @param main     主干字段, main的key从0开始累计，value是字段名称
+     *      * @param id       主干id
+     *      * @param merge    需要合并的字段,merge的key从0开始累计，value是字段名称
+     *      * @param listName 生成的list姓名
      * @return java.util.Map<java.lang.String, java.util.Map < java.lang.String, java.lang.Object>>
      * @Author: DingSC
      * @DateTime: 2019/9/4 9:48

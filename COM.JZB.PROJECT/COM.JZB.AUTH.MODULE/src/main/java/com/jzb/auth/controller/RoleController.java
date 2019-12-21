@@ -642,5 +642,33 @@ public class RoleController {
         return result;
     }
 
+    /**
+     * 查询计支宝企业内 文档管理 角色
+     * 用户 给 体系建设 内超级管理员 权限
+     * 查询当前用户 是否有超级权限
+     * @param param
+     * @Author: lifei
+     * @DateTime: 2019/12/19 14:07
+     */
+    @RequestMapping(value = "/getDocMsgPower", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getDocMsgPower(@RequestBody Map<String, Object> param) {
+        Response result=null;
+        try {
+            String[] str = {"uid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("uid", userInfo.get("uid"));
+                int add = roleService.getDocMsgPower(param);
+                result = Response.getResponseSuccess(userInfo);
+                result.setResponseEntity(add);
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 
 }
