@@ -30,11 +30,16 @@
 <!--    文件夹与文件查询    -->
     <select id="selectFileInfo" resultType="com.jzb.base.entity.uploader.FileInfo">
         select  id,uniquefileid as identifier,name as filename,type,path as location,addtime,uid,description,uptime,status,sort,href,totalsize as totalSize
-        from "tb_document_msg_file_info" where href like #{href}
-        <if test="name!=null and name !=''">
-            and name like CONCAT('%',#{name},'%')
-        </if>
-        and status = '1'
+        from "tb_document_msg_file_info"
+        <where>
+            <if test="href!=null and href!=''">
+                href like #{href}
+            </if>
+            <if test="name!=null and name !=''">
+                and name like CONCAT('%',#{name},'%')
+            </if>
+            and status = '1'
+        </where>
     </select>
 <!--    删除文件夹   -->
     <update id="deleteFileInfo">
@@ -59,7 +64,7 @@
         select name,path,href from "tb_document_msg_file_info" where uniquefileid = #{uniquefileid} and status='1'
     </select>
 <!--    查询该文件夹下的所有文件，修改时使用    -->
-    <select id="queryAllInfo" resultType="Map">
+    <select id="queryAllInfo" parameterType="Map" resultType="Map">
         select uniquefileid,name,type,path,href from "tb_document_msg_file_info"  where href like CONCAT('',#{path},'%')
     </select>
 <!--    修改所有该目录下所有文件    -->
@@ -71,7 +76,7 @@
                     path=#{item.path},
                 </if>
                 <if test="item.href!=''and item.href != null">
-                    href=#{item.href}
+                    href=#{item.href},
                 </if>
             </set>
             where uniquefileid = #{item.uniquefileid}
@@ -91,7 +96,10 @@
                 href=#{newHref},
             </if>
             <if test="description != null and description != ''">
-                description=#{description}
+                description=#{description},
+            </if>
+            <if test="uptime != null and uptime != ''">
+                uptime=#{uptime}
             </if>
 
         </set>
