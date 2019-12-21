@@ -295,7 +295,7 @@ public class TbCompanyCommonService {
             param.put("senduid", "addCommon1013");
             param.put("msgtag", "addCommon1013");
             companyService.sendRemind(param);
-        }//todo
+        }
         return tbCompanyCommonMapper.updateCompanyListInfo(param);
     }
 }

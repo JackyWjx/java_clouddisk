@@ -224,6 +224,9 @@
         cl.status = #{status}
         and
         cs.status = #{status}
+        <if test="cname != null and cname != ''">
+            and cl.cname ~ #{cname}
+        </if>
         and
         cl.cid in (select supid from tb_company_supplier where cid = #{cid})
         and

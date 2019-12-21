@@ -20,6 +20,8 @@
         tcp.projectid,
         projectname,
         projecttype,
+        prouname,
+        prouphone,
         podephone,
         podenature,
         podeperson,

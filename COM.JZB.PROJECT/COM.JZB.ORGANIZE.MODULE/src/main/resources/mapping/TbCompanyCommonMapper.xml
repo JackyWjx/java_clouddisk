@@ -450,7 +450,7 @@
         set
         <if test="curl != null and curl != ''">curl=#{curl},</if>
         <if test="fax != null and fax != ''">fax=#{fax},</if>
-        <if test="limitday != null and limitday != ''">limitday=${limitday},</if>
+        <if test="limitday != null and limitday != ''">limitday=#{limitday},</if>
         <if test="address != null and address != ''">address=#{address},</if>
         <if test="range != null and range != ''">range=#{range},</if>
         <if test="ctype != null and ctype != ''">ctype=#{ctype},</if>
