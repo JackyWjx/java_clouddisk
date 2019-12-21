@@ -204,7 +204,7 @@
     <select id="queryTravelApproval" resultType="java.util.Map" parameterType="java.util.Map">
         select  apid,trstatus,truid,status,version,idx from tb_travel_approval where  travelid = #{travelid}
         <if test="trstatus != null and trstatus != ''">and trstatus = #{trstatus}</if>
-        <if test="version != null and version != ''">and version = #{rebversion}</if>
+        <if test="rebversion != null and rebversion != ''">and version = #{rebversion}</if>
         order by idx asc
     </select>
 

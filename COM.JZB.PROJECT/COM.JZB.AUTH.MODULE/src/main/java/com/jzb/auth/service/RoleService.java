@@ -606,7 +606,15 @@ public class RoleService implements Service {
         }
         return userList;
     }
-
+    /**
+     * 查询计支宝企业内 文档管理 角色
+     * 用户 给 体系建设 内超级管理员 权限
+     * 查询当前用户 是否有超级权限
+     * @param param
+     * @Author: lifei
+     * @DateTime: 2019/12/19 14:07
+     */
+    public int  getDocMsgPower(Map<String, Object> param){return roleMapper.getDocMsgPower(param);}
     @Override
     public String value() {
         return null;

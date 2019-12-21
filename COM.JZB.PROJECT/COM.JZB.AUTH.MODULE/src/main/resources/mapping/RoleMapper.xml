@@ -77,7 +77,7 @@
             INSERT INTO tb_user_role (cid,crid,uid,addtime,updtime,status)
             VALUES
             (#{item.cid},#{item.crid},#{item.uid},#{item.addtime},#{item.updtime},#{item.status})
-            ON conflict (cid, crid, uid) DO UPDATE
+            ON CONFLICT (cid, crid, uid) DO UPDATE
             SET status = '1'
         </foreach>
     </insert>
@@ -479,5 +479,14 @@
                 ORDER BY ur.id LIMIT #{pagesize}  OFFSET #{start}
     </select>
 
+    <!--体系建设文件管理-->
+    <select id="getDocMsgPower" resultType="java.lang.Integer">
+        select count(1) from tb_user_list as a ,tb_role_relation as b,tb_role_group c
+        where b.rrid=a.uid
+        and c.crgid = b.crgid
+        and c.cid='JZB0001'
+        and c.cname='体系建设文件管理'
+        and a.uid=#{uid}
+    </select>
 
 </mapper>

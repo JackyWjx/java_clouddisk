@@ -1,6 +1,7 @@
 package com.jzb.auth.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedHashMap;
@@ -242,7 +243,7 @@ public interface RoleMapper {
      * @Author: DingSC
      * @DateTime: 2019/9/3 10:30
      */
-    int insertUserRole(List<Map<String, Object>> map);
+    int insertUserRole( List<Map<String, Object>> map);
 
     /**
      * 批量修改用户角色表状态
@@ -253,6 +254,17 @@ public interface RoleMapper {
      * @DateTime: 2019/9/3 10:36
      */
     int updateUserRole(List<Map<String, Object>> map);
+
+
+    /**
+     * 查询计支宝企业内 文档管理 角色
+     * 用户 给 体系建设 内超级管理员 权限
+     * 查询当前用户 是否有超级权限
+     * @param param
+     * @Author: lifei
+     * @DateTime: 2019/12/19 14:07
+     */
+    int getDocMsgPower(Map<String, Object> param);
 
 
 }

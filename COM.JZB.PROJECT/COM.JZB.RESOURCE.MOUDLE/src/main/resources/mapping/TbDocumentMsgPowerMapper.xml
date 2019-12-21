@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.resource.dao.TbDocumentMsgPowerMapper">
+
+    <!-- 查询所有 权限数据-->
+    <select id="queryPowerList" resultType="java.util.Map" >
+    select uid, fid, addfile, delfile, uploadflie, moveflie, lookfile, addtime, uptime from tb_document_msg_power
+</select>
+
+    <!--批量插入 power 文档权限表格-->
+    <insert id="addPowerList" parameterType="java.util.Map">
+        INSERT INTO "public"."tb_document_msg_power"( "uid", "fid", "addfile", "delfile", "uploadflie", "moveflie", "lookfile", "Infotime", "uptime")
+        VALUES
+        <foreach collection="List" index="index" item="item" close ="," separator=";">
+            (
+            <choose>
+                <when test="uid != null and uid != ''">
+                    #{uid},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="fid != null and fid != ''">
+                    #{fid},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="type != null and type != ''">
+                    #{type},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="addfile != null and addfile != ''">
+                    #{addfile},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="delfile != null and delfile != ''">
+                    #{delfile},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="uploadflie != null and uploadflie != ''">
+                    #{uploadflie},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="moveflie != null and moveflie != ''">
+                    #{moveflie},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="lookfile != null and lookfile != ''">
+                    #{lookfile},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="Infotime != null and Infotime != ''">
+                    #{Infotime},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="uptime != null and uptime != ''">
+                    #{uptime}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+    <!-- 批量更新 power 文档权限-->
+    <update id="upPowerList" parameterType="java.util.List">
+
+        <foreach collection="List" index="" item="">
+            UPDATE tb_document_msg_power SET
+            <choose>
+                <when test="uid != null and uid != ''">
+                    "uid" = #{uid},
+                </when>
+            </choose>
+
+            <choose>
+                <when test="fid != null and fid != ''">
+                    "uid" = #{fid},
+                </when>
+            </choose>
+            <choose>
+                <when test="addfile != null and fid != ''">
+                    "addfile" = #{addfile},
+                </when>
+            </choose>
+            <choose>
+                <when test="addfile != null and addfile != ''">
+                    "addfile" = #{addfile},
+                </when>
+            </choose>
+            <choose>
+                <when test="delfile != null and delfile != ''">
+                    "delfile" = #{delfile},
+                </when>
+            </choose>
+            <choose>
+                <when test="uploadflie != null and uploadflie != ''">
+                    "uploadflie" = #{uploadflie},
+                </when>
+            </choose>
+            <choose>
+                <when test="moveflie != null and moveflie != ''">
+                    "moveflie" = #{moveflie},
+                </when>
+            </choose>
+            <choose>
+                <when test="lookfile != null and lookfile != ''">
+                    "lookfile" = #{lookfile},
+                </when>
+            </choose>
+            <choose>
+                <when test="Infotime != null and Infotime != ''">
+                    "Infotime" = #{Infotime},
+                </when>
+            </choose>
+            <choose>
+                <when test="uptime != null and uptime != ''">
+                    "uptime" = #{uptime}
+                </when>
+            </choose>
+
+            WHERE uid = #{uid} and fid=#{fid}
+            ;
+
+        </foreach>
+
+    </update>
+
+    <!--删除 某个离职人员 文档权限-->
+    <delete id="delPowerList" parameterType="java.util.Map">
+        DELETE from tb_document_msg_power
+        where id=#{id}
+    </delete>
+
+
+
+
+
+
+</mapper>

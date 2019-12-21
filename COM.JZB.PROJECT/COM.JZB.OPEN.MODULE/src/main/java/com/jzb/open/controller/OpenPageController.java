@@ -198,8 +198,8 @@ public class OpenPageController {
             param.put("uid", userInfo.get("uid"));
             Response cacheUserInfo = userAuthApi.getUserInfo(param);
             Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
-            String cid = "JZB0001" /*Entity.get("cid").toString()*/;
-            String uid = "KWWWCPERKXNX"/*Entity.get("uid").toString()*/;
+            String cid = Entity.get("cid").toString();
+            String uid = Entity.get("uid").toString();
             //调用第三方接口
             String sr = sendPost("http://bhz.jizhibao.com.cn/Api/GetProjListV3", "uid" +"="+ uid + "&" + "cid" +"="+ cid);
             //把返回值转成JSON格式
