@@ -323,4 +323,102 @@ public class NewCompanyProjectController {
         return response;
     }
 
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/20 19:33
+     *  @Description:  获取拜访单位的基本信息
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    @CrossOrigin
+    @RequestMapping(value = "/getCompanyInfoByCid", method = RequestMethod.POST)
+    public Response getCompanyInfoByCid(@RequestBody Map<String,Object> param){
+        Response response;
+        Map<String,Object> userInfo = null;
+        String api = "/org/companyproject/getCompanyInfoByCid";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                response = Response.getResponseError();
+            } else {
+                Map<String,Object> resultInfo = newCompanyProjectService.getCompanyInfoByCid(param);
+                response = Response.getResponseSuccess(userInfo);
+                response.setResponseEntity(resultInfo);
+
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyInfoByCid Method", ex.toString()));
+        }
+
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+
+        return response;
+    }
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/21 9:39
+     *  @Description:  获取拜访单位下的所有项目的详细信息
+     *  @param param
+     *  @Return:
+     *  @Exception:
+     */
+    @RequestMapping(value = "/getProjectInfoList" , method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getProjectInfoList(@RequestBody Map<String, Object> param){
+        Response response;
+        Map<String,Object> userInfo = null;
+        String api = "/org/companyproject/getProjectInfoList";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            if (JzbCheckParam.haveEmpty(param, new String[]{"projectId"})) {
+                response = Response.getResponseError();
+            } else {
+                Map<String,Object> resultInfo = newCompanyProjectService.getProjectInfoByProid(param);
+                response = Response.getResponseSuccess(userInfo);
+                response.setResponseEntity(resultInfo);
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getProjectInfoList Method", ex.toString()));
+        }
+
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+
+        return response;
+    }
+
 }

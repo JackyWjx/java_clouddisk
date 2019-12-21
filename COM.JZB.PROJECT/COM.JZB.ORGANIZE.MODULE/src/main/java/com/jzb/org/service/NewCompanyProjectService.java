@@ -53,4 +53,37 @@ public class NewCompanyProjectService {
     public List<Map<String, Object>> queryPronameByid(Map<String, Object> param) {
         return newCompanyProjectMapper.queryPronameByid(param);
     }
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/20 20:02
+     *  @Description: 根据cid获取一条公司信息和公司下的项目
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    public Map<String,Object> getCompanyInfoByCid(Map<String, Object> param) {
+//        Map<String,Object> companyInfo = newCompanyProjectMapper.queryCompanyInfoByCid(param);
+//        List<Map<String,Object>> projectInfoList = newCompanyProjectMapper.queryProjectInfoByCid(param);
+//        companyInfo.put("list",projectInfoList);
+        return newCompanyProjectMapper.queryCompanyInfoByCid(param);
+    }
+
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/21 9:51
+     *  @Description: 根据项目id 获取项目基本信息 和 项目情报详情
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+
+    public Map<String, Object> getProjectInfoByProid(Map<String, Object> param) {
+        Map<String,Object> project = newCompanyProjectMapper.queryProjectByProid(param);
+        Map<String,Object> projectInfoList = newCompanyProjectMapper.queryProjectInfoByProid(param);
+        project.put("infoList",projectInfoList);
+        return project;
+    }
 }

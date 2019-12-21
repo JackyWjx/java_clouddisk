@@ -35,4 +35,15 @@ public interface NewCompanyProjectMapper {
     List<Map<String, Object>> queryCompanyNameBycid(Map<String, Object> param);
 
     List<Map<String, Object>> queryPronameByid(Map<String, Object> param);
+
+    // 根据cid查询一条用户信息
+    Map<String, Object> queryCompanyInfoByCid(Map<String, Object> param);
+    // 根据cid查询项目信息集合(只获取项目id和项目名称)
+    List<Map<String, Object>> queryProjectInfoByCid(Map<String, Object> param);
+
+    // 根据projectId查询单个项目的基本信息
+    Map<String, Object> queryProjectByProid(Map<String, Object> param);
+
+    // 根据projectId查询单个项目下的情报信息
+    Map<String, Object> queryProjectInfoByProid(Map<String, Object> param);
 }

@@ -114,4 +114,25 @@
             <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
         where status ='1'and projectid=#{projectid}
     </update>
+
+    <!--  查询一条公司信息  -->
+    <select id="queryCompanyInfoByCid" resultType="java.util.Map" parameterType="java.util.Map">
+        select cid,cname,supervise,orgrelation,prodesc,prolist from tb_common_company_list where cid=#{cid}
+    </select>
+
+    <!--根据公司id查询项目id和项目名称-->
+    <select id="queryProjectInfoByCid" resultType="java.util.Map" parameterType="java.util.Map">
+        select projectid,projectname from tb_company_project where cid=#{cid}
+    </select>
+
+    <!--根据projectid查询项目信息-->
+    <select id="queryProjectByProid" resultType="java.util.Map" parameterType="java.util.Map">
+        select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
+         from tb_company_project where projectid=#{projectId}
+    </select>
+
+    <!--根据projectid查询项目情报-->
+    <select id="queryProjectInfoByProid" resultType="java.util.Map" parameterType="java.util.Map">
+        select * from tb_common_project_info where  projectid=#{projectId}
+    </select>
 </mapper>
