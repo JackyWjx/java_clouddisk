@@ -7,8 +7,8 @@
     <!--根据公司id查询公司信息-->
     <select id="queryCommonCompanyListBycid" resultType="java.util.Map" parameterType="java.util.Map">
         select cid,cname,supervise,orgrelation,prodesc,prolist from tb_common_company_list where cid=#{cid}
-        limit #{pagesize}  offset #{pageno}
     </select>
+
 
     <!--根据公司id查询公司名称-->
     <select id="queryCompanyNameBycid" resultType="java.util.Map" parameterType="java.util.Map">
@@ -18,7 +18,7 @@
     <!--根据公司id查询项目信息-->
     <select id="queryCompanyByid" resultType="java.util.Map" parameterType="java.util.Map">
         select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
-         from tb_company_project where cid=#{cid}
+         from tb_company_project where projectid=#{projectid}
          limit #{pagesize}  offset #{pageno}
     </select>
 

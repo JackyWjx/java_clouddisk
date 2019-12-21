@@ -83,4 +83,7 @@ public class TbTravelService {
         return tbTravelMapper.updateRebStatus(param);
     }
 
+    public int updateInfoList(Map<String, Object> param) {
+        return tbTravelMapper.updateInfoList(param);
+    }
 }
