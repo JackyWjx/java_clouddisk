@@ -2,192 +2,176 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jzb.resource.dao.TbTempTypeMapper">
+<mapper namespace="com.jzb.resource.dao.TbDocumentMsgPowerMapper">
 
-    <!--添加模板类型-->
-    <insert id="saveTempType" parameterType="java.util.Map">
-        insert into
-        tb_template_type(typeid,typecode,cname,parentid,cid,common,tagcode,numvalue,typedesc,standdata,idx,ouid,addtime,updtime,status,summary)
-        values
-        (
-        #{typeid},
-        <choose>
-            <when test="typecode != null">
-                #{typecode},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        #{cname},
-        #{parentid},
-        <choose>
-            <when test="cid != null">
-                #{cid},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="common != null">
-                #{common},
-            </when>
-            <otherwise>
-                1,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="tagcode != null">
-                #{tagcode},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="numvalue != null">
-                #{numvalue},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="typedesc != null">
-                #{typedesc},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="standdata != null">
-                #{standdata},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="idx != null">
-                #{idx},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="ouid != null">
-                #{ouid},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="addtime != null">
-                #{addtime},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="updtime != null">
-                #{updtime},
-            </when>
-            <otherwise>
-                NULL,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="status != null">
-                #{status},
-            </when>
-            <otherwise>
-                1,
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="summary != null">
-                #{summary}
-            </when>
-            <otherwise>
-                NULL
-            </otherwise>
-        </choose>
-        );
+    <!-- 查询所有 权限数据-->
+    <select id="queryPowerList" resultType="java.util.Map" >
+    select uid, fid, addfile, delfile, uploadflie, moveflie, lookfile, addtime, uptime from tb_document_msg_power
+</select>
+
+    <!--批量插入 power 文档权限表格-->
+    <insert id="addPowerList" parameterType="java.util.Map">
+        INSERT INTO "public"."tb_document_msg_power"( "uid", "fid", "addfile", "delfile", "uploadflie", "moveflie", "lookfile", "Infotime", "uptime")
+        VALUES
+        <foreach collection="List" index="index" item="item" close ="," separator=";">
+            (
+            <choose>
+                <when test="uid != null and uid != ''">
+                    #{uid},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="fid != null and fid != ''">
+                    #{fid},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="type != null and type != ''">
+                    #{type},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="addfile != null and addfile != ''">
+                    #{addfile},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="delfile != null and delfile != ''">
+                    #{delfile},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="uploadflie != null and uploadflie != ''">
+                    #{uploadflie},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="moveflie != null and moveflie != ''">
+                    #{moveflie},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="lookfile != null and lookfile != ''">
+                    #{lookfile},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="Infotime != null and Infotime != ''">
+                    #{Infotime},
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="uptime != null and uptime != ''">
+                    #{uptime}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
     </insert>
 
-    <!--修改模板类型-->
-    <update id="updateTempType" parameterType="java.util.Map">
-        update tb_template_type set
-        <if test="cname != null">cname=#{cname},</if>
-        <if test="common != null">common=#{common},</if>
-        <if test="typecode != null">typecode=#{typecode},</if>
-        <if test="ouid != null">ouid=#{ouid},</if>
-        <if test="typedesc != null">typedesc=#{typedesc},</if>
-        <if test="updtime != null">updtime=#{updtime}</if>
-        where typeid=#{typeid}
+    <!-- 批量更新 power 文档权限-->
+    <update id="upPowerList" parameterType="java.util.List">
+
+        <foreach collection="List" index="" item="">
+            UPDATE tb_document_msg_power SET
+            <choose>
+                <when test="uid != null and uid != ''">
+                    "uid" = #{uid},
+                </when>
+            </choose>
+
+            <choose>
+                <when test="fid != null and fid != ''">
+                    "uid" = #{fid},
+                </when>
+            </choose>
+            <choose>
+                <when test="addfile != null and fid != ''">
+                    "addfile" = #{addfile},
+                </when>
+            </choose>
+            <choose>
+                <when test="addfile != null and addfile != ''">
+                    "addfile" = #{addfile},
+                </when>
+            </choose>
+            <choose>
+                <when test="delfile != null and delfile != ''">
+                    "delfile" = #{delfile},
+                </when>
+            </choose>
+            <choose>
+                <when test="uploadflie != null and uploadflie != ''">
+                    "uploadflie" = #{uploadflie},
+                </when>
+            </choose>
+            <choose>
+                <when test="moveflie != null and moveflie != ''">
+                    "moveflie" = #{moveflie},
+                </when>
+            </choose>
+            <choose>
+                <when test="lookfile != null and lookfile != ''">
+                    "lookfile" = #{lookfile},
+                </when>
+            </choose>
+            <choose>
+                <when test="Infotime != null and Infotime != ''">
+                    "Infotime" = #{Infotime},
+                </when>
+            </choose>
+            <choose>
+                <when test="uptime != null and uptime != ''">
+                    "uptime" = #{uptime}
+                </when>
+            </choose>
+
+            WHERE uid = #{uid} and fid=#{fid}
+            ;
+
+        </foreach>
+
     </update>
 
-    <!--修改状态（删除）-->
-    <update id="updateStatus" parameterType="java.util.Map">
-		update tb_template_type set status=#{status} where typeid=#{typeid}
-	</update>
+    <!--删除 某个离职人员 文档权限-->
+    <delete id="delPowerList" parameterType="java.util.Map">
+        DELETE from tb_document_msg_power
+        where id=#{id}
+    </delete>
 
-    <!--获取排序-->
-    <select id="getTempTypeIdx" resultType="java.lang.Integer">
-        select count(1)+1 from tb_template_type
-    </select>
 
-    <!--获取模板类型（父子级）-->
-    <select id="queryTempType" resultType="java.util.Map">
-		SELECT
-			cname,
-			ID,
-			typeid,
-			typecode,
-			parentid,
-			standdata
-		FROM
-			tb_template_type
-		WHERE
-			parentid = '0000000'
-			and (status='1' or status='2')
-		UNION ALL
 
-		SELECT
-			cname,
-			ID,
-			typeid,
-			typecode,
-			parentid,
-			standdata
-		FROM
-			tb_template_type
-		WHERE
-			parentid IN ( SELECT typeid FROM tb_template_type WHERE parentid = '0000000' )
-			and (status='1' or status='2')
-		ORDER BY
-		ID ASC
-	</select>
 
-    <!--根据父类id查询子类id-->
-    <select id="queryTempTypeById" parameterType="java.util.Map" resultType="java.util.Map">
-        SELECT ID, typeid, typecode, cname, cid, common, addtime, typedesc FROM tb_template_type WHERE parentid =#{ parentid }
-        AND ( status = '2' OR status = '1' )
-        <if test="cid!=null">
-            and cid=#{cid}
-        </if>
-        ORDER BY
-        ID
-    </select>
 
-    <!-- 获取该单位是否设置了模板 -->
-    <select id="queryCompanyIsAuth" parameterType="java.util.Map" resultType="java.lang.Integer">
-        select count(1) from tb_template_type where cid=#{cid} and status='1'
-    </select>
 
 </mapper>
