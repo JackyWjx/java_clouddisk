@@ -323,14 +323,15 @@ public class TbTravelController {
                     List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                     for(int i = 0,a = list.size();i < a;i++){
                         Map<String, Object> proMap = new HashMap<>();
-                        proMap.put("list",list);
                         proMap.put("userinfo",userInfo);
                         proMap.put("pageno",param.get("pageno"));
                         proMap.put("pagesize",param.get("pagesize"));
                         proMap.put("cid",list.get(i).get("cid"));
                         proMap.put("projectid",list.get(i).get("projectid"));
 
-                        // 获取情报
+//                        // 获取情报
+//                        Map<String, Object> deMap = new HashMap<>();
+//                        deMap.put("deid",list.get(i).get("deid"));
                         List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(param);
                         for (int l = 0, d = infoList.size();l < d;l++){
                             if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
@@ -451,7 +452,6 @@ public class TbTravelController {
                     // 根据申请人 单位 拜访时间 查询跟进记录
                     Map<String, Object> dataMap = new HashMap();
                     dataMap.put("userinfo",userInfo);
-                    dataMap.put("list", list);
                     dataMap.put("uid",userInfo.get("uid"));
                     dataMap.put("pageno",param.get("pageno"));
                     dataMap.put("pagesize",param.get("pagesize"));

@@ -1,6 +1,8 @@
 package com.jzb.org.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.date.JzbDateStr;
+import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -8,11 +10,14 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.service.NewTbTrackUserListService;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,13 +57,18 @@ public class NewTbTrackUserListController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","list","uid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno","uid","trtime","cid"})) {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                long begDate = formatter.parse(DateFormatUtils.format(JzbDateUtil.getDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(param.get("trtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss), "yyyy-MM-dd 00:00:00")).getTime();
+                long endDate = formatter.parse(DateFormatUtils.format(JzbDateUtil.getDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(param.get("trtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss), "yyyy-MM-dd 23:59:59")).getTime();
+                param.put("begDate",begDate);
+                param.put("endDate",endDate);
                 // 获取进度情况
                 List<Map<String, Object>> list = newTbTrackUserListService.queryTrackUserListByKey(param);
-                response = Response.getResponseSuccess(param);
+                response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setTotal(newTbTrackUserListService.countTrackUserListByKey(param));
                 pageInfo.setList(list);
