@@ -65,29 +65,26 @@ public class NewCompanyProjectController {
                     Map<String, Object> proMap = new HashMap<>();
                     proMap.put("pageno",param.get("pageno"));
                     proMap.put("pagesize",param.get("pagesize"));
-                    proMap.put("cid", list.get(i).get("cid").toString().trim());
-                    //获取单位下的项目
-                    List<Map<String, Object>> proList = newCompanyProjectService.queryCompanyByid(proMap);
-                    for (int j = 0,b = proList.size(); j < b; j++) {
-                        Map<String, Object> infoMap = new HashMap<>();
-                        infoMap.put("pageno",param.get("pageno"));
-                        infoMap.put("pagesize",param.get("pagesize"));
-                        infoMap.put("projectid", proList.get(j).get("projectid").toString().trim());
+                    proMap.put("cid", param.get("cid"));
+                    if(!JzbTools.isEmpty(param.get("projectid"))) {
+                        proMap.put("projectid",param.get("projectid"));
+                        //获取单位下的项目
+                        List<Map<String, Object>> proList = newCompanyProjectService.queryCompanyByid(proMap);
                         //获取项目下的情报
-                        List<Map<String, Object>> infoList = newCompanyProjectService.queryCompanyByProjectid(infoMap);
-                        for (int l = 0, d = infoList.size();l < d;l++){
-                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-                                Map<String,Object> proListMap =new HashMap<>();
-                                proListMap.put("prolist",infoList.get(l).get("prolist"));
+                        List<Map<String, Object>> infoList = newCompanyProjectService.queryCompanyByProjectid(proMap);
+                        for (int l = 0, d = infoList.size(); l < d; l++) {
+                            if (!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                                Map<String, Object> proListMap = new HashMap<>();
+                                proListMap.put("prolist", infoList.get(l).get("prolist"));
                                 String prolist = infoList.get(l).get("prolist").toString();
                                 String[] split = prolist.split(",");
-                                proListMap.put("prolist",split);
-                                infoList.get(l).put("prolist",proListMap);
+                                proListMap.put("prolist", split);
+                                infoList.get(l).put("prolist", proListMap);
                             }
                         }
-                        list.get(j).put("infoList", infoList);
+                        list.get(i).put("reList",proList);
+                        list.get(i).put("infoList",infoList);
                     }
-                    list.get(i).put("reList", proList);
                 }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();

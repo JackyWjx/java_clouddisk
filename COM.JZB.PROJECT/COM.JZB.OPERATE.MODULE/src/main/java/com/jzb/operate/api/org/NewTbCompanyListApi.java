@@ -64,4 +64,5 @@ public interface NewTbCompanyListApi {
     @PostMapping("/queryPronameByid")
     @Transactional
     public Response queryPronameByid(@RequestBody Map<String, Object> param);
+
 }
