@@ -183,7 +183,7 @@ public class TbCompanySupplierController {
             //获取认证公司名字
             if (!JzbTools.isEmpty(param.get("cname"))){
                 // 调用认证接口获取供应商公司信息
-                String url = "http://192.168.0.20:8811/test_1.0";
+                String url = "http://47.92.247.137:8811/test_1.0";
                 String name = JzbDataType.getString(param.get("cname"));
                 String s = HttpConnectionURL.post(url, name);
                 Map<String, Object> parse  =(Map<String, Object>) JSON.parse(s);
@@ -214,7 +214,7 @@ public class TbCompanySupplierController {
 
             if (!JzbTools.isEmpty(image)){
                 //
-                String url = "http://192.168.0.20:8811/businesspic";
+                String url = "http://47.92.247.137:8811/businesspic";
                 String path = ResourceUtils.getURL("classpath:").getPath();
                 String fileFullName = path+"static/excel/"+image.getOriginalFilename();
                 File resourceInfoFile = new File(fileFullName);
@@ -257,7 +257,7 @@ public class TbCompanySupplierController {
             //
             if (!JzbTools.isEmpty(front) && !JzbTools.isEmpty(back)){
 
-                String url = "http://192.168.0.20:8811/idcard";
+                String url = "http://47.92.247.137:8811/idcard";
                 String path = ResourceUtils.getURL("classpath:").getPath();
                 // 查询身份证正面信息（人脸）
                 String fileFullName = path+"static/excel/"+front.getOriginalFilename();
