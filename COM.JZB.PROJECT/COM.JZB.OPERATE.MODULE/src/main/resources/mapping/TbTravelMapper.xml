@@ -6,8 +6,8 @@
 
     <!--  查询出差记录   -->
     <select id="queryAllTravelList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",rebversion
-        from tb_travel_record where rebstatus='1'  and aptype = '2'
+        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",rebversion,rebstatus
+        from tb_travel_record where  aptype = '2' and (rebversion != null or rebversion !='') and rebstatus !='4'
         <if test="uid != null and uid != ''">and uid=#{uid} </if>
         <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
@@ -37,7 +37,7 @@
         did,
         trpeers,
         trdefense,
-        to_char(to_timestamp(trtime / 1000), 'yyyy-MM-dd HH:mm:SS') as trtime,
+        trtime,
         trtype,
         trregion,
         trgoal,
@@ -204,7 +204,7 @@
     <select id="queryTravelApproval" resultType="java.util.Map" parameterType="java.util.Map">
         select  apid,trstatus,truid,status,version,idx from tb_travel_approval where  travelid = #{travelid}
         <if test="trstatus != null and trstatus != ''">and trstatus = #{trstatus}</if>
-        <if test="version != null and version != ''">and version = #{rebversion}</if>
+        <if test="rebversion != null and rebversion != ''">and version = #{rebversion}</if>
         order by idx asc
     </select>
 
@@ -213,18 +213,20 @@
         select  prindex from tb_travel_produce where status = '1'
     </select>
 
-    <!-- 设置删除状态-->
+    <!-- 设置报销单删除状态-->
     <update id="setDeleteStatus" parameterType="java.util.Map">
-        update tb_travel_record  set status = '2' where travelid=#{travelid};
-        update tb_travel_record_deta set status ='2'where travelid=#{travelid};
-        update tb_travel_data set status='2' where travelid=#{travelid};
-        update tb_travel_info set status='2' where travelid=#{travelid};
-        update tb_travel_expense set status='2' where travelid=#{travelid}
+        update tb_travel_expense set status='2' where travelid=#{travelid};
+        update tb_travel_record set rebstatus='4' where travelid=#{travelid};
     </update>
 
     <!-- 设置撤回状态-->
     <update id="setRecallStatus" parameterType="java.util.Map">
-        update tb_travel_record set rebstatus='3',rebversion=#{rebversion} where travelid=#{travelid};
+        update tb_travel_record set rebstatus='1',rebversion=#{rebversion} where travelid=#{travelid};
+    </update>
+
+    <!--更新报销状态-->
+    <update id="updateRebStatus" parameterType="java.util.Map">
+        update tb_travel_record set rebstatus = '1' where travelid=#{travelid};
     </update>
 
 </mapper>

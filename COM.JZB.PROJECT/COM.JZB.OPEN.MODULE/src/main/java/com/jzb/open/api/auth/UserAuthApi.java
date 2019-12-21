@@ -103,4 +103,13 @@ public interface UserAuthApi {
     @RequestMapping(value = "/modifyUserStatus", method = RequestMethod.POST)
     @CrossOrigin
     public Response modifyUserStatus(@RequestBody Map<String, Object> param);
+
+    /**
+     * 获取用户信息
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/getUserInfo")
+    @CrossOrigin
+    public Response getUserInfo(@RequestBody Map<String, Object> param);
 } // End interface UserAuthApi

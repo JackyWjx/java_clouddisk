@@ -304,7 +304,7 @@
     <update id="deleteCompanyCommon" parameterType="java.util.List">
         <foreach collection="list" item="item" separator=";">
             update
-            tb_company_common
+            tb_common_company_list
             set
             <if test="item.status != null and item.status != ''">status=#{item.status}</if>
             where

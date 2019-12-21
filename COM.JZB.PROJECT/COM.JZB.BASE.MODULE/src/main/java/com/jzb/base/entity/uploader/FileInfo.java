@@ -1,6 +1,7 @@
 package com.jzb.base.entity.uploader;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 public class FileInfo implements Serializable {
@@ -18,8 +19,77 @@ public class FileInfo implements Serializable {
     private Long totalSize;
 
 
-    private String type;
+    private Integer type;
 
+    private Long addtime;
+
+    private String uid;
+
+    private String description;
+
+    private String uptime;
+
+    private List<FileInfo> Children;
+
+    private String href;
+
+    private String relativePath;
+
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    public void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
+    }
+
+    public String getHref() {
+        return href;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public List<FileInfo> getChildren() {
+        return Children;
+    }
+
+    public void setChildren(List<FileInfo> children) {
+        Children = children;
+    }
+
+    public String getUptime() {
+        return uptime;
+    }
+
+    public void setUptime(String uptime) {
+        this.uptime = uptime;
+    }
+
+    public Long getAddtime() {
+        return addtime;
+    }
+
+    public void setAddtime(Long addtime) {
+        this.addtime = addtime;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Long getId() {
         return id;
@@ -53,11 +123,11 @@ public class FileInfo implements Serializable {
         this.totalSize = totalSize;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

@@ -134,6 +134,41 @@ public class AuthUserLoginService {
         return result;
     }
 
+
+
+    /**
+     * @return java.util.Map
+     * @Author: czd
+     * @Description:修改手机号码
+     * @DateTime: 2019/8/8 15:47
+     * @param:
+     */
+    public Map<String, Object> sendMessageByRelphone(Map<String, Object> map) {
+        Map<String, Object> result = new HashMap(2);
+        //验证码长度
+        int size = 6;
+        //手机号校验
+        int type = 4;
+        String telNumber = map.get("phone") == null ? "" : map.get("phone").toString();
+        if (verify(telNumber, type)) {
+            List<Map> loList = userMapper.searchSendCodeByRelphone(map);
+            if (loList.size() > 0) {
+                //获取用户id和发送短信
+                String uid = loList.get(0).get("uid").toString();
+                Response rul = sendSmsCode(map, telNumber, size);
+                result.put("code", "0");
+                result.put("uid", uid);
+                result.put("serverResult", rul.getServerResult());
+            } else {
+                result.put("code", "3");
+            }
+        } else {
+            result.put("code", "2");
+            return result;
+        }
+        return result;
+    }
+
     /**
      * 发送短信并保存验证码
      *

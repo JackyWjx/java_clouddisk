@@ -55,6 +55,25 @@ public class Chunk implements Serializable {
 
     private String type;
 
+    private String uid;
+
+    private Long addtime;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public Long getAddtime() {
+        return addtime;
+    }
+
+    public void setAddtime(Long addtime) {
+        this.addtime = addtime;
+    }
 
     private MultipartFile file;
 

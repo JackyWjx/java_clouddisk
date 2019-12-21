@@ -4,182 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.operate.dao.TbTravelPlanMapper">
 
-
-    <!-- 添加出差记录-->
-<!--    <insert id="addTravelRecord" parameterType="java.util.List">-->
-<!--        <foreach collection="list" item="travel" separator=",">-->
-<!--            insert into tb_travel_record-->
-<!--            (-->
-<!--            travelid,-->
-<!--            uid,-->
-<!--            uname,-->
-<!--            fare,-->
-<!--            expenses,-->
-<!--            orgtime,-->
-<!--            endtime,-->
-<!--            aptype,-->
-<!--            ccuid,-->
-<!--            version,-->
-<!--            addtime,-->
-<!--            adduid,-->
-<!--            status,-->
-<!--            summary-->
-<!--            )-->
-<!--            values-->
-<!--            (-->
-<!--            #{travel.travelid},-->
-<!--            <choose>-->
-<!--                <when test="travel.uid != null and travel.uid!=''">-->
-<!--                    #{travel.uid},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.uname != null and travel.uname!=''">-->
-<!--                    #{travel.uname},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.fare != null and travel.fare!=''">-->
-<!--                    #{travel.fare},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.expenses != null and travel.expenses!=''">-->
-<!--                    #{travel.expenses},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.orgtime != null and travel.orgtime!=''">-->
-<!--                    #{travel.orgtime},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.endtime != null and travel.endtime!=''">-->
-<!--                    #{travel.endtime},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.aptype != null and travel.aptype!=''">-->
-<!--                    #{travel.aptype},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.ccuid != null and travel.ccuid!=''">-->
-<!--                    #{travel.ccuid},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.version != null and travel.version!=''">-->
-<!--                    #{travel.version},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.addtime != null and travel.addtime!=''">-->
-<!--                    #{travel.addtime},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.adduid != null and travel.adduid!=''">-->
-<!--                    #{travel.adduid},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.status != null and travel.status!=''">-->
-<!--                    #{travel.status},-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    1 ,-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            <choose>-->
-<!--                <when test="travel.summary != null and travel.summary!=''">-->
-<!--                    #{travel.summary}-->
-<!--                </when>-->
-<!--                <otherwise>-->
-<!--                    null-->
-<!--                </otherwise>-->
-<!--            </choose>-->
-<!--            )-->
-<!--&lt;!&ndash;             on conflict(travelid) do update&ndash;&gt;-->
-<!--&lt;!&ndash;            <trim prefix="set" suffixOverrides=","&ndash;&gt;-->
-<!--&lt;!&ndash;                  suffix=" where travelid=#{travelid} and (status = '1' or status = '4' or status='32')  ">&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="uid!='' and uid !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    uid=#{uid},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="uname!='' and uname !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    uname=#{uname},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="fare!='' and fare !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    fare=#{fare},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="expenses!='' and expenses !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    expenses=#{expenses},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="orgtime!='' and orgtime !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    orgtime=#{orgtime},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="endtime!='' and endtime !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    endtime=#{endtime},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="aptype!='' and aptype !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    aptype=#{aptype},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="ccuid!='' and ccuid !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    ccuid=#{ccuid},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="version!='' and version !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    version=#{version},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="addtime!='' and addtime !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    addtime=#{addtime},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="adduid!='' and adduid !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    adduid=#{adduid},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="status!='' and status !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    status=#{status},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;                <if test="summary!='' and summary !=null">&ndash;&gt;-->
-<!--&lt;!&ndash;                    summary=#{summary},&ndash;&gt;-->
-<!--&lt;!&ndash;                </if>&ndash;&gt;-->
-<!--&lt;!&ndash;            </trim>&ndash;&gt;-->
-<!--        </foreach>-->
-
-<!--    </insert>-->
-
     <!-- 添加出差记录-->
     <insert id="addTravelRecord" parameterType="java.util.List">
 
@@ -701,10 +525,7 @@
 <!-- 修改出差详情 -->
     <update id="updateTravelDetials" parameterType="java.util.Map">
         update tb_travel_record_deta set
-        <trim  suffixOverrides=","><!--and (status = '1' or status = '3') -->
-            <if test="detialsid!='' and detialsid !=null">
-                detialsid=#{detialsid},
-            </if>
+        <trim  suffixOverrides=",">
             <if test="uid!='' and uid !=null">
                 uid=#{uid},
             </if>
@@ -782,7 +603,7 @@
     <!-- 根据出差id查询出差详情-->
     <select id="queryTravelDetailsByTravelid" parameterType="java.util.List" resultType="java.util.Map">
         SELECT * FROM tb_travel_record_deta
-        where travelid=#{travelid}
+        where travelid=#{travelid} order by trtime
     </select>
 
     <!-- 根据Uid获取出差申请记录   -->
@@ -885,6 +706,6 @@
 
     <!-- 根据 Travelid设置出差详情表状态  -->
     <update id="setDetailsStatusByTravelid" parameterType="java.util.Map" >
-		update tb_travel_record_deta set status  = #{status} where travelid = #{travelid}
+		update tb_travel_record_deta set status  = '2' where travelid = #{travelid}
 	</update>
 </mapper>

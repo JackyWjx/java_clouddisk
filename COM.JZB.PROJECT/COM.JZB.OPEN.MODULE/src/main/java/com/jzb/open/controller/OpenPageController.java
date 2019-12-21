@@ -1,5 +1,6 @@
 package com.jzb.open.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 import com.jzb.base.data.code.JzbDataCheck;
@@ -13,12 +14,19 @@ import com.jzb.open.api.auth.UserAuthApi;
 import com.jzb.open.api.org.CompanyApi;
 import com.jzb.open.api.redis.UserRedisServiceApi;
 import com.jzb.open.service.OpenPageService;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 /**
@@ -86,7 +94,7 @@ public class OpenPageController {
                 if (md5.equals(param.get("checkcode"))) {
                     map.put("uid", param.get("uid"));
                     //从缓存中查询用户信息
-                    Response cacheUserInfo = userRedisServiceApi.getCacheUserInfo(map);
+                    Response cacheUserInfo = userAuthApi.getUserInfo(map);
                     Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
                     map1.put("cid", Entity.get("cid"));
                     map1.put("uid", Entity.get("uid"));
@@ -113,12 +121,13 @@ public class OpenPageController {
 
     /**
      * 根据token进行对比 如果第三方传过来的token正确 则返回用户信息给第三方进行登录
-     *
+     * <p>
      * 单点登录
+     *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getUserId",method = RequestMethod.POST)
+    @RequestMapping(value = "/getUserId", method = RequestMethod.POST)
     @CrossOrigin
     public Response getUserId(@RequestBody Map<String, Object> param) {
         Response result;
@@ -139,7 +148,7 @@ public class OpenPageController {
                 result = Response.getResponseError();
             } else {
                 Response response = userAuthApi.checkToken(param);
-                Map<String,Object> entity = (Map<String, Object>) response.getResponseEntity();
+                Map<String, Object> entity = (Map<String, Object>) response.getResponseEntity();
                 /** 如果token验证真确有用用户信息返回则返回成功信息*/
                 if (entity != null && entity.size() > 0) {
                     result = Response.getResponseSuccess();
@@ -164,6 +173,113 @@ public class OpenPageController {
         }
         return result;
     }
+
+    /**
+     * 调第三方接口传给我项目信息
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getProject",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getProject(@RequestBody(required = false) Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/open/page/getProject";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            param.put("uid", userInfo.get("uid"));
+            Response cacheUserInfo = userAuthApi.getUserInfo(param);
+            Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
+            String cid = "JZB0001" /*Entity.get("cid").toString()*/;
+            String uid = "KWWWCPERKXNX"/*Entity.get("uid").toString()*/;
+            //调用第三方接口
+            String sr = sendPost("http://bhz.jizhibao.com.cn/Api/GetProjListV3", "uid" +"="+ uid + "&" + "cid" +"="+ cid);
+            //把返回值转成JSON格式
+            JSONObject jsonObject =  JSON.parseObject(sr);
+            result = Response.getResponseSuccess(userInfo);
+            result.setResponseEntity(jsonObject);
+        } catch (Exception ex) {
+          //打印错误信息
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getProject Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+
+    /**
+     * 向指定 URL 发送POST方法的请求
+     *
+     * @param url   发送请求的 URL
+     * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+     * @return 所代表远程资源的响应结果
+     */
+    public static String sendPost(String url, String param) {
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent",
+                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            // 获取URLConnection对象对应的输出流
+            out = new PrintWriter(conn.getOutputStream());
+            // 发送请求参数
+            out.print(param);
+            // flush输出流的缓冲
+            out.flush();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            System.out.println("发送 POST 请求出现异常！" + e);
+            e.printStackTrace();
+        }
+        // 使用finally块来关闭输出流、输入流
+        finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+
 
 
 

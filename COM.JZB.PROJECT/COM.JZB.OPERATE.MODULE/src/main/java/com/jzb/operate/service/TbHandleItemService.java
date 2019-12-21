@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class TbHandleItemService {
@@ -83,8 +82,12 @@ public class TbHandleItemService {
      * @param param
      * @return
      */
-    public List<Map<String, Object>> queryHandleItem(Map<String, Object> param) {
-
+    public List<Map<String, Object>> queryHandleItem(Map<String, Object> param) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse(String.valueOf(param.get("beginTime")));
+        Date date1 = simpleDateFormat.parse(String.valueOf(param.get("endTime")));
+        param.put("beginTime",date.getTime());
+        param.put("endTime", date1.getTime());
         List<Map<String, Object>> list = tbHandleItemMapper.queryHandleItem(param);
         Map<String, Object> map = new HashMap<>();
         for (int i = 0; i < list.size(); i++) {

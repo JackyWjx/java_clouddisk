@@ -23,6 +23,8 @@ public interface TenderResultAndDescMapper {
 
     List<Map<String, Object>> queryTenderResultMessage(Map<String, Object> param);
 
+    Map<String, Object> getTenderMessageBeforeUpdate(Map<String, Object> param);
+
     void updateTenderMessage(Map<String, Object> param);
 
     void updateTenderInfoMessage(Map<String, Object> param);

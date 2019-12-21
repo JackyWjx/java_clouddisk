@@ -71,4 +71,14 @@ public class TenderResultAndDescService {
         tenderResultAndDescMapper.delTenderMessage(param);
         tenderResultAndDescMapper.delTenderInfoMessage(param);
     }
+
+    public Map<String,Object> getTenderMessageBeforeUpdate(Map<String, Object> param){
+        if (param.get("type").equals("1")) {
+            //招标
+            return  tenderAndDescMapper.getTenderMessageBeforeUpdate(param);
+        } else {
+            //中标
+            return tenderResultAndDescMapper.getTenderMessageBeforeUpdate(param);
+        }
+    }
 }

@@ -2,11 +2,107 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jzb.resource.dao.TbDocumentMsgPowerMapper">
+<mapper namespace="com.jzb.resource.dao.TbDocumentMsgFileInfoMapper">
+<!--    上传文件时   -->
+    <insert id="insertFileInfo" parameterType="Map">
+        insert into  "tb_document_msg_file_info" (uniquefileid,name,type,path,addtime,uid,description,uptime,status,totalsize,href)
+        VALUES(#{identifier},#{filename},#{type},#{location},#{addtime},#{uid},#{description},#{addtime},1,#{totalSize},#{href})
+    </insert>
+<!--    修改文件    -->
+    <update id="updateFileInfo" parameterType="Map">
+        update "tb_document_msg_file_info"
+        <set>
+            <if test="name!=null and name!=''">
+                name = #{name},
+            </if>
+            <if test="description!=null and description!=''">
+                description=#{description},
+            </if>
+            <if test="uid!=null and uid!=''">
+                uid=#{uid},
+            </if>
+            <if test="uptime!=null and uptime!=''">
+                uptime=#{uptime}
+            </if>
+        </set>
+        where uniquefileid=#{uniquefileid}
+    </update>
+<!--    文件夹与文件查询    -->
+    <select id="selectFileInfo" resultType="com.jzb.base.entity.uploader.FileInfo">
+        select  id,uniquefileid as identifier,name as filename,type,path as location,addtime,uid,description,uptime,status,sort,href,totalsize as totalSize
+        from "tb_document_msg_file_info" where href like #{href}
+        <if test="name!=null and name !=''">
+            and name like CONCAT('%',#{name},'%')
+        </if>
+        and status = '1'
+    </select>
+<!--    删除文件夹   -->
+    <update id="deleteFileInfo">
+        update "tb_document_msg_file_info" set status = '2' where uniquefileid=#{uniquefileid}
+    </update>
+<!--    批量删除文件夹与文件  -->
+    <update id="batchHierarchyDelete">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update tb_document_msg_file_info
+            set status = '2'
+            where uniquefileid = #{item.uniquefileid}
+        </foreach>
+    </update>
+<!--    插入文件夹   -->
+    <insert id="insertFileMenu">
+        insert  into "tb_document_msg_file_info"
+        (uniquefileid,name,type,path,addtime,uid,description,status,href)
+        values (#{uniquefileid},#{name},1,#{path},#{addtime},#{uid},#{description},1,#{href})
+    </insert>
+<!--    查询某条文件的信息，判断使用  -->
+    <select id="selectFileInfoPath" resultType="Map">
+        select name,path,href from "tb_document_msg_file_info" where uniquefileid = #{uniquefileid} and status='1'
+    </select>
+<!--    查询该文件夹下的所有文件，修改时使用    -->
+    <select id="queryAllInfo" resultType="Map">
+        select uniquefileid,name,type,path,href from "tb_document_msg_file_info"  where href like CONCAT('',#{path},'%')
+    </select>
+<!--    修改所有该目录下所有文件    -->
+    <update id="batchHierarchyUpdate">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update tb_document_msg_file_info
+            <set>
+                <if test="item.type!=0 and item.path != '' and item.path != null">
+                    path=#{item.path},
+                </if>
+                <if test="item.href!=''and item.href != null">
+                    href=#{item.href}
+                </if>
+            </set>
+            where uniquefileid = #{item.uniquefileid}
+        </foreach>
+    </update>
+<!--    进行文件夹改名，移动时修改文件夹名称，目录及路径  -->
+    <update id="updateItselfFileInfo">
+        update tb_document_msg_file_info
+        <set>
+            <if test="name != null and name != ''">
+                name=#{name},
+            </if>
+            <if test="newPath != null and newPath != ''">
+                path=#{newPath},
+            </if>
+            <if test="newHref != null and newHref != ''">
+                href=#{newHref},
+            </if>
+            <if test="description != null and description != ''">
+                description=#{description}
+            </if>
 
-<select>
+        </set>
+        where uniquefileid = #{uniquefileid}
+    </update>
 
+    <select id="fileIsNotExist" resultType="java.lang.Integer">
+        select count(1) from tb_document_msg_file_info where path = #{path} and status = '1'
+    </select>
 
-</select>
-
+    <delete id="deleteRepeatMenu">
+        DELETE from tb_document_msg_file_info where id not in(select max(id) from tb_document_msg_file_info group by path)
+    </delete>
 </mapper>

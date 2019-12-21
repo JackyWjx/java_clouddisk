@@ -70,7 +70,7 @@ public class TbHandleItemController {
                     Map<String, Object> map = new HashMap<>();
                     Map<String,Object> map1 = (Map<String, Object>) cacheUserInfo.getResponseEntity();
                     //如果list为空，但是缓存中查询出来的数据uid和cname不为空，则默认吧其他参数置为空返回给前端
-                    if (list.size() <=0  && cacheUserInfo.getResponseEntity() != null) {
+                    if (list.size() <=0  && cacheUserInfo.getResponseEntity() != null && ((Map<String, Object>) cacheUserInfo.getResponseEntity()).size() >0) {
                         //往map中添加空字符串，返回给前端
                             map.put("summary", "");
                             map.put("projectname", "");

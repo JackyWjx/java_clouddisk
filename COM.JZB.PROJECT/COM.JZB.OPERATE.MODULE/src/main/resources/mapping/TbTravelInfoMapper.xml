@@ -8,7 +8,7 @@
 	</select>
 
 	<select id="list" resultType="java.util.Map">
-		select  id , travelid , deid , inid , cid , cname , supervise , prodesc , prolist , projectid , projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone , tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature , npodeperson , npodephone , npodejob , npodenature , setb , sepr , seli , recname , reluname , relphone , brandname , contrast , mail , nreluname , nrelphone , nbrandname , ncontrast , nmail , reshid , reshname , reshphone , lineuname , linejob , linephone , linenature , adduid , addtime , upduid , updtime , status , summary  from tb_travel_info
+		select  id , travelid , deid , inid , trim(cid) as cid , cname , supervise , prodesc , prolist , projectid , projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone , tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature , npodeperson , npodephone , npodejob , npodenature , setb , sepr , seli , recname , reluname , relphone , brandname , contrast , mail , nreluname , nrelphone , nbrandname , ncontrast , nmail , reshid , reshname , reshphone , lineuname , linejob , linephone , linenature , adduid , addtime , upduid , updtime , status , summary  from tb_travel_info
 		<where>
 			<if test="id != null and id != ''"> and id = #{id} </if>
 			<if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>

@@ -192,6 +192,8 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/policyDom/getSeo", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/city/setCityList", "");
         GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/appVersion/getNewAppVersion", "");
+        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/uploader/chunk", "");
+//        GATEWAY_WHITE_LIST.put("/JZB-RESOURCE/resource/uploader/mergeFile", "");
 
         //---- end resource
 
@@ -210,6 +212,8 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/company/importCompanyProject", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/org/companySysconfig/getCurl", "");
         GATEWAY_WHITE_LIST.put("/JZB-ORG/orgCommon/ImportCommonUser", "");
+        GATEWAY_WHITE_LIST.put("/JZB-ORG/org/companySupplier/authCompanyByFile", "");
+        GATEWAY_WHITE_LIST.put("/JZB-ORG/org/companySupplier/authIDCardByFile", "");
 
         //---- end org
 
@@ -243,6 +247,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
         GATEWAY_WHITE_LIST.put("/JZB-MEDIA/media/upToCache", "");
         GATEWAY_WHITE_LIST.put("/JZB-MEDIA/media/upToUeditor", "");
         GATEWAY_WHITE_LIST.put("/JZB-MEDIA/media/upDownload", "");
+
         //---- end media
 
 

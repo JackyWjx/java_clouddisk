@@ -148,13 +148,15 @@ public class TbTravelController {
                         reList.get(j).put("daList",daList);
                         reList.get(j).put("infoList",infoList);
                         // 获取产出情况
-                        List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
-                        List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(reList.get(j).get("produce")),proList);
-                        Map<String,Object> prindexMap =new HashMap<>();
-                        prindexMap.put("prindex",prindexList);
-                        List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
-                        reList.get(j).put("prindex",prindexList);
-                        reList.get(j).put("produceMaps",priList);
+                        if(!JzbTools.isEmpty(reList.get(j).get("produce"))) {
+                            List<Map<String, Object>> proList = tbTravelService.queryTravelProduce();
+                            List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(reList.get(j).get("produce")), proList);
+                            Map<String, Object> prindexMap = new HashMap<>();
+                            prindexMap.put("prindex", prindexList);
+                            List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                            reList.get(j).put("prindex", prindexList);
+                            reList.get(j).put("produceMaps", priList);
+                        }
                     }
                     list.get(i).put("reList",reList);
                 }
@@ -253,14 +255,17 @@ public class TbTravelController {
                             infoList.get(l).put("prolist",proListMap);
                         }
                     }
+
                     // 获取产出情况
-                    List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
-                    List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),proList);
-                    Map<String,Object> prindexMap =new HashMap<>();
-                    prindexMap.put("prindex",prindexList);
-                    List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
-                    list.get(i).put("prindex",prindexList);
-                    list.get(i).put("produceMaps",priList);
+                    if(!JzbTools.isEmpty(list.get(i).get("produce"))) {
+                        List<Map<String, Object>> proList = tbTravelService.queryTravelProduce();
+                        List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")), proList);
+                        Map<String, Object> prindexMap = new HashMap<>();
+                        prindexMap.put("prindex", prindexList);
+                        List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                        list.get(i).put("prindex", prindexList);
+                        list.get(i).put("produceMaps", priList);
+                    }
                     list.get(i).put("daList", daList);
                     list.get(i).put("infoList", infoList);
                     list.get(i).put("monList",monList);
@@ -318,14 +323,15 @@ public class TbTravelController {
                     List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                     for(int i = 0,a = list.size();i < a;i++){
                         Map<String, Object> proMap = new HashMap<>();
-                        proMap.put("list",list);
                         proMap.put("userinfo",userInfo);
                         proMap.put("pageno",param.get("pageno"));
                         proMap.put("pagesize",param.get("pagesize"));
                         proMap.put("cid",list.get(i).get("cid"));
                         proMap.put("projectid",list.get(i).get("projectid"));
 
-                        // 获取情报
+//                        // 获取情报
+//                        Map<String, Object> deMap = new HashMap<>();
+//                        deMap.put("deid",list.get(i).get("deid"));
                         List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(param);
                         for (int l = 0, d = infoList.size();l < d;l++){
                             if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
@@ -341,15 +347,17 @@ public class TbTravelController {
                         Response res = newTbCompanyListApi.queryCompanyByid(proMap);
                         List<Map<String, Object>> resList = res.getPageInfo().getList();
                         // 获取产出情况
-                        List<Map<String,Object>> proList = tbTravelService.queryTravelProduce();
-                        List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")),proList);
-                        Map<String,Object> prindexMap =new HashMap<>();
-                        prindexMap.put("prindex",prindexList);
-                        List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
-                        list.get(i).put("prindex",prindexList);
-                        list.get(i).put("produceMaps",priList);
+                        if(!JzbTools.isEmpty(list.get(i).get("produce"))) {
+                            List<Map<String, Object>> proList = tbTravelService.queryTravelProduce();
+                            List<Integer> prindexList = PrindexUtil.getPrindex(JzbDataType.getInteger(list.get(i).get("produce")), proList);
+                            Map<String, Object> prindexMap = new HashMap<>();
+                            prindexMap.put("prindex", prindexList);
+                            List<Map<String, Object>> priList = travelProduceService.queryProduce(prindexMap);
+                            list.get(i).put("prindex", prindexList);
+                            list.get(i).put("produceMaps", priList);
+                        }
                         list.get(i).put("infoList",infoList);
-                        list.get(i).put("resList", resList);
+                        list.get(i).put("resList",resList);
                     }
                     response = Response.getResponseSuccess(userInfo);
                     PageInfo pageInfo = new PageInfo();
@@ -444,7 +452,7 @@ public class TbTravelController {
                     // 根据申请人 单位 拜访时间 查询跟进记录
                     Map<String, Object> dataMap = new HashMap();
                     dataMap.put("userinfo",userInfo);
-                    dataMap.put("list", list);
+                    dataMap.put("uid",userInfo.get("uid"));
                     dataMap.put("pageno",param.get("pageno"));
                     dataMap.put("pagesize",param.get("pagesize"));
                     dataMap.put("cid",list.get(i).get("cid"));
@@ -483,7 +491,7 @@ public class TbTravelController {
     /**
      * @Author sapientia
      * @Date 11:36 2019/12/5
-     * @Description 设置出差记录删除状态
+     * @Description 设置报销单删除状态
      **/
     @RequestMapping(value = "/setDeleteStatus" ,method = RequestMethod.POST)
     @CrossOrigin
@@ -691,6 +699,9 @@ public class TbTravelController {
                     list.get(i).put("addtime", System.currentTimeMillis());
                     list.get(i).put("adduid",userInfo.get("uid"));
                     list.get(i).put("status", 1);//默认状态1
+                    Map<String,Object> trMap = new HashMap<>();
+                    trMap.put("travelid",list.get(i).get("travelid"));
+                    tbTravelService.updateRebStatus(trMap);
                 }
                 tbTravelExpenseService.saveTravelExpense(list);
                 response = Response.getResponseSuccess(userInfo);
@@ -810,47 +821,6 @@ public class TbTravelController {
         return response;
     }
 
-    /**
-     * @Author sapientia
-     * @Date 11:21 2019/12/6
-     * @Description 设置报销单删除状态
-     **/
-    @RequestMapping(value = "/setExpenseDeleteStatus",method = RequestMethod.POST)
-    @CrossOrigin
-    @Transactional
-    public Response setExpenseDeleteStatus(@RequestBody Map<String, Object> param) {
-        Response response;
-        Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/setExpenseDeleteStatus";
-        boolean flag = true;
-        try {
-            if (param.get("userinfo") != null) {
-                userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
-            } else {
-                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
-            }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"travelid" })) {
-                response = Response.getResponseError();
-            } else {
-                param.put("travelid",param.get("travelid").toString().trim());
-                response = tbTravelExpenseService.setExpenseDeleteStatus(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
-            }
-        } catch (Exception ex) {
-            flag = false;
-            JzbTools.logError(ex);
-            response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "setExpenseDeleteStatus Method", ex.toString()));
-        }
-        if (userInfo != null) {
-            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
-                    userInfo.get("msgTag").toString(), "User Login Message"));
-        } else {
-            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
-        }
-        return response;
-    }
 
     /**
      * @Author sapientia

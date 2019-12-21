@@ -245,7 +245,7 @@
         uname
         from tb_common_user_list
         where isrelation = #{isrelation}
-        and adduid = #{adduid}
+
         <if test="cid != null and cid != ''">
             and cid = #{cid}
         </if>

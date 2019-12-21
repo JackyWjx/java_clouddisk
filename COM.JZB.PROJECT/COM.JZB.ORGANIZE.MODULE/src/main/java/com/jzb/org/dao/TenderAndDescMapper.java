@@ -32,4 +32,6 @@ public interface TenderAndDescMapper {
     void delTenderMessage(Map<String, Object> param);
 
     void delTenderInfoMessage(Map<String, Object> param);
+
+    Map<String, Object> getTenderMessageBeforeUpdate(Map<String, Object> param);
 }
