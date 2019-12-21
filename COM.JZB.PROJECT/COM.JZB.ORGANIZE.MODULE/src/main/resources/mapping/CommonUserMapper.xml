@@ -6,8 +6,16 @@
 
      <!--新建公海用户-->
     <insert id="addCommUser" parameterType="java.util.Map">
-        insert into tb_common_user_list(cid,source,region,uid,uname,phone,cardid,sex,age,job,mail,cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary)
+        insert into tb_common_user_list(isrelation,cid,source,region,uid,uname,phone,cardid,sex,age,job,mail,cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary)
         values (
+        <choose>
+            <when test="isrelation != null and isrelation != ''">
+                #{isrelation},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
         <choose>
             <when test="cid != null and cid != ''">
                 #{cid},
@@ -245,7 +253,7 @@
         uname
         from tb_common_user_list
         where isrelation = #{isrelation}
-
+        and status = '1'
         <if test="cid != null and cid != ''">
             and cid = #{cid}
         </if>

@@ -33,7 +33,6 @@ public class TbTrackUserService {
     // 新建跟进人员记录
     public int  addTrackUser(Map<String, Object> param) {
         param.put("addtime",System.currentTimeMillis());
-        param.put("tracktime",System.currentTimeMillis());
         param.put("tracktype",JzbDataType.getInteger(param.get("tracktype")));
         param.put("trackid", JzbRandom.getRandomCharCap(17));
         if (JzbTools.isEmpty(param.get("customer"))){

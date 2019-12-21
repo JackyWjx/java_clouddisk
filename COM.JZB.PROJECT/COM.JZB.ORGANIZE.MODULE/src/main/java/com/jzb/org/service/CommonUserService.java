@@ -44,6 +44,9 @@ public class CommonUserService {
         paramp.put("uid",JzbRandom.getRandomCharCap(12));
         paramp.put("age", JzbDataType.getInteger(paramp.get("age")));
         paramp.put("source",JzbDataType.getInteger(paramp.get("source")));
+        if (!JzbTools.isEmpty(paramp.get("cid"))){
+                paramp.put("isrelation",1);
+        }
         return userMapper.addCommUser(paramp);
     }
 
