@@ -116,14 +116,14 @@ public class UserController {
                     result = Response.getResponseError();
                     Map<String, Object> resultMap = new HashMap<>();
                     resultMap.put("code", 402);
-                    resultMap.put("message", "用户名或密码错误！！");
+                    resultMap.put("message", "密码错误！");
                     result.setResponseEntity(resultMap);
                 }
             } else {
                 result = Response.getResponseError();
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("code", 401);
-                resultMap.put("message", "用户名或密码错误！");
+                resultMap.put("message", "用户名不存在！");
                 result.setResponseEntity(resultMap);
             }
         } catch (Exception ex) {
