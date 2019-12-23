@@ -8,6 +8,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.operate.api.auth.AuthInfoApi;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.NewTbCompanyListApi;
 import com.jzb.operate.api.org.TbDeptUserListApi;
@@ -50,6 +51,9 @@ public class TbTravelController {
 
     @Autowired
     private RegionBaseApi regionBaseApi;
+
+    @Autowired
+    private AuthInfoApi authInfoApi;
 
     @Autowired
     private TbTravelProduceService travelProduceService;
@@ -211,6 +215,27 @@ public class TbTravelController {
                 // 获取出差记录
                 param.put("uid", userInfo.get("uid"));
                 param.put("travelid", param.get("travelid").toString().trim());
+                List<Map<String, Object>> appList = tbTravelService.queryAllTravelList(param);
+                for(int a = 0 ,b = appList.size();a < b;a ++ ){
+                    if(appList.get(a).get("rebstatus").equals("2")){
+                        Map<String, Object> appMap = new HashMap<>();
+                        appMap.put("rebversion", appList.get(a).get("rebversion"));
+                        // 获取审批状态
+                        List<Map<String, Object>> spList = tbTravelService.queryTravelApproval(appMap);
+                        for (int k = 0, c = spList.size(); k < c; k++) {
+                            Map<String, Object> uMap = new HashMap<>();
+                            uMap.put("truid", spList.get(k).get("truid"));
+                            uMap.put("userinfo", userInfo);
+                            Response res = authInfoApi.getUsernameList(uMap);
+                            Response res2 = tbDeptUserListApi.searchInvitee(uMap);
+                            List<Map<String, Object>> userList = res.getPageInfo().getList();
+                            List<Map<String, Object>> portraitList = res2.getPageInfo().getList();
+                            spList.get(k).put("userList", userList);
+                            spList.get(k).put("portraitList",portraitList);
+                        }
+                        appList.get(a).put("spList", spList);
+                    }
+                }
                 List<Map<String, Object>> list = tbTravelService.queryTravelList(param);
                 for (int i = 0, a = list.size(); i < a;i++) {
                     // 获取单位名称
