@@ -7,6 +7,7 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.open.dao.OpenAPIMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class OpenAPIService {
     @Autowired
     private OpenAPIMapper mapper;
 
+    @Autowired
+    private PlatformComService platformComService;
     /**
      * 创建文档类型
      */
@@ -56,18 +59,18 @@ public class OpenAPIService {
      *
      * @return
      */
-    public List<OpenApiType> getApiType(Map<String, Object> param) {
-        List<OpenApiType> result;
+    public List<Map<String, Object>> getApiType(Map<String, Object> param) {
+        List<Map<String, Object>> result;
         // 设置分页参数
         param = setPageSize(param);
         List<Map<String, Object>> records = mapper.queryApiType(param);
-        result = new ArrayList<>(records.size());
+        /*result = new ArrayList<>(records.size());
         for (int i = 0, l = records.size(); i < l; i++) {
             OpenApiType name = new OpenApiType();
             name.addData(records.get(i));
             result.add(name);
-        }
-        return result;
+        }*/
+        return records;
     } // End getApiType
 
     /**

@@ -55,7 +55,8 @@
             resultType="java.util.Map">
         SELECT
         otid as apitype,
-        cname as name
+        cname as name,
+        potid
         from
         tb_open_api_type
         <where>
