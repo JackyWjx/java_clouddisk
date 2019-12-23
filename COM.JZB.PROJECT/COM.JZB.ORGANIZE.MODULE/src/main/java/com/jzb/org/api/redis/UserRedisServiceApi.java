@@ -20,6 +20,50 @@ import java.util.Map;
 @RequestMapping(value = "/redis/user")
 @Repository
 public interface UserRedisServiceApi {
+
+    /**
+     * 更新缓存中的过时用户信息
+     *
+     * @param param
+     */
+    @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST)
+    public Response updateUserInfo(Map<String, Object> param);
+
+    /**
+     * 缓存用户信息
+     *
+     * @param param
+     */
+    @RequestMapping(value = "/cacheUserInfo", method = RequestMethod.POST)
+    public Response cacheUserInfo(@RequestBody Map<String, Object> param);
+
+    /**
+     * 更新缓存中用户Token
+     *
+     * @param param
+     */
+    @RequestMapping(value = "/updateUserToken", method = RequestMethod.POST)
+    public Response updateUserToken(@RequestBody Map<String, Object> param);
+
+
+
+    /**
+     * 判断在缓存中是否存在对应的key值
+     */
+    @RequestMapping(value = "/comHasUserKey", method = RequestMethod.POST)
+    Response comHasUserKey(@RequestBody Map<String, Object> param);
+
+    /**
+     * 根据电话缓存一个用户ID
+     * 请求参数 uid,name
+     *
+     * @param param 请求参数
+     *
+     */
+    @RequestMapping(value = "/cachePhoneUid", method = RequestMethod.POST)
+    public Response cachePhoneUid(@RequestBody Map<String, Object> param);
+
+
     /**
      * 获取用户名称
      *

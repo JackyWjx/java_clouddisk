@@ -48,6 +48,20 @@ public class AuthUserService {
     @Autowired
     private AuthUserController authUserController;
 
+
+
+
+
+
+    /**
+     * 统一list和key中手机号
+     * @param param
+     * @return
+     */
+    public int updateUserPhoneNo1(Map<String, Object> param){
+        return userMapper.updateUserPhoneNo1(param);
+    }
+
     /**
      * 根据uid uname 模糊匹配是否是我需要的数据
      *
@@ -66,6 +80,8 @@ public class AuthUserService {
     public String queryUidByPhoneOrRegid(Map<String,Object> param){
         return userMapper.queryUidByPhoneOrRegid(param);
     }
+
+
 
     /**
      * 认证修改用户数据

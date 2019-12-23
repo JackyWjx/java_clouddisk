@@ -7,6 +7,8 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.auth.AuthApi;
+import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
@@ -44,6 +46,12 @@ public class DeptController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private AuthApi authApi;
+
+    @Autowired
+    private UserRedisServiceApi userRedisApi;
+
     /**
      * 根据企业id获取部门信息
      *
@@ -77,7 +85,6 @@ public class DeptController {
         }
         return result;
     }
-
 
     /**
      * 根据企业id获取部门信息  开放平台接口
@@ -234,7 +241,6 @@ public class DeptController {
         }
         return result;
     }
-
 
     /**
      * 根据用户姓名或用户id获取用户部门信息
@@ -406,7 +412,6 @@ public class DeptController {
         return result;
     }
 
-
     /**
      * 部门添加用户
      *
@@ -454,6 +459,20 @@ public class DeptController {
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 int add = deptService.updateDeptUser(param);
+
+                /** 修改成功后统一手机号码 */
+                if (add > 0 && !JzbTools.isEmpty(param.get("phone"))) {
+                    authApi.updateAllPhoneByUid(param);
+                    Response userInfo1 = authApi.getUserInfo(param);
+                    Map<String, Object> resuMap = (Map<String, Object>) userInfo1.getResponseEntity();
+                    if (!JzbTools.isEmpty(resuMap)) {
+                        // 添加增加缓存必要的参数
+                        resuMap.put("token", "token");
+                        resuMap.put("timeout", "1800000");
+                        resuMap.put("phone", JzbDataType.getString(param.get("phone")));
+                        userRedisApi.cacheUserInfo(resuMap);
+                    }
+                }
                 result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             } else {
                 result = Response.getResponseError();
@@ -692,7 +711,6 @@ public class DeptController {
 
     }
 
-
     /**
      * 获取企业下属用户数据
      *
@@ -767,6 +785,7 @@ public class DeptController {
         }
         return result;
     }
+
     /**
      * 获取部门下所有用户
      *
@@ -800,8 +819,7 @@ public class DeptController {
         return result;
     }
 
-    private List<Map<String,Object>> mehtodUser(List<Map<String,Object>> list){
-
+    private List<Map<String, Object>> mehtodUser(List<Map<String, Object>> list) {
 
         return list;
     }
@@ -839,23 +857,22 @@ public class DeptController {
         return result;
     }
 
-    private List<Map<String,Object>> method(List<Map<String,Object>> list){
+    private List<Map<String, Object>> method(List<Map<String, Object>> list) {
         for (int i = 0; i < list.size(); i++) {
             list.get(i).remove("list");
             list.get(i).remove("pcdid");
             list.get(i).remove("cidx");
-            list.get(i).put("label",list.get(i).get("cname"));
+            list.get(i).put("label", list.get(i).get("cname"));
             list.get(i).remove("cname");
-            list.get(i).put("value",list.get(i).get("cdid"));
+            list.get(i).put("value", list.get(i).get("cdid"));
             list.get(i).remove("cdid");
-            if (!JzbTools.isEmpty(list.get(i).get("children"))){
+            if (!JzbTools.isEmpty(list.get(i).get("children"))) {
                 method((List<Map<String, Object>>) list.get(i).get("children"));
             }
 
         }
         return list;
     }
-
 
     /**
      * 调整部门
@@ -884,6 +901,5 @@ public class DeptController {
         }
         return result;
     }
-
 
 }
