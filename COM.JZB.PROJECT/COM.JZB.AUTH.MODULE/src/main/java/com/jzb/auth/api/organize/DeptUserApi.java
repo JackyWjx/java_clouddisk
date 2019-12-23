@@ -20,7 +20,7 @@ public interface DeptUserApi {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/modifyDeptUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/modifyDeptUserByUid", method = RequestMethod.POST)
     @CrossOrigin
     public Response modifyDeptUser(@RequestBody Map<String, Object> param);
 }
