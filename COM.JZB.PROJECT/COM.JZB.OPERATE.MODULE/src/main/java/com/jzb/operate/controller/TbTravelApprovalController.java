@@ -213,9 +213,8 @@ public class TbTravelApprovalController {
                         query.put("trstatus", 2);
                         query.put("trtime", System.currentTimeMillis());
                         count = travelApprovalService.update(query);
-                    }else if (i > 0 && isLast)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
+                    }else if (i > 0 && isLast && !apType.equals("2"))  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
                         query.put("rebversion",JzbRandom.getRandom(8));
-//                        query.put("rebstatus","1");
                         query.put("aptype",2);
                         query.put("travelid",param.get("travelid"));
                         count = travelPlanService.updateTravelRecord(query);
