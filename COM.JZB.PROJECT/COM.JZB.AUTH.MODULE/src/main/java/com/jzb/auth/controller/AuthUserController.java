@@ -616,12 +616,20 @@ public class AuthUserController {
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             int count = userService.modifyUserBasicData(param);
 
-            /** 如果修改成功则统一 */
+            /** 如果修改成功则统一  czd*/
             if (count > 0 && !JzbTools.isEmpty(param.get("relphone"))) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("uid", JzbDataType.getString(userInfo.get("uid")));
                 map.put("phone", JzbDataType.getString(param.get("relphone")));
                 userService.updateUserPhoneNo1(map);
+                Map<String, Object> resuMap = userService.getUserInfo(map);
+                if (!JzbTools.isEmpty(resuMap)) {
+                    // 添加增加缓存必要的参数
+                    resuMap.put("token", "token");
+                    resuMap.put("timeout", "1800000");
+                    resuMap.put("phone", JzbDataType.getString(map.get("phone")));
+                    userRedisApi.cacheUserInfo(resuMap);
+                }
             }
 
             if (count != 0) {

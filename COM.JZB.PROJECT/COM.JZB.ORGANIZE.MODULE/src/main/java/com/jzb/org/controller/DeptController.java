@@ -8,6 +8,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.AuthApi;
+import com.jzb.org.api.redis.UserRedisApi;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
@@ -47,6 +48,9 @@ public class DeptController {
 
     @Autowired
     private AuthApi authApi;
+
+    @Autowired
+    private UserRedisApi userRedisApi;
 
     /**
      * 根据企业id获取部门信息
@@ -459,6 +463,15 @@ public class DeptController {
                 /** 修改成功后统一手机号码 */
                 if (add > 0 && !JzbTools.isEmpty(param.get("phone"))) {
                     authApi.updateAllPhoneByUid(param);
+                    Response userInfo1 = authApi.getUserInfo(param);
+                    Map<String, Object> resuMap = (Map<String, Object>) userInfo1.getResponseEntity();
+                    if (!JzbTools.isEmpty(resuMap)) {
+                        // 添加增加缓存必要的参数
+                        resuMap.put("token", "token");
+                        resuMap.put("timeout", "1800000");
+                        resuMap.put("phone", JzbDataType.getString(param.get("phone")));
+                        userRedisApi.cacheUserInfo(resuMap);
+                    }
                 }
                 result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             } else {
