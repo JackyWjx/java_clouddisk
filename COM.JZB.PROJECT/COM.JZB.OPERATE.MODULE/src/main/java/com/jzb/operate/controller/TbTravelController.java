@@ -708,67 +708,67 @@ public class TbTravelController {
         return response;
     }
 
-    /**
-     * @Author sapientia
-     * @Date 17:28 2019/12/5
-     * @Description 添加报销单信息
-     **/
-    @RequestMapping(value = "/saveTravelExpense",method = RequestMethod.POST)
-    @Transactional
-    public Response saveTravelExpense(@RequestBody Map<String, Object> param) {
-        Response response;
-        Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/saveTravelExpense";
-        boolean flag = true;
-        try {
-            if (param.get("userinfo") != null) {
-                userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
-                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
-            } else {
-                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
-            }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"list" })) {
-                response = Response.getResponseError();
-            } else {
-                JzbPageConvert.setPageRows(param);
-                List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
-                for (int i = 0, a = list.size();i < a ;i++) {
-                    if(!JzbTools.isEmpty(list.get(i).get("trsum")))  list.get(i).put("trsum",JzbDataType.getInteger(list.get(i).get("trsum")));
-                    if(!JzbTools.isEmpty(list.get(i).get("exstrtime")))  list.get(i).put("exstrtime",JzbDataType.getInteger(list.get(i).get("exstrtime")));
-                    if(!JzbTools.isEmpty(list.get(i).get("exendtime"))) list.get(i).put("exendtime",JzbDataType.getInteger(list.get(i).get("exendtime")));
-                    if(!JzbTools.isEmpty(list.get(i).get("mail"))) list.get(i).put("mail",JzbDataType.getInteger(list.get(i).get("mail")));
-                    if(!JzbTools.isEmpty(list.get(i).get("crosum")))  list.get(i).put("crosum",JzbDataType.getInteger(list.get(i).get("crosum")));
-                    if(!JzbTools.isEmpty(list.get(i).get("getaccsum"))) list.get(i).put("getaccsum",JzbDataType.getInteger(list.get(i).get("getaccsum")));
-                    if(!JzbTools.isEmpty(list.get(i).get("subsidy")))  list.get(i).put("subsidy",JzbDataType.getInteger(list.get(i).get("subsidy")));
-                    if(!JzbTools.isEmpty(list.get(i).get("othsum")))   list.get(i).put("othsum",JzbDataType.getInteger(list.get(i).get("othsum")));
-                    if(!JzbTools.isEmpty(list.get(i).get("sum")))  list.get(i).put("sum",JzbDataType.getInteger(list.get(i).get("sum")));
-                    list.get(i).put("travelid", list.get(i).get("travelid").toString().trim());
-                    list.get(i).put("exid", JzbRandom.getRandomChar(12));
-                    list.get(i).put("addtime", System.currentTimeMillis());
-                    list.get(i).put("adduid",userInfo.get("uid"));
-                    list.get(i).put("status", 1);//默认状态1
-                    Map<String,Object> trMap = new HashMap<>();
-                    trMap.put("travelid",list.get(i).get("travelid"));
-                    tbTravelService.updateRebStatus(trMap);
-                }
-                tbTravelExpenseService.saveTravelExpense(list);
-                response = Response.getResponseSuccess(userInfo);
-            }
-        } catch (Exception ex) {
-            flag = false;
-            JzbTools.logError(ex);
-            response = Response.getResponseError();
-            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "saveTravelExpense Method", ex.toString()));
-        }
-        if (userInfo != null) {
-            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
-                    userInfo.get("msgTag").toString(), "User Login Message"));
-        } else {
-            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
-        }
-        return response;
-    }
+//    /**
+//     * @Author sapientia
+//     * @Date 17:28 2019/12/5
+//     * @Description 添加报销单信息
+//     **/
+//    @RequestMapping(value = "/saveTravelExpense",method = RequestMethod.POST)
+//    @Transactional
+//    public Response saveTravelExpense(@RequestBody Map<String, Object> param) {
+//        Response response;
+//        Map<String, Object> userInfo = null;
+//        String api = "/operate/reimburseSystem/saveTravelExpense";
+//        boolean flag = true;
+//        try {
+//            if (param.get("userinfo") != null) {
+//                userInfo = (Map<String, Object>) param.get("userinfo");
+//                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+//                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+//            } else {
+//                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+//            }
+//            if (JzbCheckParam.haveEmpty(param, new String[]{"list" })) {
+//                response = Response.getResponseError();
+//            } else {
+//                JzbPageConvert.setPageRows(param);
+//                List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+//                for (int i = 0, a = list.size();i < a ;i++) {
+//                    if(!JzbTools.isEmpty(list.get(i).get("trsum")))  list.get(i).put("trsum",JzbDataType.getInteger(list.get(i).get("trsum")));
+//                    if(!JzbTools.isEmpty(list.get(i).get("exstrtime")))  list.get(i).put("exstrtime",JzbDataType.getInteger(list.get(i).get("exstrtime")));
+//                    if(!JzbTools.isEmpty(list.get(i).get("exendtime"))) list.get(i).put("exendtime",JzbDataType.getInteger(list.get(i).get("exendtime")));
+//                    if(!JzbTools.isEmpty(list.get(i).get("mail"))) list.get(i).put("mail",JzbDataType.getInteger(list.get(i).get("mail")));
+//                    if(!JzbTools.isEmpty(list.get(i).get("crosum")))  list.get(i).put("crosum",JzbDataType.getInteger(list.get(i).get("crosum")));
+//                    if(!JzbTools.isEmpty(list.get(i).get("getaccsum"))) list.get(i).put("getaccsum",JzbDataType.getInteger(list.get(i).get("getaccsum")));
+//                    if(!JzbTools.isEmpty(list.get(i).get("subsidy")))  list.get(i).put("subsidy",JzbDataType.getInteger(list.get(i).get("subsidy")));
+//                    if(!JzbTools.isEmpty(list.get(i).get("othsum")))   list.get(i).put("othsum",JzbDataType.getInteger(list.get(i).get("othsum")));
+//                    if(!JzbTools.isEmpty(list.get(i).get("sum")))  list.get(i).put("sum",JzbDataType.getInteger(list.get(i).get("sum")));
+//                    list.get(i).put("travelid", list.get(i).get("travelid").toString().trim());
+//                    list.get(i).put("exid", JzbRandom.getRandomChar(12));
+//                    list.get(i).put("addtime", System.currentTimeMillis());
+//                    list.get(i).put("adduid",userInfo.get("uid"));
+//                    list.get(i).put("status", 1);//默认状态1
+//                    Map<String,Object> trMap = new HashMap<>();
+//                    trMap.put("travelid",list.get(i).get("travelid"));
+//                    tbTravelService.updateRebStatus(trMap);
+//                }
+//                tbTravelExpenseService.saveTravelExpense(list);
+//                response = Response.getResponseSuccess(userInfo);
+//            }
+//        } catch (Exception ex) {
+//            flag = false;
+//            JzbTools.logError(ex);
+//            response = Response.getResponseError();
+//            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "saveTravelExpense Method", ex.toString()));
+//        }
+//        if (userInfo != null) {
+//            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+//                    userInfo.get("msgTag").toString(), "User Login Message"));
+//        } else {
+//            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+//        }
+//        return response;
+//    }
 
     /**
      * @Author sapientia
@@ -805,8 +805,13 @@ public class TbTravelController {
                     if(!JzbTools.isEmpty(list.get(i).get("subsidy")))  list.get(i).put("subsidy",JzbDataType.getInteger(list.get(i).get("subsidy")));
                     if(!JzbTools.isEmpty(list.get(i).get("othsum")))   list.get(i).put("othsum",JzbDataType.getInteger(list.get(i).get("othsum")));
                     if(!JzbTools.isEmpty(list.get(i).get("sum")))  list.get(i).put("sum",JzbDataType.getInteger(list.get(i).get("sum")));
+                    if(!JzbTools.isEmpty(list.get(i).get("exid"))){
+                        tbTravelExpenseService.updateTravelExpense(list.get(i));
+                    }
+                    else if (JzbTools.isEmpty(list.get(i).get("exid"))){
+                        tbTravelExpenseService.saveTravelExpense(list.get(i));
+                    }
                 }
-                tbTravelExpenseService.updateTravelExpense(list);
                 response = Response.getResponseSuccess(userInfo);
             }
         } catch (Exception ex) {
