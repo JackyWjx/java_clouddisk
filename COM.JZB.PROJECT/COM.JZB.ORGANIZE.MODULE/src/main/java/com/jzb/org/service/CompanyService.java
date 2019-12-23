@@ -16,6 +16,7 @@ import com.jzb.org.api.message.MessageApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.dao.CompanyMapper;
+import com.jzb.org.dao.CompanyUserMapper;
 import com.jzb.org.dao.DeptMapper;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -884,5 +885,15 @@ public class CompanyService {
 
     public int delCompany(Map<String, Object> param) {
         return companyMapper.delCompany(param);
+    }
+
+    // 修改公海单位
+    public int updCompanyCommon(Map<String, Object> param) {
+        return companyMapper.updCompanyCommon(param);
+
+    }
+
+    public int addCompanyToCommon(Map<String, Object> param) {
+        return companyMapper.addCompanyToCommon(param);
     }
 }

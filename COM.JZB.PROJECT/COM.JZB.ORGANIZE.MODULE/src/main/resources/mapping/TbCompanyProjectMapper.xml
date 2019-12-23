@@ -15,6 +15,8 @@
     <!--查询项目下的数据-->
     <select id="getComProject" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
+        tcp.tenderresultcompany,
+        tcp.agentphone,
         cid,
         tcp.tendercompany,
         tcp.projectid,
@@ -33,7 +35,7 @@
         address,
         plantime,
         verifytime,
-        to_char( to_timestamp( tendertime / 1000 ), 'yyyy-MM-dd HH24:MI' ) AS tendertime,
+        to_char( to_timestamp( tendertime / 1000 ), 'yyyy-MM-dd ' ) AS tendertime,
         tenderuid,
         tendername,
         tenderphone,
@@ -42,11 +44,18 @@
         buildetime,
         isrelation,
         tcp.adduid,
-        to_char( to_timestamp( tcp.addtime / 1000 ), 'yyyy-MM-dd HH24:MI' ) AS addtime,
+        to_char( to_timestamp( tcp.addtime / 1000 ), 'yyyy-MM-dd ' ) AS addtime,
         tcp.upduid,
         tcp.status,
         tcp.summary,
         lineuid,
+        linejob,
+        lineage,
+        linesex,
+        recname,
+        reshphone,
+        tcpi.npodejob,
+        tcpi.summary as summa,
         lineuname,
         linephone,
         linenature,
@@ -84,6 +93,13 @@
         <if test="cid != null and cid != ''">
             and tcp.cid  = #{cid}
         </if>
+        <if test="startTime != null and startTime != ''">
+            and tcp.addtime  &gt;= startTime
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and tcp.addtime  &lt;= endTime
+        </if>
+
         ORDER BY tcp.addtime DESC
         LIMIT #{pagesize} offset #{pageno}
     </select>

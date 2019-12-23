@@ -33,6 +33,10 @@
         cl.cid,
         cl.cname,
         cl.region,
+        cl.relperson,
+        cl.telephone,
+        cl.relmail,
+        cl.logo,
         du.cname AS uname,
         du.phone,
         cs.systemname,
@@ -119,7 +123,8 @@
                 ,null
             </otherwise>
         </choose>
-        )
+        );
+
     </insert>
 
     <!--获取单位总数-->

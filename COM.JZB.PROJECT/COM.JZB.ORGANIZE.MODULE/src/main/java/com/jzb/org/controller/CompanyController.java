@@ -1041,6 +1041,43 @@ public class CompanyController {
     }
 
     /**
+     * 管理员修改公海单位
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: Kuang Bin
+     * @DateTime: 2019/9/20 18:00
+     */
+    @RequestMapping(value = "/updCompanyCommon", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response updCompanyCommon(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"cid"};
+
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("updtime", System.currentTimeMillis());
+                param.put("status", "1");
+                param.put("uid", userInfo.get("uid"));
+                int add = companyService.updCompanyCommon(param);
+                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                //
+                Map<String , Object> paMap =  new HashMap<>();
+                paMap.put("adderss",param.get("adderss"));
+                result.setResponseEntity(paMap);
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /**
      * CRM-销售业主-公海-供应商5
      * 点击新建供应商建立单位下供应商
      *
@@ -1062,6 +1099,34 @@ public class CompanyController {
             param.put("uid", uid);
             param.put("status", "1");
             int add = companyService.addCompanySupplier(param);
+            result = add == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 单位用户-所有单位-调入公海
+     * @param param
+     * @return
+     * @Author:
+     * @DateTime:
+     */
+    @RequestMapping(value = "/addCompanyToCommon", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyToCommon(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            String uid = JzbDataType.getString(userInfo.get("uid"));
+            long time = System.currentTimeMillis();
+            param.put("addtime", time);
+            param.put("adduid", uid);
+            param.put("uid", uid);
+            param.put("status", "1");
+            int add = companyService.addCompanyToCommon(param);
             result = add == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);

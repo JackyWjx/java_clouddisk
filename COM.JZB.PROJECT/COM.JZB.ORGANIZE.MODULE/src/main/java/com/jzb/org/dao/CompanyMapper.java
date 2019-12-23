@@ -352,4 +352,9 @@ public interface CompanyMapper {
     int insertCompanySupplier(Map<String, Object> param);
 
     int delCompany(Map<String, Object> param);
+
+    // 修改公海单位
+    int updCompanyCommon(Map<String, Object> param);
+
+    int addCompanyToCommon(Map<String, Object> param);
 } // End interface CompanyMapper

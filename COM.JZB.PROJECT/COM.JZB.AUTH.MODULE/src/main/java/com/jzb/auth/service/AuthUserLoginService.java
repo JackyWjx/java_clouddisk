@@ -276,7 +276,7 @@ public class AuthUserLoginService {
 //        boolean b2 = verify(name, 2);
         // 去除对姓名的校验
         boolean b2 = name == "" ? false : true  ;
-        if (b1 && b2) {
+        if (b1) {
             List<Map> loList = userMapper.searchSendCode(map);
             if (loList.size() > 0) {
                 response.put("uid", loList.get(0).get("uid"));

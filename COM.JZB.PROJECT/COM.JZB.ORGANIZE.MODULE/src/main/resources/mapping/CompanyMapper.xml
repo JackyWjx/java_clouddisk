@@ -395,6 +395,132 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         #{pageno}
     </select>
 
+    <!--所有单位-调入公海-->
+    <insert id="addCompanyToCommon" parameterType="java.util.Map" >
+            insert into tb_common_company_list(tcid, cid, cname, nickname, region, uscc, reluid, relperson, relphone, telephone, relmail, logo, photo, cstatus, curl, fax, limitday, address, range, ctype, legaleid, legaler, cardid, capital, birthday, content, authstatus, supervise, orgrelation, prodesc, prolist, source, adduid, addtime, upduid, updtime, status, summary)
+        values
+        (#{tcid}, #{cid}, #{cname}, #{nickname}, #{region}, #{uscc}, #{reluid}, #{relperson}, #{relphone}, #{telephone}, #{relmail}, #{logo}, #{photo}, #{cstatus}, #{curl}, #{fax}, #{limitday}, #{address}, #{range}, #{ctype}, #{legaleid}, #{legaler}, #{cardid}, #{capital}, #{birthday}, #{content}, #{authstatus}, #{supervise}, #{orgrelation}, #{prodesc}, #{prolist}, #{source}, #{adduid}, #{addtime}, #{upduid}, #{updtime}, #{status}, #{summary})
+
+    </insert>
+    <!--修改公海单位信息-->
+    <update id="updCompanyCommon" parameterType="java.util.Map">
+        update public.tb_common_company_list
+        <set>
+            <if test="tcid != null and tcid != ''">
+                tcid = #{tcid},
+            </if>
+            <if test="cid != null and cid != ''">
+                cid = #{cid},
+            </if>
+            <if test="cname != null and cname != ''">
+                cname = #{cname},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="region != null and region != ''">
+                region = #{region},
+            </if>
+            <if test="uscc != null and uscc != ''">
+                uscc = #{uscc},
+            </if>
+            <if test="reluid != null and reluid != ''">
+                reluid = #{reluid},
+            </if>
+            <if test="relperson != null and relperson != ''">
+                relperson = #{relperson},
+            </if>
+            <if test="relphone != null and relphone != ''">
+                relphone = #{relphone},
+            </if>
+            <if test="telephone != null and telephone != ''">
+                telephone = #{telephone},
+            </if>
+            <if test="relmail != null and relmail != ''">
+                relmail = #{relmail},
+            </if>
+            <if test="logo != null and logo != ''">
+                logo = #{logo},
+            </if>
+            <if test="photo != null and photo != ''">
+                photo = #{photo},
+            </if>
+            <if test="cstatus != null and cstatus != ''">
+                cstatus = #{cstatus},
+            </if>
+            <if test="curl != null and curl != ''">
+                curl = #{curl},
+            </if>
+            <if test="fax != null and fax != ''">
+                fax = #{fax},
+            </if>
+            <if test="limitday != null">
+                limitday = #{limitday},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="range != null and range != ''">
+                range = #{range},
+            </if>
+            <if test="ctype != null and ctype != ''">
+                ctype = #{ctype},
+            </if>
+            <if test="legaleid != null and legaleid != ''">
+                legaleid = #{legaleid},
+            </if>
+            <if test="legaler != null and legaler != ''">
+                legaler = #{legaler},
+            </if>
+            <if test="cardid != null and cardid != ''">
+                cardid = #{cardid},
+            </if>
+            <if test="capital != null and capital != ''">
+                capital = #{capital},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="authstatus != null">
+                authstatus = #{authstatus},
+            </if>
+            <if test="supervise != null and supervise != ''">
+                supervise = #{supervise},
+            </if>
+            <if test="orgrelation != null and orgrelation != ''">
+                orgrelation = #{orgrelation},
+            </if>
+            <if test="prodesc != null and prodesc != ''">
+                prodesc = #{prodesc},
+            </if>
+            <if test="prolist != null and prolist != ''">
+                prolist = #{prolist},
+            </if>
+            <if test="source != null">
+                source = #{source},
+            </if>
+            <if test="adduid != null and adduid != ''">
+                adduid = #{adduid},
+            </if>
+            <if test="addtime != null">
+                addtime = #{addtime},
+            </if>
+            <if test="upduid != null and upduid != ''">
+                upduid = #{upduid},
+            </if>
+            <if test="updtime != null">
+                updtime = #{updtime},
+            </if>
+            <if test="summary != null and summary != ''">
+                summary = #{summary},
+            </if>
+        </set>
+        where cid = #{cid}
+    </update>
+
     <!--根据模糊姓名获取企业下所有同字员工姓名 去重时排序会报错-->
     <select id="searchUserName" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
