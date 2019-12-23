@@ -1,5 +1,6 @@
 package com.jzb.auth.controller;
 
+import com.jzb.auth.api.organize.DeptUserApi;
 import com.jzb.auth.api.redis.UserRedisApi;
 import com.jzb.auth.config.AuthConfigProperties;
 import com.jzb.auth.service.AuthUserLoginService;
@@ -41,6 +42,8 @@ public class AuthUserController {
     @Autowired
     private AuthUserLoginService userLoginService;
 
+    @Autowired
+    private DeptUserApi deptUserApi;
     /**
      * 用户信息缓存对象
      */
@@ -622,6 +625,7 @@ public class AuthUserController {
                 map.put("uid", JzbDataType.getString(userInfo.get("uid")));
                 map.put("phone", JzbDataType.getString(param.get("relphone")));
                 userService.updateUserPhoneNo1(map);
+                deptUserApi.modifyDeptUser(map);
                 Map<String, Object> resuMap = userService.getUserInfo(map);
                 if (!JzbTools.isEmpty(resuMap)) {
                     // 添加增加缓存必要的参数

@@ -484,6 +484,34 @@ public class DeptController {
         return result;
     }
 
+
+    /**
+     * 修改部门用户表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/9/3 16:28
+     */
+    @RequestMapping(value = "/modifyDeptUserByUid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyDeptUserByUid(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"uid","phone"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                int add = deptService.updateDeptUserByUid(param);
+                result = add > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
     /**
      * 部门用户表移除用户
      *

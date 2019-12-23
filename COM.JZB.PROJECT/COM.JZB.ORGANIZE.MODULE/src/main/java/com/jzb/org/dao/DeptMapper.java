@@ -129,6 +129,13 @@ public interface DeptMapper {
      * @return
      */
     int updateDeptUser(Map<String, Object> map);
+    /**
+     * 修改部门用户表信息
+     *
+     * @param map
+     * @return
+     */
+    int updateDeptUserByUid(Map<String, Object> map);
 
     /**
      * 新增部门用户表信息
