@@ -116,10 +116,11 @@ public class AuthUserLoginService {
         int type = 4;
         String telNumber = map.get("phone") == null ? "" : map.get("phone").toString();
         if (verify(telNumber, type)) {
-            List<Map> loList = userMapper.searchSendCode(map);
-            if (loList.size() > 0) {
+//            List<Map> loList = userMapper.searchSendCode(map);
+            String uid = userMapper.queryUidByPhoneOrRegid(map);
+            if (!JzbTools.isEmpty(uid)) {
                 //获取用户id和发送短信
-                String uid = loList.get(0).get("uid").toString();
+//                String uid = loList.get(0).get("uid").toString();
                 Response rul = sendSmsCode(map, telNumber, size);
                 result.put("code", "0");
                 result.put("uid", uid);
@@ -133,6 +134,7 @@ public class AuthUserLoginService {
         }
         return result;
     }
+
 
 
 

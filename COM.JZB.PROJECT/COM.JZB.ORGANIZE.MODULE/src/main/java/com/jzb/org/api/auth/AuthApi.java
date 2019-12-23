@@ -4,10 +4,7 @@ package com.jzb.org.api.auth;
 import com.jzb.base.message.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -43,4 +40,14 @@ public interface AuthApi {
     @PostMapping(value = "/getUserInfo")
     @CrossOrigin
     public Response getUserInfo(@RequestBody Map<String, Object> param);
+
+    /**
+     * 统一手机号
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updateAllPhoneByUid",method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Response updateAllPhoneByUid(@RequestBody Map<String, Object> param);
 }

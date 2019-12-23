@@ -8,6 +8,13 @@
         select count(1) from tb_user_list where uid = #{uid} and cname like CONCAT('%',#{person},'%')
     </select>
 
+    <!-- 统一修改用户手机号 -->
+    <update id="updateUserPhoneNo1" parameterType="java.util.Map">
+        update tb_user_list set relphone=#{phone} where uid=#{uid};
+        update tb_user_key set keyid=#{phone} where uid=#{uid};
+    </update>
+
+
     <!--查询根据手机号or regid 查询uid-->
     <select id="queryUidByPhoneOrRegid" parameterType="java.util.Map" resultType="java.lang.String">
     SELECT

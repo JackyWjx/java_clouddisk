@@ -34,6 +34,13 @@ public interface AuthUserMapper {
     int queryPersionByName(Map<String, Object> param);
 
     /**
+     * 统一list和key中手机号
+     * @param param
+     * @return
+     */
+    int updateUserPhoneNo1(Map<String, Object> param);
+
+    /**
      * 认证用户user_list表信息修改
      */
     int updateIdentityList(Map<String, Object> param);
