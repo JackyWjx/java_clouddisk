@@ -8,7 +8,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.AuthApi;
-import com.jzb.org.api.redis.UserRedisApi;
+import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
@@ -50,7 +50,7 @@ public class DeptController {
     private AuthApi authApi;
 
     @Autowired
-    private UserRedisApi userRedisApi;
+    private UserRedisServiceApi userRedisApi;
 
     /**
      * 根据企业id获取部门信息
