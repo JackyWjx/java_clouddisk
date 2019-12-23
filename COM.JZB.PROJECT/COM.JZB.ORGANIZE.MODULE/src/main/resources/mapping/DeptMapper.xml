@@ -187,6 +187,14 @@
         uid =#{uid} AND cid=#{cid} AND cdid=#{cdid}
     </update>
 
+    <update id="updateDeptUserByUid">
+        UPDATE tb_dept_user
+        SET
+        <if test=" phone !=null and phone!=''">phone =#{phone},</if>status='1'
+        WHERE
+        uid =#{uid}
+    </update>
+
     <!--修改用户导入批次表-->
     <update id="updateExportBatch">
         UPDATE tb_export_batch
