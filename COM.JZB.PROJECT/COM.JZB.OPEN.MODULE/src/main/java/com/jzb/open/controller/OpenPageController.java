@@ -220,12 +220,15 @@ public class OpenPageController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             param.put("uid", userInfo.get("uid"));
+
+
+            //
             /*Response cacheUserInfo = userAuthApi.getUserInfo(param);*/
             /*Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();*/
-            String cid = param.get("uid").toString();
-            String uid = param.get("cid").toString();
+            /*String uid = "KWWWCPERKXNX";*/
+            String uid = param.get("uid").toString();
             //调用第三方接口
-            String sr = sendPost("http://bhz.jizhibao.com.cn/Api/GetProjListV3", "uid" +"="+ uid + "&" + "cid" +"="+ cid);
+            String sr = sendPost("http://bhz.jizhibao.com.cn/Api/GetProjListV3", "uid" +"="+ uid);
             //把返回值转成JSON格式
             JSONObject jsonObject =  JSON.parseObject(sr);
             result = Response.getResponseSuccess(userInfo);

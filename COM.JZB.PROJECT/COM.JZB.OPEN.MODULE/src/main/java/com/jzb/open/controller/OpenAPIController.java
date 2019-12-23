@@ -14,6 +14,7 @@ import com.jzb.open.service.OpenAPIService;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import sun.font.FontRunIterator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,9 @@ public class OpenAPIController {
     @Autowired
     private CompanyApi companyApi;
 
+    @Autowired
+    private PlatformComController platformComController;
+
     /**
      * 创建文档类型
      */
@@ -92,9 +96,8 @@ public class OpenAPIController {
                 // 查询总数
                 count = openAPIService.getApiTypeCount();
             }
-            // 文档类型
-            List<OpenApiType> records = openAPIService.getApiType(param);
 
+            List<Map<String, Object>> records = openAPIService.getApiType(param);
             // 获取用户资料和token
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
