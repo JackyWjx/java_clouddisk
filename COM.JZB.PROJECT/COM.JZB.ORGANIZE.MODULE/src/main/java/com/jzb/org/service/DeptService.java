@@ -270,6 +270,16 @@ public class DeptService {
         return result;
     }
 
+
+    /**
+     * 修改部门用户表信息
+     *
+     * @param map
+     * @return
+     */
+    public int updateDeptUserByUid(Map<String, Object> map){
+        return deptMapper.updateDeptUserByUid(map);
+    }
     /**
      * 保存用户导入批次表
      *
