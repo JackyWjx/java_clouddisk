@@ -232,6 +232,9 @@ public class TbTravelPlanController {
 
                 //获取并保存情报收集list
                 List<Map<String, Object>> travelinfolist = (List<Map<String, Object>>) detailsList.get(i).get("travelinfolist");
+
+                // 出差项目id
+                detailsList.get(i).put("projectid",travelinfolist.get(0).get("projectid"));
                 //一般travelinfolist的长度为1
                 for (int j = 0, b = travelinfolist.size(); j < b; j++) {
                     travelinfolist.get(j).put("adduid", param.get("adduid"));
@@ -254,6 +257,11 @@ public class TbTravelPlanController {
 
                 //获取并保存出差资料list
                 List<Map<String, Object>> travelDataList = (List<Map<String, Object>>) detailsList.get(i).get("traveldatalist");
+
+                String  did = JzbRandom.getRandomChar(19);
+                detailsList.get(i).put("did",did); // 资料表id
+
+                // travelDataList.size() 固定为1
                 for (int k = 0, c = travelDataList.size(); k < c; k++) {
                     travelDataList.get(k).put("coou", JSONArray.toJSONString(travelDataList.get(k).get("coou")));
                     travelDataList.get(k).put("coppt", JSONArray.toJSONString(travelDataList.get(k).get("coppt")));
@@ -278,7 +286,7 @@ public class TbTravelPlanController {
                     travelDataList.get(k).put("adduid", param.get("adduid"));
                     travelDataList.get(k).put("travelid", param.get("travelid"));
                     travelDataList.get(k).put("deid", detailsList.get(i).get("deid"));
-                    travelDataList.get(k).put("did", JzbRandom.getRandomChar(19));
+                    travelDataList.get(k).put("did", did);
                     travelDataList.get(k).put("addtime", System.currentTimeMillis());
                     travelDataList.get(k).put("status", 1);//默认状态1
                     travelDataService.save(travelDataList.get(k));
