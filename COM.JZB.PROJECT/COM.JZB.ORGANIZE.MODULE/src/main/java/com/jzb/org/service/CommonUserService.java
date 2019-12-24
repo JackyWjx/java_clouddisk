@@ -78,8 +78,6 @@ public class CommonUserService {
 
     // 删除公海用户信息
     public int delUser(Map<String,Object> map){
-        map.put("updtime",System.currentTimeMillis());
-        map.put("status",'2');
         return userMapper.delUser(map);
     }
     // 用户关联单位

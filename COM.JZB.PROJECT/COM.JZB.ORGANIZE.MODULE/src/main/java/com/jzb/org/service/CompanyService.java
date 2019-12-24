@@ -896,4 +896,8 @@ public class CompanyService {
     public int addCompanyToCommon(Map<String, Object> param) {
         return companyMapper.addCompanyToCommon(param);
     }
+
+    public List<Map<String, Object>> queryUserByCid(Map<String, Object> param) {
+        return companyMapper.queryUserByCid(param);
+    }
 }
