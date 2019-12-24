@@ -50,7 +50,7 @@
         did,
         COALESCE(trpeers,'') as trpeers,
         COALESCE(trdefense,'') as trdefense,
-        COALESCE(trtime,'') as trtime,
+        trtime,
         COALESCE(trtype,'') as trtype,
         COALESCE(trregion,'') as trregion,
         COALESCE(trgoal,'') as trgoal,
