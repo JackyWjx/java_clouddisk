@@ -108,8 +108,6 @@ public class CommonUserController {
             Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid",userinfo.get("uid"));
             int count = JzbDataType.getInteger(param.get("count"));
-            // 查询用户总数
-            count = count > 0 ? count:userService.getCount(param);
 
             JzbPageConvert.setPageRows(param);
             List<Map<String, Object>> regionList = new ArrayList<>();
@@ -202,6 +200,9 @@ public class CommonUserController {
                 // 将所有结果加入参数中传入
                 param.put("list", regionList);
             }
+            // 查询用户总数
+            count = count > 0 ? count:userService.getCount(param);
+
             // 查询用户
             List<Map<String,Object>> list = userService.queryCommonUser(param);
             //获取用户信息
@@ -246,6 +247,14 @@ public class CommonUserController {
         try {
             Map<String,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
             // 删除公海用户
+            List<Map<String,Object>> list = (List<Map<String, Object>>) paramp.get("list");
+            if (!JzbTools.isEmpty(list)){
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).put("updtime",System.currentTimeMillis());
+                    list.get(i).put("status",'2');
+                }
+            }
+            paramp.put("list",list);
             int count = userService.delUser(paramp);
             response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
         } catch (Exception e) {

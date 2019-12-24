@@ -121,8 +121,7 @@ public class TbCompanyProjectController {
                 result = Response.getResponseError();
             } else {
                 //设置好分页参数
-                SetPageSize setPageSize = new SetPageSize();
-                param = setPageSize.setPagenoSize(param);
+                param = SetPageSize.setPagenoSize(param);
 
                 List<Map<String, Object>> regionList = new ArrayList<>();
                 if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
@@ -224,7 +223,7 @@ public class TbCompanyProjectController {
                 List<Map<String, Object>> list = tbCompanyProjectService.getComProject(param);
                 //判断前端传过来的分页总数
                 int count = tbCompanyProjectService.getCount(param);
-                //获取用户信息
+                //获取用户项目信息
                 for (int i = 0; i < list.size(); i++) {
                     Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
                     list.get(i).put("region",cityList.getResponseEntity());

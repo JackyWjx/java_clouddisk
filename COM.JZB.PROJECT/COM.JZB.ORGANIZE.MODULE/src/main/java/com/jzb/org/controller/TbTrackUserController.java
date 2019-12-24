@@ -135,6 +135,13 @@ public class TbTrackUserController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             param.put("adduid",userInfo.get("uid"));
+            List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+            if(!JzbTools.isEmpty(list)){
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).put("updtime",System.currentTimeMillis());
+                }
+            }
+            param.put("list",list);
             response = userService.delTrackUser(param) > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
         }catch (Exception e){
             flag = false;

@@ -6,7 +6,20 @@
 
     <!--  查询出差记录   -->
     <select id="queryAllTravelList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT travelid,uname,fare,expenses,orgtime,endtime,trip,addtime,adduid,aptype,ccuid,"sum",rebversion,rebstatus
+        SELECT travelid,
+        uname,
+        COALESCE (fare,0) as fare,
+        COALESCE (expenses,0) as expenses,
+        orgtime,
+        endtime,
+        COALESCE (trip,'') as trip,
+        addtime,
+        adduid,
+        aptype,
+        ccuid,
+        "sum",
+        COALESCE (rebversion,'') as rebversion,
+        rebstatus
         from tb_travel_record where  aptype = '2' and (rebversion != null or rebversion !='') and rebstatus !='4'
         <if test="uid != null and uid != ''">and uid=#{uid} </if>
         <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
@@ -35,23 +48,23 @@
         cid,
         projectid,
         did,
-        trpeers,
-        trdefense,
+        COALESCE(trpeers,'') as trpeers,
+        COALESCE(trdefense,'') as trdefense,
         trtime,
-        trtype,
-        trregion,
-        trgoal,
-        trip,
-        produce,
-        fare,
-        expenses,
-        amount,
+        COALESCE(trtype,'') as trtype,
+        COALESCE(trregion,'') as trregion,
+        COALESCE(trgoal,'') as trgoal,
+        COALESCE(trip,'') as trip,
+        COALESCE(produce,-1) as produce,
+        COALESCE(fare,0) as fare,
+        COALESCE(expenses,0) as expenses,
+        COALESCE(amount,0) as amount,
         addtime,
         adduid,
         updtime,
         upduid,
         status,
-        summary
+        COALESCE(summary,'') as summary
         from tb_travel_record_deta where status='1'
         <if test="uid != null and uid != ''">and uid = #{uid}</if>
         <if test="cid != null and cid != ''">and cid = #{cid}</if>
@@ -76,32 +89,34 @@
 
     <!--根据cid获取出差详情-->
     <select id="queryDetaBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select did from tb_travel_record_deta where status = '1'and cid = #{cid} and uid =#{uid}
+        select  COALESCE(did,null ) as did from tb_travel_record_deta where status = '1'and cid = #{cid} and uid =#{uid}
     </select>
 
 
     <!--查询出差资料-->
     <select id="queryTravelData" resultType="java.util.Map" parameterType="java.util.Map">
-        select newsletter,
-        coframe,
-        offer,
-        couage,
-        signin,
-        reviewed,
-        implement,
-        plan,
-        train,
-        speechcraft,
-        invitation,
-        contract,
-        copropaganda,
-        coppt,
-        cureviewed,
-        contrast,
-        coou,
-        cocustomer,
-        card,
-        account
+        select
+        COALESCE (newsletter ,'') as newsletter,
+        COALESCE (coframe ,'') as coframe,
+        COALESCE (offer ,'') as offer,
+        COALESCE (couage ,'') as couage,
+        COALESCE (signin ,'') as signin,
+        COALESCE (reviewed ,'') as reviewed,
+        COALESCE (implement ,'') as implement,
+        COALESCE (plan ,'') as plan,
+        COALESCE (train ,'') as train,
+        COALESCE (speechcraft ,'') as speechcraft,
+        COALESCE (invitation ,'') as invitation,
+        COALESCE (contract ,'') as contract,
+        COALESCE (copropaganda ,'') as copropaganda,
+        COALESCE (coppt ,'') as coppt,
+        COALESCE (cureviewed ,'') as cureviewed,
+        COALESCE (contrast ,'') as contrast,
+        COALESCE (coou ,'') as coou,
+        COALESCE (cocustomer ,'') as cocustomer,
+        COALESCE (card ,'') as card,
+        COALESCE (account ,'') as account
+        COALESCE (summary ,'') as summary
          from  tb_travel_data where status ='1'
         <if test="travelid != null and travelid != ''">and travelid = #{travelid}</if>
         <if test="deid != null and deid != ''">and deid = #{deid}</if>

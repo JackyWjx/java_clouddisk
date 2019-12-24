@@ -6,8 +6,16 @@
 
      <!--新建公海用户-->
     <insert id="addCommUser" parameterType="java.util.Map">
-        insert into tb_common_user_list(isrelation,cid,source,region,uid,uname,phone,cardid,sex,age,job,mail,cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary)
+        insert into tb_common_user_list(projectid,isrelation,cid,source,region,uid,uname,phone,cardid,sex,age,job,mail,cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary)
         values (
+        <choose>
+            <when test="projectid != null and projectid != ''">
+                #{projectid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="isrelation != null and isrelation != ''">
                 #{isrelation},
@@ -198,6 +206,9 @@
         <if test="cid != null and cid != ''">
             and  cid = #{cid}
         </if>
+        <if test="projectid != null and projectid != ''">
+            and  projectid = #{projectid}
+        </if>
         <if test="uname != null and uname != ''">
             and  uname  like CONCAT('%',#{uname},'%')
         </if>
@@ -209,7 +220,7 @@
 
     </select>
 
-    <!--模糊查询公海用户-->
+
 
     <!--查询公海用户总数-->
     <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
@@ -226,6 +237,9 @@
         <if test="cid != null and cid != ''">
             and  cid = #{cid}
         </if>
+        <if test="projectid != null and projectid != ''">
+            and  projectid = #{projectid}
+        </if>
         <if test="uname != null and uname != ''">
             and  uname  like CONCAT('%',#{uname},'%')
         </if>
@@ -233,7 +247,9 @@
 
     <!--删除公海用户-->
     <update id="delUser" parameterType="java.util.Map">
-        update tb_common_user_list  set status = #{status}  where uid = #{uid} ;
+        <foreach collection="list" close="" open="" index="index" item="item" separator="">
+            update tb_common_user_list  set status = #{item.status}  where uid = #{item.uid} ;
+        </foreach>
     </update>
 
     <!--用户关联单位-->

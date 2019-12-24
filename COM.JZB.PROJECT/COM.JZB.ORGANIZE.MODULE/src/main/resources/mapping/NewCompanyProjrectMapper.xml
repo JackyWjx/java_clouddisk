@@ -35,7 +35,7 @@
 
     <!--根据projectid查询单位名称-->
     <select id="queryPronameByid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectname from tb_company_project where projectid=#{projectid} and status = '1'
+        select  COALESCE(projectname,'' )as projectname from tb_company_project where projectid=#{projectid}
     </select>
 
     <!--修改单位-->

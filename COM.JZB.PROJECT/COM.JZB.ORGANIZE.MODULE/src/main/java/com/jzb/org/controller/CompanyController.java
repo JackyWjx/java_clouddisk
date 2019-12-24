@@ -423,9 +423,16 @@ public class CompanyController {
    @CrossOrigin
    public Response delCompany(@RequestBody Map<String,Object> param){
        Response response;
+       int count = 0;
        try {
            Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
-           int count = companyService.delCompany(param);
+           if (!JzbTools.isEmpty(param.get("list"))){
+               List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+               if (!JzbTools.isEmpty(list)){
+                   param.put("list",list);
+                   count = companyService.delCompany(param);
+               }
+           }
            response = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
        } catch (Exception e) {
            JzbTools.logError(e);
@@ -1133,6 +1140,34 @@ public class CompanyController {
             result = Response.getResponseError();
         }
         return result;
+    }
+
+    /**
+     * @Author Reed
+     * @Description //查询企业所有用户
+     * @Date 13:37 2019/12/24
+     * @Param
+     * @return
+    **/
+    @RequestMapping("/queryUserByCid")
+    @CrossOrigin
+    public Response queryUserByCid(@RequestBody Map<String, Object> param){
+        Response response;
+        try {
+            Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            List<Map<String,Object>> list = null;
+            if (!JzbTools.isEmpty(param.get("cid"))){
+                list =  companyService.queryUserByCid(param);
+            }
+            response = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            response.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+           response =   Response.getResponseError();
+        }
+        return response;
     }
 
 }
