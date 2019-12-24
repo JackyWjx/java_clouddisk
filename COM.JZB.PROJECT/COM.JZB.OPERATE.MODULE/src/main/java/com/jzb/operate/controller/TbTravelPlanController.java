@@ -140,6 +140,32 @@ public class TbTravelPlanController {
     }
 
     /**
+     *  @author: gongWei
+     *  @Date:  2019/12/20 11:47
+     *  @Description: 修改/更新出差记录时  更新情报收集信息来源数据
+     *  @Param:
+     *  @Return:
+     *  @Exception:
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/updateSourceInfo",method = RequestMethod.POST)
+    public Response updateSourceInfo(@RequestBody Map<String, Object> param){
+        Response response;
+        if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+            response = Response.getResponseError();
+        } else {
+            newTbCompanyListApi.updateCommonCompanyList(param); // 更新 tb_common_company_list 信息
+            if (!ObjectUtils.isEmpty(param.get("projectid"))) {
+                newTbCompanyListApi.updateCompanyProject(param); //更新 tb_company_project 信息
+                newTbCompanyListApi.updateCompanyProjectInfo(param); // 更新 tb_common_project_info 信息
+            }
+            response = Response.getResponseSuccess();
+        }
+
+        return  response ;
+    }
+
+    /**
      * @author: gongWei
      * @Date: 2019/12/17 10:11
      * @Description: 添加出差计划
@@ -189,7 +215,7 @@ public class TbTravelPlanController {
 
                 detailsList.get(i).put("deid", JzbRandom.getRandomChar(19));
                 detailsList.get(i).put("travelid", param.get("travelid"));
-                detailsList.get(i).put("uid", param.get("uid"));
+                detailsList.get(i).put("uid", userInfo.get("uid"));
                 detailsList.get(i).put("addtime", System.currentTimeMillis());
                 detailsList.get(i).put("status", 1);//默认状态1
                 // prindex加密处理
@@ -211,23 +237,19 @@ public class TbTravelPlanController {
                     travelinfolist.get(j).put("adduid", param.get("adduid"));
                     travelinfolist.get(j).put("travelid", param.get("travelid"));
                     travelinfolist.get(j).put("deid", detailsList.get(i).get("deid"));
-//                    travelinfolist.get(j).put("reshid", null);
                     travelinfolist.get(j).put("status", 1);//默认状态1
                     travelinfolist.get(j).put("inid", JzbRandom.getRandomChar(19));
                     travelinfolist.get(j).put("addtime", System.currentTimeMillis());
-                    int okCount = travelInfoService.save(travelinfolist.get(j));
-                    if(okCount > 0){
-//                        Map<String,Object> apiMap = new HashMap<>();
-//                        apiMap.put("cid", travelinfolist.get(j).get("cid"));
-                        travelinfolist.get(j).put("userinfo", userInfo);
-                        newTbCompanyListApi.updateCommonCompanyList(travelinfolist.get(j)); // 更新 tb_common_company_list 信息
-                        if(!ObjectUtils.isEmpty(travelinfolist.get(j).get("projectid"))){
-                            travelinfolist.get(j).put("projectid",travelinfolist.get(j).get("projectid"));
-                            newTbCompanyListApi.updateCompanyProject(travelinfolist.get(j)); //更新 tb_company_project 信息
-                            newTbCompanyListApi.updateCompanyProjectInfo(travelinfolist.get(j)); // 更新 tb_common_project_info 信息
-                        }
-
-                    }
+                    travelInfoService.save(travelinfolist.get(j));
+//                    if(okCount > 0){
+//                        travelinfolist.get(j).put("userinfo", userInfo);
+//                        newTbCompanyListApi.updateCommonCompanyList(travelinfolist.get(j)); // 更新 tb_common_company_list 信息
+//                        if(!ObjectUtils.isEmpty(travelinfolist.get(j).get("projectid"))){
+//                            travelinfolist.get(j).put("projectid",travelinfolist.get(j).get("projectid"));
+//                            newTbCompanyListApi.updateCompanyProject(travelinfolist.get(j)); //更新 tb_company_project 信息
+//                            newTbCompanyListApi.updateCompanyProjectInfo(travelinfolist.get(j)); // 更新 tb_common_project_info 信息
+//                        }
+//                    }
                 }
 
                 //获取并保存出差资料list
@@ -456,20 +478,16 @@ public class TbTravelPlanController {
                 for (int j = 0, b = travelInfoList.size(); j < b; j++) {
                     travelInfoList.get(j).put("updtime", System.currentTimeMillis());
                     travelInfoList.get(j).put("deid", detailsList.get(i).get("deid"));
-                    int okCount = travelInfoService.update(travelInfoList.get(j));
-                    if(okCount > 0){
-//                        Map<String,Object> apiMap = new HashMap<>();
-//                        apiMap.put("cid", travelInfoList.get(j).get("cid"));
-//                        apiMap.put("userinfo",userInfo);
-                        travelInfoList.get(j).put("userinfo",userInfo);
-                        newTbCompanyListApi.updateCommonCompanyList(travelInfoList.get(j)); // 更新 tb_common_company_list 信息
-                        if(!ObjectUtils.isEmpty(travelInfoList.get(j).get("projectid"))){
-//                            apiMap.put("projectid",travelInfoList.get(j).get("projectid"));
-                            newTbCompanyListApi.updateCompanyProject(travelInfoList.get(j)); //更新 tb_company_project 信息
-                            newTbCompanyListApi.updateCompanyProjectInfo(travelInfoList.get(j)); // 更新 tb_common_project_info 信息
-                        }
-
-                    }
+                    travelInfoService.update(travelInfoList.get(j));
+//                    if(okCount > 0){
+//                        travelInfoList.get(j).put("userinfo",userInfo);
+//                        newTbCompanyListApi.updateCommonCompanyList(travelInfoList.get(j)); // 更新 tb_common_company_list 信息
+//                        if(!ObjectUtils.isEmpty(travelInfoList.get(j).get("projectid"))){
+//                            newTbCompanyListApi.updateCompanyProject(travelInfoList.get(j)); //更新 tb_company_project 信息
+//                            newTbCompanyListApi.updateCompanyProjectInfo(travelInfoList.get(j)); // 更新 tb_common_project_info 信息
+//                        }
+//
+//                    }
                 }
 
                 //获取并保存出差资料list
