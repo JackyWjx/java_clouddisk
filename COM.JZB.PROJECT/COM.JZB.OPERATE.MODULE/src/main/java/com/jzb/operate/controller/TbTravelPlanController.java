@@ -2,6 +2,7 @@ package com.jzb.operate.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.entity.auth.UserInfo;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -218,6 +219,7 @@ public class TbTravelPlanController {
                     if(okCount > 0){
                         Map<String,Object> apiMap = new HashMap<>();
                         apiMap.put("cid", travelinfolist.get(j).get("cid"));
+                        apiMap.put("userinfo", userInfo);
                         newTbCompanyListApi.updateCommonCompanyList(apiMap); // 更新 tb_common_company_list 信息
                         if(!ObjectUtils.isEmpty(travelinfolist.get(j).get("projectid"))){
                             apiMap.put("projectid",travelinfolist.get(j).get("projectid"));
@@ -456,13 +458,15 @@ public class TbTravelPlanController {
                     travelInfoList.get(j).put("deid", detailsList.get(i).get("deid"));
                     int okCount = travelInfoService.update(travelInfoList.get(j));
                     if(okCount > 0){
-                        Map<String,Object> apiMap = new HashMap<>();
-                        apiMap.put("cid", travelInfoList.get(j).get("cid"));
-                        newTbCompanyListApi.updateCommonCompanyList(apiMap); // 更新 tb_common_company_list 信息
+//                        Map<String,Object> apiMap = new HashMap<>();
+//                        apiMap.put("cid", travelInfoList.get(j).get("cid"));
+//                        apiMap.put("userinfo",userInfo);
+                        travelInfoList.get(j).put("userinfo",userInfo);
+                        newTbCompanyListApi.updateCommonCompanyList(travelInfoList.get(j)); // 更新 tb_common_company_list 信息
                         if(!ObjectUtils.isEmpty(travelInfoList.get(j).get("projectid"))){
-                            apiMap.put("projectid",travelInfoList.get(j).get("projectid"));
-                            newTbCompanyListApi.updateCompanyProject(apiMap); //更新 tb_company_project 信息
-                            newTbCompanyListApi.updateCompanyProjectInfo(apiMap); // 更新 tb_common_project_info 信息
+//                            apiMap.put("projectid",travelInfoList.get(j).get("projectid"));
+                            newTbCompanyListApi.updateCompanyProject(travelInfoList.get(j)); //更新 tb_company_project 信息
+                            newTbCompanyListApi.updateCompanyProjectInfo(travelInfoList.get(j)); // 更新 tb_common_project_info 信息
                         }
 
                     }
@@ -538,26 +542,6 @@ public class TbTravelPlanController {
             }
             Map<String, Object> travelMap = travelPlanService.queryTravelRecordByTravelid(param);
             List<Map<String, Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(param);
-//            travelMap.put("list", detailsList);
-//
-//            for (Map<String, Object> detialsMap : detailsList) {
-//                Map<String, Object> query = new HashMap<>();
-//                query.put("travelid", param.get("travelid"));
-//                query.put("deid", detialsMap.get("deid"));
-//                // 出差区域
-//                query.put("region", detialsMap.get("trregion"));
-//                Response resApi = regionBaseApi.getRegionInfo(query);
-//                detialsMap.put("trregion", resApi.getResponseEntity());
-//                //情报收集
-//                detialsMap.put("travelinfolist", travelInfoService.list(query));
-//                //出差资料
-//                detialsMap.put("traveldatalist", travelDataService.list(query));
-//                //预计产出
-//                Integer produce = detialsMap.get("produce") == null ? 0 : (Integer) detialsMap.get("produce");
-//                List<Map<String, Object>> produceMaps = travelProduceService.list(null);
-//                List<Integer> produceList = PrindexUtil.getPrindex(produce, produceMaps);
-//                detialsMap.put("produceList", produceList);
-//            }
 
             for (int i = 0, a = detailsList.size(); i < a; i++) {
                 Map<String, Object> query = new HashMap<>();
@@ -572,7 +556,7 @@ public class TbTravelPlanController {
                 //出差资料
                 detailsList.get(i).put("traveldatalist", travelDataService.list(query));
                 //预计产出
-                Integer produce = detailsList.get(i).get("produce") == null ? 0 : (Integer) detailsList.get(i).get("produce");
+                Integer produce =  (Integer) detailsList.get(i).get("produce");
                 List<Map<String, Object>> produceMaps = travelProduceService.list(null);
                 List<Integer> produceList = PrindexUtil.getPrindex(produce, produceMaps);
                 detailsList.get(i).put("produceList", produceList);

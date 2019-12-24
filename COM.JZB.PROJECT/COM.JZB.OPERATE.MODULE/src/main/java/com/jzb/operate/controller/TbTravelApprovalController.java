@@ -385,8 +385,6 @@ public class TbTravelApprovalController {
                         // 出差区域
                         query.put("region", detailsList.get(j).get("trregion"));
                         resApi = regionBaseApi.getRegionInfo(query);
-                        // Map<String, Object> regionID = (Map<String, Object>) resApi.getResponseEntity();
-
                         detailsList.get(j).put("travelCity", resApi.getResponseEntity());
                         //获取单位名称
                         if (ObjectUtils.isEmpty(detailsList.get(j).get("cid"))) {
@@ -405,7 +403,7 @@ public class TbTravelApprovalController {
                         //出差资料
                         detailsList.get(j).put("traveldatalist", travelDataService.list(query));
                         //预计产出
-                        Integer produce = detailsList.get(j).get("produce") == null ? 0 : (Integer) detailsList.get(j).get("produce");
+                        Integer produce =  (Integer) detailsList.get(j).get("produce");
                         List<Map<String, Object>> produceMaps = travelProduceService.list(null);
                         List<Integer> produceList = PrindexUtil.getPrindex(produce, produceMaps);
                         //筛选过滤 获取出差详情的产出资料
@@ -424,67 +422,6 @@ public class TbTravelApprovalController {
                     }
                     recordList.get(i).put("children", detailsList);
                 }
-//                for (Map<String, Object> travelMap : recordList) {
-//                    Map<String, Object> whereParam = new HashMap<>();
-//                    // 2.根据查询出来的travelid 查询 出差记录详情
-//                    whereParam.put("travelid", travelMap.get("travelid"));
-//                    List<Map<String, Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(whereParam);
-//
-//                    for (Map<String, Object> detialsMap : detailsList) {
-//                        Map<String, Object> query = new HashMap<>();
-//                        query.put("userinfo", param.get("userinfo"));
-//                        // 获取同行人名称
-//                        if (ObjectUtils.isEmpty(detialsMap.get("trpeers"))) {
-//                            detialsMap.put("trpeers", "");
-//                        } else {
-//                            query.put("uids", detialsMap.get("trpeers"));
-//                            resApi = tbDeptUserListApi.searchInvitee(query);
-//                            String trpeers = (String) resApi.getResponseEntity();
-//                            detialsMap.put("trpeers", trpeers);
-//                        }
-//                        // 出差区域
-//                        query.put("region", detialsMap.get("trregion"));
-//                        resApi = regionBaseApi.getRegionInfo(query);
-//                        // Map<String, Object> regionID = (Map<String, Object>) resApi.getResponseEntity();
-//
-//                        detialsMap.put("travelCity", resApi.getResponseEntity());
-//                        //获取单位名称
-//                        if (ObjectUtils.isEmpty(detialsMap.get("cid"))) {
-//                            detialsMap.put("clist", null);
-//                        } else {
-//                            query.put("cid", detialsMap.get("cid"));
-//                            resApi = newTbCompanyListApi.queryCompanyNameBycid(query);
-//                            List<Map<String, Object>> calist = resApi.getPageInfo().getList();
-//                            detialsMap.put("clist", calist);
-//                        }
-//
-//                        query.put("travelid", detialsMap.get("travelid"));
-//                        query.put("deid", detialsMap.get("deid"));
-//                        //情报收集
-//                        detialsMap.put("travelinfolist", travelInfoService.list(query));
-//                        //出差资料
-//                        detialsMap.put("traveldatalist", travelDataService.list(query));
-//                        //预计产出
-//                        Integer produce = detialsMap.get("produce") == null ? 0 : (Integer) detialsMap.get("produce");
-//                        List<Map<String, Object>> produceMaps = travelProduceService.list(null);
-//                        List<Integer> produceList = PrindexUtil.getPrindex(produce, produceMaps);
-//                        //筛选过滤 获取出差详情的产出资料
-//                        List<Map<String, Object>> selectedProduce = new ArrayList<>();
-//                        for (Map<String, Object> map : produceMaps) {
-//                            Integer prindex = (Integer) map.get("prindex");
-//                            for (Integer i : produceList) {
-//                                if (i == prindex) {
-//                                    selectedProduce.add(map);
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                        detialsMap.put("produceList", selectedProduce);
-//                    }
-//
-//                    travelMap.put("children", detailsList);
-//
-//                }
 
                 // 得到总数
                 int count = travelPlanService.getTravelApprovalRecordCountByUid(param);
