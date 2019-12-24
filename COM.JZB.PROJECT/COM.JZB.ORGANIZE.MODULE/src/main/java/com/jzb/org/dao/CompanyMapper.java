@@ -357,4 +357,6 @@ public interface CompanyMapper {
     int updCompanyCommon(Map<String, Object> param);
 
     int addCompanyToCommon(Map<String, Object> param);
+
+    List<Map<String, Object>> queryUserByCid(Map<String, Object> param);
 } // End interface CompanyMapper

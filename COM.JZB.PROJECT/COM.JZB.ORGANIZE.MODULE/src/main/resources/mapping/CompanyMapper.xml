@@ -402,6 +402,15 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         (#{tcid}, #{cid}, #{cname}, #{nickname}, #{region}, #{uscc}, #{reluid}, #{relperson}, #{relphone}, #{telephone}, #{relmail}, #{logo}, #{photo}, #{cstatus}, #{curl}, #{fax}, #{limitday}, #{address}, #{range}, #{ctype}, #{legaleid}, #{legaler}, #{cardid}, #{capital}, #{birthday}, #{content}, #{authstatus}, #{supervise}, #{orgrelation}, #{prodesc}, #{prolist}, #{source}, #{adduid}, #{addtime}, #{upduid}, #{updtime}, #{status}, #{summary})
 
     </insert>
+
+    <!--根据企业id查询下面所有用户-->
+    <select id="queryUserByCid" parameterType="java.util.Map" resultType="java.util.Map">
+         select
+          id, cid, cdid, uid, cname, phone, mail, deptrole, origin, college, education, likes, marriage, childs, idx, adduid, addtime, upduid, updtime, status, summary
+        from tb_dept_user
+        where cid = #{cid} and status = '1'
+    </select>
+
     <!--修改公海单位信息-->
     <update id="updCompanyCommon" parameterType="java.util.Map">
         update public.tb_common_company_list
@@ -1059,9 +1068,12 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
 
     <!--删除企业单位-->
     <update id="delCompany" parameterType="java.util.Map" >
-        update tb_company_list set status = '2' where cid = #{cid};
-        update tb_company_common set status = '2' where cid = #{cid};
-        update tb_common_company_list set status = '2' where cid = #{cid};
+       <foreach collection="list" separator="" item="item" index="index" open="" close="">
+           update tb_company_list set status = '2' where cid = #{item.cid};
+           update tb_company_common set status = '2' where cid = #{item.cid};
+           update tb_common_company_list set status = '2' where cid = #{item.cid};
+       </foreach>
+
     </update>
     <!--管理员创建供应商单位-->
     <insert id="insertCompanySupplier" parameterType="java.util.Map">

@@ -376,7 +376,7 @@ public class CompanyUserService {
      * @author chenhui
      */
     public int delCompanyProject(Map<String, Object> param) {
-        param.put("status",'2');
+
         return companyUserMapper.delCompanyProject(param);
     }
 

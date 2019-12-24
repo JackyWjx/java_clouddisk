@@ -280,8 +280,10 @@
     
     <!--删除跟进人员记录-->
     <update id="delTrackUser" parameterType="java.util.Map" >
-        update tb_track_user_list
-        set status = '2' where trackid = #{trackid}
+        <foreach collection="list" separator="" item="item" index="index" open="" close="">
+            update tb_track_user_list
+            set status = '2' ,updtime = #{item.updtime} where trackid = #{item.trackid};
+        </foreach>
     </update>
 
     <!--修改跟进人员记录信息-->

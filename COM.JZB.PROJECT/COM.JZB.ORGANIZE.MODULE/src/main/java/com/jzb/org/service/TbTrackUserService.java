@@ -56,7 +56,7 @@ public class TbTrackUserService {
 
     // 删除跟进人员记录信息
     public int delTrackUser(Map<String, Object> param) {
-        param.put("updtime",System.currentTimeMillis());
+
         return userMapper.delTrackUser(param);
     }
 
