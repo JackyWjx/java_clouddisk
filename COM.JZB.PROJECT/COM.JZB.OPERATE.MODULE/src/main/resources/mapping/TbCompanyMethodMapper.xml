@@ -207,7 +207,11 @@
 
     <!-- 修改方法论状态 -->
     <update id="updateCompanyMethodStatus" parameterType="java.util.Map">
-        update tb_company_method set status=#{status} where cid=#{cid} and projectid=#{projectid} and methodid=#{methodid}
+        update tb_company_method set status=#{status} where cid=#{cid}
+        <if test="projectid!=null">
+            and projectid=#{projectid}
+        </if>
+        and methodid=#{methodid}
     </update>
 
 

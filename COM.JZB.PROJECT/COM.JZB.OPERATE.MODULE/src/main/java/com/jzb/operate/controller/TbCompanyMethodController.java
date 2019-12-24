@@ -247,7 +247,7 @@ public class TbCompanyMethodController {
         Response response;
         try {
             // 如果指定参数为空则返回error
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "projectid", "methodid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid", "methodid"})) {
                 response = Response.getResponseError();
             } else {
                 response = tbCompanyMethodService.updateCompanyMethodStatus(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
