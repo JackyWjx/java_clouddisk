@@ -69,7 +69,7 @@ public class TbTravelApprovalController {
      */
     @CrossOrigin
     @Transactional
-    @PostMapping("/addTravelApproval")
+    @RequestMapping(value = "/addTravelApproval", method = RequestMethod.POST)
     public Response addTravelApproval(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
@@ -140,7 +140,7 @@ public class TbTravelApprovalController {
      */
     @CrossOrigin
     @Transactional
-    @PostMapping("/updateTravelApproval")
+    @RequestMapping(value = "/updateTravelApproval", method = RequestMethod.POST)
     public Response updateTravelApproval(@RequestBody Map<String, Object> param) {
 
         Response response;
@@ -213,7 +213,7 @@ public class TbTravelApprovalController {
                         query.put("trstatus", 2);
                         query.put("trtime", System.currentTimeMillis());
                         count = travelApprovalService.update(query);
-                    }else if (i > 0 && isLast && apType.equals("1"))  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
+                    }else if (i > 0 && isLast && apType == 1)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
                         query.put("rebversion",JzbRandom.getRandom(8));
                         query.put("aptype",2);
                         query.put("travelid",param.get("travelid"));
