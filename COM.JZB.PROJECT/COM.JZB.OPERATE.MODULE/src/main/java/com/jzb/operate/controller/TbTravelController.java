@@ -953,12 +953,16 @@ public class TbTravelController {
                 param.put("uid",userInfo.get("uid"));
                 // 根据cid获取出差信息
                 List<Map<String,Object>> list = tbTravelService.queryDetaBycid(param);
-               for(int i = 0, a =list.size();i < a;i++){
-                   Map<String,Object> daMap = new HashMap<>();
-                   daMap.put("did",list.get(i).get("did").toString().trim());
-                   List<Map<String,Object>> daList = tbTravelService.queryTravelData(daMap);
-                   list.get(i).put("daList",daList);
-               }
+                if(!JzbTools.isEmpty(list)) {
+                    for (int i = 0, a = list.size(); i < a; i++) {
+                        if (!JzbTools.isEmpty(list.get(i).get("did"))) {
+                            Map<String, Object> daMap = new HashMap<>();
+                            daMap.put("did", list.get(i).get("did"));
+                            List<Map<String, Object>> daList = tbTravelService.queryTravelData(daMap);
+                            list.get(i).put("daList", daList);
+                        }
+                    }
+                }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(list);
@@ -1007,6 +1011,7 @@ public class TbTravelController {
                 param.put("uid",userInfo.get("uid"));
                 List<Map<String,Object>> list = tbTravelService.queryTravelList(param);
                 for(int i = 0, a =list.size();i < a;i++){
+                    list.get(i).put("uname", userInfo.get("cname"));
                     if(!JzbTools.isEmpty(list.get(i).get("projectid"))) {
                         Map<String, Object> daMap = new HashMap<>();
                         daMap.put("projectid", list.get(i).get("projectid"));
@@ -1014,7 +1019,7 @@ public class TbTravelController {
                         Response res = newTbCompanyListApi.queryPronameByid(daMap);
                         List<Map<String, Object>> proList = res.getPageInfo().getList();
                         list.get(i).put("proList", proList);
-                        list.get(i).put("uname", userInfo.get("cname"));
+
                     }
                 }
                 response = Response.getResponseSuccess(userInfo);
