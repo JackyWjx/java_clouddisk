@@ -48,7 +48,9 @@
         <if test=" prolist != null and prolist != ''"> prolist=#{ prolist},</if>
         <if test=" uid != null and uid != ''"> upduid=#{uid},</if>
         <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
-        where status ='1' and cid=#{cid}
+        where
+        <!-- status ='1' and -->
+        cid=#{cid}
     </update>
 
     <!--修改项目-->
@@ -68,7 +70,9 @@
             <if test=" relation != null and relation !=''">relation=#{relation},</if>
             <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>
             <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
-        where status ='1' and projectid=#{projectid}
+        where
+        <!-- status ='1' and -->
+         projectid=#{projectid}
     </update>
 
     <!--修改项目详情-->
@@ -112,7 +116,9 @@
             <if test=" addtime != null and addtime != ''"> addtime=#{ addtime},</if>
             <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>
             <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
-        where status ='1'and projectid=#{projectid}
+        where
+        <!-- status ='1' and -->
+        projectid=#{projectid}
     </update>
 
     <!--  查询一条公司信息  -->
