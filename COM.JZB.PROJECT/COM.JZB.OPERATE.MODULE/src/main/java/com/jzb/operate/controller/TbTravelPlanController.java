@@ -217,14 +217,14 @@ public class TbTravelPlanController {
                     travelinfolist.get(j).put("addtime", System.currentTimeMillis());
                     int okCount = travelInfoService.save(travelinfolist.get(j));
                     if(okCount > 0){
-                        Map<String,Object> apiMap = new HashMap<>();
-                        apiMap.put("cid", travelinfolist.get(j).get("cid"));
-                        apiMap.put("userinfo", userInfo);
-                        newTbCompanyListApi.updateCommonCompanyList(apiMap); // 更新 tb_common_company_list 信息
+//                        Map<String,Object> apiMap = new HashMap<>();
+//                        apiMap.put("cid", travelinfolist.get(j).get("cid"));
+                        travelinfolist.get(j).put("userinfo", userInfo);
+                        newTbCompanyListApi.updateCommonCompanyList(travelinfolist.get(j)); // 更新 tb_common_company_list 信息
                         if(!ObjectUtils.isEmpty(travelinfolist.get(j).get("projectid"))){
-                            apiMap.put("projectid",travelinfolist.get(j).get("projectid"));
-                            newTbCompanyListApi.updateCompanyProject(apiMap); //更新 tb_company_project 信息
-                            newTbCompanyListApi.updateCompanyProjectInfo(apiMap); // 更新 tb_common_project_info 信息
+                            travelinfolist.get(j).put("projectid",travelinfolist.get(j).get("projectid"));
+                            newTbCompanyListApi.updateCompanyProject(travelinfolist.get(j)); //更新 tb_company_project 信息
+                            newTbCompanyListApi.updateCompanyProjectInfo(travelinfolist.get(j)); // 更新 tb_common_project_info 信息
                         }
 
                     }
@@ -301,7 +301,7 @@ public class TbTravelPlanController {
     }
 
     /**
-     * 撤回
+     * 出差申请 / 报销申请 撤回
      *
      * @param param
      * @return

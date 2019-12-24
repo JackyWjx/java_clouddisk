@@ -193,7 +193,6 @@ public class TbTravelApprovalController {
                 Integer isOk = (Integer) param.get("isOk");
                 //获取审批类型
                 Integer apType = JzbDataType.getInteger(param.get("aptype"));
-                int count = 0;
                 if (isOk == 1) {// 同意
                     Map<String, Object> whereMap = new HashMap<>();
                     whereMap.put("trtime", System.currentTimeMillis());//审批时间
@@ -212,12 +211,12 @@ public class TbTravelApprovalController {
                         query.put("version", param.get("version"));
                         query.put("trstatus", 2);
                         query.put("trtime", System.currentTimeMillis());
-                        count = travelApprovalService.update(query);
+                        travelApprovalService.update(query);
                     }else if (i > 0 && isLast && apType == 1)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
                         query.put("rebversion",JzbRandom.getRandom(8));
                         query.put("aptype",2);
                         query.put("travelid",param.get("travelid"));
-                        count = travelPlanService.updateTravelRecord(query);
+                        travelPlanService.updateTravelRecord(query);
                     }
                 } else {// 退回
                     Map<String, Object> uMap = new HashMap<>();
@@ -232,10 +231,9 @@ public class TbTravelApprovalController {
                         uMap.put("rebstatus", 1);
                     }
                     uMap.put("travelid",param.get("travelid"));
-                    count = travelPlanService.updateTravelRecord(uMap);
+                    travelPlanService.updateTravelRecord(uMap);
                 }
-
-                response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                response = Response.getResponseSuccess(userInfo);
             }
         } catch (Exception ex) {
             flag = false;
