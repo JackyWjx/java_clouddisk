@@ -1054,6 +1054,7 @@ public class ProductController {
                     userInfoList.add(exportMap);
                     continue;
                 }
+                param.put("relperson",name);
                 // 获取模板中的用户手机号
                 String phone = JzbDataType.getString(map.get(1));
                 if (JzbDataType.isEmpty(phone)) {
@@ -1071,9 +1072,11 @@ public class ProductController {
                         continue;
                     }
                 }
+                param.put("relphone",phone);
                 // 获取模板中的单位名称
                 String cname = JzbDataType.getString(map.get(2));
                 param.put("companyname", cname);
+
                 if (JzbDataType.isEmpty(cname)) {
                     summary += "单位名称不能为空!";
                     exportMap.put("status", "2");

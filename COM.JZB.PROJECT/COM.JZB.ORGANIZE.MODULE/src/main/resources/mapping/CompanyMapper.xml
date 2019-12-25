@@ -1040,9 +1040,13 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
 
     <!--管理员创建公海单位-->
     <insert id="insertCommonCompany" parameterType="java.util.Map">
-        INSERT INTO tb_common_company_list (cid, supervise, orgrelation, prodesc, prolist, address,  addtime, adduid,updtime, status, summary)
+        INSERT INTO tb_common_company_list (region,cname,relperson,relphone,cid, supervise, orgrelation, prodesc, prolist, address,  addtime, adduid,updtime, status, summary)
         VALUES
         (
+        #{region},
+        #{cname},
+        #{relperson},
+        #{relphone},
         #{cid},
         <choose> <when test="supervise != null">#{supervise},</when><otherwise>null,</otherwise></choose>
         <choose> <when test="orgrelation != null">#{orgrelation},</when><otherwise>null,</otherwise></choose>

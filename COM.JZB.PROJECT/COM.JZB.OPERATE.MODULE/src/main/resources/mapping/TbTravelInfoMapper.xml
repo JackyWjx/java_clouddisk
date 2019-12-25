@@ -8,7 +8,13 @@
 	</select>
 
 	<select id="list" resultType="java.util.Map">
-		select  id , travelid , deid , inid , trim(cid) as cid , cname , orgrelation,supervise , prodesc , prolist , projectid , projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone , tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature , npodeperson , npodephone , npodejob , npodenature , setb , sepr , seli , recname , reluname , relphone , brandname , contrast , mail , nreluname , nrelphone , nbrandname , ncontrast , nmail , reshid , reshname , reshphone , lineuname , linejob , linephone , linenature , adduid , addtime , upduid , updtime , status , summary  from tb_travel_info
+		select  id ,
+		 trim(travelid) as travelid ,
+		trim(deid) as deid,
+		trim(inid) as inid,trim(cid) as cid,
+		 cname, orgrelation,supervise , prodesc , prolist ,
+		 trim(projectid) as projectid,
+		 projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone , tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature , npodeperson , npodephone , npodejob , npodenature , setb , sepr , seli , recname , reluname , relphone , brandname , contrast , mail , nreluname , nrelphone , nbrandname , ncontrast , nmail , trim(reshid) as reshid, reshname , reshphone , lineuname , linejob , linephone , linenature , adduid , addtime , upduid , updtime , status , summary  from tb_travel_info
 		<where>
 			<if test="id != null and id != ''"> and id = #{id} </if>
 			<if test="travelid != null and travelid != ''"> and travelid = #{travelid} </if>

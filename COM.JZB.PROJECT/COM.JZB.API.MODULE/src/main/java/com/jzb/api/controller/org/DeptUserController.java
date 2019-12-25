@@ -334,6 +334,7 @@ public class DeptUserController {
                 if (userInfo.size() > 0) {
                     //先确认负责人id
                     Map<String, Object> send = companyService.getUid(param);
+                    String cname = JzbDataType.getString(param.get("cname"));
                     String uid = JzbDataType.getString(send.get("uid"));
                     if (JzbTools.isEmpty(uid)) {
                         result = Response.getResponseError();
@@ -359,6 +360,7 @@ public class DeptUserController {
                             // 创建公海单位表数据
                             param.put("cid", cid);
                             param.put("send", send);
+                            param.put("cname",cname);
                             result = companyOrgApi.addCompanyCommon(param);
                             authService.addAdmin(param);
                         }
