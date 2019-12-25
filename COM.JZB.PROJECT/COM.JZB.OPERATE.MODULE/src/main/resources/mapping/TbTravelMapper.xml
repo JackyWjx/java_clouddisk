@@ -16,8 +16,8 @@
         addtime,
         adduid,
         aptype,
-        ccuid,
-        "sum",
+        COALESCE (ccuid,'') as ccuid,
+        COALESCE ("sum",0) as "sum",
         COALESCE (rebversion,'') as rebversion,
         rebstatus
         from tb_travel_record where  aptype = '2' and (rebversion != null or rebversion !='') and rebstatus !='4'
@@ -89,13 +89,14 @@
 
     <!--根据cid获取出差详情-->
     <select id="queryDetaBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select  COALESCE(did,null ) as did from tb_travel_record_deta where status = '1'and cid = #{cid} and uid =#{uid}
+        select  COALESCE(did,'') as did,addtime from tb_travel_record_deta where status = '1'and cid = #{cid} and uid =#{uid}
     </select>
 
 
     <!--查询出差资料-->
     <select id="queryTravelData" resultType="java.util.Map" parameterType="java.util.Map">
         select
+        did,
         COALESCE (newsletter ,'') as newsletter,
         COALESCE (coframe ,'') as coframe,
         COALESCE (offer ,'') as offer,
@@ -115,7 +116,7 @@
         COALESCE (coou ,'') as coou,
         COALESCE (cocustomer ,'') as cocustomer,
         COALESCE (card ,'') as card,
-        COALESCE (account ,'') as account
+        COALESCE (account ,'') as account,
         COALESCE (summary ,'') as summary
          from  tb_travel_data where status ='1'
         <if test="travelid != null and travelid != ''">and travelid = #{travelid}</if>
@@ -151,59 +152,59 @@
         inid,
         cid,
         cname,
-        supervise,
-        prodesc,
-        prolist,
-        orgrelation,
-        projectid,
-        projectname,
-        tendercompany,
-        tendername
-        ,projecttype
-        ,promail
-        ,projectras
-        ,tenderphone
-        ,tenderresultcompany
-        ,tendertime
-        ,tenderagent
-        ,relation
-        ,idx
-        ,podeperson
-        ,podephone
-        ,podejob
-        ,podenature
-        ,npodeperson
-        ,npodephone
-        ,npodejob
-        ,npodenature
-        ,setb
-        ,sepr
-        ,seli
-        ,recname
-        ,reluname
-        ,relphone
-        ,brandname
-        ,contrast
-        ,mail
-        ,nreluname
-        ,nrelphone
-        ,nbrandname
-        ,ncontrast
-        ,nmail
-        ,reshid
-        ,reshname
-        ,reshphone
-        ,lineuname
-        ,linejob
-        ,linephone
-        ,linenature
-        ,adduid
-        ,addtime
-        ,upduid
-        ,updtime
-        ,status
-        ,summary
-        from  tb_travel_info where deid=#{deid}
+        COALESCE (supervise, '') as supervise,
+        COALESCE (prodesc, '') as prodesc,
+        COALESCE (orgrelation, '') as orgrelation,
+        COALESCE (prolist, '') as prolist,
+        COALESCE (projectid, '') as projectid,
+        COALESCE (projectname, '') as projectname,
+        COALESCE (tendercompany, '') as tendercompany,
+        COALESCE (tendername, '') as tendername,
+        COALESCE (projecttype, '') as projecttype,
+        COALESCE (promail, '') as promail,
+        COALESCE (projectras, '') as projectras,
+        COALESCE (tenderphone, '') as tenderphone,
+        COALESCE (tenderresultcompany, '') as tenderresultcompany,
+        to_char(TO_TIMESTAMP(tendertime/1000), 'YYYY-MM-DD') as tendertime,
+        COALESCE (tenderagent, '') as tenderagent,
+        COALESCE (relation, '') as  relation,
+        COALESCE (idx, 0) as  idx,
+        COALESCE (podeperson, '') as  podeperson,
+        COALESCE (podephone, '') as  podephone,
+        COALESCE (podejob, '') as  podejob,
+        COALESCE (podenature, '') as  podenature,
+        COALESCE (npodeperson, '') as  npodeperson,
+        COALESCE (npodephone, '') as  npodephone,
+        COALESCE (npodejob, '') as  npodejob,
+        COALESCE (npodenature, '') as  npodenature,
+        COALESCE (setb, '') as  setb,
+        COALESCE (sepr, '') as  sepr,
+        COALESCE (seli, '') as  seli,
+        COALESCE (recname, '') as  recname,
+        COALESCE (reluname, '') as  reluname,
+        COALESCE (relphone, '') as  relphone,
+        COALESCE (brandname, '') as  brandname,
+        COALESCE (contrast, '') as  contrast,
+        COALESCE (mail, '') as  mail,
+        COALESCE (nreluname, '') as  nreluname,
+        COALESCE (nrelphone, '') as  nrelphone,
+        COALESCE (nbrandname, '') as  nbrandname,
+        COALESCE (ncontrast, '') as  ncontrast,
+        COALESCE (nmail, '') as  nmail,
+        COALESCE (reshid, '') as  reshid,
+        COALESCE (reshname, '') as  reshname,
+        COALESCE (reshphone, '') as  reshphone,
+        COALESCE (lineuname, '') as  lineuname,
+        COALESCE (linejob, '') as  linejob,
+        COALESCE (linephone, '') as  linephone,
+        COALESCE (linenature, '') as  linenature,
+        adduid,
+        addtime,
+        upduid,
+        updtime,
+        status,
+        COALESCE (summary, '') as  summary
+        from  tb_travel_info where status = '1' and deid=#{deid}
         <if test="cid != null and cid != ''">and cid=#{cid}</if>
         <if test="projectid != null and projectid != ''">and projectid=#{projectid}</if>
     </select>
@@ -211,14 +212,20 @@
 
     <!--查询出差情报表-->
     <select id="countTravelInfo" resultType="int" parameterType="java.util.Map">
-        select count(1) from  tb_travel_info where deid=#{deid}
+        select count(1) from  tb_travel_info where status = '1' and deid=#{deid}
         <if test="cid != null and cid != ''">and cid=#{cid}</if>
         <if test="projectid != null and projectid != ''">and projectid=#{projectid}</if>
     </select>
 
     <!--查询审批状态-->
     <select id="queryTravelApproval" resultType="java.util.Map" parameterType="java.util.Map">
-        select  apid,trstatus,truid,status,version,idx from tb_travel_approval where  travelid = #{travelid}
+        select
+        apid,
+        trstatus,
+        truid,
+        status,
+        version,
+        idx from tb_travel_approval where status = '1' and  travelid = #{travelid}
         <if test="trstatus != null and trstatus != ''">and trstatus = #{trstatus}</if>
         <if test="rebversion != null and rebversion != ''">and version = #{rebversion}</if>
         order by idx asc

@@ -5,7 +5,26 @@
 
 	<!--根据出差id查询报销单-->
 	<select id="queryTravelExpenseByid" resultType="java.util.Map" parameterType="java.util.Map">
-		select  * from tb_travel_expense where travelid = #{travelid}
+		select
+			COALESCE(travelid,'') as travelid,
+			COALESCE(exid,'') as exid,
+			to_char(TO_TIMESTAMP(exstrtime/1000), 'YYYY-MM-DD') as exstrtime,
+			to_char(TO_TIMESTAMP(exendtime/1000), 'YYYY-MM-DD') as exendtime,
+			COALESCE(exstradderss,'') as exstradderss,
+			COALESCE(exendadderss,'') as exendadderss,
+			COALESCE(exvehicle,'') as exvehicle,
+			COALESCE(trsum,0) as trsum,
+			COALESCE(mail,0) as mail,
+			COALESCE(crosum,0) as crosum,
+			COALESCE(getaccsum,0) as getaccsum,
+			COALESCE(subsidy,0) as subsidy,
+			COALESCE(othsum,0) as othsum,
+			COALESCE(sum,0) as "sum",
+			addtime,
+			adduid,
+			status,
+			COALESCE(sum,'') as summary
+		 from tb_travel_expense where travelid = #{travelid}
 	</select>
 
 	 <!--插入-->
@@ -31,7 +50,7 @@
 				 status ,
 				 summary
 			)
-			values
+			values(
 			<choose>
 				<when test=" travelid != null and  travelid!=''">
 					#{ travelid},
@@ -40,6 +59,7 @@
 					null ,
 				</otherwise>
 			</choose>
+
 			<choose>
 				<when test=" exid != null and  exid!=''">
 					#{ exid},
@@ -48,6 +68,7 @@
 					null ,
 				</otherwise>
 			</choose>
+
 			<choose>
 				<when test=" exstrtime != null and  exstrtime!=''">
 					#{ exstrtime},

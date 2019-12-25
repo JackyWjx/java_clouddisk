@@ -6,25 +6,91 @@
 
     <!--根据公司id查询公司信息-->
     <select id="queryCommonCompanyListBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,cname,supervise,orgrelation,prodesc,prolist from tb_common_company_list where cid=#{cid}
+        select cid,
+        cname,
+        COALESCE (supervise, '') as supervise,
+        COALESCE (orgrelation, '') as orgrelation,
+        COALESCE (prodesc, '') as prodesc,
+        COALESCE (prolist, '') as prolist
+        from tb_common_company_list where cid=#{cid}
     </select>
 
 
     <!--根据公司id查询公司名称-->
     <select id="queryCompanyNameBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,cname from tb_common_company_list where  cid=#{cid}
+        select cid,
+        cname
+        from tb_common_company_list where  cid=#{cid}
     </select>
 
     <!--根据公司id查询项目信息-->
     <select id="queryCompanyByid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
-         from tb_company_project where projectid=#{projectid}
-         limit #{pagesize}  offset #{pageno}
+        select
+        projectid,
+        cid,
+        COALESCE (projectname, '') as projectname,
+        COALESCE (prouname, '') as prouname,
+        COALESCE (prouphone, '') as prouphone,
+        to_char(TO_TIMESTAMP(tendertime/1000), 'YYYY-MM-DD') as tendertime,
+        COALESCE (tenderphone, '') as tenderphone,
+        COALESCE (tendercompany, '') as tendercompany,
+        COALESCE (projecttype, '') as projecttype,
+        COALESCE (mail, '') as mail,
+        COALESCE (tenderresultcompany, '') as tenderresultcompany,
+        COALESCE (tenderagent, '') as tenderagent,
+        COALESCE (agentphone, '') as agentphone,
+        COALESCE (porjcetra, '') as porjcetra,
+        COALESCE (relation, '') as relation
+        from tb_company_project where projectid=#{projectid}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--根据项目id查询项目情报-->
     <select id="queryCompanyByProjectid" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_common_project_info where  projectid=#{projectid}
+        select
+        projectid,
+        lineuid,
+        lineuname,
+        linephone,
+        lineage,
+        linesex,
+        linejob,
+        linenature,
+        des,
+        idx,
+        podeperson,
+        podephone,
+        podejob,
+        podenature,
+        npodeperson,
+        npodephone,
+        npodejob,
+        npodenature,
+        setb,
+        sepr,
+        setli,
+        relation,
+        recname,
+        reluname,
+        relphone,
+        brandname,
+        contrast,
+        mail,
+        nreluname,
+        nrelphone,
+        nbrandname,
+        ncontrast,
+        nmail,
+        reshid,
+        reshname,
+        reshphone,
+        adduid,
+        addtime,
+        upduid,
+        updtime,
+        status,
+        summary
+        from tb_common_project_info where  projectid=#{projectid}
         limit #{pagesize}  offset #{pageno}
     </select>
 

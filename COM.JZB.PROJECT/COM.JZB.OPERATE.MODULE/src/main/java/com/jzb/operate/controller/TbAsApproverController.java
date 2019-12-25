@@ -130,16 +130,16 @@ public class TbAsApproverController {
                         List<Map<String, Object>> daList = tbTravelService.queryTravelData(recMap);
                         // 通过出差详情id  获取出差情报信息
                         List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recMap);
-                        for (int l = 0, d = infoList.size();l < d;l++){
-                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-                                Map<String,Object> proListMap =new HashMap<>();
-                                proListMap.put("prolist",infoList.get(l).get("prolist"));
-                                String prolist = infoList.get(l).get("prolist").toString();
-                                String[] split = prolist.split(",");
-                                proListMap.put("prolist",split);
-                                infoList.get(l).put("prolist",proListMap);
-                            }
-                        }
+//                        for (int l = 0, d = infoList.size();l < d;l++){
+//                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+//                                Map<String,Object> proListMap =new HashMap<>();
+//                                proListMap.put("prolist",infoList.get(l).get("prolist"));
+//                                String prolist = infoList.get(l).get("prolist").toString();
+//                                String[] split = prolist.split(",");
+//                                proListMap.put("prolist",split);
+//                                infoList.get(l).put("prolist",proListMap);
+//                            }
+//                        }
                         reList.get(j).put("daList",daList);
                         reList.get(j).put("infoList",infoList);
                         // 获取产出情况
@@ -239,16 +239,16 @@ public class TbAsApproverController {
                     List<Map<String, Object>> daList = tbTravelService.queryTravelData(recMap);
                     // 通过出差详情id  获取出差情报信息
                     List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recMap);
-                    for (int l = 0, d = infoList.size();l < d;l++){
-                        if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-                            Map<String,Object> proListMap =new HashMap<>();
-                            proListMap.put("prolist",infoList.get(l).get("prolist"));
-                            String prolist = infoList.get(l).get("prolist").toString();
-                            String[] split = prolist.split(",");
-                            proListMap.put("prolist",split);
-                            infoList.get(l).put("prolist",proListMap);
-                        }
-                    }
+//                    for (int l = 0, d = infoList.size();l < d;l++){
+//                        if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+//                            Map<String,Object> proListMap =new HashMap<>();
+//                            proListMap.put("prolist",infoList.get(l).get("prolist"));
+//                            String prolist = infoList.get(l).get("prolist").toString();
+//                            String[] split = prolist.split(",");
+//                            proListMap.put("prolist",split);
+//                            infoList.get(l).put("prolist",proListMap);
+//                        }
+//                    }
                     // 获取产出情况
                     // 获取产出情况
                     if(!JzbTools.isEmpty(list.get(i).get("produce"))) {
@@ -318,16 +318,16 @@ public class TbAsApproverController {
                     Map<String, Object> deMap = new HashMap<>();
                     deMap.put("deid",list.get(i).get("deid"));
                     List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(deMap);
-                    for (int l = 0, d = infoList.size();l < d;l++){
-                        if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-                            Map<String,Object> proListMap =new HashMap<>();
-                            proListMap.put("prolist",infoList.get(l).get("prolist"));
-                            String prolist = infoList.get(l).get("prolist").toString();
-                            String[] split = prolist.split(",");
-                            proListMap.put("prolist",split);
-                            infoList.get(l).put("prolist",proListMap);
-                        }
-                    }
+//                    for (int l = 0, d = infoList.size();l < d;l++){
+//                        if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+//                            Map<String,Object> proListMap =new HashMap<>();
+//                            proListMap.put("prolist",infoList.get(l).get("prolist"));
+//                            String prolist = infoList.get(l).get("prolist").toString();
+//                            String[] split = prolist.split(",");
+//                            proListMap.put("prolist",split);
+//                            infoList.get(l).put("prolist",proListMap);
+//                        }
+//                    }
                     // 获取项目产出
                     Map<String, Object> proMap = new HashMap<>();
                     proMap.put("userinfo",userInfo);

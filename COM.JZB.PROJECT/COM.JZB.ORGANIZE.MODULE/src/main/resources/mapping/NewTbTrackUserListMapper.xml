@@ -7,7 +7,8 @@
     <select id="queryTrackUserListByKey" resultType="java.util.Map" parameterType="java.util.Map">
         select trackcontent ,abdialogue,nextadvance from tb_track_user_list where status='1'
         <choose><when test="uid != null || uid != ''">and  customer = #{uid}</when></choose>
-        <choose><when test="cid != null || cid != ''">and trackcid = #{cid}</when></choose>
+        <choose><when test="cid != null || cid != ''">and trackvalue = #{cid}</when></choose>
+        <choose><when test="projectid != null || projectid != ''">and trackproid = #{projectid}</when></choose>
         <choose><when test="trtime != null || trtime != ''">and tracktime between #{begDate} and #{endDate} </when></choose>
         limit #{pagesize}  offset #{pageno}
     </select>
