@@ -98,7 +98,6 @@
         datatype,
         datasize,
         idx,
-        ouid,
         addtime,
         updtime,
         status,
@@ -143,14 +142,6 @@
             <choose>
                 <when test="item.idx !='' and  item.idx != null">
                    cast(#{item.idx} as integer),
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="item.ouid !='' and  item.ouid != null">
-                    #{item.ouid},
                 </when>
                 <otherwise>
                     null,
