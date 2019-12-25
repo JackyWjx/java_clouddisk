@@ -138,16 +138,16 @@
            ON du.cid = tcl.cid
         AND du.uid = tcl.manager
         LEFT JOIN tb_company_info ci
-          ON ci.cid = tcl.cid 
+          ON ci.cid = tcl.cid
         where tcl.status = '1' and tccl.status = '1'
         <if test="province != null and province != ''">
-            and cl.region IN
+            and tcl.region IN
             <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
                 #{item.region}
             </foreach>
         </if>
         <if test="cname != null and cname != ''">
-            and (cl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
+            and (tcl.cname LIKE CONCAT( '%',#{cname},'%') or du.cname LIKE CONCAT( '%',#{cname},'%'))
         </if>
     </select>
 
@@ -158,6 +158,8 @@
         tccl.cid,
         tccl.cname,
         tccl.region,
+        tccl.relphone,
+        tccl.relperson,
         du.cname AS uname,
         du.phone,
         ci.address,

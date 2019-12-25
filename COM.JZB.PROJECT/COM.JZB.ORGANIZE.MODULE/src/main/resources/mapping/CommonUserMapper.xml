@@ -108,6 +108,9 @@
     <update id="updComUser" parameterType="java.util.Map">
         update tb_common_user_list
         set
+        <if test="projectid != null and projectid != ''">
+            projectid = #{projectid},
+        </if>
         <if test="source != null and source != ''">
             source = #{source},
         </if>
@@ -190,6 +193,7 @@
     <!--查询公海用户-->
     <select id="queryComUser" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        projectid,
         isrelation,cid,
         source,region,uid,uname,phone,cardid,sex,age,job,mail,
         cname,native,graduated,education,likes,marriage,works,generate,adduid,addtime,updtime,status,summary
