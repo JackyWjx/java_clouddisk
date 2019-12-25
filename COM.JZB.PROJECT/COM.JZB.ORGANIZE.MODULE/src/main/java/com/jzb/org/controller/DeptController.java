@@ -14,6 +14,7 @@ import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
 import com.jzb.org.service.ProductService;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
@@ -924,6 +925,29 @@ public class DeptController {
                 result = Response.getResponseError();
             }
         } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 云产品市场的查询
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCompanyProduct", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyProduct(@RequestBody(required = false) Map<String, Object> param) {
+        Response result;
+        try {
+            //获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            List<Map<String,Object>> mapList = deptService.getCompanyProduct(param);
+            result = Response.getResponseSuccess(userInfo);
+            result.setResponseEntity(mapList);
+        } catch (Exception e) {
+            //打印错误信息
             JzbTools.logError(e);
             result = Response.getResponseError();
         }

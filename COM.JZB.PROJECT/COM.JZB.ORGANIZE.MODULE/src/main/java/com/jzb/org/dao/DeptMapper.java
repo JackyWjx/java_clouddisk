@@ -230,4 +230,11 @@ public interface DeptMapper {
     List<Map<String, Object>> queryDeptUserChildList(Map<String, Object> map);
 
     String getCompanyName(Map<String, Object> map);
+
+    /**
+     * 云产品市场的查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getCompanyProduct(Map<String, Object> param);
 }
