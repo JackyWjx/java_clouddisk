@@ -406,10 +406,10 @@ public class TbTravelApprovalController {
                         List<Integer> produceList = PrindexUtil.getPrindex(produce, produceMaps);
                         //筛选过滤 获取出差详情的产出资料
                         List<Map<String, Object>> selectedProduce = new ArrayList<>();
-                        for (Map<String, Object> map : produceMaps) {
-                            Integer prindex = (Integer) map.get("prindex");
-                            for (Integer k : produceList) {
-                                if (k == prindex) {
+                        for (Integer k : produceList) {
+                            for(Map<String, Object> map : produceMaps){
+                                Integer prindex = (Integer) map.get("prindex");
+                                if (k.equals(prindex)) {
                                     selectedProduce.add(map);
                                     break;
                                 }

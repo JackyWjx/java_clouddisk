@@ -474,16 +474,13 @@ public class TbTravelPlanController {
                 startTime = startTime < trTime ? startTime : trTime;
                 endTime = endTime > trTime ? endTime : trTime;
 
-                // prindex加密处理
-                List<Integer> prindexLst = (List<Integer>) detailsList.get(i).get("produce");
-                detailsList.get(i).put("trtime", trTime);
-                detailsList.get(i).put("produce", PrindexUtil.setPrindex(prindexLst));
-                travelPlanService.updateTravelDetials(detailsList.get(i));
+
 
                 //获取并保存情报收集list
                 List<Map<String, Object>> travelInfoList = (List<Map<String, Object>>) detailsList.get(i).get("travelinfolist");
                 //一般travelinfolist的长度为1
                 for (int j = 0, b = travelInfoList.size(); j < b; j++) {
+                    travelInfoList.get(j).put("upduid", userInfo.get("uid"));
                     travelInfoList.get(j).put("updtime", System.currentTimeMillis());
                     travelInfoList.get(j).put("deid", detailsList.get(i).get("deid"));
                     travelInfoService.update(travelInfoList.get(j));
@@ -521,12 +518,19 @@ public class TbTravelPlanController {
                     travelDataList.get(k).put("reviewed", JSONArray.toJSONString(travelDataList.get(k).get("reviewed")));
                     travelDataList.get(k).put("cureviewed", JSONArray.toJSONString(travelDataList.get(k).get("cureviewed")));
                     travelDataList.get(k).put("contract", JSONArray.toJSONString(travelDataList.get(k).get("contract")));
-                    travelDataList.get(k).put("updtime", System.currentTimeMillis());
+//                    travelDataList.get(k).put("updtime", System.currentTimeMillis());
                     travelDataList.get(k).put("deid", detailsList.get(i).get("deid"));
-
                     travelDataService.update(travelDataList.get(k));
                 }
 
+                // prindex加密处理
+                List<Integer> prindexLst = (List<Integer>) detailsList.get(i).get("produce");
+                detailsList.get(i).put("trtime", trTime);
+                detailsList.get(i).put("produce", PrindexUtil.setPrindex(prindexLst));
+                detailsList.get(i).put("projectid",travelInfoList.get(0).get("projectid"));
+                detailsList.get(i).put("upduid", userInfo.get("uid"));
+                detailsList.get(i).put("updtime", System.currentTimeMillis());
+                travelPlanService.updateTravelDetials(detailsList.get(i));
             }
             //设置始末时间
             param.put("orgtime", startTime);
