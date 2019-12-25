@@ -279,7 +279,6 @@
         FROM
         tb_company_contract tcc
         WHERE
-        tcc.status = '1'
         AND tcc.cid =#{ cid }
         <if test="contid != null and contid != ''">
 
