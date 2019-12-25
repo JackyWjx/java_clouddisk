@@ -204,7 +204,7 @@ public class TbContractStatisticsController {
                     // 放入每一条记录
                     list.get(i).put("userInfo", region.getResponseEntity());
                     // 签订时间
-                    list.get(i).put("signdate", JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("signdate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                    list.get(i).put("signdate", JzbTools.isEmpty(list.get(i).get("signdate")) ? "" : JzbDateUtil.toDateString(JzbDataType.getLong(list.get(i).get("signdate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
                 }
                 // 设置返回对象
                 response = Response.getResponseSuccess(userInfo);
@@ -347,8 +347,8 @@ public class TbContractStatisticsController {
                 Response region = userRedisServiceApi.getCacheUserInfo(param);
                 contractList.get(i).put("userInfo", region.getResponseEntity());
                 // 修改一下添加时间
-                contractList.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(contractList.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
-                contractList.get(i).put("signdate", JzbDateUtil.toDateString(JzbDataType.getLong(contractList.get(i).get("signdate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                contractList.get(i).put("addtime",JzbTools.isEmpty(contractList.get(i).get("addtime")) ? "" :  JzbDateUtil.toDateString(JzbDataType.getLong(contractList.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
+                contractList.get(i).put("signdate", JzbTools.isEmpty(contractList.get(i).get("signdate")) ? "" : JzbDateUtil.toDateString(JzbDataType.getLong(contractList.get(i).get("signdate")), JzbDateStr.yyyy_MM_dd_HH_mm_ss));
             }
 
             // 模板路径
