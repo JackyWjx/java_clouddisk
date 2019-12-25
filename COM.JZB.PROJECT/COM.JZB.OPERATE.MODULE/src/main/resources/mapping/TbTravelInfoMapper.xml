@@ -680,7 +680,7 @@
                 projectras = #{projectras},
                 tenderphone = #{tenderphone},
                 tenderresultcompany = #{tenderresultcompany},
-                tendertime = #{tendertime}
+                tendertime = #{tendertime},
                 tenderagent = #{tenderagent},
                 relation = #{relation},
                 idx = #{idx},
