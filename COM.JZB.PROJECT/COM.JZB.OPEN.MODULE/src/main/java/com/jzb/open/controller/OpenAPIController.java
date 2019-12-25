@@ -1,8 +1,9 @@
 package com.jzb.open.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.data.JzbDataType;
-import com.jzb.base.entity.open.OpenApiType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
@@ -11,10 +12,8 @@ import com.jzb.open.api.org.OpenAuthApi;
 import com.jzb.open.api.org.OpenOrgApi;
 import com.jzb.open.api.redis.UserRedisServiceApi;
 import com.jzb.open.service.OpenAPIService;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.font.FontRunIterator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,36 +80,119 @@ public class OpenAPIController {
         return result;
     }
 
+
     /**
-     * 获取文档类型
+     * 开放平台文档类型的查询接口
+     *
+     * @param
+     * @return
      */
-    @RequestMapping(value = "/getApiType", method = RequestMethod.POST)
+    @RequestMapping(value = "/getApiType",method = RequestMethod.POST)
     @CrossOrigin
-    public Response getApiType(@RequestBody Map<String, Object> param) {
-        Response result;
+    public Response getApiType(@RequestBody(required = false) Map<String,Object> param) {
+        Response response;
         try {
-            // 获取总数
-            int count = JzbDataType.getInteger(param.get("count"));
-            count = count < 0 ? 0 : count;
-            if (count == 0) {
-                // 查询总数
-                count = openAPIService.getApiTypeCount();
+            //查询运营管理中的菜单类别
+            List<Map<String, Object>> records = openAPIService.getApiType(param);
+
+            // Result JSON
+            JSONArray result = new JSONArray();
+
+            // record temp json
+            JSONObject recordJson = new JSONObject();
+
+            // Unknown json
+            JSONObject unknownRecord = new JSONObject();
+
+            // root id
+            String firstParent = "00000";
+
+            for (int i = 0; i < records.size(); i++) {
+                Map<String, Object> map = records.get(i);
+
+                // if potid is null.
+                String parentId;
+                if (map.get("potid") == null) {
+
+                    parentId = "00000";
+                } else {
+                    parentId = map.get("potid").toString();
+                }
+                // set default JSON and childern node
+                JSONObject node = new JSONObject();
+                node.put("name", map.get("name").toString());
+                if (map.get("apitype") != null) {
+                    node.put("apitype", map.get("apitype").toString());
+                }
+                node.put("potid", map.get("potid").toString());
+                node.put("children", new JSONArray());
+                // if root node
+                if (parentId.equals(firstParent)) {
+                    result.add(node);
+                    recordJson.put(map.get("apitype").toString(), node);
+
+                }else if (recordJson.containsKey(parentId)) {
+                    // add children
+                    recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
+                    recordJson.put(map.get("apitype").toString(), node);
+                    // Unknown relation node
+                }else {
+                    String nodeId = map.get("apitype").toString();
+                    if (unknownRecord.containsKey(parentId)) {
+                        // add children
+                        unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
+                        recordJson.put(nodeId, node);
+                    }else {
+                        // find subnode
+                        for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                            JSONObject tempNode = (JSONObject) entry.getValue();
+                            if (tempNode.getString("potid").equals(nodeId)) {
+                                node.getJSONArray("children").add(tempNode);
+                                recordJson.put(tempNode.get("apitype").toString(), tempNode);
+                                unknownRecord.remove(tempNode.get("apitype").toString());
+                                break;
+                            }
+                        }
+                        unknownRecord.put(nodeId, node);
+                    }
+                }
+            }
+            // unknownRecord add to result
+            // find subnode
+            for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                JSONObject tempNode = (JSONObject) entry.getValue();
+                String tempNodeId = tempNode.getString("potid");
+                if (recordJson.containsKey(tempNodeId)) {
+                    // add children
+                    recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
+                } else {
+                    // Error node
+                    System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
+                }
             }
 
-            List<Map<String, Object>> records = openAPIService.getApiType(param);
-            // 获取用户资料和token
+            // 设置返回响应结果
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            result = Response.getResponseSuccess(userInfo);
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setList(records);
-            pageInfo.setTotal(count > 0 ? count : records.size());
-            result.setPageInfo(pageInfo);
+            response = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo<>();
+            // 设置返回pageinfo
+            pageInfo.setList(result);
+
+            response.setPageInfo(pageInfo);
         } catch (Exception ex) {
+            //错误信息
             JzbTools.logError(ex);
-            result = Response.getResponseError();
+            response = Response.getResponseError();
         }
-        return result;
+        return response;
+
     }
+
+
+
+
+
+
 
     /**
      * 创建API
