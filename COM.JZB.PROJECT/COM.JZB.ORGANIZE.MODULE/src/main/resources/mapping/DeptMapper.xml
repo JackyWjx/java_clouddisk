@@ -515,5 +515,18 @@
         select cname  from tb_company_list where cid=#{cid};
     </select>
 
+    <select id="getCompanyProduct" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        DISTINCT
+        tcp.manurl,
+        tpl.cname,
+        tpl.plid,
+        tpl.logo
+        from
+        tb_product_list tpl
+        LEFT JOIN  tb_company_product tcp ON tpl.pid = tcp.pid
+        where
+        tpl.status = '1' and tcp.status = '1' and tpl.appid is null
+    </select>
 
 </mapper>
