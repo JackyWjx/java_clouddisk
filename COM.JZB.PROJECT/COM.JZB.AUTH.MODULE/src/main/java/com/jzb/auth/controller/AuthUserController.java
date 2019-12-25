@@ -698,7 +698,7 @@ public class AuthUserController {
                     token = JzbDataCheck.Md5(userInfo.get("uid").toString() + System.currentTimeMillis());
                     userInfo.put("session", session);
                     userInfo.put("token", token);
-                    userInfo.put("phone", uid);
+                    userInfo.put("phone", JzbTools.isEmpty(userInfo.get("relphone")) ? "" : userInfo.get("relphone"));
                     userInfo.put("timeout", authConfig.getTokenTimeout());
                     tokenRes = userRedisApi.cacheUserInfo(userInfo);
                 } else {
