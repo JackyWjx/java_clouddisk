@@ -51,7 +51,7 @@
         trim(did) as did,
         COALESCE(trpeers,'') as trpeers,
         COALESCE(trdefense,'') as trdefense,
-        to_char(TO_TIMESTAMP(trtime/1000), 'YYYY-MM-DD') as trtime,
+        trtime,
         COALESCE(trtype,'') as trtype,
         COALESCE(trregion,'') as trregion,
         COALESCE(trgoal,'') as trgoal,

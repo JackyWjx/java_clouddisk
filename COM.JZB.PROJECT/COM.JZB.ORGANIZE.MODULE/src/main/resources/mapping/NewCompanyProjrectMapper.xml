@@ -6,7 +6,7 @@
 
     <!--根据公司id查询公司信息-->
     <select id="queryCommonCompanyListBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,
+        select trim(cid) as cid,
         cname,
         COALESCE (supervise, '') as supervise,
         COALESCE (orgrelation, '') as orgrelation,
@@ -18,7 +18,7 @@
 
     <!--根据公司id查询公司名称-->
     <select id="queryCompanyNameBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,
+        select trim(cid) as cid,
         cname
         from tb_common_company_list where  cid=#{cid}
     </select>
@@ -26,11 +26,10 @@
     <!--根据公司id查询项目信息-->
     <select id="queryCompanyByid" resultType="java.util.Map" parameterType="java.util.Map">
         select
-        projectid,
-        cid,
+        trim(projectid) as projectid,
+        trim(cid) as cid,
         COALESCE (projectname, '') as projectname,
-        COALESCE (prouname, '') as prouname,
-        COALESCE (prouphone, '') as prouphone,
+        COALESCE (tendername, '') as tendername,
         to_char(TO_TIMESTAMP(tendertime/1000), 'YYYY-MM-DD') as tendertime,
         COALESCE (tenderphone, '') as tenderphone,
         COALESCE (tendercompany, '') as tendercompany,
@@ -48,7 +47,7 @@
     <!--根据项目id查询项目情报-->
     <select id="queryCompanyByProjectid" resultType="java.util.Map" parameterType="java.util.Map">
         select
-        projectid,
+        trim(projectid) as projectid,
         COALESCE (lineuid,'') as lineuid,
         COALESCE (lineuname,'') as lineuname,
         COALESCE (linephone,'') as linephone,
@@ -150,16 +149,16 @@
         <!--        <if test=" uid != null and uid != ''">upduid=#{ uid},</if>-->
         <!--        <if test=" updtime != null and updtime != ''">updtime=#{ updtime}</if>-->
         <set>
-            prouname=#{prouname},
-            prouphone=#{prouphone},
+            tendername=#{tendername},
+            tenderphone=#{tenderphone},
             tendertime=#{tendertime},
             tendercompany=#{tendercompany},
             projecttype=#{projecttype},
-            mail=#{mail},
+            mail=#{promail},
             tenderresultcompany=#{tenderresultcompany},
             tenderagent=#{tenderagent},
             agentphone=#{agentphone},
-            orjcetra=#{porjcetra},
+            porjcetra=#{porjcetra},
             relation=#{relation},
             <if test=" uid != null and uid != ''">upduid=#{uid},</if>
             <if test=" updtime != null and updtime != ''">updtime=#{updtime}</if>
@@ -267,7 +266,7 @@
 
     <!--根据projectid查询项目信息-->
     <select id="queryProjectByProid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
+        select projectid,cid,projectname,tendername,tenderphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
          from tb_company_project where projectid=#{projectId}
     </select>
 

@@ -62,7 +62,12 @@ public class NewCompanyProjectController {
                 param.put("cid",param.get("cid").toString().trim());
                 //获取单位信息
                 List<Map<String, Object>> list = newCompanyProjectService.queryCommonCompanyListBycid(param);
+
                 for (int i = 0 ,a = list.size(); i < a; i++) {
+                    if(!JzbTools.isEmpty(list.get(i).get("prolist"))) {
+                        List<String> prolistArr = StrUtil.string2List(list.get(i).get("prolist").toString(), ",");
+                        list.get(i).put("prolistArr",prolistArr);
+                    }
                     Map<String, Object> proMap = new HashMap<>();
                     proMap.put("pageno",param.get("pageno"));
                     proMap.put("pagesize",param.get("pagesize"));
@@ -73,12 +78,6 @@ public class NewCompanyProjectController {
                         List<Map<String, Object>> proList = newCompanyProjectService.queryCompanyByid(proMap);
                         //获取项目下的情报
                         List<Map<String, Object>> infoList = newCompanyProjectService.queryCompanyByProjectid(proMap);
-                        for (int l = 0, d = infoList.size();l < d;l++){
-                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-                                List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
-                                infoList.get(l).put("prolistArr",prolistArr);
-                            }
-                        }
                         list.get(i).put("reList",proList);
                         list.get(i).put("infoList",infoList);
                     }
