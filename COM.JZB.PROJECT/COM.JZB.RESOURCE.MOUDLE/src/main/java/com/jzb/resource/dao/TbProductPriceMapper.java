@@ -74,4 +74,17 @@ public interface TbProductPriceMapper {
      */
     int deleteProductPrice(Map<String, Object> param);
 
+    /**
+     * 新增服务类型
+     * @param param
+     * @return
+     */
+    int addPriceService(Map<String, Object> param);
+
+    /**
+     * 修改服务类型
+     * @param param
+     * @return
+     */
+    int updatePriceService(Map<String, Object> param);
 }

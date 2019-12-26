@@ -126,4 +126,26 @@ public class TbProductPriceService {
        return tbProductPriceMapper.updateProductPrices(param);
     }
 
+    /**
+     * 添加服务类型
+     * @param param
+     * @return
+     */
+    public int addPriceService(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("addtime", time);
+        param.put("updtime", time);
+        return tbProductPriceMapper.addPriceService(param);
+    }
+
+    /**
+     * 修改服务类型
+     * @param param
+     * @return
+     */
+    public int updatePriceService(Map<String, Object> param) {
+        long time = System.currentTimeMillis();
+        param.put("updtime", time);
+        return tbProductPriceMapper.updatePriceService(param);
+    }
 }

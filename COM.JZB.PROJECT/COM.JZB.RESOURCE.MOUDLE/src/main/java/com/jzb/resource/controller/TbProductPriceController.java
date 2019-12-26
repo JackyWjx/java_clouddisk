@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +28,63 @@ public class TbProductPriceController {
     @Autowired
     private AdvertService advertService;
 
+    /**
+     * 添加产品报价的服务类型
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/addPriceService", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addPriceService(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pid", "plid"})) {
+                response = Response.getResponseError();
+            } else {
+                //获取用户信息
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                //添加数据
+                param.put("ouid", userInfo.get("uid"));
+                int count = tbProductPriceService.addPriceService(param);
+                //响应成功结果
+                response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+    /**
+     * 修改
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updatePriceService", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response updatePriceService(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pid", "service"})) {
+                response = Response.getResponseError();
+            } else {
+                //获取用户信息
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                //执行修改
+                int count = tbProductPriceService.updatePriceService(param);
+                //响应结果信息
+                response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
 
     /**
      * 根据产品线的id查资源
@@ -82,7 +138,7 @@ public class TbProductPriceController {
     public Response saveProductPrice(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-                //获取map中的list
+            //获取map中的list
             List<Map<String, Object>> paramList = (List) param.get("list");
             for (int i = 0; i < paramList.size(); i++) {
                 long time = System.currentTimeMillis();
@@ -90,8 +146,8 @@ public class TbProductPriceController {
                 paramList.get(i).put("updtime", time);
                 paramList.get(i).put("itemid", JzbRandom.getRandomCharCap(13));
             }
-                //如果返回值大于0则表示添加成功否则添加失败
-                result = tbProductPriceService.saveProductPrice(paramList) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            //如果返回值大于0则表示添加成功否则添加失败
+            result = tbProductPriceService.saveProductPrice(paramList) > 0 ? Response.getResponseSuccess() : Response.getResponseError();
 
         } catch (Exception e) {
             //打印错误信息
@@ -142,7 +198,6 @@ public class TbProductPriceController {
         }
         return result;
     }
-
 
 
     /**
