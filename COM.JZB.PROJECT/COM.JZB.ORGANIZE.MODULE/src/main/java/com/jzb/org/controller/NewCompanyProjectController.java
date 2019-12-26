@@ -73,14 +73,10 @@ public class NewCompanyProjectController {
                         List<Map<String, Object>> proList = newCompanyProjectService.queryCompanyByid(proMap);
                         //获取项目下的情报
                         List<Map<String, Object>> infoList = newCompanyProjectService.queryCompanyByProjectid(proMap);
-                        for (int l = 0, d = infoList.size(); l < d; l++) {
-                            if (!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-                                Map<String, Object> proListMap = new HashMap<>();
-                                proListMap.put("prolist", infoList.get(l).get("prolist"));
-                                String prolist = infoList.get(l).get("prolist").toString();
-                                String[] split = prolist.split(",");
-                                proListMap.put("prolist", split);
-                                infoList.get(l).put("prolist", proListMap);
+                        for (int l = 0, d = infoList.size();l < d;l++){
+                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                                List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
+                                infoList.get(l).put("prolistArr",prolistArr);
                             }
                         }
                         list.get(i).put("reList",proList);

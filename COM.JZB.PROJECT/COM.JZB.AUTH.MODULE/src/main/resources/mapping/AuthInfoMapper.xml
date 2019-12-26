@@ -5,12 +5,12 @@
 <mapper namespace="com.jzb.auth.dao.AuthInfoMapper">
 
     <select id="getUserByUids" parameterType="java.util.Map"  resultType="java.util.Map">
-    SELECT
-    string_agg(DISTINCT(portrait),',') as portraits ,
-    string_agg(DISTINCT(cname),',') as uname
-    from tb_user_list WHERE status='1' and uid IN
-    <foreach item="item" index="index" collection="uids" open="(" separator="," close=")">
-        #{item}
-    </foreach>
+        SELECT
+        string_agg(DISTINCT(portrait),',') as portraits ,
+        string_agg(DISTINCT(cname),',') as uname
+        from tb_user_list WHERE status='1' and uid IN
+        <foreach item="item" index="index" collection="uids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 </mapper>

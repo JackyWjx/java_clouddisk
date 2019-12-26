@@ -4,10 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
-import com.jzb.base.util.JzbCheckParam;
-import com.jzb.base.util.JzbPageConvert;
-import com.jzb.base.util.JzbRandom;
-import com.jzb.base.util.JzbTools;
+import com.jzb.base.util.*;
 import com.jzb.operate.api.auth.AuthInfoApi;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.NewTbCompanyListApi;
@@ -141,16 +138,12 @@ public class TbTravelController {
                         List<Map<String, Object>> daList = tbTravelService.queryTravelData(recMap);
                         // 通过出差详情id  获取出差情报信息
                         List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recMap);
-//                        for (int l = 0, d = infoList.size();l < d;l++){
-//                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-//                                Map<String,Object> proListMap =new HashMap<>();
-//                                proListMap.put("prolist",infoList.get(l).get("prolist"));
-//                                String prolist = infoList.get(l).get("prolist").toString();
-//                                String[] split = prolist.split(",");
-//                                proListMap.put("prolist",split);
-//                                infoList.get(l).put("prolist",proListMap);
-//                            }
-//                        }
+                        for (int l = 0, d = infoList.size();l < d;l++){
+                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                                List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
+                                infoList.get(l).put("prolistArr",prolistArr);
+                            }
+                        }
                         reList.get(j).put("daList",daList);
                         reList.get(j).put("infoList",infoList);
                         // 获取产出情况
@@ -268,16 +261,13 @@ public class TbTravelController {
                     List<Map<String, Object>> daList = tbTravelService.queryTravelData(recMap);
                     // 通过出差详情id  获取出差情报信息
                     List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(recMap);
-//                    for (int l = 0, d = infoList.size();l < d;l++){
-//                        if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-//                            Map<String,Object> proListMap =new HashMap<>();
-//                            proListMap.put("prolist",infoList.get(l).get("prolist"));
-//                            String prolist = infoList.get(l).get("prolist").toString();
-//                            String[] split = prolist.split(",");
-//                            proListMap.put("prolist",split);
-//                            infoList.get(l).put("prolist",proListMap);
-//                        }
-//                    }
+                    //切割prolist
+                    for (int l = 0, d = infoList.size();l < d;l++){
+                        if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                            List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
+                            infoList.get(l).put("prolistArr",prolistArr);
+                        }
+                    }
 
                     // 获取产出情况
                     if(!JzbTools.isEmpty(list.get(i).get("produce"))) {
@@ -296,7 +286,7 @@ public class TbTravelController {
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(list);
-                pageInfo.setTotal(tbTravelService.countTravelInfo(param));
+                pageInfo.setTotal(tbTravelService.countTravelList(param));
                 response.setPageInfo(pageInfo);
             }
         } catch (Exception ex) {
@@ -349,16 +339,13 @@ public class TbTravelController {
                         Map<String, Object> deMap = new HashMap<>();
                         deMap.put("deid",list.get(i).get("deid"));
                         List<Map<String, Object>> infoList = tbTravelService.queryTravelInfo(deMap);
-//                        for (int l = 0, d = infoList.size();l < d;l++){
-//                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-//                                Map<String,Object> proListMap =new HashMap<>();
-//                                proListMap.put("prolist",infoList.get(l).get("prolist"));
-//                                String prolist = infoList.get(l).get("prolist").toString();
-//                                String[] split = prolist.split(",");
-//                                proListMap.put("prolist",split);
-//                                infoList.get(l).put("prolist",proListMap);
-//                            }
-//                        }
+                        //切割prolist
+                        for (int l = 0, d = infoList.size();l < d;l++){
+                            if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
+                                List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
+                                infoList.get(l).put("prolistArr",prolistArr);
+                            }
+                        }
                         // 获取项目产出
                         Map<String, Object> proMap = new HashMap<>();
                         proMap.put("userinfo",userInfo);

@@ -7,18 +7,19 @@
     <!--查询作为审批人的记录-->
     <select id="queryAsApprover" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
-        tb1.travelid as travelid,
-        tb1.uid as uid,
-        tb1.uname as uname,
-        tb1.orgtime as orgtime,
-        tb1.endtime as endtime,
-        tb1.fare as fare,
-        tb1.expenses as expenses,
-        tb1.sum as "sum",
-        tb1.rebversion,
-        tb2.idx,
-        tb2.apid,
-        tb2.trstatus as trstatus
+        COALESCE (tb1.travelid ,'') as travelid,
+        COALESCE (tb1.uid,'') as uid,
+        COALESCE (tb1.uname,'') as uname,
+        to_char(TO_TIMESTAMP(tb1.orgtime/1000), 'YYYY-MM-DD') as orgtime,
+        to_char(TO_TIMESTAMP(tb1.endtime/1000), 'YYYY-MM-DD') as endtime,
+        COALESCE (tb1.fare,0) as fare,
+        COALESCE (tb1.expenses,0) as expenses,
+        COALESCE (tb1.sum,0) as "sum",
+        COALESCE (tb1.rebversion,'') as rebversion,
+        COALESCE (tb2.idx,-1) as idx,
+        to_char(TO_TIMESTAMP(tb2.trtime/1000), 'YYYY-MM-DD') as trtime,
+        COALESCE (tb2.apid,'') as apid,
+        COALESCE (tb2.trstatus,'') as trstatus
         from tb_travel_record tb1
         INNER JOIN tb_travel_approval tb2
         on  tb1.travelid = tb2.travelid and tb1.rebversion= tb2."version"

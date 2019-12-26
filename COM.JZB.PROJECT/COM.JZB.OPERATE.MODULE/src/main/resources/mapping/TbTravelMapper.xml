@@ -10,8 +10,8 @@
         uname,
         COALESCE (fare,0) as fare,
         COALESCE (expenses,0) as expenses,
-        orgtime,
-        endtime,
+        to_char(TO_TIMESTAMP(orgtime/1000), 'YYYY-MM-DD') as orgtime,
+        to_char(TO_TIMESTAMP(endtime/1000), 'YYYY-MM-DD') as endtime,
         COALESCE (trip,'') as trip,
         addtime,
         adduid,
@@ -32,7 +32,8 @@
     <!--查询出差记录总条数-->
     <select id="countAllList" resultType="int" parameterType="java.util.Map">
         SELECT count(1)
-        from tb_travel_record where rebstatus='1' and uid=#{uid} and aptype = '2'
+        from tb_travel_record where  aptype = '2' and (rebversion != null or rebversion !='') and rebstatus !='4'
+        <if test="uid != null and uid != ''">and uid=#{uid} </if>
         <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
         <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
@@ -46,11 +47,11 @@
         travelid,
         uid,
         cid,
-        projectid,
+        COALESCE(projectid,'') as projectid,
         did,
         COALESCE(trpeers,'') as trpeers,
         COALESCE(trdefense,'') as trdefense,
-        trtime,
+        to_char(TO_TIMESTAMP(trtime/1000), 'YYYY-MM-DD') as trtime,
         COALESCE(trtype,'') as trtype,
         COALESCE(trregion,'') as trregion,
         COALESCE(trgoal,'') as trgoal,
@@ -72,6 +73,7 @@
         <if test="deid != null and deid != ''">and deid = #{deid}</if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
         <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
+        order by trtime desc
         limit #{pagesize}  offset #{pageno}
     </select>
 
@@ -225,7 +227,8 @@
         truid,
         status,
         version,
-        idx from tb_travel_approval where status = '1' and  travelid = #{travelid}
+        idx
+        from tb_travel_approval where status = '1' and  travelid = #{travelid}
         <if test="trstatus != null and trstatus != ''">and trstatus = #{trstatus}</if>
         <if test="rebversion != null and rebversion != ''">and version = #{rebversion}</if>
         order by idx asc
