@@ -578,8 +578,14 @@ public class TbTravelPlanController {
                 detailsList.get(i).put("trregion", resApi.getResponseEntity());
                 //情报收集
                 travelInfoList = travelInfoService.list(query);
-                List<String> proList = StrUtil.string2List(travelInfoList.get(0).get("prolist").toString(),",");
-                travelInfoList.get(0).put("prolist",proList);
+                for (int l = 0, d = travelInfoList.size();l < d;l++){
+                    if(!JzbTools.isEmpty(travelInfoList.get(l).get("prolist"))) {
+                        List<String> proList = StrUtil.string2List(travelInfoList.get(l).get("prolist").toString(), ",");
+                        travelInfoList.get(l).put("prolist",proList);
+                    }
+                }
+//                List<String> proList = StrUtil.string2List(travelInfoList.get(0).get("prolist").toString(),",");
+//                travelInfoList.get(0).put("prolist",proList);
                 detailsList.get(i).put("travelinfolist", travelInfoList);
                 //出差资料
                 detailsList.get(i).put("traveldatalist", travelDataService.list(query));
@@ -783,8 +789,14 @@ public class TbTravelPlanController {
 
                         //情报收集
                         travelInfoList = travelInfoService.list(query);
-                        List<String> proList = StrUtil.string2List(travelInfoList.get(0).get("prolist").toString(),",");
-                        travelInfoList.get(0).put("prolist",proList);
+                        for (int l = 0, d = travelInfoList.size();l < d;l++){
+                            if(!JzbTools.isEmpty(travelInfoList.get(l).get("prolist"))) {
+                                List<String> proList = StrUtil.string2List(travelInfoList.get(l).get("prolist").toString(), ",");
+                                travelInfoList.get(l).put("prolist",proList);
+                            }
+                        }
+//                        List<String> proList = StrUtil.string2List(travelInfoList.get(0).get("prolist").toString(),",");
+//                        travelInfoList.get(0).put("prolist",proList);
                         detailsList.get(j).put("travelinfolist", travelInfoList);
                         //出差资料
                         detailsList.get(j).put("traveldatalist", travelDataService.list(query));

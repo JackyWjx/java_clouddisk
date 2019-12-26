@@ -395,10 +395,13 @@ public class TbTravelApprovalController {
                         query.put("travelid", detailsList.get(j).get("travelid"));
                         query.put("deid", detailsList.get(j).get("deid"));
                         //情报收集
-                        //情报收集
                         travelInfoList = travelInfoService.list(query);
-                        List<String> proList = StrUtil.string2List(travelInfoList.get(0).get("prolist").toString(),",");
-                        travelInfoList.get(0).put("prolist",proList);
+                        for (int l = 0, d = travelInfoList.size();l < d;l++){
+                            if(!JzbTools.isEmpty(travelInfoList.get(l).get("prolist"))) {
+                                List<String> proList = StrUtil.string2List(travelInfoList.get(l).get("prolist").toString(), ",");
+                                travelInfoList.get(l).put("prolist",proList);
+                            }
+                        }
                         detailsList.get(j).put("travelinfolist", travelInfoList);
 //                        detailsList.get(j).put("travelinfolist", travelInfoService.list(query));
                         //出差资料

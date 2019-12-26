@@ -566,6 +566,8 @@ public class TbTravelController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"cid" })) {
                 response = Response.getResponseError();
             } else {
+                List<String> proList  = (List<String>) param.get("prolistArr");
+                param.put("prolist",StrUtil.list2String(proList,","));
                 param.put("cid",param.get("cid").toString().trim());
                 param.put("userinfo",userInfo);
                 Response res = newTbCompanyListApi.updateCommonCompanyList(param);
@@ -616,10 +618,13 @@ public class TbTravelController {
             if (JzbCheckParam.haveEmpty(param, new String[]{"projectid" })) {
                 response = Response.getResponseError();
             } else {
+
                 param.put("projectid",param.get("projectid").toString().trim());
                 param.put("userinfo",userInfo);
                 Response res = newTbCompanyListApi.updateCompanyProject(param);
                 if(res.getServerResult().getResultCode() == 200){
+                    List<String> proList  = (List<String>) param.get("prolistArr");
+                    param.put("prolist",StrUtil.list2String(proList,","));
                     param.put("updtime" ,System.currentTimeMillis());
                     param.put("upduid",userInfo.get("uid"));
                     response = tbTravelService.updateInfoList(param) > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();
@@ -671,6 +676,8 @@ public class TbTravelController {
                 param.put("userinfo",userInfo);
                 Response res = newTbCompanyListApi.updateCompanyProjectInfo(param);
                 if(res.getServerResult().getResultCode() == 200){
+                    List<String> proList  = (List<String>) param.get("prolistArr");
+                    param.put("prolist",StrUtil.list2String(proList,","));
                     param.put("updtime" ,System.currentTimeMillis());
                     param.put("upduid",userInfo.get("uid"));
                     response = tbTravelService.updateInfoList(param) > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();

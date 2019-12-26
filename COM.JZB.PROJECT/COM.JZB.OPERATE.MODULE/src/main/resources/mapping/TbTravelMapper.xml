@@ -43,12 +43,12 @@
     <!--  查询出差记录详情   -->
     <select id="queryTravelList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
-        deid,
+        trim(deid) as deid,
         travelid,
-        uid,
-        cid,
+        trim(uid) as uid,
+        trim(cid) as cid,
         COALESCE(projectid,'') as projectid,
-        did,
+        trim(did) as did,
         COALESCE(trpeers,'') as trpeers,
         COALESCE(trdefense,'') as trdefense,
         to_char(TO_TIMESTAMP(trtime/1000), 'YYYY-MM-DD') as trtime,
@@ -98,7 +98,6 @@
     <!--查询出差资料-->
     <select id="queryTravelData" resultType="java.util.Map" parameterType="java.util.Map">
         select
-        did,
         COALESCE (newsletter ,'') as newsletter,
         COALESCE (coframe ,'') as coframe,
         COALESCE (offer ,'') as offer,
@@ -118,8 +117,7 @@
         COALESCE (coou ,'') as coou,
         COALESCE (cocustomer ,'') as cocustomer,
         COALESCE (card ,'') as card,
-        COALESCE (account ,'') as account,
-        COALESCE (summary ,'') as summary
+        COALESCE (account ,'') as account
          from  tb_travel_data where status ='1'
         <if test="travelid != null and travelid != ''">and travelid = #{travelid}</if>
         <if test="deid != null and deid != ''">and deid = #{deid}</if>
@@ -150,10 +148,10 @@
     <select id="queryTravelInfo" resultType="java.util.Map" parameterType="java.util.Map">
         select
         travelid,
-        deid,
-        inid,
-        cid,
-        cname,
+        trim(deid) as deid,
+        trim(inid) as inid,
+        trim(cid) as cid,
+        COALESCE (cname,'') as cname,
         COALESCE (supervise, '') as supervise,
         COALESCE (prodesc, '') as prodesc,
         COALESCE (orgrelation, '') as orgrelation,
@@ -259,57 +257,58 @@
     <update id="updateInfoList" parameterType="java.util.Map">
         update tb_travel_info
         <set>
-            <trim suffixOverrides=",">
-                <if test="supervise != null"> supervise  = #{supervise}, </if>
-                <if test="prodesc != null"> prodesc  = #{prodesc}, </if>
-                <if test="prolist != null"> prolist  = #{prolist}, </if>
-                <if test="orgrelation != null"> orgrelation  = #{orgrelation}, </if>
-                <if test="tendercompany != null"> tendercompany  = #{tendercompany}, </if>
-                <if test="tendername != null"> tendername  = #{tendername}, </if>
-                <if test="projecttype != null"> projecttype  = #{projecttype}, </if>
-                <if test="promail != null"> promail  = #{promail}, </if>
-                <if test="projectras != null"> projectras  = #{projectras}, </if>
-                <if test="tenderphone != null"> tenderphone  = #{tenderphone}, </if>
-                <if test="tenderresultcompany != null"> tenderresultcompany  = #{tenderresultcompany}, </if>
-                <if test="tendertime != null"> tendertime  = #{tendertime}, </if>
-                <if test="tenderagent != null"> tenderagent  = #{tenderagent}, </if>
-                <if test="relation != null"> relation  = #{relation}, </if>
-                <if test="idx != null"> idx  = #{idx}, </if>
-                <if test="podeperson != null"> podeperson  = #{podeperson}, </if>
-                <if test="podephone != null"> podephone  = #{podephone}, </if>
-                <if test="podejob != null"> podejob  = #{podejob}, </if>
-                <if test="podenature != null"> podenature  = #{podenature}, </if>
-                <if test="npodeperson != null"> npodeperson  = #{npodeperson}, </if>
-                <if test="npodephone != null"> npodephone  = #{npodephone}, </if>
-                <if test="npodejob != null"> npodejob  = #{npodejob}, </if>
-                <if test="npodenature != null"> npodenature  = #{npodenature}, </if>
-                <if test="setb != null"> setb  = #{setb}, </if>
-                <if test="sepr != null"> sepr  = #{sepr}, </if>
-                <if test="seli != null"> seli  = #{seli}, </if>
-                <if test="recname != null"> recname  = #{recname}, </if>
-                <if test="reluname != null"> reluname  = #{reluname}, </if>
-                <if test="relphone != null"> relphone  = #{relphone}, </if>
-                <if test="brandname != null"> brandname  = #{brandname}, </if>
-                <if test="contrast != null"> contrast  = #{contrast}, </if>
-                <if test="mail != null"> mail  = #{mail}, </if>
-                <if test="nreluname != null"> nreluname  = #{nreluname}, </if>
-                <if test="nrelphone != null"> nrelphone  = #{nrelphone}, </if>
-                <if test="nbrandname != null"> nbrandname  = #{nbrandname}, </if>
-                <if test="ncontrast != null"> ncontrast  = #{ncontrast}, </if>
-                <if test="nmail != null"> nmail  = #{nmail}, </if>
-                <if test="reshid != null"> reshid  = #{reshid}, </if>
-                <if test="reshname != null"> reshname  = #{reshname}, </if>
-                <if test="reshphone != null"> reshphone  = #{reshphone}, </if>
-                <if test="lineuname != null"> lineuname  = #{lineuname}, </if>
-                <if test="linejob != null"> linejob  = #{linejob}, </if>
-                <if test="linephone != null"> linephone  = #{linephone}, </if>
-                <if test="linenature != null"> linenature  = #{linenature}, </if>
-                <if test="adduid != null"> adduid  = #{adduid}, </if>
-                <if test="addtime != null"> addtime  = #{addtime}, </if>
-                <if test="updtime != null"> updtime  = #{updtime}, </if>
-                <if test="summary != null"> summary  = #{summary},</if>
-                <if test="upduid != null"> upduid  = #{upduid}</if>
-            </trim>
+            orgrelation = #{orgrelation},
+            supervise = #{supervise},
+            prodesc = #{prodesc},
+            prolist = #{prolist},
+            projectid = #{projectid},
+            projectname = #{projectname},
+            tendercompany = #{tendercompany},
+            tendername = #{tendername},
+            projecttype = #{projecttype},
+            promail = #{promail},
+            projectras = #{projectras},
+            tenderphone = #{tenderphone},
+            tenderresultcompany = #{tenderresultcompany},
+            tendertime = #{tendertime},
+            tenderagent = #{tenderagent},
+            relation = #{relation},
+            idx = #{idx},
+            podeperson = #{podeperson},
+            podephone = #{podephone},
+            podejob = #{podejob},
+            podenature = #{podenature},
+            npodeperson = #{npodeperson},
+            npodephone = #{npodephone},
+            npodejob = #{npodejob},
+            npodenature = #{npodenature},
+            setb = #{setb},
+            sepr = #{sepr},
+            seli = #{seli},
+            recname = #{recname},
+            reluname = #{reluname},
+            relphone = #{relphone},
+            brandname = #{brandname},
+            contrast = #{contrast},
+            mail = #{mail},
+            nreluname = #{nreluname},
+            nrelphone = #{nrelphone},
+            nbrandname = #{nbrandname},
+            ncontrast = #{ncontrast},
+            nmail = #{nmail},
+            reshid = #{reshid},
+            reshname = #{reshname},
+            reshphone = #{reshphone},
+            lineuname = #{lineuname},
+            linejob = #{linejob},
+            linephone = #{linephone},
+            linenature = #{linenature},
+            <if test="adduid != null and adduid != ''">adduid = #{adduid},</if>
+            <if test="addtime != null and addtime != ''">addtime = #{addtime},</if>
+            <if test="updtime != null and updtime != ''">updtime = #{updtime},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="summary != null and summary != ''">summary = #{summary},</if>
+            upduid = #{upduid}
         </set>
         where
         status ='1'
