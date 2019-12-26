@@ -7,6 +7,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
+import com.jzb.base.util.StrUtil;
 import com.jzb.org.service.NewCompanyProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -352,6 +353,7 @@ public class NewCompanyProjectController {
                 response = Response.getResponseError();
             } else {
                 Map<String,Object> resultInfo = newCompanyProjectService.getCompanyInfoByCid(param);
+                param.put("prolist", StrUtil.string2List(param.get("prolist").toString(),","));
                 response = Response.getResponseSuccess(userInfo);
                 response.setResponseEntity(resultInfo);
 
