@@ -349,7 +349,7 @@ public class NewCompanyProjectController {
                 response = Response.getResponseError();
             } else {
                 Map<String,Object> resultInfo = newCompanyProjectService.getCompanyInfoByCid(param);
-                param.put("prolist", StrUtil.string2List(param.get("prolist").toString(),","));
+                resultInfo.put("prolist", StrUtil.string2List(resultInfo.get("prolist").toString(),","));
                 response = Response.getResponseSuccess(userInfo);
                 response.setResponseEntity(resultInfo);
 
