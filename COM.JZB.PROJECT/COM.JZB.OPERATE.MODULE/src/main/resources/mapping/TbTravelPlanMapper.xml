@@ -534,7 +534,8 @@
     <!-- 根据出差id查询出差详情-->
     <select id="queryTravelDetailsByTravelid" parameterType="java.util.List" resultType="java.util.Map">
         select
-        travelid,deid,uid,cid,projectid,trpeers,trregion,trtime,trdefense,trtype,trgoal,
+        travelid,deid,uid,cid,projectid,trpeers,trregion,trtime,
+        COALESCE(trdefense,'') as trdefense,trtype,trgoal,
         COALESCE(fare,0) as fare,
         COALESCE(expenses,0) as expenses,
         COALESCE(trip,'') as trip,

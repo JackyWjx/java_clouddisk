@@ -12,7 +12,8 @@
         trim(travelid) as travelid ,
         trim(deid) as deid,
         trim(inid) as inid,trim(cid) as cid,
-        cname, orgrelation,supervise , prodesc , prolist ,
+        cname, orgrelation,supervise , prodesc ,
+        COALESCE(prolist,'') as prolist ,
         trim(projectid) as projectid,
         projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone ,
         tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature

@@ -4,10 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
-import com.jzb.base.util.JzbCheckParam;
-import com.jzb.base.util.JzbPageConvert;
-import com.jzb.base.util.JzbRandom;
-import com.jzb.base.util.JzbTools;
+import com.jzb.base.util.*;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.api.org.NewTbCompanyListApi;
@@ -368,6 +365,7 @@ public class TbTravelApprovalController {
                     // 2.根据查询出来的travelid 查询 出差记录详情
                     whereParam.put("travelid", recordList.get(i).get("travelid"));
                     List<Map<String, Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(whereParam);
+                    List<Map<String, Object>> travelInfoList;
                     for (int j = 0, b = detailsList.size(); j < b; j++) {
                         Map<String, Object> query = new HashMap<>();
                         query.put("userinfo", param.get("userinfo"));
@@ -397,7 +395,12 @@ public class TbTravelApprovalController {
                         query.put("travelid", detailsList.get(j).get("travelid"));
                         query.put("deid", detailsList.get(j).get("deid"));
                         //情报收集
-                        detailsList.get(j).put("travelinfolist", travelInfoService.list(query));
+                        //情报收集
+                        travelInfoList = travelInfoService.list(query);
+                        List<String> proList = StrUtil.string2List(travelInfoList.get(0).get("prolist").toString(),",");
+                        travelInfoList.get(0).put("prolist",proList);
+                        detailsList.get(j).put("travelinfolist", travelInfoList);
+//                        detailsList.get(j).put("travelinfolist", travelInfoService.list(query));
                         //出差资料
                         detailsList.get(j).put("traveldatalist", travelDataService.list(query));
                         //预计产出
