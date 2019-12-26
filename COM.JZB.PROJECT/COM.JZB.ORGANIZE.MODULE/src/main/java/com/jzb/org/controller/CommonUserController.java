@@ -556,26 +556,27 @@ public class CommonUserController {
 
               // 获取模板中的用户地区
                 String regionName = JzbDataType.getString(map.get(6));
-                param.put("regionName", regionName);
-                if (JzbDataType.isEmpty(regionName)) {
-                    summary += "用户所属地区不能为空!";
-                    exportMap.put("status", "2");
-                    exportMap.put("summary", summary);
-                    userInfoList.add(exportMap);
-                    errorList.add(exportMap);
-                    continue;
+                if (!JzbTools.isEmpty(regionName)) {
+                    param.put("regionName", regionName);
+//                    if (JzbDataType.isEmpty(regionName)) {
+//                        summary += "用户所属地区不能为空!";
+//                        exportMap.put("status", "2");
+//                        exportMap.put("summary", summary);
+//                        userInfoList.add(exportMap);
+//                        errorList.add(exportMap);
+//                        continue;
+//                    }
+                    // 调用获取地区ID的接口
+                    Response regionID = regionBaseApi.getRegionID(param);
+                    Object obj = regionID.getResponseEntity();
+                    // 定义地区ID
+                    String region = "";
+                    if (JzbDataType.isMap(obj)) {
+                        Map<Object, Object> regionMap = (Map<Object, Object>) obj;
+                        region = JzbDataType.getString(regionMap.get("creaid"));
+                    }
+                    param.put("region", region);
                 }
-                // 调用获取地区ID的接口
-                Response regionID = regionBaseApi.getRegionID(param);
-                Object obj = regionID.getResponseEntity();
-                // 定义地区ID
-                String region = "";
-                if (JzbDataType.isMap(obj)) {
-                    Map<Object, Object> regionMap = (Map<Object, Object>) obj;
-                    region = JzbDataType.getString(regionMap.get("creaid"));
-                }
-                param.put("region", region);
-
                 // 获取模板中的用户单位名称
                 String cname = JzbDataType.getString(map.get(7));
                 param.put("cname", cname);

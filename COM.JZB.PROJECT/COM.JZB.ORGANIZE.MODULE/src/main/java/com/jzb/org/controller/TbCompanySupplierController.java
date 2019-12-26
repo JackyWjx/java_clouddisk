@@ -10,6 +10,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.TbCompanySupplierService;
 import com.jzb.org.util.HttpConnectionURL;
+import com.jzb.org.util.JzbFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
@@ -216,7 +217,14 @@ public class TbCompanySupplierController {
                 //
                 String url = "http://47.92.247.137:8811/businesspic";
                 String path = ResourceUtils.getURL("classpath:").getPath();
-                String fileFullName = path+"static/excel/"+image.getOriginalFilename();
+                // 获取文件尾缀
+                String fileName = image.getOriginalFilename();
+                String fileFormat = fileName.substring(fileName.lastIndexOf(".") + 1);
+                String filePath= JzbFileUtil.getFilePath();
+//                String fileFullName = path+"static/excel/"+image.getOriginalFilename();
+                //保存文件
+                String fileFullName =  path +   filePath + "." + fileFormat;
+
                 File resourceInfoFile = new File(fileFullName);
                 if(resourceInfoFile.exists()){
                     resourceInfoFile.delete();
@@ -228,7 +236,7 @@ public class TbCompanySupplierController {
                 fileMap.put("file",fileFullName);
 
                 String s = HttpConnectionURL.formUpload(url, null, fileMap, "");
-                resourceInfoFile.delete();
+//                resourceInfoFile.delete();
                 Map<String, Object> parse  =(Map<String, Object>) JSON.parse(s);
                 if(parse != null && parse.get("code").equals("200")) {
                     result = Response.getResponseSuccess();

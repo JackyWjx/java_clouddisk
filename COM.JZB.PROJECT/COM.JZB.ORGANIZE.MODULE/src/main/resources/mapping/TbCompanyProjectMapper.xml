@@ -394,7 +394,7 @@
         cp.projectid,
         cp.projectname,
         to_char(to_timestamp(cl.regtime / 1000), 'yyyy-MM-dd') as addtime,
-        cc.uid
+        cc.oneheader
         from
         tb_company_property cpp
         left join
@@ -406,7 +406,7 @@
         on
         cpp.cid = cl.cid
         left join
-        tb_company_common cc
+        tb_private_company_list cc
         on
         cpp.cid = cc.cid
         where

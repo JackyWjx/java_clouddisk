@@ -117,9 +117,17 @@
         <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
             and a.oneheader = #{uid}
         </if>
-        <if test="region!=null and region !=''">
-            and a.region=#{region}
-        </if>
+        <if test="province != null and province != ''">
+            and tcl.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if> <if test="province != null and province != ''">
+        and tcl.region IN
+        <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+            #{item.region}
+        </foreach>
+    </if>
         <if test="companyLevel!=null and companyLevel !='' and companyLevel!='全部'">
             and a.companyLevel=#{companyLevel}
         </if>
