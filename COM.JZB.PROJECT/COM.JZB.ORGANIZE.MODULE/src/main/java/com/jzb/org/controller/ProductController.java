@@ -6,6 +6,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.api.DeptUserControllerApi;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.dao.DeptMapper;
@@ -43,6 +44,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private DeptUserControllerApi deptUserControllerApi;
 
     @Autowired
     private OrgToken orgToken;
@@ -963,6 +967,7 @@ public class ProductController {
             Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
             Map<String, Object> param = new HashMap<>();
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("token",token);
             param.put("userinfo", userInfo);
             long time = System.currentTimeMillis();
             // 生成批次ID
@@ -1054,6 +1059,7 @@ public class ProductController {
                     userInfoList.add(exportMap);
                     continue;
                 }
+                param.put("managername",name);
                 param.put("relperson",name);
                 // 获取模板中的用户手机号
                 String phone = JzbDataType.getString(map.get(1));
@@ -1109,7 +1115,8 @@ public class ProductController {
                 param.put("address", address);
                 param.put("summary", summary1);
                 // 调用接口
-                result = productService.addRegistrationCompany(param);
+//                result = productService.addRegistrationCompany(param);
+                result =  deptUserControllerApi.addCompanyCommon(param,JzbDataType.getString(param.get("token")));
                 if (JzbDataType.isString(result.getResponseEntity())){
                     exportMap.put("status", "2");
                     exportMap.put("summary", result.getResponseEntity());

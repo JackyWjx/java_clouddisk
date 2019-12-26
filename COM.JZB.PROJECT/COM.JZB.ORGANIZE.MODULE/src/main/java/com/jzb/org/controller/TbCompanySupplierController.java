@@ -216,13 +216,14 @@ public class TbCompanySupplierController {
             if (!JzbTools.isEmpty(image)){
                 //
                 String url = "http://47.92.247.137:8811/businesspic";
-                String path = ResourceUtils.getURL("classpath:").getPath();
+//                String path = ResourceUtils.getURL("classpath:").getPath();
+                String path = "/opt/jzb/application/promotion/Nginx/html/image";
                 // 获取文件尾缀
                 String fileName = image.getOriginalFilename();
                 String fileFormat = fileName.substring(fileName.lastIndexOf(".") + 1);
                 String filePath= JzbFileUtil.getFilePath();
 //                String fileFullName = path+"static/excel/"+image.getOriginalFilename();
-                //保存文件
+                //保存文件/opt/jzb/application/promotion/Nginx/html/static
                 String fileFullName =  path +   filePath + "." + fileFormat;
 
                 File resourceInfoFile = new File(fileFullName);
@@ -236,7 +237,8 @@ public class TbCompanySupplierController {
                 fileMap.put("file",fileFullName);
 
                 String s = HttpConnectionURL.formUpload(url, null, fileMap, "");
-//                resourceInfoFile.delete();
+                resourceInfoFile.delete();
+
                 Map<String, Object> parse  =(Map<String, Object>) JSON.parse(s);
                 if(parse != null && parse.get("code").equals("200")) {
                     result = Response.getResponseSuccess();
@@ -266,9 +268,11 @@ public class TbCompanySupplierController {
             if (!JzbTools.isEmpty(front) && !JzbTools.isEmpty(back)){
 
                 String url = "http://47.92.247.137:8811/idcard";
-                String path = ResourceUtils.getURL("classpath:").getPath();
+//                String path = ResourceUtils.getURL("classpath:").getPath();
+                String path = "/opt/jzb/application/promotion/Nginx/html/image";
+
                 // 查询身份证正面信息（人脸）
-                String fileFullName = path+"static/excel/"+front.getOriginalFilename();
+                String fileFullName = path + front.getOriginalFilename();
                 File resourceInfoFile = new File(fileFullName);
                 if(resourceInfoFile.exists()){
                     resourceInfoFile.delete();
@@ -284,7 +288,7 @@ public class TbCompanySupplierController {
                 Map<String, Object> frontMap  =(Map<String, Object>) JSON.parse(sFront);
 
                 // 身份证反面
-                String backFileFullName = path+"static/excel/"+back.getOriginalFilename();
+                String backFileFullName = path + back.getOriginalFilename();
                 File backResourceInfoFile = new File(backFileFullName);
                 if(backResourceInfoFile.exists()){
                     backResourceInfoFile.delete();

@@ -54,6 +54,21 @@ public class TbTrackUserService {
         return userMapper.queryTrackUserList(param);
     }
 
+    public List<Map<String, Object>> queryTrackUserListOnSales(Map<String, Object> param) {
+        List<Map<String, Object>> list = userMapper.queryTrackUserList(param);
+        for (int i = 0; i < list.size(); i++) {
+            String trackvalue = JzbDataType.getString(list.get(i).get("trackvalue"));
+            param.put("trackvalue",trackvalue);
+            String level = userMapper.queryLevel(param);
+            if ( !JzbTools.isEmpty(level) && level.length() < 5 ){
+                list.get(i).put("level",level);
+            }else {
+                list.get(i).put("level",null);
+            }
+        }
+        return list;
+    }
+
     // 删除跟进人员记录信息
     public int delTrackUser(Map<String, Object> param) {
 
@@ -283,4 +298,6 @@ public class TbTrackUserService {
         }
         return userMapper.getHandleStage(param);
     }
+
+
 }

@@ -74,7 +74,7 @@ public class TbTrackUserController {
     public Response queryTrackUserList(@RequestBody Map<String,Object> param){
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/orgTrack/getInfo";
+        String api = "/orgTrack/queryTrackUserList";
         boolean flag = true;
         try {
             // 如果获取参数userinfo不为空的话
@@ -103,6 +103,57 @@ public class TbTrackUserController {
                 pageInfo.setTotal(count);
                 pageInfo.setList(list);
                 response.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            flag = false;
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryTrackUserList Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
+
+    //   销售统计分析界面
+    //   查询跟进人员记录信息
+    @RequestMapping("/queryTrackUserListOnSales")
+    public Response queryTrackUserListOnSales(@RequestBody Map<String,Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/orgTrack/queryTrackUserListOnSales";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            param.put("adduid",userInfo.get("uid"));
+            // 查询跟进人员总记录数
+            int count = JzbDataType.getInteger(param.get("count"));
+            count = count < 0 ? 0:count;
+            if (count == 0){
+                count = userService.getTrackCount(param);
+            }
+            JzbPageConvert.setPageRows(param);
+            // 查询跟进人员记录信息
+            List<Map<String,Object>> list = null;
+
+                list = userService.queryTrackUserListOnSales(param);
+
+            response = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setTotal(count);
+            pageInfo.setList(list);
+            response.setPageInfo(pageInfo);
         } catch (Exception e) {
             flag = false;
             JzbTools.logError(e);

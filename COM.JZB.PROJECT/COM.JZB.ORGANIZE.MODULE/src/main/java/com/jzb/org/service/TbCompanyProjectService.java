@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 @Service
 public class TbCompanyProjectService {
@@ -133,8 +130,10 @@ public class TbCompanyProjectService {
         List<Map<String, Object>> list = tbCompanyProjectMapper.queryServiceProjectList(param);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> uidMap = list.get(i);
+            uidMap.put("uid",uidMap.get("oneheader"));
             Response region = userRedisServiceApi.getCacheUserInfo(uidMap);
-            uidMap.put("uid", region.getResponseEntity());
+            Map<String,Object> map = (Map<String, Object>) region.getResponseEntity();
+            uidMap.put("saler", map.get("cname"));
         }
         return list;
     }

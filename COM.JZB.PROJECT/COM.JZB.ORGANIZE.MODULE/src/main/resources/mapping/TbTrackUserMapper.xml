@@ -161,9 +161,11 @@
     
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
-        select isservice,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
+        select trackvalue, isservice,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
         from tb_track_user_list where status = '1'
-        and trackvalue = #{trackvalue}
+        <if test="trackvalue != null and trackvalue!= ''">
+            and trackvalue = #{trackvalue}
+        </if>
         <if test="startTime != null and startTime!= ''">
             and addtime &gt;= startTime
         </if>
@@ -388,6 +390,16 @@
             and addtime &lt;= #{twelve}
         </if>
 
+    </select>
+
+    <!--查询跟进单位的等级-->
+    <select id="queryLevel" parameterType="java.util.Map" resultType="java.lang.String">
+        select dictvalue from  tb_company_property where  cid = #{trackvalue} and status = '1'
+        <if test="dictvalue != null and dictvalue != ''">
+            and dictvalue = #{dictvalue}
+        </if>
+
+        order by updtime desc limit 1 ;
     </select>
 
     <!--根据跟进人查询 跟进阶段客户列表-->
