@@ -53,4 +53,6 @@ public interface TbTrackUserMapper {
 
     // 查询跟进单位的等级
     String queryLevel(Map<String, Object> param);
+
+    int getTrackCountOnSales(Map<String, Object> param);
 }

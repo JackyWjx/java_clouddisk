@@ -139,11 +139,12 @@ public class TbTrackUserController {
             param.put("adduid",userInfo.get("uid"));
             // 查询跟进人员总记录数
             int count = JzbDataType.getInteger(param.get("count"));
+            JzbPageConvert.setPageRows(param);
             count = count < 0 ? 0:count;
             if (count == 0){
-                count = userService.getTrackCount(param);
+                count = userService.getTrackCountOnSales(param);
             }
-            JzbPageConvert.setPageRows(param);
+
             // 查询跟进人员记录信息
             List<Map<String,Object>> list = null;
 

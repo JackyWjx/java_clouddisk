@@ -6,6 +6,7 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
+import com.jzb.org.dao.CockpitMapper;
 import com.jzb.org.dao.TbCompanyProjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class TbCompanyProjectService {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
+    @Autowired
+    CockpitMapper cockpitMapper;
 
     /**
      * 模糊查询单位名称
@@ -127,13 +131,23 @@ public class TbCompanyProjectService {
      * @DateTime: 2019/10/19
      */
     public List<Map<String, Object>> getServiceProjectList(Map<String, Object> param) {
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String,Object>> deptChildlist = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < deptChildlist.size(); i++) {
+                deptChildlist.get(i).remove("pcdid");
+                deptChildlist.get(i).remove("idx");
+            }
+            param.put("list",deptChildlist);
+        }
         List<Map<String, Object>> list = tbCompanyProjectMapper.queryServiceProjectList(param);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> uidMap = list.get(i);
             uidMap.put("uid",uidMap.get("oneheader"));
             Response region = userRedisServiceApi.getCacheUserInfo(uidMap);
             Map<String,Object> map = (Map<String, Object>) region.getResponseEntity();
-            uidMap.put("saler", map.get("cname"));
+            if (!JzbTools.isEmpty(map)){
+                uidMap.put("saler", map.get("cname"));
+            }
         }
         return list;
     }

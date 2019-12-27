@@ -377,9 +377,22 @@
         cpp.status = '1'
         and
         cpp.typeid = 't000000'
+        <if test="saler != null and saler != ''">
+            and cc.oneheader in (select uid from tb_dept _user where cname ~ #{saler})
+        </if>
         <if test="uid != null and uid != ''">and cpp.dictvalue = #{uid}</if>
-        <if test="starttime != null and starttime != ''">and cl.regtime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and cl.regtime &lt;= #{endtime}</if>
+        <if test="cname != null and cname != ''">and cl.cname ~ #{cname}</if>
+        <if test="cdid != null and cdid != ''">
+            and cc.oneheader in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="starttime != null and starttime != ''">and cpp.updtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and cpp.updtime &lt;= #{endtime}</if>
         <if test="projectname != null and projectname != ''">and cp.projectname LIKE CONCAT( '%',#{projectname},'%')</if>
         ) as company
     </select>
@@ -413,9 +426,22 @@
         cpp.status = '1'
         and
         cpp.typeid = 't000000'
+        <if test="saler != null and saler != ''">
+            and cc.oneheader in (select uid from tb_dept _user where cname ~ #{saler})
+        </if>
         <if test="uid != null and uid != ''">and cpp.dictvalue = #{uid}</if>
-        <if test="starttime != null and starttime != ''">and cl.regtime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and cl.regtime &lt;= #{endtime}</if>
+        <if test="cname != null and cname != ''">and cl.cname ~ #{cname}</if>
+        <if test="cdid != null and cdid != ''">
+            and cc.oneheader in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="starttime != null and starttime != ''">and cpp.updtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and cpp.updtime &lt;= #{endtime}</if>
         <if test="projectname != null and projectname != ''">and cp.projectname LIKE CONCAT( '%',#{projectname},'%')</if>
         LIMIT #{pagesize} offset #{pageno}
     </select>

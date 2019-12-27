@@ -53,8 +53,16 @@ public class TbTrackUserService {
     public List<Map<String, Object>> queryTrackUserList(Map<String, Object> param) {
         return userMapper.queryTrackUserList(param);
     }
-
+    // 销售统计查询跟进人员信息
     public List<Map<String, Object>> queryTrackUserListOnSales(Map<String, Object> param) {
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String,Object>> deptChildlist = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < deptChildlist.size(); i++) {
+                deptChildlist.get(i).remove("pcdid");
+                deptChildlist.get(i).remove("idx");
+            }
+            param.put("list",deptChildlist);
+        }
         List<Map<String, Object>> list = userMapper.queryTrackUserList(param);
         for (int i = 0; i < list.size(); i++) {
             String trackvalue = JzbDataType.getString(list.get(i).get("trackvalue"));
@@ -65,6 +73,14 @@ public class TbTrackUserService {
             }else {
                 list.get(i).put("level",null);
             }
+        }
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String,Object>> deptChildlist = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < deptChildlist.size(); i++) {
+                deptChildlist.get(i).remove("pcdid");
+                deptChildlist.get(i).remove("idx");
+            }
+            param.put("list",deptChildlist);
         }
         return list;
     }
@@ -287,7 +303,7 @@ public class TbTrackUserService {
                 JzbTools.isEmpty(param.get("cdid")) &&
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
             param.put("customer",param.get("adduid"));
-        }//todo
+        }
         if (!JzbTools.isEmpty(param.get("cdid"))){
             List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
             for (int i = 0; i < list.size(); i++) {
@@ -300,4 +316,15 @@ public class TbTrackUserService {
     }
 
 
+    public int getTrackCountOnSales(Map<String, Object> param) {
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).remove("pcdid");
+                list.get(i).remove("idx");
+            }
+            param.put("list",list);
+        }
+        return userMapper.getTrackCountOnSales(param);
+    }
 }
