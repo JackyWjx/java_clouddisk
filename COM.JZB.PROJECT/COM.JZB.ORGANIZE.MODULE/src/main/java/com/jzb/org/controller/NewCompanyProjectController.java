@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author sapientia
@@ -67,6 +64,8 @@ public class NewCompanyProjectController {
                     if(!JzbTools.isEmpty(list.get(i).get("prolist"))) {
                         List<String> prolistArr = StrUtil.string2List(list.get(i).get("prolist").toString(), ",");
                         list.get(i).put("prolistArr",prolistArr);
+                    }else {
+                        list.get(i).put("prolistArr",new ArrayList<>());
                     }
                     Map<String, Object> proMap = new HashMap<>();
                     proMap.put("pageno",param.get("pageno"));

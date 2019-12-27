@@ -22,7 +22,7 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping("/dept/user")
+@RequestMapping("/org/dept/user")
 public class TbDeptUserController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class TbDeptUserController {
     public Response queryUsernameBydept(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/queryUsernameBydept";
+        String api = "/org/dept/user/queryUsernameBydept";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -52,7 +52,7 @@ public class TbDeptUserController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno" })) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid" })) {
                 response = Response.getResponseError();
             } else {
                 JzbPageConvert.setPageRows(param);
@@ -96,7 +96,7 @@ public class TbDeptUserController {
     public Response queryOtherPersonByuid(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/queryOtherPersonBycid";
+        String api = "/org/dept/user/queryOtherPersonBycid";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -144,7 +144,7 @@ public class TbDeptUserController {
     public Response queryPersonNameByuid(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/queryPersonNameByuid";
+        String api = "/org/dept/user/queryPersonNameByuid";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -187,7 +187,7 @@ public class TbDeptUserController {
         Response response;
         Map<String, Object> userInfo = null;
         boolean flag = true;
-        String  api="/userInfo/getUsernameList";
+        String  api="/org/dept/user/getUsernameList";
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");

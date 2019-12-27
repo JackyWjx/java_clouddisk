@@ -104,7 +104,7 @@ public class TbTravelApprovalController {
                 }
                 // 添加抄送人
                 List<String> ccuidList = (List<String>) param.get("ccuid");
-                param.put("ccuid", ccuidList.toString());
+                param.put("ccuid",StrUtil.list2String(ccuidList,","));
                 if(apType == 1){
                     param.put("trastatus", "2"); // 设置出差状态
                 }else {

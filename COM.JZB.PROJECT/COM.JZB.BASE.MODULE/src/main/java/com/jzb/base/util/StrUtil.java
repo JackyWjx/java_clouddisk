@@ -26,12 +26,12 @@ public class StrUtil {
     public static String list2String(List<String> list, String markStr) {
         StringBuffer sbf = new StringBuffer();
         for (int i = 0, a = list.size(); i < a; i++) {
-            if(list.get(i).equals("")){
+            if(JzbTools.isEmpty(list.get(i))){
                 continue;
             }
             sbf.append(list.get(i)).append(markStr);
         }
-        if(!sbf.toString().equals("")){
+        if(!JzbTools.isEmpty(sbf)){
             String returnStr = sbf.substring(0,sbf.length()-1);
             return returnStr;
         }
@@ -47,7 +47,7 @@ public class StrUtil {
 
     public static List<String> string2List(String str, String markStr) {
         List<String> stringList = new ArrayList<>();
-        if(str== null || str.equals("")){
+        if(JzbTools.isEmpty(str)){
             return stringList;
         }
         stringList = Arrays.asList(str.split(markStr));

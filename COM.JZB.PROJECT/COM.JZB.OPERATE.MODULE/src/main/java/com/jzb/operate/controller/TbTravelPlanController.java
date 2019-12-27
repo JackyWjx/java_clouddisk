@@ -652,7 +652,7 @@ public class TbTravelPlanController {
     public Response queryUsernameBydept(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
-        String api = "/operate/reimburseSystem/queryAllTravelList";
+        String api = "/operate/travelPlan/queryAllTravelList";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -663,10 +663,15 @@ public class TbTravelPlanController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            //获取同行人列表
-            Response res = tbDeptUserListApi.queryUsernameBydept(param);
-            response = Response.getResponseSuccess(userInfo);
-            response.setResponseEntity(res.getPageInfo().getList());
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid" })) {
+                response = Response.getResponseError();
+            } else {
+                //获取同行人列表
+                param.put("userinfo",userInfo);
+                Response res = tbDeptUserListApi.queryUsernameBydept(param);
+                response = Response.getResponseSuccess(userInfo);
+                response.setResponseEntity(res.getPageInfo().getList());
+            }
         } catch (Exception ex) {
             flag = false;
             JzbTools.logError(ex);

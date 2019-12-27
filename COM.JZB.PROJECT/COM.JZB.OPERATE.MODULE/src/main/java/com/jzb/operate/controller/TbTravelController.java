@@ -142,6 +142,8 @@ public class TbTravelController {
                             if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                                 List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
                                 infoList.get(l).put("prolistArr",prolistArr);
+                            }else {
+                                infoList.get(l).put("prolistArr",new ArrayList<>());
                             }
                         }
                         reList.get(j).put("daList",daList);
@@ -266,6 +268,8 @@ public class TbTravelController {
                         if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                             List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
                             infoList.get(l).put("prolistArr",prolistArr);
+                        }else {
+                            infoList.get(l).put("prolistArr",new ArrayList<>());
                         }
                     }
 
@@ -344,6 +348,8 @@ public class TbTravelController {
                             if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                                 List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
                                 infoList.get(l).put("prolistArr",prolistArr);
+                            }else {
+                                infoList.get(l).put("prolistArr",new ArrayList<>());
                             }
                         }
                         // 获取项目产出

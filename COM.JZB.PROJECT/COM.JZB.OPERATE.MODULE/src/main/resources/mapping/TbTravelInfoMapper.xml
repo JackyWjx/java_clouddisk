@@ -681,10 +681,24 @@
                 projectras = #{projectras},
                 tenderphone = #{tenderphone},
                 tenderresultcompany = #{tenderresultcompany},
-                tendertime = #{tendertime},
+                <choose>
+                    <when test="tendertime != null and tendertime != ''">
+                        tendertime = #{tendertime},
+                    </when>
+                    <otherwise>
+                        tendertime = null,
+                    </otherwise>
+                </choose>
                 tenderagent = #{tenderagent},
                 relation = #{relation},
-                idx = #{idx},
+                <choose>
+                    <when test="idx != null and idx != ''">
+                        idx = #{idx},
+                    </when>
+                    <otherwise>
+                        idx = null,
+                    </otherwise>
+                </choose>
                 podeperson = #{podeperson},
                 podephone = #{podephone},
                 podejob = #{podejob},

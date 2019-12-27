@@ -5,7 +5,7 @@
 <mapper namespace="com.jzb.org.dao.TbDeptUserMapper">
 
     <select id="queryUsernameBydept" parameterType="java.util.Map" resultType="java.util.Map">
-        select DISTINCT cname,uid from tb_dept_user where cdid = #{cdid}
+        select DISTINCT cname,uid from tb_dept_user where cid = #{cid}
     </select>
 
     <select id="queryOtherPersonBycid" parameterType="java.util.Map" resultType="java.util.Map">

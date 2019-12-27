@@ -6,18 +6,19 @@
 
     <select id="queryTrackUserListByKey" resultType="java.util.Map" parameterType="java.util.Map">
         select trackcontent ,abdialogue,nextadvance from tb_track_user_list where status='1'
-        <choose><when test="uid != null || uid != ''">and  customer = #{uid}</when></choose>
-        <choose><when test="cid != null || cid != ''">and trackvalue = #{cid}</when></choose>
-        <choose><when test="projectid != null || projectid != ''">and trackproid = #{projectid}</when></choose>
-        <choose><when test="trtime != null || trtime != ''">and tracktime between #{begDate} and #{endDate} </when></choose>
+        <if test="uid != null and uid != ''">and  customer = #{uid}</if>
+        <if test="cid != null and cid != ''">and trackvalue = #{cid}</if>
+        <if test="projectid != null and projectid != ''">and trackproid = #{projectid}</if>
+        <if test="trtime != null and trtime != ''">and tracktime between #{begDate} and #{endDate} </if>
         limit #{pagesize}  offset #{pageno}
     </select>
 
     <select id="countTrackUserListByKey" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_track_user_list where status='1'
-        <choose><when test="uid != null || uid != ''">and customer = #{uid}</when></choose>
-        <choose><when test="cid != null || cid != ''">and trackcid = #{cid}</when></choose>
-        <choose><when test="trtime != null || trtime != ''">and tracktime = #{trtime}</when></choose>
+        <if test="uid != null and uid != ''">and customer = #{uid}</if>
+        <if test="cid != null and cid != ''">and trackcid = #{cid}</if>
+        <if test="projectid != null and projectid != ''">and trackproid = #{projectid}</if>
+        <if test="trtime != null and trtime != ''">and tracktime = #{trtime}</if>
     </select>
 
 </mapper>

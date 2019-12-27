@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +133,8 @@ public class TbAsApproverController {
                             if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                                 List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
                                 infoList.get(l).put("prolistArr",prolistArr);
+                            }else {
+                                infoList.get(l).put("prolistArr",new ArrayList<>());
                             }
                         }
                         reList.get(j).put("daList",daList);
@@ -238,6 +241,8 @@ public class TbAsApproverController {
                         if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                             List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
                             infoList.get(l).put("prolistArr",prolistArr);
+                        }else {
+                            infoList.get(l).put("prolistArr",new ArrayList<>());
                         }
                     }
                     // 获取产出情况
@@ -313,6 +318,8 @@ public class TbAsApproverController {
                         if(!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
                             List<String> prolistArr = StrUtil.string2List(infoList.get(l).get("prolist").toString(), ",");
                             infoList.get(l).put("prolistArr",prolistArr);
+                        }else {
+                            infoList.get(l).put("prolistArr",new ArrayList<>());
                         }
                     }
                     // 获取项目产出
