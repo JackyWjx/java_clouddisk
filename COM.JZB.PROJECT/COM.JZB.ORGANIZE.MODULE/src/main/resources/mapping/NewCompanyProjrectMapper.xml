@@ -38,7 +38,7 @@
         COALESCE (tenderresultcompany, '') as tenderresultcompany,
         COALESCE (tenderagent, '') as tenderagent,
         COALESCE (agentphone, '') as agentphone,
-        COALESCE (porjcetra, '') as porjcetras,
+        COALESCE (projectras, '') as projectras,
         COALESCE (relation, '') as relation
         from tb_company_project where projectid=#{projectid}
         limit #{pagesize}  offset #{pageno}
@@ -165,7 +165,7 @@
             tenderresultcompany=#{tenderresultcompany},
             tenderagent=#{tenderagent},
             agentphone=#{agentphone},
-            porjcetra=#{projectras},
+            projectras=#{projectras},
             relation=#{relation},
             <if test=" uid != null and uid != ''">upduid=#{uid},</if>
             <if test=" updtime != null and updtime != ''">updtime=#{updtime}</if>
@@ -273,7 +273,7 @@
 
     <!--根据projectid查询项目信息-->
     <select id="queryProjectByProid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectid,cid,projectname,tendername,tenderphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
+        select projectid,cid,projectname,tendername,tenderphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,projectras,relation
          from tb_company_project where projectid=#{projectId}
     </select>
 
