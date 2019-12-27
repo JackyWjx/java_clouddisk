@@ -103,8 +103,12 @@ public class TbTravelApprovalController {
                     travelApprovalService.save(approvalList.get(i));
                 }
                 // 添加抄送人
-                List<String> ccuidList = (List<String>) param.get("ccuid");
-                param.put("ccuid",StrUtil.list2String(ccuidList,","));
+                if(!JzbTools.isEmpty(param.get("ccuid"))){
+                    List<String> ccuidList = (List<String>) param.get("ccuid");
+                    param.put("ccuid",StrUtil.list2String(ccuidList,","));
+                }else {
+                    param.put("ccuid","");
+                }
                 if(apType == 1){
                     param.put("trastatus", "2"); // 设置出差状态
                 }else {
@@ -370,7 +374,7 @@ public class TbTravelApprovalController {
                         Map<String, Object> query = new HashMap<>();
                         query.put("userinfo", param.get("userinfo"));
                         // 获取同行人名称
-                        if (ObjectUtils.isEmpty(detailsList.get(j).get("trpeers"))) {
+                        if (JzbTools.isEmpty(detailsList.get(j).get("trpeers"))) {
                             detailsList.get(j).put("trpeers", "");
                         } else {
                             query.put("uids", detailsList.get(j).get("trpeers"));
@@ -383,7 +387,7 @@ public class TbTravelApprovalController {
                         resApi = regionBaseApi.getRegionInfo(query);
                         detailsList.get(j).put("travelCity", resApi.getResponseEntity());
                         //获取单位名称
-                        if (ObjectUtils.isEmpty(detailsList.get(j).get("cid"))) {
+                        if (JzbTools.isEmpty(detailsList.get(j).get("cid"))) {
                             detailsList.get(j).put("clist", null);
                         } else {
                             query.put("cid", detailsList.get(j).get("cid"));
@@ -397,13 +401,15 @@ public class TbTravelApprovalController {
                         //情报收集
                         travelInfoList = travelInfoService.list(query);
                         for (int l = 0, d = travelInfoList.size();l < d;l++){
+                            List<String> proList = new ArrayList<>();
                             if(!JzbTools.isEmpty(travelInfoList.get(l).get("prolist"))) {
-                                List<String> proList = StrUtil.string2List(travelInfoList.get(l).get("prolist").toString(), ",");
+                                proList = StrUtil.string2List(travelInfoList.get(l).get("prolist").toString(), ",");
+                                travelInfoList.get(l).put("prolist",proList);
+                            }else {
                                 travelInfoList.get(l).put("prolist",proList);
                             }
                         }
                         detailsList.get(j).put("travelinfolist", travelInfoList);
-//                        detailsList.get(j).put("travelinfolist", travelInfoService.list(query));
                         //出差资料
                         detailsList.get(j).put("traveldatalist", travelDataService.list(query));
                         //预计产出

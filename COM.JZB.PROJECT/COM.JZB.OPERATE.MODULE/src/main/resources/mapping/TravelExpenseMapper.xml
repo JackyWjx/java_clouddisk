@@ -19,12 +19,12 @@
 			COALESCE(getaccsum,0) as getaccsum,
 			COALESCE(subsidy,0) as subsidy,
 			COALESCE(othsum,0) as othsum,
-			COALESCE(sum,0) as "sum",
+			COALESCE("sum",0) as "sum",
 			addtime,
 			adduid,
 			status,
-			COALESCE(sum,'') as summary
-		 from tb_travel_expense where travelid = #{travelid}
+			COALESCE(summary,'') as summary
+		 from tb_travel_expense where travelid = #{travelid} and status ='1'
 	</select>
 
 	 <!--插入-->
@@ -319,7 +319,9 @@
 
 	<!-- 设置删除状态-->
 	<update id="setExpenseDeleteStatus" parameterType="java.util.Map">
-        update tb_travel_expense set status='2'  where  travelid = #{travelid}
+        update tb_travel_expense set status='2'  where  status ='1'
+		<if test="exid != null and exid !='' ">and exid = #{exid}</if>
+		<if test="travelid != null and travelid !='' ">and travelid = #{travelid}</if>
     </update>
 
 </mapper>

@@ -524,7 +524,7 @@
         tpl.logo
         from
         tb_product_list tpl
-        LEFT JOIN  tb_company_product tcp ON tpl.pid = tcp.pid
+        LEFT JOIN  tb_company_product tcp ON tpl.pid = tcp.pid and tpl.cid = tcp.cid
         where
         tpl.status = '1' and tcp.status = '1' and tpl.appid is null
     </select>
