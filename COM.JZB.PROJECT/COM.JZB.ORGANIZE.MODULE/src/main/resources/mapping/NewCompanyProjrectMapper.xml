@@ -151,7 +151,14 @@
         <set>
             tendername=#{tendername},
             tenderphone=#{tenderphone},
-            tendertime=#{tendertime},
+            <choose>
+                <when test="tendertime != null and tendertime != ''">
+                    tendertime = #{tendertime},
+                </when>
+                <otherwise>
+                    tendertime = null,
+                </otherwise>
+            </choose>
             tendercompany=#{tendercompany},
             projecttype=#{projecttype},
             mail=#{promail},
