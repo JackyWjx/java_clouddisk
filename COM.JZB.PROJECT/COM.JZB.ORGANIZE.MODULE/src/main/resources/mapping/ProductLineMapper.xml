@@ -661,8 +661,11 @@
         l.pid = p.pid
         where
         l.status = #{status}
-        and
-        l.plid = ${plid}
+        <if test="plid !=null and plid !='' and plid!=0">
+            and
+            l.plid = #{plid}
+        </if>
+
         and
         l.cid = #{cid}
         and
