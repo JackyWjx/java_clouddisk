@@ -25,9 +25,9 @@
         on  tb1.travelid = tb2.travelid and tb1.rebversion= tb2."version"
         <where>
             tb1.rebstatus != '1' and tb1.rebstatus != '4' and tb1.status != '2'
-            <if test="trstatus == '-1'">and (tb2.trstatus = '2' or tb2.trstatus = '3')</if>
-            <if test="trstatus == '2'">and tb2.trstatus = '2'</if>
-            <if test="trstatus == '3'">and  tb2.trstatus = '3'</if>
+            <if test="trstatus == -1">and (tb2.trstatus = 2 or tb2.trstatus = 3)</if>
+            <if test="trstatus == 2">and tb2.trstatus = 2</if>
+            <if test="trstatus == 3">and  tb2.trstatus = 3</if>
             <if test="uid != null and uid != '' ">
                 and tb2.truid = #{uid}
             </if>
@@ -54,8 +54,10 @@
         INNER JOIN tb_travel_approval tb2
         on  tb1.travelid = tb2.travelid and tb1.rebversion= tb2."version"
         <where>
-            tb1.rebstatus != '1'
-            and (tb2.trstatus = '2' or tb2.trstatus = '3')
+            tb1.rebstatus != '1' and tb1.rebstatus != '4' and tb1.status != '2'
+            <if test="trstatus == -1">and (tb2.trstatus = 2 or tb2.trstatus = 3)</if>
+            <if test="trstatus == 2">and tb2.trstatus = 2</if>
+            <if test="trstatus == 3">and  tb2.trstatus = 3</if>
             <if test="uid != null and uid != '' ">
                 and tb2.truid = #{uid}
             </if>

@@ -631,9 +631,9 @@
         <where>
             tb1.status != '2'
 
-            <if test="trstatus == '-1'">and (tb2.trstatus = '2' or tb2.trstatus = '3')</if>
-            <if test="trstatus == '2'">and tb2.trstatus = '2'</if>
-            <if test="trstatus == '3'">and  tb2.trstatus = '3'</if>
+            <if test="trstatus == -1">and (tb2.trstatus = 2 or tb2.trstatus = 3)</if>
+            <if test="trstatus == 2">and tb2.trstatus = 2</if>
+            <if test="trstatus == 3">and  tb2.trstatus = 3</if>
             <if test="uid != null and uid != '' ">
                 and tb2.truid = #{uid}
             </if>
