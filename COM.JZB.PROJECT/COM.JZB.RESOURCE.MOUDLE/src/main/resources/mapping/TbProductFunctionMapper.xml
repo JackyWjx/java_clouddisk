@@ -10,18 +10,22 @@
         a.status,
         a.paradesc,
         a.summary,
-        a.pid
+        a.pid,
+        a.plid
         from
         tb_product_function b
         LEFT JOIN
         tb_product_res_list a
         on a.pid = b.pid
         where 1=1
-        <if test="status != null and status != ''">
+        <if test="status != null and status != '' and status!=0">
             and a.status = #{status}
         </if>
-        <if test="cname != null">
+        <if test="cname != null and cname !=''">
             and a.cname like concat('%',#{cname},'%')
+        </if>
+        <if test="plid != null and plid !='' and plid!=0">
+            and a.plid =#{plid}
         </if>
         group by a.id
         limit
@@ -56,6 +60,9 @@
         </if>
         <if test="cname != null">
             and a.cname like concat('%',#{cname},'%')
+        </if>
+        <if test="plid != null and plid !=''">
+            and a.plid =#{plid}
         </if>
         group by a.id
         ) as num
