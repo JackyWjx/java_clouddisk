@@ -56,7 +56,7 @@
         COALESCE(trregion,'') as trregion,
         COALESCE(trgoal,'') as trgoal,
         COALESCE(trip,'') as trip,
-        COALESCE(produce,-1) as produce,
+        COALESCE(produce,0) as produce,
         COALESCE(fare,0) as fare,
         COALESCE(expenses,0) as expenses,
         COALESCE(amount,0) as amount,
@@ -234,7 +234,7 @@
 
     <!--查询产出情况-->
     <select id="queryTravelProduce" resultType="java.util.Map" >
-        select  prindex from tb_travel_produce where status = '1'
+        select  idx,prname,prindex from tb_travel_produce where status = '1'
     </select>
 
     <!-- 设置报销单删除状态-->
@@ -270,7 +270,11 @@
             projectras = #{projectras},
             tenderphone = #{tenderphone},
             tenderresultcompany = #{tenderresultcompany},
-            tendertime = #{tendertime},
+            <choose>
+                <when test="tendertime">tendertime = #{tendertime},</when>
+                <otherwise>tendertime = null</otherwise>
+            </choose>
+
             tenderagent = #{tenderagent},
             relation = #{relation},
             idx = #{idx},
