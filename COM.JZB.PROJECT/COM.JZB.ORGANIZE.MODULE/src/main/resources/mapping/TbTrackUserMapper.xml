@@ -197,8 +197,11 @@
         on tt.trackvalue = mm.uid
         WHERE
         tt.status = '1'
-        <if test="projcetname != null and projcetname != ''">
+        <if test="projectname != null and projectname != ''">
             and trackproid in (select projectid from tb_company_project where projectname ~ #{projectname} and status = '1')
+        </if>
+        <if test="level != null and level != '' and level != '-1'">
+            and tt.trackvalue in (select cid from tb_company_property where dictvalue = #{level})
         </if>
         <if test="trackuname != null and trackuname != ''">
             and trackuname ~ #{trackuname}
@@ -215,11 +218,11 @@
         <if test="trackvalue != null and trackvalue!= ''">
             and trackvalue = #{trackvalue}
         </if>
-        <if test="startTime != null and startTime!= ''">
-            and tt.addtime &gt;= startTime
+        <if test="startTime != null and startTime != ''">
+            and tt.tracktime &gt;= #{startTime}
         </if>
         <if test="endTime != null and endTime!= ''">
-            and tt.addtime &lt;= endTime
+            and tt.tracktime &lt;= #{endTime}
         </if>
         <if test="trackcid != null and trackcid != ''">
             and trackcid = #{trackcid}
@@ -227,7 +230,7 @@
         <if test="trackproid != null and trackproid != ''">
             and trackproid = #{trackproid}
         </if>
-        <if test="customer != null and customer != ''">
+        <if test="customer != null and customer != '' ">
             and customer = #{customer}
         </if>
         order by tt.tracktime desc
@@ -257,11 +260,14 @@
         on tt.trackvalue = mm.uid
         WHERE
         tt.status = '1'
-        <if test="projcetname != null and projcetname != ''">
-            and trackproid in (select projectid from tb_company_project where projectname ~ #{projectname} and status = '1')
+        <if test="level != null and level != '' and level != '-1'">
+            and tt.trackvalue in (select cid from tb_company_property where dictvalue = #{level})
+        </if>
+        <if test="projectname != null and projectname != ''">
+            and tt.trackproid in (select projectid from tb_company_project where projectname ~ #{projectname} and status = '1')
         </if>
         <if test="trackuname != null and trackuname != ''">
-            and trackuname ~ #{trackuname}
+            and tt.trackuname ~ #{trackuname}
         </if>
         <if test="cdid != null and cdid != ''">
             and customer in (
@@ -273,13 +279,13 @@
             )
         </if>
         <if test="trackvalue != null and trackvalue!= ''">
-            and trackvalue = #{trackvalue}
+            and tt.trackvalue = #{trackvalue}
         </if>
-        <if test="startTime != null and startTime!= ''">
-            and tt.addtime &gt;= startTime
+        <if test="startTime != null and startTime != ''">
+            and tt.tracktime &gt;= #{startTime}
         </if>
         <if test="endTime != null and endTime!= ''">
-            and tt.addtime &lt;= endTime
+            and tt.tracktime &lt;= #{endTime}
         </if>
         <if test="trackcid != null and trackcid != ''">
             and trackcid = #{trackcid}
@@ -508,7 +514,6 @@
         <if test="dictvalue != null and dictvalue != ''">
             and dictvalue = #{dictvalue}
         </if>
-
         order by updtime desc limit 1 ;
     </select>
 

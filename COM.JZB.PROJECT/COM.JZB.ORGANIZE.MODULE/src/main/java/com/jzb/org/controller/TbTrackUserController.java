@@ -148,7 +148,7 @@ public class TbTrackUserController {
             // 查询跟进人员记录信息
             List<Map<String,Object>> list = null;
 
-                list = userService.queryTrackUserListOnSales(param);
+            list = userService.queryTrackUserListOnSales(param);
 
             response = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();

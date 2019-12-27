@@ -6,6 +6,7 @@ import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
@@ -358,6 +359,10 @@ public class TbCompanyProjectController {
                 count = tbCompanyProjectService.getServiceProjectListCount(param);
             }
             // 返回所有的企业列表
+            if(JzbTools.isEmpty(param.get("projectid"))){
+                JzbPageConvert.setPageRows(param);
+            }
+          
             List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectList(param);
             result = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();

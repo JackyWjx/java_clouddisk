@@ -120,6 +120,14 @@ public class TbCompanyProjectService {
      * @DateTime: 2019/10/19
      */
     public int getServiceProjectListCount(Map<String, Object> param) {
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).remove("pcdid");
+                list.get(i).remove("idx");
+            }
+            param.put("list",list);
+        }
         return tbCompanyProjectMapper.getServiceProjectListCount(param);
     }
 
@@ -147,6 +155,12 @@ public class TbCompanyProjectService {
             Map<String,Object> map = (Map<String, Object>) region.getResponseEntity();
             if (!JzbTools.isEmpty(map)){
                 uidMap.put("saler", map.get("cname"));
+            }
+            uidMap.put("uid",uidMap.get("dictvalue"));
+            Response serviceRegion = userRedisServiceApi.getCacheUserInfo(uidMap);
+            Map<String,Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+            if (!JzbTools.isEmpty(serviceMap)){
+                uidMap.put("servicer", serviceMap.get("cname"));
             }
         }
         return list;

@@ -185,6 +185,9 @@ public class TbCompanyService {
         if (!JzbDataType.isEmpty(projectList)) {
             Map<String, Object> project = new HashMap<>();
             project.put("list", projectList);
+            project.put("projectid",param.get("projectid"));
+            project.put("pageno",param.get("pageno"));
+            project.put("pagesize",param.get("pagesize"));
             // 根据服务的项目ID获取项目信息
             Response response = tbCompanyProjectApi.getServiceProjectList(project);
 
