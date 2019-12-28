@@ -8,7 +8,9 @@
     <select id="selectRoleByDeptid" resultType="Map">
         select crid,content,cddid from
         tb_plantask_job_position
-        where cddid = #{cddid}
+        <if test="cddid!=null and cddid!=''">
+            where cddid = #{cddid}
+        </if>
     </select>
 <!--    查询角色    -->
     <select id="selectRole" resultType="Map">
