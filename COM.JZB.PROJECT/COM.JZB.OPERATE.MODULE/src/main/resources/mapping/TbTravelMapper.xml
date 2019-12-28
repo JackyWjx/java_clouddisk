@@ -261,7 +261,6 @@
             <if test="supervise != null and supervise != ''"> supervise = #{supervise},</if>
             <if test="prodesc != null and prodesc != ''"> prodesc = #{prodesc},</if>
             <if test="prolist != null and prolist != ''"> prolist = #{prolist},</if>
-            <if test="projectid != null and projectid != ''"> projectid = #{projectid},</if>
             <if test="projectname != null and projectname != ''"> projectname = #{projectname},</if>
             <if test="tendercompany != null and tendercompany != ''"> tendercompany = #{tendercompany},</if>
             <if test="tendername != null and tendername != ''"> tendername = #{tendername},</if>
