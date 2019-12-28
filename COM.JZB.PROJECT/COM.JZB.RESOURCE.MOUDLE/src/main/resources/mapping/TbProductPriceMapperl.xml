@@ -31,7 +31,8 @@
         a.summary,
         a.pricedesc,
         a.price,
-        a.pid
+        a.pid,
+        a.plid
         from
         tb_product_price b
         LEFT JOIN
@@ -70,7 +71,8 @@
         a.summary,
         a.pricedesc,
         a.price,
-        a.pid
+        a.pid,
+        a.plid
         from
         tb_product_price b
         LEFT JOIN
