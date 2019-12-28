@@ -140,7 +140,10 @@
 
 
     <!-- 删除合同模板 -->
-    <update id="updateContractTemplateStatus" parameterType="java.util.Map">
-        update tb_contract_template set status='2' where tempid=#{tempid}
+    <update id="updateContractTemplateStatus" parameterType="java.util.List">
+    <foreach collection="list" item="value" separator="" close="" open="" index="">
+        update tb_contract_template set status='2' where
+        tempid =#{value};
+    </foreach>
     </update>
 </mapper>

@@ -330,8 +330,13 @@ public class TbProductFunctionController {
             if(JzbCheckParam.haveEmpty(param,new String[]{"pid"})){
                 result=Response.getResponseError();
             }else {
-                int count = tbProductFunctionService.updateProductFunctions(param);
-                result = count>0?Response.getResponseSuccess(userInfo):Response.getResponseError();
+                String[] pids = JzbDataType.getString(param.get("pid")).split(",");
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < pids.length; i++) {
+                    list.add(pids[i]);
+                }
+                int count = list.size() > 0 ? tbProductFunctionService.deleteFunction(list) : 0;
+                result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
             flag = false;

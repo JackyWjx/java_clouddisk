@@ -327,4 +327,12 @@
             and funid = #{funid}
         </if>
     </update>
+
+    <!--删除这个功能-->
+    <update id="deleteFunction" parameterType="java.util.List">
+        <foreach collection="list" item="value" separator="" close="" open="" index="">
+        update  tb_product_function  set status = '2'
+        where pid=#{value};
+        </foreach>
+    </update>
 </mapper>

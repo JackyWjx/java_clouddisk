@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -119,7 +120,12 @@ public class TbProductPriceController {
             if(JzbCheckParam.haveEmpty(param,new String[]{"servicetype"})){
                 result=Response.getResponseError();
             }else {
-                int count = tbProductPriceService.updatePriceStatus(param);
+                String[] strings = JzbDataType.getString(param.get("servicetype")).split(",");
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < strings.length; i++) {
+                    list.add(strings[i]);
+                }
+                int count = list.size() > 0 ? tbProductPriceService.updatePriceStatus(list) : 0;
                 result = count>0?Response.getResponseSuccess(userInfo):Response.getResponseError();
             }
         } catch (Exception ex) {

@@ -60,4 +60,11 @@ public interface TbProductFunctionMapper {
      * @return
      */
     int updateProductFunctions(Map<String, Object> param);
+
+    /**
+     * 根据id进行功能数据的删除
+     * @param list
+     * @return
+     */
+    int deleteFunction(List<String> list);
 }

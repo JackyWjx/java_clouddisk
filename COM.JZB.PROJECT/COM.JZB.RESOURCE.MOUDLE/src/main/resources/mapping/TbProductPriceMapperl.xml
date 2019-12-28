@@ -477,6 +477,8 @@
 
     <!-- 修改报价状态 -->
     <update id="updatePriceStatus" parameterType="java.util.Map">
-        update tb_price_service set servicetype=0 where servicetype=#{servicetype}
+        <foreach collection="list" item="value" separator="" close="" open="" index="">
+        update tb_product_price set servicetype='0' where servicetype=#{value};
+        </foreach>
     </update>
 </mapper>

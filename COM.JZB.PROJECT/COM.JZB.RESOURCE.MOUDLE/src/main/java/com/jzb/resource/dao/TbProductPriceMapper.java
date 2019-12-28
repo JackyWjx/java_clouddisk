@@ -33,7 +33,7 @@ public interface TbProductPriceMapper {
      * @param param
      * @return
      */
-    int updatePriceStatus(Map<String,Object> param);
+    int updatePriceStatus(List<String> param);
 
     /**
      * 新增产品价格报价

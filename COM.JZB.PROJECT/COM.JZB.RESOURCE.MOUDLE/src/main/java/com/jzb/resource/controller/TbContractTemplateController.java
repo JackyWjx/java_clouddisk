@@ -1,5 +1,6 @@
 package com.jzb.resource.controller;
 
+import com.jzb.base.data.JzbDataType;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -206,7 +209,6 @@ public class TbContractTemplateController {
         return result;
     }
 
-
     /**
      * 删除合同模板
      *
@@ -230,11 +232,16 @@ public class TbContractTemplateController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if(JzbCheckParam.haveEmpty(param,new String[]{"tempid"})){
-                result=Response.getResponseError();
-            }else {
-                int count = tbContractTemplateService.updateContractTemplateStatus(param);
-                result = count>0?Response.getResponseSuccess(userInfo):Response.getResponseError();
+            if (JzbCheckParam.haveEmpty(param, new String[]{"tempid"})) {
+                result = Response.getResponseError();
+            } else {
+                String[] tempid = JzbDataType.getString(param.get("tempid")).split(",");
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < tempid.length; i++) {
+                    list.add(tempid[i]);
+                }
+                int count = list.size() > 0 ? tbContractTemplateService.updateContractTemplateStatus(list) : 0;
+                result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
             flag = false;

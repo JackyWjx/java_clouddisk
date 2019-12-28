@@ -51,7 +51,7 @@ public class TbProductPriceService {
      * @param param
      * @return
      */
-    public int updatePriceStatus(Map<String,Object> param){
+    public int updatePriceStatus(List<String> param){
         return  tbProductPriceMapper.updatePriceStatus(param);
     }
 

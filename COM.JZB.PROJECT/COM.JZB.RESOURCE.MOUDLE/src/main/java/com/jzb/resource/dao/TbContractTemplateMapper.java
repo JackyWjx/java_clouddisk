@@ -19,10 +19,10 @@ public interface TbContractTemplateMapper {
 
     /**
      * 删除
-     * @param param
+     * @param list
      * @return
      */
-    int updateContractTemplateStatus(Map<String, Object> param);
+    int updateContractTemplateStatus(List<String> list);
     /**
      * 添加合同模板
      * @param param

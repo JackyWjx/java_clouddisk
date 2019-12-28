@@ -32,7 +32,7 @@ public interface TbProductResListMapper {
      * @param param
      * @return
      */
-    int updateTbProductResList(Map<String, Object> param);
+    int updateTbProductResList(List<String> param);
 
     /**
      * 修改合同配置中的产品参数列表

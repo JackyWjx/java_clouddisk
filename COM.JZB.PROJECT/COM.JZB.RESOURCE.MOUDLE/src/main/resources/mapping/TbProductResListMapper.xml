@@ -352,8 +352,10 @@
     </select>
 
     <!-- 修改产品参数状态为删除 -->
-    <update id="updateTbProductResList" parameterType="java.util.Map">
-        update tb_product_res_list set status='2' where pid=#{pid}
+    <update id="updateTbProductResList" parameterType="java.util.List">
+        <foreach collection="list" item="value" separator="" close="" open="" index="">
+        update tb_product_res_list set status='2' where pid=#{value};
+        </foreach>
     </update>
 </mapper>
 

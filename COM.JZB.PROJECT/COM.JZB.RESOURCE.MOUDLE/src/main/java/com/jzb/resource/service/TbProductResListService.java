@@ -47,11 +47,11 @@ public class TbProductResListService {
     }
     /**
      * 删除
-     * @param param
+     * @param list
      * @return
      */
-    public int updateTbProductResList(Map<String, Object> param){
-        return tbProductResListMapper.updateTbProductResList(param);
+    public int updateTbProductResList(List<String> list){
+        return tbProductResListMapper.updateTbProductResList(list);
     }
 
     /**

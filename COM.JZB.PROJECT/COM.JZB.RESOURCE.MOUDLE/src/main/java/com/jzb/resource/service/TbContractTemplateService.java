@@ -25,11 +25,11 @@ public class TbContractTemplateService {
 
     /**
      * 删除
-     * @param param
+     * @param list
      * @return
      */
-    public int updateContractTemplateStatus(Map<String, Object> param){
-        return  tbContractTemplateMapper.updateContractTemplateStatus(param);
+    public int updateContractTemplateStatus(List<String> list){
+        return  tbContractTemplateMapper.updateContractTemplateStatus(list);
     }
 
     /**

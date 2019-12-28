@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -81,8 +82,13 @@ public class TbProductResListController {
             if(JzbCheckParam.haveEmpty(param,new String[]{"pid"})){
                 result=Response.getResponseError();
             }else {
-                int count = tbProductResListService.updateTbProductResList(param);
-                result = count>0?Response.getResponseSuccess(userInfo):Response.getResponseError();
+                String[] pids = JzbDataType.getString(param.get("pid")).split(",");
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < pids.length; i++) {
+                    list.add(pids[i]);
+                }
+                int count = list.size() > 0 ? tbProductResListService.updateTbProductResList(list) : 0;
+                result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception ex) {
             flag = false;
