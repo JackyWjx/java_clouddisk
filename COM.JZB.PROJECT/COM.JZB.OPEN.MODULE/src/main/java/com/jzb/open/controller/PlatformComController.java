@@ -13,9 +13,7 @@ import com.jzb.open.service.PlatformComService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description:
@@ -116,9 +114,16 @@ public class PlatformComController {
                 }
 
                 List<Map<String, Object>> deList = platformComService.searchAppDeveloper(param);
+                List maps = new ArrayList<>();
+
+                for (int i = 0; i < deList.size(); i++) {
+                    if (!maps.contains(deList.get(i))) {
+                        maps.add(deList.get(i));
+                    }
+                }
                 result = Response.getResponseSuccess(userInfo);
                 Info = new PageInfo();
-                Info.setList(deList);
+                Info.setList(maps);
                 int count = JzbDataType.getInteger(param.get("count"));
                 if (count == 0) {
                     int size = platformComService.searchAppDeveloperCount(param);

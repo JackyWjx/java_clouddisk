@@ -1,5 +1,6 @@
 package com.jzb.auth.controller;
 
+import com.jzb.auth.api.organize.DeptUserApi;
 import com.jzb.auth.api.redis.UserRedisApi;
 import com.jzb.auth.config.AuthConfigProperties;
 import com.jzb.auth.service.AuthUserLoginService;
@@ -41,6 +42,8 @@ public class AuthUserController {
     @Autowired
     private AuthUserLoginService userLoginService;
 
+    @Autowired
+    private DeptUserApi deptUserApi;
     /**
      * 用户信息缓存对象
      */
@@ -622,6 +625,7 @@ public class AuthUserController {
                 map.put("uid", JzbDataType.getString(userInfo.get("uid")));
                 map.put("phone", JzbDataType.getString(param.get("relphone")));
                 userService.updateUserPhoneNo1(map);
+                deptUserApi.modifyDeptUser(map);
                 Map<String, Object> resuMap = userService.getUserInfo(map);
                 if (!JzbTools.isEmpty(resuMap)) {
                     // 添加增加缓存必要的参数
@@ -694,7 +698,7 @@ public class AuthUserController {
                     token = JzbDataCheck.Md5(userInfo.get("uid").toString() + System.currentTimeMillis());
                     userInfo.put("session", session);
                     userInfo.put("token", token);
-                    userInfo.put("phone", uid);
+                    userInfo.put("phone", JzbTools.isEmpty(userInfo.get("relphone")) ? "" : userInfo.get("relphone"));
                     userInfo.put("timeout", authConfig.getTokenTimeout());
                     tokenRes = userRedisApi.cacheUserInfo(userInfo);
                 } else {
@@ -702,7 +706,7 @@ public class AuthUserController {
                     token = JzbDataCheck.Md5(userInfo.get("uid").toString() + System.currentTimeMillis());
                     userInfo.put("session", session);
                     userInfo.put("token", token);
-                    userInfo.put("phone", uid);
+                    userInfo.put("phone", JzbTools.isEmpty(userInfo.get("relphone")) ? "" : userInfo.get("relphone"));
                     userInfo.put("timeout", authConfig.getTokenTimeout());
                     tokenRes = userRedisApi.updateUserToken(userInfo);
                 }
@@ -998,4 +1002,41 @@ public class AuthUserController {
         }
         return result;
     }
+
+
+
+
+    /**
+     * 根据用户ids查询用户信息
+     *计划管理
+     * @author lifei
+     */
+    @RequestMapping(value = "/getUserNameList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserNameList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            List<Map<String, Object>> userlt=null;
+            if(param.get("ids")==null){
+                result = Response.getResponseError();
+            }else{
+                userlt = userService.getUserNameList(param);
+            }
+
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess(userInfo);
+            pageInfo.setList(userlt);
+
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+
+
 } // End class AuthUserController

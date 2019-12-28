@@ -6,15 +6,13 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
+import com.jzb.org.dao.CockpitMapper;
 import com.jzb.org.dao.TbCompanyProjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 @Service
 public class TbCompanyProjectService {
@@ -23,6 +21,9 @@ public class TbCompanyProjectService {
 
     @Autowired
     private UserRedisServiceApi userRedisServiceApi;
+
+    @Autowired
+    CockpitMapper cockpitMapper;
 
     /**
      * 模糊查询单位名称
@@ -119,6 +120,14 @@ public class TbCompanyProjectService {
      * @DateTime: 2019/10/19
      */
     public int getServiceProjectListCount(Map<String, Object> param) {
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < list.size(); i++) {
+                list.get(i).remove("pcdid");
+                list.get(i).remove("idx");
+            }
+            param.put("list",list);
+        }
         return tbCompanyProjectMapper.getServiceProjectListCount(param);
     }
 
@@ -130,11 +139,29 @@ public class TbCompanyProjectService {
      * @DateTime: 2019/10/19
      */
     public List<Map<String, Object>> getServiceProjectList(Map<String, Object> param) {
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String,Object>> deptChildlist = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < deptChildlist.size(); i++) {
+                deptChildlist.get(i).remove("pcdid");
+                deptChildlist.get(i).remove("idx");
+            }
+            param.put("list",deptChildlist);
+        }
         List<Map<String, Object>> list = tbCompanyProjectMapper.queryServiceProjectList(param);
         for (int i = 0; i < list.size(); i++) {
             Map<String, Object> uidMap = list.get(i);
+            uidMap.put("uid",uidMap.get("oneheader"));
             Response region = userRedisServiceApi.getCacheUserInfo(uidMap);
-            uidMap.put("uid", region.getResponseEntity());
+            Map<String,Object> map = (Map<String, Object>) region.getResponseEntity();
+            if (!JzbTools.isEmpty(map)){
+                uidMap.put("saler", map.get("cname"));
+            }
+            uidMap.put("uid",uidMap.get("dictvalue"));
+            Response serviceRegion = userRedisServiceApi.getCacheUserInfo(uidMap);
+            Map<String,Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+            if (!JzbTools.isEmpty(serviceMap)){
+                uidMap.put("servicer", serviceMap.get("cname"));
+            }
         }
         return list;
     }

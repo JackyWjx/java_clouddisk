@@ -380,76 +380,6 @@
                 </otherwise>
             </choose>
             )
-            <!--            on conflict(deid) do update-->
-<!--            <trim prefix="set" suffixOverrides=","-->
-<!--                  suffix=" where deid=#{deid} and (status = '1' or status = '3')  ">-->
-<!--                <if test="detialsid!='' and detialsid !=null">-->
-<!--                    detialsid=#{detialsid},-->
-<!--                </if>-->
-<!--                <if test="uid!='' and uid !=null">-->
-<!--                    uid=#{uid},-->
-<!--                </if>-->
-<!--                <if test="cid!='' and cid !=null">-->
-<!--                    cid=#{cid},-->
-<!--                </if>-->
-<!--                <if test="projectid!='' and projectid !=null">-->
-<!--                    projectid=#{projectid},-->
-<!--                </if>-->
-<!--                <if test="did!='' and did !=null">-->
-<!--                    did=#{did},-->
-<!--                </if>-->
-<!--                <if test="trpeers!='' and trpeers !=null">-->
-<!--                    trpeers=#{trpeers},-->
-<!--                </if>-->
-<!--                <if test="trdefense!='' and trdefense !=null">-->
-<!--                    trdefense=#{trdefense},-->
-<!--                </if>-->
-<!--                <if test="trtime!='' and trtime !=null">-->
-<!--                    trtime=#{trtime},-->
-<!--                </if>-->
-<!--                <if test="trtype!='' and trtype !=null">-->
-<!--                    trtype=#{trtype},-->
-<!--                </if>-->
-<!--                <if test="trregion!='' and trregion !=null">-->
-<!--                    trregion=#{trregion},-->
-<!--                </if>-->
-<!--                <if test="trgoal!='' and trgoal !=null">-->
-<!--                    trgoal=#{trgoal},-->
-<!--                </if>-->
-<!--                <if test="trip!='' and trip !=null">-->
-<!--                    trip=#{trip},-->
-<!--                </if>-->
-<!--                <if test="produce!='' and produce !=null">-->
-<!--                    produce=#{produce},-->
-<!--                </if>-->
-<!--                <if test="fare!='' and fare !=null">-->
-<!--                    fare=#{fare},-->
-<!--                </if>-->
-<!--                <if test="expenses!='' and expenses !=null">-->
-<!--                    expenses=#{expenses},-->
-<!--                </if>-->
-<!--                <if test="amount!='' and amount !=null">-->
-<!--                    amount=#{amount},-->
-<!--                </if>-->
-<!--                <if test="addtime!='' and addtime !=null">-->
-<!--                    addtime=#{addtime},-->
-<!--                </if>-->
-<!--                <if test="adduid!='' and adduid !=null">-->
-<!--                    adduid=#{adduid},-->
-<!--                </if>-->
-<!--                <if test="updtime!='' and updtime !=null">-->
-<!--                    updtime=#{updtime},-->
-<!--                </if>-->
-<!--                <if test="upduid!='' and upduid !=null">-->
-<!--                    upduid=#{upduid},-->
-<!--                </if>-->
-<!--                <if test="status!='' and status !=null">-->
-<!--                    status=#{status},-->
-<!--                </if>-->
-<!--                <if test="summary!='' and summary !=null">-->
-<!--                    summary=#{summary},-->
-<!--                </if>-->
-<!--            </trim>-->
         </foreach>
     </insert>
 
@@ -526,9 +456,6 @@
     <update id="updateTravelDetials" parameterType="java.util.Map">
         update tb_travel_record_deta set
         <trim  suffixOverrides=",">
-            <if test="uid!='' and uid !=null">
-                uid=#{uid},
-            </if>
             <if test="cid!='' and cid !=null">
                 cid=#{cid},
             </if>
@@ -596,13 +523,30 @@
 
     <!-- 根据出差id查询出差记录-->
     <select id="queryTravelRecordByTravelid" parameterType="java.util.List" resultType="java.util.Map">
-        SELECT * FROM tb_travel_record
-                where travelid=#{travelid}
+        select travelid,uid,uname,
+        COALESCE(fare,0) as fare,
+        COALESCE(expenses,0) as expenses,
+        COALESCE(trip,'') as trip
+        from tb_travel_record
+        where travelid=#{travelid}
     </select>
 
     <!-- 根据出差id查询出差详情-->
     <select id="queryTravelDetailsByTravelid" parameterType="java.util.List" resultType="java.util.Map">
-        SELECT * FROM tb_travel_record_deta
+        select
+        travelid,
+        trim(deid) as deid,
+        trim(uid) as uid,
+        trim(cid) as cid,
+        trim(projectid)as projectid,
+        trpeers,trregion,trtime,
+        COALESCE(trdefense,'') as trdefense,trtype,trgoal,
+        COALESCE(fare,0) as fare,
+        COALESCE(expenses,0) as expenses,
+        COALESCE(trip,'') as trip,
+        COALESCE(produce,0) as produce,
+        status
+        from tb_travel_record_deta
         where travelid=#{travelid} order by trtime
     </select>
 
@@ -613,8 +557,8 @@
         tb1.uname as uname,
         to_char(TO_TIMESTAMP(tb1.orgtime/1000), 'YYYY-MM-DD') as orgtime,
         to_char(TO_TIMESTAMP(tb1.endtime/1000), 'YYYY-MM-DD') as endtime,
-        tb1.fare as fare,
-        tb1.expenses as expenses,
+        COALESCE(tb1.fare,0) as fare,
+        COALESCE(tb1.expenses,0) as expenses,
         tb1.traversion as "version",
         tb1.trastatus as status,
         string_agg(tb2.truid,',') as truids,
@@ -671,8 +615,8 @@
         tb1.uname as uname,
         to_char(TO_TIMESTAMP(tb1.orgtime/1000), 'YYYY-MM-DD') as orgtime,
         to_char(TO_TIMESTAMP(tb1.endtime/1000), 'YYYY-MM-DD') as endtime,
-        tb1.fare as fare,
-        tb1.expenses as expenses,
+        COALESCE(tb1.fare,0) as fare,
+        COALESCE(tb1.expenses,0) as expenses,
         tb1.traversion as status,
         tb2.idx,
         tb2.apid,
@@ -686,7 +630,10 @@
 
         <where>
             tb1.status != '2'
-            and (tb2.trstatus = '2' or tb2.trstatus = '3')
+
+            <if test="trstatus == -1">and (tb2.trstatus = 2 or tb2.trstatus = 3)</if>
+            <if test="trstatus == 2">and tb2.trstatus = 2</if>
+            <if test="trstatus == 3">and  tb2.trstatus = 3</if>
             <if test="uid != null and uid != '' ">
                 and tb2.truid = #{uid}
             </if>

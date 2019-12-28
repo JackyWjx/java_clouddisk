@@ -187,6 +187,14 @@
         uid =#{uid} AND cid=#{cid} AND cdid=#{cdid}
     </update>
 
+    <update id="updateDeptUserByUid">
+        UPDATE tb_dept_user
+        SET
+        <if test=" phone !=null and phone!=''">phone =#{phone},</if>status='1'
+        WHERE
+        uid =#{uid}
+    </update>
+
     <!--修改用户导入批次表-->
     <update id="updateExportBatch">
         UPDATE tb_export_batch
@@ -507,5 +515,18 @@
         select cname  from tb_company_list where cid=#{cid};
     </select>
 
+    <select id="getCompanyProduct" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        DISTINCT
+        tcp.manurl,
+        tpl.cname,
+        tpl.plid,
+        tpl.logo
+        from
+        tb_product_list tpl
+        LEFT JOIN  tb_company_product tcp ON tpl.pid = tcp.pid and tpl.cid = tcp.cid
+        where
+        tpl.status = '1' and tcp.status = '1' and tpl.appid is null
+    </select>
 
 </mapper>

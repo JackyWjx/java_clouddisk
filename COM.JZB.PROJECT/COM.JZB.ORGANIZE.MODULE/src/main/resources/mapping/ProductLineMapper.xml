@@ -275,7 +275,8 @@
         and
         c.ptype = #{ptype}
         and
-        p.cname like CONCAT('%',#{cname},'%')
+        p.cname ~ #{cname}
+        and p.status = '1'
     </select>
 
     <!--根据分页获取菜单信息-->
@@ -661,8 +662,11 @@
         l.pid = p.pid
         where
         l.status = #{status}
-        and
-        l.plid = ${plid}
+        <if test="plid !=null and plid !='' and plid!=0">
+            and
+            l.plid = #{plid}
+        </if>
+
         and
         l.cid = #{cid}
         and

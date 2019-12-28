@@ -6,6 +6,7 @@ import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
@@ -121,8 +122,7 @@ public class TbCompanyProjectController {
                 result = Response.getResponseError();
             } else {
                 //设置好分页参数
-                SetPageSize setPageSize = new SetPageSize();
-                param = setPageSize.setPagenoSize(param);
+                param = SetPageSize.setPagenoSize(param);
 
                 List<Map<String, Object>> regionList = new ArrayList<>();
                 if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
@@ -224,7 +224,7 @@ public class TbCompanyProjectController {
                 List<Map<String, Object>> list = tbCompanyProjectService.getComProject(param);
                 //判断前端传过来的分页总数
                 int count = tbCompanyProjectService.getCount(param);
-                //获取用户信息
+                //获取用户项目信息
                 for (int i = 0; i < list.size(); i++) {
                     Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
                     list.get(i).put("region",cityList.getResponseEntity());
@@ -359,6 +359,10 @@ public class TbCompanyProjectController {
                 count = tbCompanyProjectService.getServiceProjectListCount(param);
             }
             // 返回所有的企业列表
+            if(JzbTools.isEmpty(param.get("projectid"))){
+                JzbPageConvert.setPageRows(param);
+            }
+
             List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectList(param);
             result = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();

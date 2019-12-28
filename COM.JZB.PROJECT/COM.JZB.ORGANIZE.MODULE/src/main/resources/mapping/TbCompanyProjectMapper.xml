@@ -315,15 +315,15 @@
         update
         tb_company_project
         set
-        isrelation = 1
-        <if test="item.cid != null and item.cid != ''">,cid = #{item.cid}</if>
-        <if test="item.projectname != null and item.projectname != ''">,projectname = #{item.projectname}</if>
-        <if test="item.region != null and item.region != ''">,region = #{item.region},</if>
-        <if test="item.address != null and item.address != ''">,address = #{item.address},</if>
-        <if test="item.plantime != null and item.plantime != ''">,plantime = #{item.plantime},</if>
-        <if test="item.verifytime != null and item.verifytime != ''">,verifytime = #{item.verifytime},</if>
-        <if test="item.tendertime != null and item.tendertime != ''">,tendertime = #{item.tendertime},</if>
-        <if test="item.updtime != null and item.updtime != ''">,updtime = #{item.updtime}</if>
+        isrelation = 1,
+        <if test="item.cid != null and item.cid != ''">cid = #{item.cid},</if>
+        <if test="item.projectname != null and item.projectname != ''">projectname = #{item.projectname},</if>
+        <if test="item.region != null and item.region != ''">region = #{item.region},</if>
+        <if test="item.address != null and item.address != ''">address = #{item.address},</if>
+        <if test="item.plantime != null and item.plantime != ''">plantime = #{item.plantime},</if>
+        <if test="item.verifytime != null and item.verifytime != ''">verifytime = #{item.verifytime},</if>
+        <if test="item.tendertime != null and item.tendertime != ''">tendertime = #{item.tendertime},</if>
+        <if test="item.updtime != null and item.updtime != ''">updtime = #{item.updtime}</if>
         where
         projectid = #{item.projectid}
         </foreach>
@@ -336,7 +336,8 @@
         update
         tb_company_project
         set
-        <if test="item.cid != null and item.cid != ''">cid = 321123,</if>
+        isrelation = 0,
+        <if test="item.cid != null and item.cid != ''">cid = '0000',</if>
         <if test="item.projectname != null and item.projectname != ''">projectname = #{item.projectname},</if>
         <if test="item.region != null and item.region != ''">region = #{item.region},</if>
         <if test="item.address != null and item.address != ''">address = #{item.address},</if>
@@ -373,13 +374,30 @@
         tb_company_list cl
         on
         cpp.cid = cl.cid
+        left join
+        tb_private_company_list cc
+        on
+        cpp.cid = cc.cid
         where
         cpp.status = '1'
         and
         cpp.typeid = 't000000'
+        <if test="saler != null and saler != ''">
+            and cc.oneheader in (select uid from tb_dept_user where cname ~ #{saler})
+        </if>
         <if test="uid != null and uid != ''">and cpp.dictvalue = #{uid}</if>
-        <if test="starttime != null and starttime != ''">and cl.regtime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and cl.regtime &lt;= #{endtime}</if>
+        <if test="cname != null and cname != ''">and cl.cname ~ #{cname}</if>
+        <if test="cdid != null and cdid != ''">
+            and cc.oneheader in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="starttime != null and starttime != ''">and cpp.updtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and cpp.updtime &lt;= #{endtime}</if>
         <if test="projectname != null and projectname != ''">and cp.projectname LIKE CONCAT( '%',#{projectname},'%')</if>
         ) as company
     </select>
@@ -389,12 +407,13 @@
         select
         distinct
         cpp.cid,
+        cpp.dictvalue,
         cl.cname,
         cl.region,
         cp.projectid,
         cp.projectname,
         to_char(to_timestamp(cl.regtime / 1000), 'yyyy-MM-dd') as addtime,
-        cc.uid
+        cc.oneheader
         from
         tb_company_property cpp
         left join
@@ -406,16 +425,32 @@
         on
         cpp.cid = cl.cid
         left join
-        tb_company_common cc
+        tb_private_company_list cc
         on
         cpp.cid = cc.cid
         where
         cpp.status = '1'
         and
         cpp.typeid = 't000000'
+        <if test="projectid != null and projectid != ''">
+            and cp.projectid = #{projectid}
+        </if>
+        <if test="saler != null and saler != ''">
+            and cc.oneheader in (select uid from tb_dept _user where cname ~ #{saler})
+        </if>
         <if test="uid != null and uid != ''">and cpp.dictvalue = #{uid}</if>
-        <if test="starttime != null and starttime != ''">and cl.regtime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and cl.regtime &lt;= #{endtime}</if>
+        <if test="cname != null and cname != ''">and cl.cname ~ #{cname}</if>
+        <if test="cdid != null and cdid != ''">
+            and cc.oneheader in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="starttime != null and starttime != ''">and cpp.updtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and cpp.updtime &lt;= #{endtime}</if>
         <if test="projectname != null and projectname != ''">and cp.projectname LIKE CONCAT( '%',#{projectname},'%')</if>
         LIMIT #{pagesize} offset #{pageno}
     </select>

@@ -454,4 +454,11 @@
     <select id="getInitPassWd" parameterType="java.util.Map" resultType="java.lang.String">
         select passwd from tb_user_list where uid = #{uid} and status = '1'
     </select>
+
+    <select id="getUserNameList" parameterType="java.util.Map" resultType="java.util.Map">
+    select uid,cname FROM tb_user_list
+    where uid in(${ids} )
+    </select>
+
+
 </mapper>

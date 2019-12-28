@@ -13,9 +13,9 @@ public interface TravelExpenseMapper {
 
 	List<Map<String,Object>> queryTravelExpenseByid(Map<String, Object> map);
 
-	int saveTravelExpense(List<Map<String, Object>> list);
+	int saveTravelExpense(Map<String, Object> param);
 
-	int updateTravelExpense(List<Map<String, Object>> list);
+	int updateTravelExpense(Map<String, Object> param);
 
 	int setExpenseDeleteStatus(Map<String, Object> map);
 }

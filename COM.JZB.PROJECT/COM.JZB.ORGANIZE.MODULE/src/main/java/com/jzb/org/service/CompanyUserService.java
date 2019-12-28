@@ -3,6 +3,7 @@ package com.jzb.org.service;
 import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
@@ -139,7 +140,8 @@ public class CompanyUserService {
      */
     public List<Map<String, Object>> getCompanyCommonList(Map<String, Object> param) {
         param.put("status", "1");
-        param = setPageSize(param);
+//        param = setPageSize(param);
+
         // 定义地区list列表
         List<Map<String, Object>> regionList = new ArrayList<>();
         if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
@@ -231,6 +233,7 @@ public class CompanyUserService {
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }
+        JzbPageConvert.setPageRows(param);
         List<Map<String, Object>> list = companyUserMapper.queryCompanyCommonList(param);
         int count = JzbDataType.getInteger(param.get("count"));
         // 获取单位总数
@@ -376,7 +379,7 @@ public class CompanyUserService {
      * @author chenhui
      */
     public int delCompanyProject(Map<String, Object> param) {
-        param.put("status",'2');
+
         return companyUserMapper.delCompanyProject(param);
     }
 

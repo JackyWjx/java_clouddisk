@@ -33,6 +33,8 @@
         WHERE
         status = '1'
         and isservice='0'
+        order by  tracktime desc
+
         <if test="page!=null and page!=''">
             limit #{pagesize} offset #{pageno}
         </if>
@@ -73,10 +75,10 @@
         status = '1'
         and isservice='0'
         <if test="beginTime!=null and beginTime !=''">
-            and addtime &gt; #{beginTime}
+            and tracktime &gt; #{beginTime}
         </if>
         <if test="endTime!=null and endTime !=''">
-            and addtime &lt; #{endTime}
+            and tracktime &lt; #{endTime}
         </if>
         <choose>
             <when test="list!=null and list.size()>0">
@@ -93,9 +95,11 @@
             <otherwise>
             </otherwise>
         </choose>
+        order by  tracktime desc
         <if test="page!=null and page!=''">
             limit #{pagesize} offset #{pageno}
         </if>
+
     </select>
 
 
@@ -105,10 +109,10 @@
         WHERE status='1'
         and isservice='0'
         <if test="beginTime!=null and beginTime !=''">
-            and addtime &gt; #{beginTime}
+            and tracktime &gt; #{beginTime}
         </if>
         <if test="endTime!=null and endTime !=''">
-            and addtime &lt; #{endTime}
+            and tracktime &lt; #{endTime}
         </if>
         <choose>
             <when test="list!=null and list.size()>0">

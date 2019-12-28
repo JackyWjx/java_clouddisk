@@ -5,11 +5,30 @@
 
 	<!--根据出差id查询报销单-->
 	<select id="queryTravelExpenseByid" resultType="java.util.Map" parameterType="java.util.Map">
-		select  * from tb_travel_expense where travelid = #{travelid}
+		select
+			COALESCE(travelid,'') as travelid,
+			COALESCE(exid,'') as exid,
+			to_char(TO_TIMESTAMP(exstrtime/1000), 'YYYY-MM-DD') as exstrtime,
+			to_char(TO_TIMESTAMP(exendtime/1000), 'YYYY-MM-DD') as exendtime,
+			COALESCE(exstradderss,'') as exstradderss,
+			COALESCE(exendadderss,'') as exendadderss,
+			COALESCE(exvehicle,'') as exvehicle,
+			COALESCE(trsum,0) as trsum,
+			COALESCE(mail,0) as mail,
+			COALESCE(crosum,0) as crosum,
+			COALESCE(getaccsum,0) as getaccsum,
+			COALESCE(subsidy,0) as subsidy,
+			COALESCE(othsum,0) as othsum,
+			COALESCE("sum",0) as "sum",
+			addtime,
+			adduid,
+			status,
+			COALESCE(summary,'') as summary
+		 from tb_travel_expense where travelid = #{travelid} and status ='1'
 	</select>
 
 	 <!--插入-->
-	<insert id="saveTravelExpense" parameterType="java.util.List">
+	<insert id="saveTravelExpense" parameterType="java.util.Map">
 			insert into tb_travel_expense
 			(
 				 travelid,
@@ -31,28 +50,28 @@
 				 status ,
 				 summary
 			)
-			values
-			<foreach collection="list" item="expList" separator=",">
-			(
+			values(
 			<choose>
-				<when test="expList.travelid != null and expList.travelid!=''">
-					#{expList.travelid},
+				<when test=" travelid != null and  travelid!=''">
+					#{ travelid},
 				</when>
 				<otherwise>
 					null ,
 				</otherwise>
 			</choose>
+
 			<choose>
-				<when test="expList.exid != null and expList.exid!=''">
-					#{expList.exid},
+				<when test=" exid != null and  exid!=''">
+					#{ exid},
 				</when>
 				<otherwise>
 					null ,
 				</otherwise>
 			</choose>
+
 			<choose>
-				<when test="expList.exstrtime != null and expList.exstrtime!=''">
-					#{expList.exstrtime},
+				<when test=" exstrtime != null and  exstrtime!=''">
+					#{ exstrtime},
 				</when>
 				<otherwise>
 					null,
@@ -60,8 +79,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.exendtime != null and expList.exendtime!=''">
-					#{expList.exendtime},
+				<when test=" exendtime != null and  exendtime!=''">
+					#{ exendtime},
 				</when>
 				<otherwise>
 					null,
@@ -69,8 +88,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.exstradderss != null and expList.exstradderss!=''">
-					#{expList.exstradderss},
+				<when test=" exstradderss != null and  exstradderss!=''">
+					#{ exstradderss},
 				</when>
 				<otherwise>
 					null,
@@ -78,8 +97,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.exendadderss != null and expList.exendadderss!=''">
-					#{expList.exendadderss},
+				<when test=" exendadderss != null and  exendadderss!=''">
+					#{ exendadderss},
 				</when>
 				<otherwise>
 					null,
@@ -87,8 +106,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.exvehicle != null and expList.exvehicle!=''">
-					#{expList.exvehicle},
+				<when test=" exvehicle != null and  exvehicle!=''">
+					#{ exvehicle},
 				</when>
 				<otherwise>
 					null,
@@ -96,8 +115,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.trsum != null and expList.trsum!=''">
-					#{expList.trsum},
+				<when test=" trsum != null and  trsum!=''">
+					#{ trsum},
 				</when>
 				<otherwise>
 					null,
@@ -105,8 +124,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.mail != null and expList.mail!=''">
-					#{expList.mail},
+				<when test=" mail != null and  mail!=''">
+					#{ mail},
 				</when>
 				<otherwise>
 					null,
@@ -114,8 +133,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.crosum != null and expList.crosum!=''">
-					#{expList.crosum},
+				<when test=" crosum != null and  crosum!=''">
+					#{ crosum},
 				</when>
 				<otherwise>
 					null,
@@ -123,8 +142,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.getaccsum != null and expList.getaccsum!=''">
-					#{expList.getaccsum},
+				<when test=" getaccsum != null and  getaccsum!=''">
+					#{ getaccsum},
 				</when>
 				<otherwise>
 					null,
@@ -132,8 +151,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.subsidy != null and expList.subsidy!=''">
-					#{expList.subsidy},
+				<when test=" subsidy != null and  subsidy!=''">
+					#{ subsidy},
 				</when>
 				<otherwise>
 					null,
@@ -141,8 +160,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.othsum != null and expList.othsum!=''">
-					#{expList.othsum},
+				<when test=" othsum != null and  othsum!=''">
+					#{ othsum},
 				</when>
 				<otherwise>
 					null,
@@ -150,8 +169,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.sum != null and expList.sum!=''">
-					#{expList.sum},
+				<when test=" sum != null and  sum!=''">
+					#{ sum},
 				</when>
 				<otherwise>
 					null,
@@ -159,8 +178,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.adduid != null and expList.adduid!=''">
-					#{expList.adduid},
+				<when test=" adduid != null and  adduid!=''">
+					#{ adduid},
 				</when>
 				<otherwise>
 					null,
@@ -168,8 +187,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.addtime != null and expList.addtime!=''">
-					#{expList.addtime},
+				<when test=" addtime != null and  addtime!=''">
+					#{ addtime},
 				</when>
 				<otherwise>
 					null,
@@ -177,8 +196,8 @@
 			</choose>
 
 			<choose>
-				<when test="expList.status != null and expList.status!=''">
-					#{expList.status},
+				<when test=" status != null and  status!=''">
+					#{ status},
 				</when>
 				<otherwise>
 					1,
@@ -186,124 +205,123 @@
 			</choose>
 
 			<choose>
-				<when test="expList.summary != null and expList.summary!=''">
-					#{expList.summary}
+				<when test=" summary != null and  summary!=''">
+					#{ summary}
 				</when>
 				<otherwise>
 					null
 				</otherwise>
 			</choose>
 		)
-		</foreach>
 	</insert>
 	<!--修改报销单 -->
-	<update id="updateTravelExpense" parameterType="java.util.List">
-		<foreach collection = "list" item = "exlist" separator = ";">
+	<update id="updateTravelExpense" parameterType="java.util.Map">
 			update tb_travel_expense
 			<set>
 				<choose>
-					<when test="exlist.exstrtime != null and exlist.exstrtime!=''">
-						exstrtime = #{exlist.exstrtime},
+					<when test="  exstrtime != null and   exstrtime!=''">
+						exstrtime = #{  exstrtime},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.exendtime != null and exlist.exendtime!=''">
-						exendtime = #{exlist.exendtime},
+					<when test="  exendtime != null and   exendtime!=''">
+						exendtime = #{  exendtime},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.exstradderss != null and exlist.exstradderss!=''">
-						exstradderss = #{exlist.exstradderss},
+					<when test="  exstradderss != null and   exstradderss!=''">
+						exstradderss = #{  exstradderss},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.exendadderss != null and exlist.exendadderss!=''">
-						exendadderss = #{exlist.exendadderss},
+					<when test="  exendadderss != null and   exendadderss!=''">
+						exendadderss = #{  exendadderss},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.exvehicle != null and exlist.exvehicle!=''">
-						exvehicle = #{exlist.exvehicle},
+					<when test="  exvehicle != null and   exvehicle!=''">
+						exvehicle = #{  exvehicle},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.trsum != null and exlist.trsum!=''">
-						trsum = #{exlist.trsum},
+					<when test="  trsum != null and   trsum!=''">
+						trsum = #{  trsum},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.mail != null and exlist.mail!=''">
-						mail =#{exlist.mail},
+					<when test="  mail != null and   mail!=''">
+						mail =#{  mail},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.crosum != null and exlist.crosum!=''">
-						crosum = #{exlist.crosum},
+					<when test="  crosum != null and   crosum!=''">
+						crosum = #{  crosum},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.getaccsum != null and exlist.getaccsum!=''">
-						getaccsum = #{exlist.getaccsum},
+					<when test="  getaccsum != null and   getaccsum!=''">
+						getaccsum = #{  getaccsum},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.subsidy != null and exlist.subsidy!=''">
-						subsidy = #{exlist.subsidy},
+					<when test="  subsidy != null and   subsidy!=''">
+						subsidy = #{  subsidy},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.othsum != null and exlist.othsum!=''">
-						othsum = #{exlist.othsum},
+					<when test="  othsum != null and   othsum!=''">
+						othsum = #{  othsum},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.sum != null and exlist.sum!=''">
-						"sum" = #{exlist.sum},
+					<when test="  sum != null and   sum!=''">
+						"sum" = #{  sum},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.adduid != null and exlist.adduid!=''">
-						adduid = #{exlist.adduid},
+					<when test="  adduid != null and   adduid!=''">
+						adduid = #{  adduid},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.status != null and exlist.status!=''">
-						status = #{exlist.status},
+					<when test="  status != null and   status!=''">
+						status = #{  status},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.summary != null and exlist.summary!=''">
-						summary = #{exlist.summary},
+					<when test="  summary != null and   summary!=''">
+						summary = #{  summary},
 					</when>
 				</choose>
 
 				<choose>
-					<when test="exlist.addtime != null and exlist.addtime!=''">
-						addtime = #{exlist.addtime}
+					<when test="  addtime != null and   addtime!=''">
+						addtime = #{  addtime}
 					</when>
 				</choose>
 			</set>
-			where travelid = #{exlist.travelid}
-		</foreach>
+			where exid = #{  exid}
 	</update>
 
 	<!-- 设置删除状态-->
 	<update id="setExpenseDeleteStatus" parameterType="java.util.Map">
-        update tb_travel_expense set status='2'  where  travelid = #{travelid}
+        update tb_travel_expense set status='2'  where  status ='1'
+		<if test="exid != null and exid !='' ">and exid = #{exid}</if>
+		<if test="travelid != null and travelid !='' ">and travelid = #{travelid}</if>
     </update>
 
 </mapper>

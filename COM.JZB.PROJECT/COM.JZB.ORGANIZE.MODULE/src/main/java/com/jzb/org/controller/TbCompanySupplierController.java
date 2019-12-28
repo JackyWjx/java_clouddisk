@@ -10,6 +10,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.service.TbCompanySupplierService;
 import com.jzb.org.util.HttpConnectionURL;
+import com.jzb.org.util.JzbFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
@@ -215,8 +216,16 @@ public class TbCompanySupplierController {
             if (!JzbTools.isEmpty(image)){
                 //
                 String url = "http://47.92.247.137:8811/businesspic";
-                String path = ResourceUtils.getURL("classpath:").getPath();
-                String fileFullName = path+"static/excel/"+image.getOriginalFilename();
+//                String path = ResourceUtils.getURL("classpath:").getPath();
+                String path = "/opt/jzb/application/promotion/Nginx/html/image";
+                // 获取文件尾缀
+                String fileName = image.getOriginalFilename();
+                String fileFormat = fileName.substring(fileName.lastIndexOf(".") + 1);
+                String filePath= JzbFileUtil.getFilePath();
+//                String fileFullName = path+"static/excel/"+image.getOriginalFilename();
+                //保存文件/opt/jzb/application/promotion/Nginx/html/static
+                String fileFullName =  path +   filePath + "." + fileFormat;
+
                 File resourceInfoFile = new File(fileFullName);
                 if(resourceInfoFile.exists()){
                     resourceInfoFile.delete();
@@ -229,6 +238,7 @@ public class TbCompanySupplierController {
 
                 String s = HttpConnectionURL.formUpload(url, null, fileMap, "");
                 resourceInfoFile.delete();
+
                 Map<String, Object> parse  =(Map<String, Object>) JSON.parse(s);
                 if(parse != null && parse.get("code").equals("200")) {
                     result = Response.getResponseSuccess();
@@ -258,9 +268,11 @@ public class TbCompanySupplierController {
             if (!JzbTools.isEmpty(front) && !JzbTools.isEmpty(back)){
 
                 String url = "http://47.92.247.137:8811/idcard";
-                String path = ResourceUtils.getURL("classpath:").getPath();
+//                String path = ResourceUtils.getURL("classpath:").getPath();
+                String path = "/opt/jzb/application/promotion/Nginx/html/image";
+
                 // 查询身份证正面信息（人脸）
-                String fileFullName = path+"static/excel/"+front.getOriginalFilename();
+                String fileFullName = path + front.getOriginalFilename();
                 File resourceInfoFile = new File(fileFullName);
                 if(resourceInfoFile.exists()){
                     resourceInfoFile.delete();
@@ -276,7 +288,7 @@ public class TbCompanySupplierController {
                 Map<String, Object> frontMap  =(Map<String, Object>) JSON.parse(sFront);
 
                 // 身份证反面
-                String backFileFullName = path+"static/excel/"+back.getOriginalFilename();
+                String backFileFullName = path + back.getOriginalFilename();
                 File backResourceInfoFile = new File(backFileFullName);
                 if(backResourceInfoFile.exists()){
                     backResourceInfoFile.delete();

@@ -129,6 +129,13 @@ public interface DeptMapper {
      * @return
      */
     int updateDeptUser(Map<String, Object> map);
+    /**
+     * 修改部门用户表信息
+     *
+     * @param map
+     * @return
+     */
+    int updateDeptUserByUid(Map<String, Object> map);
 
     /**
      * 新增部门用户表信息
@@ -223,4 +230,11 @@ public interface DeptMapper {
     List<Map<String, Object>> queryDeptUserChildList(Map<String, Object> map);
 
     String getCompanyName(Map<String, Object> map);
+
+    /**
+     * 云产品市场的查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getCompanyProduct(Map<String, Object> param);
 }

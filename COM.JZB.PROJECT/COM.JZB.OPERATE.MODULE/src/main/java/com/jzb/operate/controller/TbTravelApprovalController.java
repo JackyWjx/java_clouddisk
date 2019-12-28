@@ -4,10 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
-import com.jzb.base.util.JzbCheckParam;
-import com.jzb.base.util.JzbPageConvert;
-import com.jzb.base.util.JzbRandom;
-import com.jzb.base.util.JzbTools;
+import com.jzb.base.util.*;
 import com.jzb.operate.api.base.RegionBaseApi;
 import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.api.org.NewTbCompanyListApi;
@@ -69,7 +66,7 @@ public class TbTravelApprovalController {
      */
     @CrossOrigin
     @Transactional
-    @PostMapping("/addTravelApproval")
+    @RequestMapping(value = "/addTravelApproval", method = RequestMethod.POST)
     public Response addTravelApproval(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
@@ -106,8 +103,12 @@ public class TbTravelApprovalController {
                     travelApprovalService.save(approvalList.get(i));
                 }
                 // 添加抄送人
-                List<String> ccuidList = (List<String>) param.get("ccuid");
-                param.put("ccuid", ccuidList.toString());
+                if(!JzbTools.isEmpty(param.get("ccuid"))){
+                    List<String> ccuidList = (List<String>) param.get("ccuid");
+                    param.put("ccuid",StrUtil.list2String(ccuidList,","));
+                }else {
+                    param.put("ccuid","");
+                }
                 if(apType == 1){
                     param.put("trastatus", "2"); // 设置出差状态
                 }else {
@@ -140,7 +141,7 @@ public class TbTravelApprovalController {
      */
     @CrossOrigin
     @Transactional
-    @PostMapping("/updateTravelApproval")
+    @RequestMapping(value = "/updateTravelApproval", method = RequestMethod.POST)
     public Response updateTravelApproval(@RequestBody Map<String, Object> param) {
 
         Response response;
@@ -193,7 +194,6 @@ public class TbTravelApprovalController {
                 Integer isOk = (Integer) param.get("isOk");
                 //获取审批类型
                 Integer apType = JzbDataType.getInteger(param.get("aptype"));
-                int count = 0;
                 if (isOk == 1) {// 同意
                     Map<String, Object> whereMap = new HashMap<>();
                     whereMap.put("trtime", System.currentTimeMillis());//审批时间
@@ -212,12 +212,12 @@ public class TbTravelApprovalController {
                         query.put("version", param.get("version"));
                         query.put("trstatus", 2);
                         query.put("trtime", System.currentTimeMillis());
-                        count = travelApprovalService.update(query);
-                    }else if (i > 0 && isLast && apType.equals("1"))  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
+                        travelApprovalService.update(query);
+                    }else if (i > 0 && isLast && apType == 1)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
                         query.put("rebversion",JzbRandom.getRandom(8));
                         query.put("aptype",2);
                         query.put("travelid",param.get("travelid"));
-                        count = travelPlanService.updateTravelRecord(query);
+                        travelPlanService.updateTravelRecord(query);
                     }
                 } else {// 退回
                     Map<String, Object> uMap = new HashMap<>();
@@ -232,10 +232,9 @@ public class TbTravelApprovalController {
                         uMap.put("rebstatus", 1);
                     }
                     uMap.put("travelid",param.get("travelid"));
-                    count = travelPlanService.updateTravelRecord(uMap);
+                    travelPlanService.updateTravelRecord(uMap);
                 }
-
-                response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                response = Response.getResponseSuccess(userInfo);
             }
         } catch (Exception ex) {
             flag = false;
@@ -370,11 +369,12 @@ public class TbTravelApprovalController {
                     // 2.根据查询出来的travelid 查询 出差记录详情
                     whereParam.put("travelid", recordList.get(i).get("travelid"));
                     List<Map<String, Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(whereParam);
+                    List<Map<String, Object>> travelInfoList;
                     for (int j = 0, b = detailsList.size(); j < b; j++) {
                         Map<String, Object> query = new HashMap<>();
                         query.put("userinfo", param.get("userinfo"));
                         // 获取同行人名称
-                        if (ObjectUtils.isEmpty(detailsList.get(j).get("trpeers"))) {
+                        if (JzbTools.isEmpty(detailsList.get(j).get("trpeers"))) {
                             detailsList.get(j).put("trpeers", "");
                         } else {
                             query.put("uids", detailsList.get(j).get("trpeers"));
@@ -385,11 +385,9 @@ public class TbTravelApprovalController {
                         // 出差区域
                         query.put("region", detailsList.get(j).get("trregion"));
                         resApi = regionBaseApi.getRegionInfo(query);
-                        // Map<String, Object> regionID = (Map<String, Object>) resApi.getResponseEntity();
-
                         detailsList.get(j).put("travelCity", resApi.getResponseEntity());
                         //获取单位名称
-                        if (ObjectUtils.isEmpty(detailsList.get(j).get("cid"))) {
+                        if (JzbTools.isEmpty(detailsList.get(j).get("cid"))) {
                             detailsList.get(j).put("clist", null);
                         } else {
                             query.put("cid", detailsList.get(j).get("cid"));
@@ -401,19 +399,29 @@ public class TbTravelApprovalController {
                         query.put("travelid", detailsList.get(j).get("travelid"));
                         query.put("deid", detailsList.get(j).get("deid"));
                         //情报收集
-                        detailsList.get(j).put("travelinfolist", travelInfoService.list(query));
+                        travelInfoList = travelInfoService.list(query);
+                        for (int l = 0, d = travelInfoList.size();l < d;l++){
+                            List<String> proList = new ArrayList<>();
+                            if(!JzbTools.isEmpty(travelInfoList.get(l).get("prolist"))) {
+                                proList = StrUtil.string2List(travelInfoList.get(l).get("prolist").toString(), ",");
+                                travelInfoList.get(l).put("prolist",proList);
+                            }else {
+                                travelInfoList.get(l).put("prolist",proList);
+                            }
+                        }
+                        detailsList.get(j).put("travelinfolist", travelInfoList);
                         //出差资料
                         detailsList.get(j).put("traveldatalist", travelDataService.list(query));
                         //预计产出
-                        Integer produce = detailsList.get(j).get("produce") == null ? 0 : (Integer) detailsList.get(j).get("produce");
+                        Integer produce =  (Integer) detailsList.get(j).get("produce");
                         List<Map<String, Object>> produceMaps = travelProduceService.list(null);
                         List<Integer> produceList = PrindexUtil.getPrindex(produce, produceMaps);
                         //筛选过滤 获取出差详情的产出资料
                         List<Map<String, Object>> selectedProduce = new ArrayList<>();
-                        for (Map<String, Object> map : produceMaps) {
-                            Integer prindex = (Integer) map.get("prindex");
-                            for (Integer k : produceList) {
-                                if (k == prindex) {
+                        for (Integer k : produceList) {
+                            for(Map<String, Object> map : produceMaps){
+                                Integer prindex = (Integer) map.get("prindex");
+                                if (k.equals(prindex)) {
                                     selectedProduce.add(map);
                                     break;
                                 }
@@ -424,67 +432,6 @@ public class TbTravelApprovalController {
                     }
                     recordList.get(i).put("children", detailsList);
                 }
-//                for (Map<String, Object> travelMap : recordList) {
-//                    Map<String, Object> whereParam = new HashMap<>();
-//                    // 2.根据查询出来的travelid 查询 出差记录详情
-//                    whereParam.put("travelid", travelMap.get("travelid"));
-//                    List<Map<String, Object>> detailsList = travelPlanService.queryTravelDetailsByTravelid(whereParam);
-//
-//                    for (Map<String, Object> detialsMap : detailsList) {
-//                        Map<String, Object> query = new HashMap<>();
-//                        query.put("userinfo", param.get("userinfo"));
-//                        // 获取同行人名称
-//                        if (ObjectUtils.isEmpty(detialsMap.get("trpeers"))) {
-//                            detialsMap.put("trpeers", "");
-//                        } else {
-//                            query.put("uids", detialsMap.get("trpeers"));
-//                            resApi = tbDeptUserListApi.searchInvitee(query);
-//                            String trpeers = (String) resApi.getResponseEntity();
-//                            detialsMap.put("trpeers", trpeers);
-//                        }
-//                        // 出差区域
-//                        query.put("region", detialsMap.get("trregion"));
-//                        resApi = regionBaseApi.getRegionInfo(query);
-//                        // Map<String, Object> regionID = (Map<String, Object>) resApi.getResponseEntity();
-//
-//                        detialsMap.put("travelCity", resApi.getResponseEntity());
-//                        //获取单位名称
-//                        if (ObjectUtils.isEmpty(detialsMap.get("cid"))) {
-//                            detialsMap.put("clist", null);
-//                        } else {
-//                            query.put("cid", detialsMap.get("cid"));
-//                            resApi = newTbCompanyListApi.queryCompanyNameBycid(query);
-//                            List<Map<String, Object>> calist = resApi.getPageInfo().getList();
-//                            detialsMap.put("clist", calist);
-//                        }
-//
-//                        query.put("travelid", detialsMap.get("travelid"));
-//                        query.put("deid", detialsMap.get("deid"));
-//                        //情报收集
-//                        detialsMap.put("travelinfolist", travelInfoService.list(query));
-//                        //出差资料
-//                        detialsMap.put("traveldatalist", travelDataService.list(query));
-//                        //预计产出
-//                        Integer produce = detialsMap.get("produce") == null ? 0 : (Integer) detialsMap.get("produce");
-//                        List<Map<String, Object>> produceMaps = travelProduceService.list(null);
-//                        List<Integer> produceList = PrindexUtil.getPrindex(produce, produceMaps);
-//                        //筛选过滤 获取出差详情的产出资料
-//                        List<Map<String, Object>> selectedProduce = new ArrayList<>();
-//                        for (Map<String, Object> map : produceMaps) {
-//                            Integer prindex = (Integer) map.get("prindex");
-//                            for (Integer i : produceList) {
-//                                if (i == prindex) {
-//                                    selectedProduce.add(map);
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                        detialsMap.put("produceList", selectedProduce);
-//                    }
-//
-//                    travelMap.put("children", detailsList);
-//
-//                }
 
                 // 得到总数
                 int count = travelPlanService.getTravelApprovalRecordCountByUid(param);

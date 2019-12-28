@@ -9,5 +9,5 @@ import java.util.Map;
 @Repository
 public interface AuthInfoMapper {
 
-    String getUserByUids(Map<String, Object> whereMap);
+    Map<String, Object> getUserByUids(Map<String, Object> whereMap);
 }

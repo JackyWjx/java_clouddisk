@@ -48,6 +48,9 @@ public class DeptService {
     @Autowired
     private OrgConfigProperties config;
 
+
+    @Autowired
+    private ProductLineService productLineService;
     /**
      * 通过根据企业id获取部门信息
      *
@@ -270,6 +273,16 @@ public class DeptService {
         return result;
     }
 
+
+    /**
+     * 修改部门用户表信息
+     *
+     * @param map
+     * @return
+     */
+    public int updateDeptUserByUid(Map<String, Object> map){
+        return deptMapper.updateDeptUserByUid(map);
+    }
     /**
      * 保存用户导入批次表
      *
@@ -975,5 +988,28 @@ public class DeptService {
         return result;
     }
 
-
+    /**
+     * 云产品市场的查询
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getCompanyProduct(Map<String, Object> param) {
+        List<Map<String,Object>> mapList = deptMapper.getCompanyProduct(param);
+         List<Map<String,Object>> mapList1 = productLineService.getProductLineList(param);
+        for (int i = 0; i < mapList1.size(); i++) {
+            for (int j = 0; j < mapList.size(); j++) {
+                if (mapList1.get(i).get("plid") == mapList.get(j).get("plid")) {
+                    if (mapList1.get(i).get("children") == null) {
+                        mapList1.get(i).put("children", new ArrayList<>());
+                        List list = (List) mapList1.get(i).get("children");
+                        list.add(mapList.get(j));
+                    } else {
+                        List list = (List) mapList1.get(i).get("children");
+                        list.add(mapList.get(j));
+                    }
+                }
+            }
+        }
+        return mapList1;
+    }
 }

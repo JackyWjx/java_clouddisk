@@ -108,8 +108,6 @@ public class CommonUserController {
             Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid",userinfo.get("uid"));
             int count = JzbDataType.getInteger(param.get("count"));
-            // 查询用户总数
-            count = count > 0 ? count:userService.getCount(param);
 
             JzbPageConvert.setPageRows(param);
             List<Map<String, Object>> regionList = new ArrayList<>();
@@ -202,6 +200,9 @@ public class CommonUserController {
                 // 将所有结果加入参数中传入
                 param.put("list", regionList);
             }
+            // 查询用户总数
+            count = count > 0 ? count:userService.getCount(param);
+
             // 查询用户
             List<Map<String,Object>> list = userService.queryCommonUser(param);
             //获取用户信息
@@ -246,6 +247,14 @@ public class CommonUserController {
         try {
             Map<String,Object> userinfo = (Map<String, Object>) paramp.get("userinfo");
             // 删除公海用户
+            List<Map<String,Object>> list = (List<Map<String, Object>>) paramp.get("list");
+            if (!JzbTools.isEmpty(list)){
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).put("updtime",System.currentTimeMillis());
+                    list.get(i).put("status",'2');
+                }
+            }
+            paramp.put("list",list);
             int count = userService.delUser(paramp);
             response = count > 0 ? Response.getResponseSuccess(userinfo):Response.getResponseError();
         } catch (Exception e) {
@@ -547,26 +556,27 @@ public class CommonUserController {
 
               // 获取模板中的用户地区
                 String regionName = JzbDataType.getString(map.get(6));
-                param.put("regionName", regionName);
-                if (JzbDataType.isEmpty(regionName)) {
-                    summary += "用户所属地区不能为空!";
-                    exportMap.put("status", "2");
-                    exportMap.put("summary", summary);
-                    userInfoList.add(exportMap);
-                    errorList.add(exportMap);
-                    continue;
+                if (!JzbTools.isEmpty(regionName)) {
+                    param.put("regionName", regionName);
+//                    if (JzbDataType.isEmpty(regionName)) {
+//                        summary += "用户所属地区不能为空!";
+//                        exportMap.put("status", "2");
+//                        exportMap.put("summary", summary);
+//                        userInfoList.add(exportMap);
+//                        errorList.add(exportMap);
+//                        continue;
+//                    }
+                    // 调用获取地区ID的接口
+                    Response regionID = regionBaseApi.getRegionID(param);
+                    Object obj = regionID.getResponseEntity();
+                    // 定义地区ID
+                    String region = "";
+                    if (JzbDataType.isMap(obj)) {
+                        Map<Object, Object> regionMap = (Map<Object, Object>) obj;
+                        region = JzbDataType.getString(regionMap.get("creaid"));
+                    }
+                    param.put("region", region);
                 }
-                // 调用获取地区ID的接口
-                Response regionID = regionBaseApi.getRegionID(param);
-                Object obj = regionID.getResponseEntity();
-                // 定义地区ID
-                String region = "";
-                if (JzbDataType.isMap(obj)) {
-                    Map<Object, Object> regionMap = (Map<Object, Object>) obj;
-                    region = JzbDataType.getString(regionMap.get("creaid"));
-                }
-                param.put("region", region);
-
                 // 获取模板中的用户单位名称
                 String cname = JzbDataType.getString(map.get(7));
                 param.put("cname", cname);

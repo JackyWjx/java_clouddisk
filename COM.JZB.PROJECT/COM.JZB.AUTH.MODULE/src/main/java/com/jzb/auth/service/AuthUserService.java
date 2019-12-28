@@ -383,4 +383,8 @@ public class AuthUserService {
     public String getInitPassWd(Map<String, Object> param) {
         return userMapper.getInitPassWd(param);
     }
+
+    public List<Map<String, Object>> getUserNameList(Map<String, Object> param) {
+        return userMapper.getUserNameList(param);
+    }
 } // End class AuthUserService

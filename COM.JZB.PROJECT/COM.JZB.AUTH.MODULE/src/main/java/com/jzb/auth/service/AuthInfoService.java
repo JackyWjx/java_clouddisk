@@ -17,12 +17,12 @@ public class AuthInfoService {
     @Autowired
     private AuthInfoMapper authInfoMapper;
 
-    public String getUserByUids(Map<String, Object> param) {
+    public Map<String, Object> getUserByUids(Map<String, Object> param) {
         Map<String,Object> whereMap = new HashMap<>();
         String[] uids = param.get("uids").toString().split(",");
         List<String> uidList = new ArrayList<>(Arrays.asList(uids));
         whereMap.put("uids",uidList);
-        String unameStr = authInfoMapper.getUserByUids(whereMap);
-        return unameStr;
+        Map<String, Object> userMap = authInfoMapper.getUserByUids(whereMap);
+        return userMap;
     }
 }

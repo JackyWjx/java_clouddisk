@@ -245,7 +245,7 @@ public class RoleController {
     }
 
     /**
-     * 修改角色组信息
+     * 修改角色组信息getProductMenuList
      *
      * @param param
      * @return
@@ -647,7 +647,7 @@ public class RoleController {
      * 用户 给 体系建设 内超级管理员 权限
      * 查询当前用户 是否有超级权限
      * @param param
-     * @Author: lifei
+     * @Author: lifeigetGroupUser
      * @DateTime: 2019/12/19 14:07
      */
     @RequestMapping(value = "/getDocMsgPower", method = RequestMethod.POST)

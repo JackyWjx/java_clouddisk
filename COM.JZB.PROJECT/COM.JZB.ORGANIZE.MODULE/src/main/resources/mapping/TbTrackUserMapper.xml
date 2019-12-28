@@ -161,14 +161,131 @@
     
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
-        select isservice,trackres,trackoutput,abdialogue,nextadvance,excontent,trackdesc,trackid,tracktime,trackuname,tracktype,trackvalue,trackcontent,image,summary,trackcid,trackproid,customer
-        from tb_track_user_list where status = '1'
-        and trackvalue = #{trackvalue}
-        <if test="startTime != null and startTime!= ''">
-            and addtime &gt;= startTime
+        SELECT
+        trackvalue,
+        isservice,
+        trackres,
+        trackoutput,
+        abdialogue,
+        nextadvance,
+        excontent,
+        trackdesc,
+        trackid,
+        tracktime,
+        trackuname,
+        tracktype,
+        trackcontent,
+        image,
+        tt.summary,
+        trackcid,
+        trackproid,
+        customer,
+        pp.projectname,
+        cc.cname,
+        mm.uname as relperson,
+        mm.phone as relphone
+        FROM
+        tb_track_user_list tt
+        left join
+        tb_company_project pp
+        on tt.trackproid = pp.projectid
+        LEFT JOIN
+        tb_company_list cc
+        on tt.trackvalue = cc.cid
+        LEFT JOIN
+        tb_common_user_list  mm
+        on tt.trackvalue = mm.uid
+        WHERE
+        tt.status = '1'
+        <if test="projectname != null and projectname != ''">
+            and trackproid in (select projectid from tb_company_project where projectname ~ #{projectname} and status = '1')
+        </if>
+        <if test="level != null and level != '' and level != '-1'">
+            and tt.trackvalue in (select cid from tb_company_property where dictvalue = #{level})
+        </if>
+        <if test="trackuname != null and trackuname != ''">
+            and trackuname ~ #{trackuname}
+        </if>
+        <if test="cdid != null and cdid != ''">
+            and customer in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="trackvalue != null and trackvalue!= ''">
+            and trackvalue = #{trackvalue}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and tt.tracktime &gt;= #{startTime}
         </if>
         <if test="endTime != null and endTime!= ''">
-            and addtime &lt;= endTime
+            and tt.tracktime &lt;= #{endTime}
+        </if>
+        <if test="trackcid != null and trackcid != ''">
+            and trackcid = #{trackcid}
+        </if>
+        <if test="trackproid != null and trackproid != ''">
+            and trackproid = #{trackproid}
+        </if>
+        <if test="customer != null and customer != '' ">
+            and customer = #{customer}
+        </if>
+        order by tt.tracktime desc
+        <if test="pagesize != null and pagesize != ''">
+            limit  #{pagesize}
+            offset #{pageno}
+        </if>
+
+
+
+    </select>
+
+    <!--查询销售统计分析跟踪记录数-->
+    <select id="getTrackCountOnSales" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_track_user_list tt
+        left join
+        tb_company_project pp
+        on tt.trackproid = pp.projectid
+        LEFT JOIN
+        tb_company_list cc
+        on tt.trackvalue = cc.cid
+        LEFT JOIN
+        tb_common_user_list  mm
+        on tt.trackvalue = mm.uid
+        WHERE
+        tt.status = '1'
+        <if test="level != null and level != '' and level != '-1'">
+            and tt.trackvalue in (select cid from tb_company_property where dictvalue = #{level})
+        </if>
+        <if test="projectname != null and projectname != ''">
+            and tt.trackproid in (select projectid from tb_company_project where projectname ~ #{projectname} and status = '1')
+        </if>
+        <if test="trackuname != null and trackuname != ''">
+            and tt.trackuname ~ #{trackuname}
+        </if>
+        <if test="cdid != null and cdid != ''">
+            and customer in (
+            select uid from tb_dept_user where cdid in
+            <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                #{item.cdid}
+            </foreach>
+            and status = '1'
+            )
+        </if>
+        <if test="trackvalue != null and trackvalue!= ''">
+            and tt.trackvalue = #{trackvalue}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and tt.tracktime &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime!= ''">
+            and tt.tracktime &lt;= #{endTime}
         </if>
         <if test="trackcid != null and trackcid != ''">
             and trackcid = #{trackcid}
@@ -179,13 +296,9 @@
         <if test="customer != null and customer != ''">
             and customer = #{customer}
         </if>
-        order by id desc
-        <if test="pageno != null and pageno != ''">
-            limit #{pagesize}
-            offset #{pageno}
-        </if>
-
     </select>
+
+
 
     <!--查询qq/微信联系记录数-->
     <select id="getQCount" parameterType="java.util.Map" resultType="java.lang.Integer">
@@ -253,6 +366,8 @@
             )
         </if>
     </select>
+
+
     <!--<select id="getHandleCount" parameterType="java.util.Map" resultType="java.lang.Integer">-->
         <!--&lt;!&ndash;select count(1) from tb_track_user_list&ndash;&gt;-->
          <!--&lt;!&ndash;where trackcid in&ndash;&gt;-->
@@ -276,12 +391,17 @@
     <!--查询跟进人员记录总数-->
     <select id="getTrackCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_track_user_list where status = '1' and adduid = #{adduid}
+
     </select>
+
+
     
     <!--删除跟进人员记录-->
     <update id="delTrackUser" parameterType="java.util.Map" >
-        update tb_track_user_list
-        set status = '2' where trackid = #{trackid}
+        <foreach collection="list" separator="" item="item" index="index" open="" close="">
+            update tb_track_user_list
+            set status = '2' ,updtime = #{item.updtime} where trackid = #{item.trackid};
+        </foreach>
     </update>
 
     <!--修改跟进人员记录信息-->
@@ -386,6 +506,15 @@
             and addtime &lt;= #{twelve}
         </if>
 
+    </select>
+
+    <!--查询跟进单位的等级-->
+    <select id="queryLevel" parameterType="java.util.Map" resultType="java.lang.String">
+        select dictvalue from  tb_company_property where  cid = #{trackvalue} and status = '1'
+        <if test="dictvalue != null and dictvalue != ''">
+            and dictvalue = #{dictvalue}
+        </if>
+        order by updtime desc limit 1 ;
     </select>
 
     <!--根据跟进人查询 跟进阶段客户列表-->

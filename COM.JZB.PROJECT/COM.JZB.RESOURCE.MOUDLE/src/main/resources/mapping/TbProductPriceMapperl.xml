@@ -20,26 +20,29 @@
     <!--查询合同配置中的资源产品-->
     <select id="getProductPrice" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        a.servicetype,
         a.id,
         to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
         a.cname,
         a.status,
+        a.service,
         a.paradesc,
         a.service,
         a.summary,
         a.pricedesc,
         a.price,
-        a.pid
+        a.pid,
+        a.plid
         from
         tb_product_price b
         LEFT JOIN
-        tb_product_res_list a
-        on a.pid = b.pid
-        where 1=1
-        <if test="plid != null">
+        tb_price_service a
+        on a.pid = b.pid and a.servicetype = b.servicetype
+        where a.id is not null
+        <if test="plid != null and plid !='' and plid!=0">
             and a.plid = #{plid}
         </if>
-        <if test="cname != null">
+        <if test="cname != null and cname!=''">
             and a.cname like concat('%',#{cname},'%')
         </if>
         group by
@@ -57,17 +60,29 @@
         from
         (
         select
-        a.id
+        a.servicetype,
+        a.id,
+        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        a.cname,
+        a.status,
+        a.service,
+        a.paradesc,
+        a.service,
+        a.summary,
+        a.pricedesc,
+        a.price,
+        a.pid,
+        a.plid
         from
         tb_product_price b
         LEFT JOIN
-        tb_product_res_list a
-        on a.pid = b.pid
-        where 1=1
-        <if test="plid != null">
+        tb_price_service a
+        on a.pid = b.pid and a.servicetype = b.servicetype
+        where a.id is not null
+        <if test="plid != null and plid !='' and plid!=0">
             and a.plid = #{plid}
         </if>
-        <if test="cname != null">
+        <if test="cname != null and cname!=''">
             and a.cname like concat('%',#{cname},'%')
         </if>
         group by
@@ -79,6 +94,7 @@
         <foreach collection="list" index="index" item="item" separator=";">
             insert into
             tb_product_price(
+            servicetype,
             pid,
             pricetype,
             itemid,
@@ -95,6 +111,14 @@
             summary
             )values
             (
+            <choose>
+                <when test="item.servicetype != null">
+                    #{item.servicetype},
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
             <choose>
                 <when test="item.pid != null">
                     #{item.pid},
@@ -210,13 +234,14 @@
         from
         tb_product_price
         where
-        pid=#{pid} and status != '2'
+        pid=#{pid} and status != '2' and servicetype = #{servicetype}
     </select>
 
 
     <insert id="addProductPrice" parameterType="java.util.Map">
         insert into
         tb_product_price(
+        servicetype,
         pid,
         pricetype,
         itemid,
@@ -233,6 +258,14 @@
         summary
         )values
         (
+        <choose>
+            <when test="servicetype != null and servicetype !=''">
+                #{servicetype},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="pid != null">
                 #{pid},
@@ -375,5 +408,69 @@
             where
             pid=#{pid}
     </update>
-    
+
+    <insert id="addPriceService" parameterType="java.util.Map">
+        insert
+        into
+        tb_price_service
+        (servicetype,pid,plid,cname,paradesc,service,price,pricedesc,idx,ouid,addtime,updtime,status,summary)
+        values (
+        #{servicetype},
+        #{pid},
+        #{plid},
+        #{cname},
+        <choose>
+            <when test="prodesc != null and prodesc != ''">
+            #{paradesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="service != null and service != ''">
+                #{service},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="price != null and price != ''">
+                #{price},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pricedesc != null and pricedesc != ''">
+                #{pricedesc},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="idx != null and idx != ''">
+                #{idx},
+            </when>
+            <otherwise>
+                (select count(1) from tb_price_service),
+            </otherwise>
+        </choose>
+        #{ouid},
+        #{addtime},
+        #{updtime},
+        #{status},
+        #{summary}
+        ) on conflict(servicetype) do update
+         set
+        <if test="prodesc != null and prodesc != ''">paradesc = #{paradesc},</if>
+        <if test="service != null and service != ''">service = #{service},</if>
+        <if test="price != null and price != ''">price = #{price},</if>
+        <if test="pricedesc != null and pricedesc != ''">pricedesc = #{pricedesc},</if>
+        <if test="summary != null and summary != ''">summary = #{summary},</if>
+        <if test="updtime != null and updtime != ''">updtime = #{updtime}</if>
+    </insert>
 </mapper>

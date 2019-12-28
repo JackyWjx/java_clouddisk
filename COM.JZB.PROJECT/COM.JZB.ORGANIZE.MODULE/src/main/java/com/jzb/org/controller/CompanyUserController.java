@@ -344,7 +344,7 @@ public class CompanyUserController {
 
     /**
      * CRM-销售业主-公海-业主下的项目7
-     * 点击业主下的项目中修改
+     * 点击业主下的项目中删除
      *
      * @author kuangbin
      */
@@ -355,6 +355,13 @@ public class CompanyUserController {
         try {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+            if(!JzbTools.isEmpty(list)){
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).put("status",'2');
+                }
+            }
+            param.put("list",list);
             // 返回所有的企业列表
             int count = companyUserService.delCompanyProject(param);
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();

@@ -6,25 +6,90 @@
 
     <!--根据公司id查询公司信息-->
     <select id="queryCommonCompanyListBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,cname,supervise,orgrelation,prodesc,prolist from tb_common_company_list where cid=#{cid}
+        select trim(cid) as cid,
+        cname,
+        COALESCE (supervise, '') as supervise,
+        COALESCE (orgrelation, '') as orgrelation,
+        COALESCE (prodesc, '') as prodesc,
+        COALESCE (prolist, '') as prolist
+        from tb_common_company_list where cid=#{cid}
     </select>
 
 
     <!--根据公司id查询公司名称-->
     <select id="queryCompanyNameBycid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,cname from tb_common_company_list where  cid=#{cid}
+        select trim(cid) as cid,
+        cname
+        from tb_common_company_list where  cid=#{cid}
     </select>
 
     <!--根据公司id查询项目信息-->
     <select id="queryCompanyByid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
-         from tb_company_project where projectid=#{projectid}
-         limit #{pagesize}  offset #{pageno}
+        select
+        trim(projectid) as projectid,
+        trim(cid) as cid,
+        COALESCE (projectname, '') as projectname,
+        COALESCE (tendername, '') as tendername,
+        tendertime,
+        COALESCE (tenderphone, '') as tenderphone,
+        COALESCE (tendercompany, '') as tendercompany,
+        COALESCE (projecttype, '') as projecttype,
+        COALESCE (mail, '') as promail,
+        COALESCE (tenderresultcompany, '') as tenderresultcompany,
+        COALESCE (tenderagent, '') as tenderagent,
+        COALESCE (agentphone, '') as agentphone,
+        COALESCE (projectras, '') as projectras,
+        COALESCE (relation, '') as relation
+        from tb_company_project where projectid=#{projectid}
+        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--根据项目id查询项目情报-->
     <select id="queryCompanyByProjectid" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_common_project_info where  projectid=#{projectid}
+        select
+        trim(projectid) as projectid,
+        COALESCE (lineuid,'') as lineuid,
+        COALESCE (lineuname,'') as lineuname,
+        COALESCE (linephone,'') as linephone,
+        COALESCE (lineage,0) as lineage,
+        COALESCE (linesex,'') as linesex,
+        COALESCE (linejob,'') as linejob,
+        COALESCE (linenature,'') as linenature,
+        COALESCE (des,'') as des,
+        COALESCE (idx,-1) as idx,
+        COALESCE (podeperson,'') as podeperson,
+        COALESCE (podephone,'') as podephone,
+        COALESCE (podejob,'') as podejob,
+        COALESCE (podenature,'') as podenature,
+        COALESCE (npodeperson,'') as npodeperson,
+        COALESCE (npodephone,'') as npodephone,
+        COALESCE (npodejob,'') as npodejob,
+        COALESCE (npodenature,'') as npodenature,
+        COALESCE (setb,'') as setb,
+        COALESCE (sepr,'') as sepr,
+        COALESCE (setli,'') as setli,
+        COALESCE (relation,'') as relation,
+        COALESCE (recname,'') as recname,
+        COALESCE (reluname,'') as reluname,
+        COALESCE (relphone,'') as relphone,
+        COALESCE (brandname,'') as brandname,
+        COALESCE (contrast,'') as contrast,
+        COALESCE (mail,'') as mail,
+        COALESCE (nreluname,'') as nreluname,
+        COALESCE (nrelphone,'') as nrelphone,
+        COALESCE (nbrandname,'') as nbrandname,
+        COALESCE (ncontrast,'') as ncontrast,
+        COALESCE (nmail,'') as nmail,
+        COALESCE (reshid,'') as reshid,
+        COALESCE (reshname,'') as reshname,
+        COALESCE (reshphone,'') as reshphone,
+        adduid,
+        addtime,
+        upduid,
+        updtime,
+        COALESCE (lineuid,'') as status,
+        COALESCE (summary,'') as summary
+        from tb_common_project_info where  projectid=#{projectid}
         limit #{pagesize}  offset #{pageno}
     </select>
 
@@ -35,89 +100,170 @@
 
     <!--根据projectid查询单位名称-->
     <select id="queryPronameByid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectname from tb_company_project where projectid=#{projectid} and status = '1'
+        select  COALESCE(projectname,'' )as projectname from tb_company_project where projectid=#{projectid}
     </select>
 
     <!--修改单位-->
     <update id="updateCommonCompanyList" parameterType="java.util.Map">
         update tb_common_company_list
-        set
-        <if test=" supervise != null and supervise != ''"> supervise=#{ supervise},</if>
-        <if test=" orgrelation != null and orgrelation != ''"> orgrelation=#{ orgrelation},</if>
-        <if test=" prodesc != null and prodesc != ''"> prodesc=#{ prodesc},</if>
-        <if test=" prolist != null and prolist != ''"> prolist=#{ prolist},</if>
-        <if test=" uid != null and uid != ''"> upduid=#{uid},</if>
-        <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
-        where status ='1' and cid=#{cid}
+        <!--        set-->
+        <!--        <if test=" supervise != null and supervise != ''">supervise=#{ supervise},</if>-->
+        <!--        <if test=" orgrelation != null and orgrelation != ''">orgrelation=#{ orgrelation},</if>-->
+        <!--        <if test=" prodesc != null and prodesc != ''">prodesc=#{ prodesc},</if>-->
+        <!--        <if test=" prolist != null and prolist != ''">prolist=#{ prolist},</if>-->
+        <!--        <if test=" uid != null and uid != ''">upduid=#{uid},</if>-->
+        <!--        <if test=" updtime != null and updtime != ''">updtime=#{ updtime}</if>-->
+        <!--        where-->
+        <!-- status ='1' and -->
+
+        <set>
+            supervise=#{supervise},
+            orgrelation=#{orgrelation},
+            prodesc=#{prodesc},
+            prolist=#{prolist},
+            <if test=" uid != null and uid != ''">upduid=#{uid},</if>
+            <if test=" updtime != null and updtime != ''">updtime=#{updtime}</if>
+        </set>
+        <where>
+            cid=#{cid}
+        </where>
     </update>
 
     <!--修改项目-->
     <update id="updateCompanyProject" parameterType="java.util.Map">
-        update tb_company_project 
-        set
-            <if test=" prouname != null and prouname != ''"> prouname=#{ prouname},</if>
-            <if test=" prouphone != null and prouphone != ''"> prouphone=#{ prouphone},</if>
-            <if test=" tendertime != null and tendertime != ''"> tendertime=#{ tendertime},</if>
-            <if test=" tendercompany != null and tendercompany != ''"> tendercompany=#{ tendercompany},</if>
-            <if test=" projecttype != null and projecttype != ''"> projecttype=#{ projecttype},</if>
-            <if test=" mail != null and mail != ''"> mail=#{ mail},</if>
-            <if test=" tenderresultcompany != null and tenderresultcompany != ''"> tenderresultcompany=#{ tenderresultcompany},</if>
-            <if test=" tenderagent != null and tenderagent != ''"> tenderagent=#{ tenderagent},</if>
-            <if test=" agentphone != null and agentphone != ''"> agentphone=#{ agentphone},</if>
-            <if test=" porjcetra != null and porjcetra !=''">porjcetra=#{porjcetra},</if>
-            <if test=" relation != null and relation !=''">relation=#{relation},</if>
-            <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>
-            <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
-        where status ='1' and projectid=#{projectid}
+        update tb_company_project
+        <!--        set-->
+        <!--        <if test=" prouname != null and prouname != ''">prouname=#{ prouname},</if>-->
+        <!--        <if test=" prouphone != null and prouphone != ''">prouphone=#{ prouphone},</if>-->
+        <!--        <if test=" tendertime != null and tendertime != ''">tendertime=#{ tendertime},</if>-->
+        <!--        <if test=" tendercompany != null and tendercompany != ''">tendercompany=#{ tendercompany},</if>-->
+        <!--        <if test=" projecttype != null and projecttype != ''">projecttype=#{ projecttype},</if>-->
+        <!--        <if test=" mail != null and mail != ''">mail=#{ mail},</if>-->
+        <!--        <if test=" tenderresultcompany != null and tenderresultcompany != ''">-->
+        <!--            tenderresultcompany=#{ tenderresultcompany},-->
+        <!--        </if>-->
+        <!--        <if test=" tenderagent != null and tenderagent != ''">tenderagent=#{ tenderagent},</if>-->
+        <!--        <if test=" agentphone != null and agentphone != ''">agentphone=#{ agentphone},</if>-->
+        <!--        <if test=" porjcetra != null and porjcetra !=''">porjcetra=#{porjcetra},</if>-->
+        <!--        <if test=" relation != null and relation !=''">relation=#{relation},</if>-->
+        <!--        <if test=" uid != null and uid != ''">upduid=#{ uid},</if>-->
+        <!--        <if test=" updtime != null and updtime != ''">updtime=#{ updtime}</if>-->
+        <set>
+            tendername=#{tendername},
+            tenderphone=#{tenderphone},
+            <choose>
+                <when test="tendertime != null and tendertime != ''">
+                    tendertime = #{tendertime},
+                </when>
+                <otherwise>
+                    tendertime = null,
+                </otherwise>
+            </choose>
+            tendercompany=#{tendercompany},
+            projecttype=#{projecttype},
+            mail=#{promail},
+            tenderresultcompany=#{tenderresultcompany},
+            tenderagent=#{tenderagent},
+            agentphone=#{agentphone},
+            projectras=#{projectras},
+            relation=#{relation},
+            <if test=" uid != null and uid != ''">upduid=#{uid},</if>
+            <if test=" updtime != null and updtime != ''">updtime=#{updtime}</if>
+        </set>
+        <where>
+            projectid=#{projectid}
+        </where>
     </update>
 
     <!--修改项目详情-->
     <update id="updateCompanyProjectInfo" parameterType="java.util.Map">
         update tb_common_project_info
-        set
-            <if test=" lineuname != null and lineuname != ''"> lineuname=#{ lineuname},</if>
-            <if test=" linephone != null and linephone != ''"> linephone=#{ linephone},</if>
-            <if test=" lineage != null and lineage != ''"> lineage=#{ lineage},</if>
-            <if test=" linesex != null and linesex != ''"> linesex=#{ linesex},</if>
-            <if test=" linejob != null and linejob != ''"> linejob=#{ linejob},</if>
-            <if test=" linenature != null and linenature != ''"> linenature=#{ linenature},</if>
-            <if test=" des != null and des != ''"> des=#{ des},</if>
-            <if test=" idx != null and idx != ''"> idx=#{ idx},</if>
-            <if test=" podeperson != null and podeperson != ''"> podeperson=#{ podeperson},</if>
-            <if test=" podephone != null and podephone != ''"> podephone=#{ podephone},</if>
-            <if test=" podejob != null and podejob != ''"> podejob=#{ podejob},</if>
-            <if test=" podenature != null and podenature != ''"> podenature=#{ podenature},</if>
-            <if test=" npodeperson != null and npodeperson != ''"> npodeperson=#{ npodeperson},</if>
-            <if test=" npodephone != null and npodephone != ''"> npodephone=#{ npodephone},</if>
-            <if test=" npodejob != null and npodejob != ''"> npodejob=#{ npodejob},</if>
-            <if test=" npodenature != null and npodenature != ''"> npodenature=#{ npodenature},</if>
-            <if test=" setb != null and setb != ''"> setb=#{ setb},</if>
-            <if test=" sepr != null and sepr != ''"> sepr=#{ sepr},</if>
-            <if test=" setli != null and setli != ''"> setli=#{ setli},</if>
-            <if test=" relation != null and relation != ''"> relation=#{ relation},</if>
-            <if test=" recname != null and recname != ''"> recname=#{ recname},</if>
-            <if test=" reluname != null and reluname != ''"> reluname=#{ reluname},</if>
-            <if test=" relphone != null and relphone != ''"> relphone=#{ relphone},</if>
-            <if test=" brandname != null and brandname != ''"> brandname=#{ brandname},</if>
-            <if test=" contrast != null and contrast != ''"> contrast=#{ contrast},</if>
-            <if test=" mail != null and mail != ''"> mail=#{ mail},</if>
-            <if test=" nreluname != null and nreluname != ''"> nreluname=#{ nreluname},</if>
-            <if test=" nrelphone != null and nrelphone != ''"> nrelphone=#{ nrelphone},</if>
-            <if test=" nbrandname != null and nbrandname != ''"> nbrandname=#{ nbrandname},</if>
-            <if test=" ncontrast != null and ncontrast != ''"> ncontrast=#{ ncontrast},</if>
-            <if test=" nmail != null and nmail != ''"> nmail=#{ nmail},</if>
-            <if test=" reshid != null and reshid != ''"> reshid=#{ reshid},</if>
-            <if test=" reshname != null and reshname != ''"> reshname=#{ reshname},</if>
-            <if test=" reshphone != null and reshphone != ''"> reshphone=#{ reshphone},</if>
-            <if test=" addtime != null and addtime != ''"> addtime=#{ addtime},</if>
-            <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>
-            <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>
-        where status ='1'and projectid=#{projectid}
+        <!--        set-->
+        <!--            <if test=" lineuname != null and lineuname != ''"> lineuname=#{ lineuname},</if>-->
+        <!--            <if test=" linephone != null and linephone != ''"> linephone=#{ linephone},</if>-->
+        <!--            <if test=" lineage != null and lineage != ''"> lineage=#{ lineage},</if>-->
+        <!--            <if test=" linesex != null and linesex != ''"> linesex=#{ linesex},</if>-->
+        <!--            <if test=" linejob != null and linejob != ''"> linejob=#{ linejob},</if>-->
+        <!--            <if test=" linenature != null and linenature != ''"> linenature=#{ linenature},</if>-->
+        <!--            <if test=" des != null and des != ''"> des=#{ des},</if>-->
+        <!--            <if test=" idx != null and idx != ''"> idx=#{ idx},</if>-->
+        <!--            <if test=" podeperson != null and podeperson != ''"> podeperson=#{ podeperson},</if>-->
+        <!--            <if test=" podephone != null and podephone != ''"> podephone=#{ podephone},</if>-->
+        <!--            <if test=" podejob != null and podejob != ''"> podejob=#{ podejob},</if>-->
+        <!--            <if test=" podenature != null and podenature != ''"> podenature=#{ podenature},</if>-->
+        <!--            <if test=" npodeperson != null and npodeperson != ''"> npodeperson=#{ npodeperson},</if>-->
+        <!--            <if test=" npodephone != null and npodephone != ''"> npodephone=#{ npodephone},</if>-->
+        <!--            <if test=" npodejob != null and npodejob != ''"> npodejob=#{ npodejob},</if>-->
+        <!--            <if test=" npodenature != null and npodenature != ''"> npodenature=#{ npodenature},</if>-->
+        <!--            <if test=" setb != null and setb != ''"> setb=#{ setb},</if>-->
+        <!--            <if test=" sepr != null and sepr != ''"> sepr=#{ sepr},</if>-->
+        <!--            <if test=" setli != null and setli != ''"> setli=#{ setli},</if>-->
+        <!--            <if test=" relation != null and relation != ''"> relation=#{ relation},</if>-->
+        <!--            <if test=" recname != null and recname != ''"> recname=#{ recname},</if>-->
+        <!--            <if test=" reluname != null and reluname != ''"> reluname=#{ reluname},</if>-->
+        <!--            <if test=" relphone != null and relphone != ''"> relphone=#{ relphone},</if>-->
+        <!--            <if test=" brandname != null and brandname != ''"> brandname=#{ brandname},</if>-->
+        <!--            <if test=" contrast != null and contrast != ''"> contrast=#{ contrast},</if>-->
+        <!--            <if test=" mail != null and mail != ''"> mail=#{ mail},</if>-->
+        <!--            <if test=" nreluname != null and nreluname != ''"> nreluname=#{ nreluname},</if>-->
+        <!--            <if test=" nrelphone != null and nrelphone != ''"> nrelphone=#{ nrelphone},</if>-->
+        <!--            <if test=" nbrandname != null and nbrandname != ''"> nbrandname=#{ nbrandname},</if>-->
+        <!--            <if test=" ncontrast != null and ncontrast != ''"> ncontrast=#{ ncontrast},</if>-->
+        <!--            <if test=" nmail != null and nmail != ''"> nmail=#{ nmail},</if>-->
+        <!--            <if test=" reshid != null and reshid != ''"> reshid=#{ reshid},</if>-->
+        <!--            <if test=" reshname != null and reshname != ''"> reshname=#{ reshname},</if>-->
+        <!--            <if test=" reshphone != null and reshphone != ''"> reshphone=#{ reshphone},</if>-->
+        <!--            <if test=" addtime != null and addtime != ''"> addtime=#{ addtime},</if>-->
+        <!--            <if test=" uid != null and uid != ''"> upduid=#{ uid},</if>-->
+        <!--            <if test=" updtime != null and updtime != ''"> updtime=#{ updtime}</if>-->
+        <!--        where-->
+        <!-- status ='1' and -->
+        <set>
+            lineuname=#{ lineuname},
+            linephone=#{ linephone},
+            linejob=#{ linejob},
+            linenature=#{ linenature},
+            <if test="des != null and des != ''">des=#{ des},</if>
+            <if test="idx != null and idx != ''">idx=#{ idx},</if>
+            podeperson=#{ podeperson},
+            podephone=#{ podephone},
+            podejob=#{ podejob},
+            podenature=#{ podenature},
+            npodeperson=#{ npodeperson},
+            npodephone=#{ npodephone},
+            npodejob=#{ npodejob},
+            npodenature=#{ npodenature},
+            setb=#{ setb},
+            sepr=#{ sepr},
+            setli=#{ setli},
+            relation=#{ relation},
+            recname=#{ recname},
+            reluname=#{ reluname},
+            relphone=#{ relphone},
+            brandname=#{ brandname},
+            contrast=#{ contrast},
+            mail=#{ mail},
+            nreluname=#{ nreluname},
+            nrelphone=#{ nrelphone},
+            nbrandname=#{ nbrandname},
+            ncontrast=#{ ncontrast},
+            nmail=#{ nmail},
+            <if test=" reshid != null and reshid != ''">reshid=#{ reshid},</if>
+            reshname=#{ reshname},
+            reshphone=#{ reshphone},
+            <if test=" addtime != null and addtime != ''">addtime=#{ addtime},</if>
+            <if test=" uid != null and uid != ''">upduid=#{ uid},</if>
+            <if test=" updtime != null and updtime != ''">updtime=#{ updtime}</if>
+        </set>
+
+        <where>
+            projectid=#{projectid}
+        </where>
     </update>
 
     <!--  查询一条公司信息  -->
     <select id="queryCompanyInfoByCid" resultType="java.util.Map" parameterType="java.util.Map">
-        select cid,cname,supervise,orgrelation,prodesc,prolist from tb_common_company_list where cid=#{cid}
+        select cid,cname,supervise,orgrelation,prodesc,COALESCE(prolist,'') as prolist from tb_common_company_list where cid=#{cid}
     </select>
 
     <!--根据公司id查询项目id和项目名称-->
@@ -127,12 +273,44 @@
 
     <!--根据projectid查询项目信息-->
     <select id="queryProjectByProid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectid,cid,projectname,prouname,prouphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
+        select projectid,cid,projectname,tendername,tenderphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,projectras,relation
          from tb_company_project where projectid=#{projectId}
     </select>
 
     <!--根据projectid查询项目情报-->
     <select id="queryProjectInfoByProid" resultType="java.util.Map" parameterType="java.util.Map">
-        select * from tb_common_project_info where  projectid=#{projectId}
+        select
+        projectid,
+        lineuname,
+        linephone,
+        linejob,
+        linenature,
+        podeperson,
+        podephone,
+        podejob,
+        podenature,
+        npodeperson,
+        npodephone,
+        npodejob,
+        npodenature,
+        setb,
+        sepr,
+        setli,
+        relation,
+        recname,
+        reluname,
+        relphone,
+        brandname,
+        contrast,
+        mail,
+        nreluname,
+        nrelphone,
+        nbrandname,
+        ncontrast,
+        nmail,
+        reshid,
+        reshname,
+        reshphone
+        from tb_common_project_info where  projectid=#{projectId}
     </select>
 </mapper>

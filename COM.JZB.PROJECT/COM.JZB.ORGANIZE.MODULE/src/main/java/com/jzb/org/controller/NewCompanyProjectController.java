@@ -7,6 +7,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
+import com.jzb.base.util.StrUtil;
 import com.jzb.org.service.NewCompanyProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author sapientia
@@ -61,7 +59,14 @@ public class NewCompanyProjectController {
                 param.put("cid",param.get("cid").toString().trim());
                 //获取单位信息
                 List<Map<String, Object>> list = newCompanyProjectService.queryCommonCompanyListBycid(param);
+
                 for (int i = 0 ,a = list.size(); i < a; i++) {
+                    if(!JzbTools.isEmpty(list.get(i).get("prolist"))) {
+                        List<String> prolistArr = StrUtil.string2List(list.get(i).get("prolist").toString(), ",");
+                        list.get(i).put("prolistArr",prolistArr);
+                    }else {
+                        list.get(i).put("prolistArr",new ArrayList<>());
+                    }
                     Map<String, Object> proMap = new HashMap<>();
                     proMap.put("pageno",param.get("pageno"));
                     proMap.put("pagesize",param.get("pagesize"));
@@ -72,16 +77,6 @@ public class NewCompanyProjectController {
                         List<Map<String, Object>> proList = newCompanyProjectService.queryCompanyByid(proMap);
                         //获取项目下的情报
                         List<Map<String, Object>> infoList = newCompanyProjectService.queryCompanyByProjectid(proMap);
-                        for (int l = 0, d = infoList.size(); l < d; l++) {
-                            if (!JzbTools.isEmpty(infoList.get(l).get("prolist"))) {
-                                Map<String, Object> proListMap = new HashMap<>();
-                                proListMap.put("prolist", infoList.get(l).get("prolist"));
-                                String prolist = infoList.get(l).get("prolist").toString();
-                                String[] split = prolist.split(",");
-                                proListMap.put("prolist", split);
-                                infoList.get(l).put("prolist", proListMap);
-                            }
-                        }
                         list.get(i).put("reList",proList);
                         list.get(i).put("infoList",infoList);
                     }
@@ -352,6 +347,7 @@ public class NewCompanyProjectController {
                 response = Response.getResponseError();
             } else {
                 Map<String,Object> resultInfo = newCompanyProjectService.getCompanyInfoByCid(param);
+                resultInfo.put("prolist", StrUtil.string2List(resultInfo.get("prolist").toString(),","));
                 response = Response.getResponseSuccess(userInfo);
                 response.setResponseEntity(resultInfo);
 

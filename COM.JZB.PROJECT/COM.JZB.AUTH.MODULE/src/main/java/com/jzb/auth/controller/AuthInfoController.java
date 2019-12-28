@@ -2,6 +2,7 @@ package com.jzb.auth.controller;
 
 import com.jzb.auth.service.AuthInfoService;
 import com.jzb.base.log.JzbLoggerUtil;
+import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbTools;
 import org.slf4j.Logger;
@@ -47,10 +48,9 @@ public class AuthInfoController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            String unames = authInfoService.getUserByUids(param);
-            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-            response.setResponseEntity(unames);
-
+            Map<String, Object> userMap = authInfoService.getUserByUids(param);
+            response = Response.getResponseSuccess(userInfo);
+            response.setResponseEntity(userMap);
         } catch (Exception e) {
             flag=false;
             // 返回错误

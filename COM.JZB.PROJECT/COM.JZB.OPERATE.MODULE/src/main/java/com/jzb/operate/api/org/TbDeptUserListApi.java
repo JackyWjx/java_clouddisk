@@ -14,7 +14,7 @@ import java.util.Map;
  * @Date 2019/12/5 16:56
  */
 @FeignClient(name = "jzb-org")
-@RequestMapping(value = "/dept/user")
+@RequestMapping(value = "/org/dept/user")
 public interface TbDeptUserListApi {
 
     /**

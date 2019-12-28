@@ -50,4 +50,9 @@ public interface TbTrackUserMapper {
 
     // 根据跟进人查询 跟进阶段客户列表
     List<Map<String, Object>> getHandleStage(Map<String, Object> param);
+
+    // 查询跟进单位的等级
+    String queryLevel(Map<String, Object> param);
+
+    int getTrackCountOnSales(Map<String, Object> param);
 }

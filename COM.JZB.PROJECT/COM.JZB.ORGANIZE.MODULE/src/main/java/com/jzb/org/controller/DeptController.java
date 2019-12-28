@@ -14,6 +14,7 @@ import com.jzb.org.service.DeptService;
 import com.jzb.org.service.OrgToken;
 import com.jzb.org.service.ProductService;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
@@ -484,6 +485,34 @@ public class DeptController {
         return result;
     }
 
+
+    /**
+     * 修改部门用户表
+     *
+     * @param param
+     * @return com.jzb.base.message.Response
+     * @Author: DingSC
+     * @DateTime: 2019/9/3 16:28
+     */
+    @RequestMapping(value = "/modifyDeptUserByUid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response modifyDeptUserByUid(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"uid","phone"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                int add = deptService.updateDeptUserByUid(param);
+                result = add > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
     /**
      * 部门用户表移除用户
      *
@@ -896,6 +925,29 @@ public class DeptController {
                 result = Response.getResponseError();
             }
         } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 云产品市场的查询
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCompanyProduct", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyProduct(@RequestBody(required = false) Map<String, Object> param) {
+        Response result;
+        try {
+            //获取用户信息
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            List<Map<String,Object>> mapList = deptService.getCompanyProduct(param);
+            result = Response.getResponseSuccess(userInfo);
+            result.setResponseEntity(mapList);
+        } catch (Exception e) {
+            //打印错误信息
             JzbTools.logError(e);
             result = Response.getResponseError();
         }
