@@ -8,6 +8,7 @@ import com.jzb.base.data.code.JzbDataCheck;
 import com.jzb.base.message.Response;
 import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.tree.JzbTree;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.auth.AuthApi;
@@ -381,7 +382,7 @@ public class DeptService {
                         Map<String, Object> userMap = new HashMap<>(4);
                         userMap.put("phone", addMap.get("phone"));
                         userMap.put("name", name);
-                        String pass = "*jzb" + JzbRandom.getRandomNum(3);
+                        String pass = "jzb00001";
                         userMap.put("passwd", JzbDataCheck.Md5(pass).toLowerCase(Locale.ENGLISH));
                         userMap.put("status", "8");
                         try {
@@ -518,7 +519,7 @@ public class DeptService {
                         Map<String, Object> userMap = new HashMap<>(4);
                         userMap.put("name", name);
                         userMap.put("phone", addMap.get("phone"));
-                        String pass = "*jzb" + JzbRandom.getRandomNum(3);
+                        String pass = "*jzb"+ JzbDataType.getString(JzbRandom.getRandomNum(3));
                         userMap.put("status", "8");
                         userMap.put("passwd", JzbDataCheck.Md5(pass).toLowerCase(Locale.ENGLISH));
                         try {

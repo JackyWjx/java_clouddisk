@@ -676,7 +676,6 @@ public class DeptController {
                 param.put("status", "2");
                 param.put("batchid", batchId);
                 param.put("address", filepath);
-
                 try {
                     //保存文件到本地
                     File intoFile = new File(filepath);

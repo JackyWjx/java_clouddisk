@@ -248,7 +248,7 @@ public class UserController {
                 param.put("uid", JzbDataType.getString(redisRes));
                 param.put("userinfo", userInfo);
                 if (JzbTools.isEmpty(redisRes)) {
-                    // 获取随机密码
+                    // 获取随机
                     String passwd = "*jzb" + JzbRandom.getRandomNum(3);
                     param.put("passwd", JzbDataCheck.Md5(passwd).toLowerCase(Locale.ENGLISH));
                     param.put("password", passwd);
