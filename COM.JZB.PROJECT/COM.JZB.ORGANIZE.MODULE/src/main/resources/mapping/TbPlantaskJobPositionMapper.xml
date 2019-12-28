@@ -12,7 +12,7 @@
     </select>
 <!--    查询角色    -->
     <select id="selectRole" resultType="Map">
-        select crid,content as cname,cddid from
+        select crid,content as cname,(SELECT cname FROM "tb_company_dept" where cdid =cddid) as content from
         tb_plantask_job_position
     </select>
 <!--    查询部门    -->
