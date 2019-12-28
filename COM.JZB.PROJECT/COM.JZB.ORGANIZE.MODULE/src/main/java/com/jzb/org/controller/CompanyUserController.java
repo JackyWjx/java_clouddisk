@@ -1011,7 +1011,7 @@ public class CompanyUserController {
                     kkk = (Map<String, Object>) page.get("kkk");
                 }
                 // 获取跟进人
-                String uname = JzbDataType.getString(kkk.get("cname"));
+                String uname = JzbDataType.getString(page.get("trackuname"));
                 sheet.createRow(i + 1).createCell(0).setCellValue(uname);
                 // 获取产品名称
                 String cname = JzbDataType.getString(page.get("cname"));
@@ -1022,30 +1022,24 @@ public class CompanyUserController {
                 // 获取联系人
                 String relperson = JzbDataType.getString(page.get("relperson"));
                 sheet.getRow(i + 1).createCell(3).setCellValue(relperson);
-                // 获取预计合同金额
-                String contamount = JzbDataType.getString(page.get("contamount"));
-                sheet.getRow(i + 1).createCell(4).setCellValue(contamount);
+                // 获取跟进方式
+                int tracktype = JzbDataType.getInteger(page.get("tracktype"));
+                String s = menthodTrackType(tracktype);
+                sheet.getRow(i + 1).createCell(4).setCellValue(s);
                 // 获取客户等级
-                String dictvalue = JzbDataType.getString(page.get("dictvalue"));
+                String dictvalue = JzbDataType.getString(page.get("level"));
                 sheet.getRow(i + 1).createCell(5).setCellValue(dictvalue);
-                // 获取跟进日期
-                String handletime = JzbDataType.getString(kkk.get("handletime"));
-                sheet.getRow(i + 1).createCell(6).setCellValue(handletime);
-                // 获取跟进说明
-                String context = JzbDataType.getString(kkk.get("context"));
+                // 获取跟进日期 todo
+                long handletime = JzbDataType.getLong(page.get("tracktime"));
+                String result2 = new SimpleDateFormat("yyyy-MM-dd ").format(handletime);
+                sheet.getRow(i + 1).createCell(6).setCellValue(result2);
+                // 获取跟进内容
+                String context = JzbDataType.getString(page.get("trackcontent"));
                 sheet.getRow(i + 1).createCell(7).setCellValue(context);
-                // 获取需要提供资源
-                String needres = JzbDataType.getString(kkk.get("needres"));
+                // 获取附件
+                String needres = JzbDataType.getString(kkk.get("image"));
                 sheet.getRow(i + 1).createCell(8).setCellValue(needres);
-                // 获取投入金额
-                String checkamount = JzbDataType.getString(page.get("checkamount"));
-                sheet.getRow(i + 1).createCell(9).setCellValue(checkamount);
-                // 获取产出时间
-                String planendtime = JzbDataType.getString(kkk.get("planendtime"));
-                sheet.getRow(i + 1).createCell(10).setCellValue(planendtime);
-                // 获取操作
-                String summary = JzbDataType.getString(kkk.get("summary"));
-                sheet.getRow(i + 1).createCell(11).setCellValue(summary);
+
             }
             // 响应到客户端
             response.addHeader("Content-Disposition", "attachment;filename=ImportSellStatistics.xlsx");
@@ -1060,6 +1054,30 @@ public class CompanyUserController {
         }
     }
 
+    private String  menthodTrackType(int tracktype){
+        String trackTpye = null;
+        switch (tracktype){
+            case 0:
+                trackTpye = "其它";
+                break;
+            case 1:
+                trackTpye = "发帖";
+                break;
+            case 2:
+                trackTpye = "朋友圈";
+                break;
+            case 4:
+                trackTpye = "qq";
+                break;
+            case 8:
+                trackTpye = "微信";
+                break;
+            case 16:
+                trackTpye = "电话";
+                break;
+        }
+        return trackTpye;
+    }
     /**
      * CRM-销售业主-所有业主-业主下的项目1
      * 点击导出Excel表格,将查询出的数据导出
