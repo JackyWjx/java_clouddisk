@@ -12,6 +12,17 @@
             where cddid = #{cddid}
         </if>
     </select>
+
+
+    <!--    根据部门id查询角色   lifei -->
+    <select id="selectRoleByDeptids" resultType="Map">
+        select crid,content,cddid from
+        tb_plantask_job_position
+
+            where cddid in (${cddids})
+
+    </select>
+
 <!--    查询角色    -->
     <select id="selectRole" resultType="Map">
         select crid,content as cname,(SELECT cname FROM "tb_company_dept" where cdid =cddid) as content from

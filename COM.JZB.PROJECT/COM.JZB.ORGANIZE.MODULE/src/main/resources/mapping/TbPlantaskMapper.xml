@@ -103,8 +103,6 @@ ORDER BY
 
     </select>
 
-
-
 	<select id="getPantaskCount"  parameterType="java.util.Map" resultType="java.lang.Integer">
 	SELECT
 		count(1)
@@ -145,10 +143,9 @@ ORDER BY
 
     </select>
 
-
 	<!--新建计划任务-->
 	<insert id="addPlantaskBrother" parameterType="java.util.List">
-		INSERT INTO "public"."tb_plantask_year"
+		INSERT INTO ${tabname}
 		( "planid", "cdid", "uid", "dutyid", "plancontent",
 		  "acceptors", "executors", "assistants", "outcome",
 		 "tasktype", "taskstatus", "notes", "path", "filenames", "addid",
@@ -364,7 +361,9 @@ ORDER BY
 	<!--修改计划管理-->
 	<update id="updatePlantask" parameterType="java.util.List" >
 		<foreach collection="List" index="index" item="item" close =";" separator="">
-		UPDATE "public"."tb_plantask_year" SET
+		UPDATE ${tabname}
+
+		SET
 		<if test="cdid != null">cdid=#{item.cdid},</if>
 		<if test="uid != null">uid=#{item.uid},</if>
 		<if test="dutyid != null">dutyid=#{item.dutyid},</if>
@@ -398,11 +397,10 @@ ORDER BY
 			where  cid='JZB0001' and cname not in ('资源池')
 	</select>
 
-
 	<!--删除计划管理-->
 	<update id="delPlantask" parameterType="java.util.Map" >
 
-			UPDATE "public"."tb_plantask_year" SET
+			UPDATE ${tabname} SET
 			status=#{status}
 			where planid=#{planid}
 
