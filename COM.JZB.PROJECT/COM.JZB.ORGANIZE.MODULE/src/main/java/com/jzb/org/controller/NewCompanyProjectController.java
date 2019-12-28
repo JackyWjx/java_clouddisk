@@ -155,6 +155,7 @@ public class NewCompanyProjectController {
      **/
     @RequestMapping(value = "/updateCompanyProject",method = RequestMethod.POST)
     @Transactional
+    @CrossOrigin
     public Response updateCompanyProject(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
@@ -197,6 +198,7 @@ public class NewCompanyProjectController {
      **/
     @PostMapping("/updateCompanyProjectInfo")
     @Transactional
+    @CrossOrigin
     public Response updateCompanyProjectInfo(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;
@@ -239,6 +241,7 @@ public class NewCompanyProjectController {
      **/
     @PostMapping("/updateCommonCompanyList")
     @Transactional
+    @CrossOrigin
     public Response updateCommonCompanyList(@RequestBody Map<String, Object> param){
         Response response;
         Map<String, Object> userInfo = null;

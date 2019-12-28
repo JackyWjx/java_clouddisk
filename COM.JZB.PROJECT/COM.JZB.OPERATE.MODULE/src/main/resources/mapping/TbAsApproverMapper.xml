@@ -44,6 +44,7 @@
                 and tb1.aptype = #{aptype}
             </if>
         </where>
+        order by orgtime desc
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
