@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbPlantaskJobPositionMapper">
+
+    <!--    根据部门id查询角色    -->
+    <select id="selectRoleByDeptid" resultType="Map">
+        select crid,content,cddid from
+        tb_plantask_job_position
+        where cddid = #{cddid}
+    </select>
+<!--    查询角色    -->
+    <select id="selectRole" resultType="Map">
+        select crid,content as cname,cddid from
+        tb_plantask_job_position
+    </select>
+<!--    查询部门    -->
+    <select id="selectDept"  resultType="Map">
+        select * from tb_company_dept
+        where cid='JZB0001' and cname not in('资源池')
+    </select>
+<!--    保存角色    -->
+    <insert id="insertRoleAndDept" parameterType="Map">
+        insert  into tb_plantask_job_position (crgid,content,cddid)
+        values (#{crgid},#{content},#{cddid})
+    </insert>
+<!--    修改角色名称 -->
+    <update id="updateRoleName">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+        update tb_plantask_job_position
+        set content = #{item.content}
+        where crid =
+            #{item.uniqueid}
+        </foreach>
+    </update>
+</mapper>
