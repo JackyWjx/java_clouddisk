@@ -45,6 +45,14 @@ public class TbProductResListService {
     public int updateTbProductParameteItem(List<Map<String, Object>> paramList) {
         return tbProductResListMapper.updateTbProductParameteItem(paramList);
     }
+    /**
+     * 删除
+     * @param list
+     * @return
+     */
+    public int updateTbProductResList(List<String> list){
+        return tbProductResListMapper.updateTbProductResList(list);
+    }
 
     /**
      * 添加资源产品表的数据

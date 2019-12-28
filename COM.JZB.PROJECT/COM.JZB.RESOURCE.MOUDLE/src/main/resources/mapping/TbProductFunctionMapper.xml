@@ -5,7 +5,7 @@
     <select id="getTbProductFunction" parameterType="java.util.Map" resultType="java.util.Map">
         select
         a.id,
-        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd') as addtime,
         a.cname,
         a.status,
         a.paradesc,
@@ -17,7 +17,7 @@
         LEFT JOIN
         tb_product_res_list a
         on a.pid = b.pid
-        where 1=1
+        where b.status='1'
         <if test="status != null and status != '' and status!=0">
             and a.status = #{status}
         </if>
@@ -48,14 +48,15 @@
         a.status,
         a.paradesc,
         a.summary,
-        a.pid
+        a.pid,
+        a.plid
         from
         tb_product_function b
         LEFT JOIN
         tb_product_res_list a
         on a.pid = b.pid
-        where 1=1
-        <if test="status != null and status != ''">
+        where b.status='1'
+        <if test="status != null and status != '' and status !=0">
             and a.status = #{status}
         </if>
         <if test="cname != null">
@@ -171,7 +172,7 @@
                 cast(#{funsubtype} as integer),
             </when>
             <otherwise>
-                8,
+                1,
             </otherwise>
         </choose>
         <choose>
@@ -326,5 +327,13 @@
         <if test="funid != null and funid != ''">
             and funid = #{funid}
         </if>
+    </update>
+
+    <!--删除这个功能-->
+    <update id="deleteFunction" parameterType="java.util.List">
+        <foreach collection="list" item="value" separator="" close="" open="" index="">
+        update  tb_product_function  set status = '2'
+        where pid=#{value};
+        </foreach>
     </update>
 </mapper>

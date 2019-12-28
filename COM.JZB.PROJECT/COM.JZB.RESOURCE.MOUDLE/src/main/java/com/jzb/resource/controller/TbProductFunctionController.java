@@ -5,13 +5,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.AdvertService;
 import com.jzb.resource.service.TbProductFunctionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import java.util.Map;
 
 /**
  * 合同配置中的产品功能
+ * @author libenqiu      czd--update
  */
 
 @RestController
@@ -31,6 +36,12 @@ public class TbProductFunctionController {
 
     @Autowired
     private AdvertService advertService;
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbContractTemplateController.class);
+
 
     /**
      * 查询产品功能表对应的资源产品
@@ -288,6 +299,56 @@ public class TbProductFunctionController {
             //打印错误信息
             JzbTools.logError(e);
             result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+    /**
+     * 删除产品功能
+     * @author czd
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/deleteProductFunction", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response deleteProductFunction(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/resource/contractTemplate/deleteProductFunction";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if(JzbCheckParam.haveEmpty(param,new String[]{"pid"})){
+                result=Response.getResponseError();
+            }else {
+                String[] pids = JzbDataType.getString(param.get("pid")).split(",");
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < pids.length; i++) {
+                    list.add(pids[i]);
+                }
+                int count = list.size() > 0 ? tbProductFunctionService.deleteFunction(list) : 0;
+                result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "deleteProductFunction Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }

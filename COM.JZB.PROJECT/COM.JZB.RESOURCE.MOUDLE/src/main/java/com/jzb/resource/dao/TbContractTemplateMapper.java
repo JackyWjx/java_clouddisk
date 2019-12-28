@@ -17,7 +17,12 @@ public interface TbContractTemplateMapper {
      */
     List<Map<String, Object>> queryContractTemplate(Map<String, Object> param);
 
-
+    /**
+     * 删除
+     * @param list
+     * @return
+     */
+    int updateContractTemplateStatus(List<String> list);
     /**
      * 添加合同模板
      * @param param

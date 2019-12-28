@@ -25,6 +25,7 @@
         <if test="travelid != null and travelid != ''">and travelid = #{travelid} </if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
         <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
+        order by orgtime desc
          limit #{pagesize}  offset #{pageno}
     </select>
     
@@ -73,7 +74,6 @@
         <if test="deid != null and deid != ''">and deid = #{deid}</if>
         <if test="orgtime != null and orgtime != ''">and orgtime &gt;= #{orgtime} </if>
         <if test="endtime != null and endtime != ''">and endtime &lt;= #{endtime} </if>
-        order by trtime desc
         limit #{pagesize}  offset #{pageno}
     </select>
 
@@ -179,7 +179,7 @@
         COALESCE (npodenature, '') as  npodenature,
         COALESCE (setb, '') as  setb,
         COALESCE (sepr, '') as  sepr,
-        COALESCE (seli, '') as  seli,
+        COALESCE (seli, '') as  setli,
         COALESCE (recname, '') as  recname,
         COALESCE (reluname, '') as  reluname,
         COALESCE (relphone, '') as  relphone,
@@ -261,7 +261,6 @@
             <if test="supervise != null and supervise != ''"> supervise = #{supervise},</if>
             <if test="prodesc != null and prodesc != ''"> prodesc = #{prodesc},</if>
             <if test="prolist != null and prolist != ''"> prolist = #{prolist},</if>
-            <if test="projectid != null and projectid != ''"> projectid = #{projectid},</if>
             <if test="projectname != null and projectname != ''"> projectname = #{projectname},</if>
             <if test="tendercompany != null and tendercompany != ''"> tendercompany = #{tendercompany},</if>
             <if test="tendername != null and tendername != ''"> tendername = #{tendername},</if>
@@ -272,7 +271,7 @@
             <if test="tenderresultcompany != null and tenderresultcompany != ''">tenderresultcompany = #{tenderresultcompany},</if>
             <choose>
                 <when test="tendertime">tendertime = #{tendertime},</when>
-                <otherwise>tendertime = null</otherwise>
+                <otherwise>tendertime = null,</otherwise>
             </choose>
             <if test="tenderagent != null and tenderagent != ''"> tenderagent = #{tenderagent},</if>
             <if test="relation != null and relation != ''"> relation = #{relation},</if>
@@ -287,7 +286,7 @@
             <if test="npodenature != null and npodenature != ''"> npodenature = #{npodenature},</if>
             <if test="setb != null and setb != ''"> setb = #{setb},</if>
             <if test="sepr != null and sepr != ''"> sepr = #{sepr},</if>
-            <if test="seli != null and seli != ''">  seli = #{seli},</if>
+            <if test="setli != null and setli != ''">  seli = #{setli},</if>
             <if test="recname != null and recname != ''">  recname = #{recname},</if>
             <if test="reluname != null and addrelunameuid != ''">  reluname = #{reluname},</if>
             <if test="relphone != null and relphone != ''"> relphone = #{relphone},</if>
@@ -311,7 +310,7 @@
             <if test="updtime != null and updtime != ''">updtime = #{updtime},</if>
             <if test="status != null and status != ''">status = #{status},</if>
             <if test="summary != null and summary != ''">summary = #{summary},</if>
-            <if test="uid != null and uid != ''"> upduid = #{uid},</if>
+            <if test="upduid != null and upduid != ''"> upduid = #{upduid}</if>
         </set>
         where
         status ='1'

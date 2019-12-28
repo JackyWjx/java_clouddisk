@@ -13,6 +13,8 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.org.api.auth.AuthApi;
 
 import com.jzb.org.service.TbPlantaskService;
+import com.jzb.org.service.TbPlantaskJobPositionService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class TbPlantaskController {
 
     @Autowired
     private TbPlantaskService tbPlantaskService;
+
+    @Autowired
+    private TbPlantaskJobPositionService tbPlantaskJobPositionService;
     @Autowired
     private AuthApi authApi;
     /**
@@ -68,7 +73,7 @@ public class TbPlantaskController {
 
             // dept=1 代表部门
             // dept=0 代表个人
-            if (JzbCheckParam.haveEmpty(param, new String[]{"type","dept"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pageno","pagesize","type","dept"})) {
                 response = Response.getResponseError();
             } else {
 
@@ -94,10 +99,18 @@ public class TbPlantaskController {
                 int count = tbPlantaskService.getPantaskCount(param);
                 List<Map<String, Object>> records = tbPlantaskService.getPantaskList1(param);
 
+
+
                 //处理 其他表数据 拼接 部门id 用户id数据拼接
                 StringBuffer sb=new StringBuffer();
+                StringBuffer zhisb=new StringBuffer() ;
                 List<Map<String, Object>> bumen= tbPlantaskService.getCompanydeptMap();
                 for(int i=0,a=records.size();i<a;i++){
+                    if (zhisb.toString().indexOf(records.get(i).get("cdid").toString())==-1){
+                        zhisb.append("'"+records.get(i).get("cdid")+"',");
+                    }
+
+
                     if (sb.toString().indexOf(records.get(i).get("uid").toString())==-1){
                         sb.append("'"+records.get(i).get("uid")+"',");
                     }
@@ -134,11 +147,18 @@ public class TbPlantaskController {
                 }
 
                 param.put("ids",sb.toString().substring(0,sb.toString().length()-1));
+                param.put("cddids",zhisb.toString().substring(0,zhisb.toString().length()-1));
+                List<Map<String, Object>> zhizelist=tbPlantaskJobPositionService.selectRoleByDeptids(param);
+
                 Response usnames = authApi.getUserNameList(param);
 
                 List<Map<String, Object>> usernameList=usnames.getPageInfo().getList();
-                Map<String,Object> usnamesMap=new HashMap<>();
-                Map<String,Object> bumensMap=new HashMap<>();
+                Map<String,Object> usnamesMap = new HashMap<>();
+                Map<String,Object> bumensMap = new HashMap<>();
+                Map<String,Object> zhizeMap = new HashMap<>();
+                for (Map<String,Object> map:zhizelist) {
+                    zhizeMap.put(map.get("crid").toString(),map.get("content"));
+                }
 
                 for (Map<String,Object> map:usernameList) {
                     usnamesMap.put(map.get("uid").toString(),map.get("cname"));
@@ -146,9 +166,12 @@ public class TbPlantaskController {
                 for (Map<String,Object> map:bumen) {
                     bumensMap.put(map.get("cdid").toString(),map.get("cname"));
                 }
+
                 for (int i=0,a=records.size();i<a;i++){
                     records.get(i).put("yname",usnamesMap.get(records.get(i).get("uid")));//姓名
                     records.get(i).put("bname",bumensMap.get(records.get(i).get("cdid")));//部门
+                    records.get(i).put("gname",zhizeMap.get(records.get(i).get("dutyid")));//岗位职责
+
                     //验收人
                     if(records.get(i).get("acceptors")!=null){
                         if(records.get(i).get("acceptors").toString().indexOf(",")>0){
@@ -241,9 +264,11 @@ public class TbPlantaskController {
                     node.put( "ptype" ,record.get("ptype"));
                     node.put( "yname" ,record.get("yname"));
                     node.put( "bname" ,record.get("bname"));
+                    node.put( "dutyid" ,record.get("dutyid"));
                     node.put( "acceptorsname" ,record.get("acceptorsname"));
                     node.put( "executorsname" ,record.get("executorsname"));
                     node.put( "assistantsname" ,record.get("assistantsname"));
+                    node.put("gname",record.get("gname"));
                     node.put("children", new JSONArray());
 
                     // if root node
@@ -336,15 +361,33 @@ public class TbPlantaskController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 验证指定值为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cdid", "uid","dutyid","plancontent","starttime","endtime","acceptors","executors","assistants","tasktype","taskstatus","addid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list","type"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addMethodTypeBrother Method", "[param error] or [param is null]"));
             } else {
+                switch(param.get("type").toString()){
+                    case "y" :
+                        param.put("tabname","tb_plantask_year");
+                        break;
+                    case "m" :
+                        param.put("tabname","tb_plantask_month");
+                        break;
+                    case "d" :
+                        param.put("tabname","tb_plantask_day");
+                        break;
+                    case "w" :
+                        param.put("tabname","tb_plantask_week");
+                        break;
+                    default:
+                        result = Response.getResponseError();
+                }
 
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+                for (Map<String, Object> map:list) {
+                    map.put("planid", JzbRandom.getRandomChar(20));
+                    param.put("addtime",System.currentTimeMillis());
+                }
 
-                param.put("planid", JzbRandom.getRandomChar(20));
-                param.put("addtime",System.currentTimeMillis());
                 // 添加返回值大于0 则添加成功
                 int count = tbPlantaskService.addPlantaskBrother(list);
                 if (count > 0) {
@@ -455,10 +498,28 @@ public class TbPlantaskController {
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", "[param error] or [param is null]"));
             } else {
 
+                switch(param.get("type").toString()){
+                    case "y" :
+                        param.put("tabname","tb_plantask_year");
+                        break;
+                    case "m" :
+                        param.put("tabname","tb_plantask_month");
+                        break;
+                    case "d" :
+                        param.put("tabname","tb_plantask_day");
+                        break;
+                    case "w" :
+                        param.put("tabname","tb_plantask_week");
+                        break;
+                    default:
+                        result = Response.getResponseError();
+                }
 
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+                for (Map<String, Object> map:list) {
+                    map.put("uptime",System.currentTimeMillis());
+                }
 
-                param.put("uptime",System.currentTimeMillis());
                 // 添加返回值大于0 则添加成功
                 int count =tbPlantaskService.updatePlantask(param);
                 if (count > 0) {
@@ -484,9 +545,6 @@ public class TbPlantaskController {
         }
         return result;
     }
-
-
-
 
     /**
      * @param param
@@ -517,9 +575,30 @@ public class TbPlantaskController {
 //                if(!(param.get("tasktype").toString().equals("0")||param.get("tasktype").toString().equals("6"))){
 //                    result = Response.getResponseError();
 //                }
-                param.put("uptime",System.currentTimeMillis());
-                // 添加返回值大于0 则添加成功
-                param.put("status","1");
+
+                switch(param.get("type").toString()){
+                    case "y" :
+                        param.put("tabname","tb_plantask_year");
+                        break;
+                    case "m" :
+                        param.put("tabname","tb_plantask_month");
+                        break;
+                    case "d" :
+                        param.put("tabname","tb_plantask_day");
+                        break;
+                    case "w" :
+                        param.put("tabname","tb_plantask_week");
+                        break;
+                    default:
+                        result = Response.getResponseError();
+                }
+
+                List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
+                for (Map<String, Object> map:list) {
+                    map.put("uptime",System.currentTimeMillis());
+                    // 添加返回值大于0 则添加成功
+                    map.put("status","1");
+                }
                 int count =tbPlantaskService.delPlantask(param);
 
                 if (count > 0) {

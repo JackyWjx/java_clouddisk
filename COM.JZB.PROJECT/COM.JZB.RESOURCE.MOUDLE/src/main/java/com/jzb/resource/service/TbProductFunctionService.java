@@ -136,4 +136,13 @@ public class TbProductFunctionService {
     public int updateProductFunctions(Map<String, Object> param) {
         return tbProductFunctionMapper.updateProductFunctions(param);
     }
+
+    /**
+     * 根据id进行功能数据的删除
+     * @param list
+     * @return
+     */
+    public int deleteFunction(List<String> list){
+        return tbProductFunctionMapper.deleteFunction(list);
+    }
 }

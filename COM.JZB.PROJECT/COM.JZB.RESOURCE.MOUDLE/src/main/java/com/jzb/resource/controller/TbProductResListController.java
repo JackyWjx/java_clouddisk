@@ -2,6 +2,7 @@ package com.jzb.resource.controller;
 
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -13,6 +14,8 @@ import com.jzb.resource.service.TbProductResListService;
 
 import com.jzb.resource.util.PageConvert;
 import org.apache.commons.collections.map.HashedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +48,65 @@ public class TbProductResListController {
 
     @Value("${ftpConfig.path}")
     private String path;
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbProductResListController.class);
+
+
+
+    /**
+     * 删除合同模板
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/deleteProductRes", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response deleteProductRes(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/resource/contractTemplate/deleteProductRes";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if(JzbCheckParam.haveEmpty(param,new String[]{"pid"})){
+                result=Response.getResponseError();
+            }else {
+                String[] pids = JzbDataType.getString(param.get("pid")).split(",");
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < pids.length; i++) {
+                    list.add(pids[i]);
+                }
+                int count = list.size() > 0 ? tbProductResListService.updateTbProductResList(list) : 0;
+                result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "deleteProductRes Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+
+
 
     /**
      * 根据产品线的id查询产品表
@@ -294,6 +357,10 @@ public class TbProductResListController {
         return result;
 
     }
+
+
+
+
 
 
 

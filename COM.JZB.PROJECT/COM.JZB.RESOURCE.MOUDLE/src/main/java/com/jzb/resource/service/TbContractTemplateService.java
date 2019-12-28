@@ -24,6 +24,15 @@ public class TbContractTemplateService {
     }
 
     /**
+     * 删除
+     * @param list
+     * @return
+     */
+    public int updateContractTemplateStatus(List<String> list){
+        return  tbContractTemplateMapper.updateContractTemplateStatus(list);
+    }
+
+    /**
      * 添加合同模板
      * @param param
      * @return

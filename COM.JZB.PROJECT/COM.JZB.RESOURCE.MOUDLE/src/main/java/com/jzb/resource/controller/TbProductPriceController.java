@@ -1,6 +1,7 @@
 package com.jzb.resource.controller;
 
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -8,10 +9,13 @@ import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.AdvertService;
 import com.jzb.resource.service.TbProductPriceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +31,11 @@ public class TbProductPriceController {
     //用于调用分页参数
     @Autowired
     private AdvertService advertService;
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbContractTemplateController.class);
 
     /**
      * 添加产品报价的服务类型
@@ -85,6 +94,55 @@ public class TbProductPriceController {
         }
         return response;
     }
+    /**
+     * 删除合同模板
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/deleteProductPrice", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response deleteProductPrice(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/resource/productPrice/deleteProductPrice";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            if(JzbCheckParam.haveEmpty(param,new String[]{"servicetype"})){
+                result=Response.getResponseError();
+            }else {
+                String[] strings = JzbDataType.getString(param.get("servicetype")).split(",");
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < strings.length; i++) {
+                    list.add(strings[i]);
+                }
+                int count = list.size() > 0 ? tbProductPriceService.updatePriceStatus(list) : 0;
+                result = count>0?Response.getResponseSuccess(userInfo):Response.getResponseError();
+            }
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "deleteProductPrice Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 
     /**
      * 根据产品线的id查资源

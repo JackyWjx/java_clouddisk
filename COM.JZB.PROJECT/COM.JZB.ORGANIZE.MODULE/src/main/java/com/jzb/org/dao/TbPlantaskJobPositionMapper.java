@@ -18,4 +18,5 @@ public interface TbPlantaskJobPositionMapper {
 
     Integer updateRoleName (Map<String,Object> param);
 
+    List<Map<String, Object>> selectRoleByDeptids(Map<String, Object> param);
 }
