@@ -1002,4 +1002,41 @@ public class AuthUserController {
         }
         return result;
     }
+
+
+
+
+    /**
+     * 根据用户ids查询用户信息
+     *计划管理
+     * @author lifei
+     */
+    @RequestMapping(value = "/getUserNameList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserNameList(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            List<Map<String, Object>> userlt=null;
+            if(param.get("ids")==null){
+                result = Response.getResponseError();
+            }else{
+                userlt = userService.getUserNameList(param);
+            }
+
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            PageInfo pageInfo = new PageInfo();
+            result = Response.getResponseSuccess(userInfo);
+            pageInfo.setList(userlt);
+
+            result.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+
+
 } // End class AuthUserController

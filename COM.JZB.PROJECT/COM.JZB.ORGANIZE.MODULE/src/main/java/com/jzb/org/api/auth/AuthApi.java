@@ -50,4 +50,14 @@ public interface AuthApi {
     @ResponseBody
     @CrossOrigin
     public Response updateAllPhoneByUid(@RequestBody Map<String, Object> param);
+
+
+    /**
+     * 根据用户ids查询用户信息
+     *计划管理
+     * @author lifei
+     */
+    @RequestMapping(value = "/getUserNameList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getUserNameList(@RequestBody Map<String, Object> param);
 }
