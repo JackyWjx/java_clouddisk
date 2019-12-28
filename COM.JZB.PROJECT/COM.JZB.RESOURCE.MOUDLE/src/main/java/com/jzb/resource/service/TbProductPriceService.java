@@ -47,6 +47,15 @@ public class TbProductPriceService {
     }
 
     /**
+     * 删除 servicetype
+     * @param param
+     * @return
+     */
+    public int updatePriceStatus(Map<String,Object> param){
+        return  tbProductPriceMapper.updatePriceStatus(param);
+    }
+
+    /**
      * 修改产品报价的数据
      * @param paramList
      * @return
