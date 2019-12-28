@@ -48,14 +48,15 @@
         a.status,
         a.paradesc,
         a.summary,
-        a.pid
+        a.pid,
+        a.plid
         from
         tb_product_function b
         LEFT JOIN
         tb_product_res_list a
         on a.pid = b.pid
-        where 1=1
-        <if test="status != null and status != ''">
+        where b.status='1'
+        <if test="status != null and status != '' and status !=0">
             and a.status = #{status}
         </if>
         <if test="cname != null">
