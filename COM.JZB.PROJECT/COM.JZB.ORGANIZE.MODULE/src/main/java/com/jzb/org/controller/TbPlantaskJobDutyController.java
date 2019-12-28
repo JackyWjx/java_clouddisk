@@ -89,8 +89,8 @@ public class TbPlantaskJobDutyController {
                 for (Map reid : resultId) {
                     Map<String, Object> resultMap = new HashMap<>();
                     resultMap.put("crid", reid.get("crid"));
-                    resultMap.put("crgcontent", list.get(reid.get("crid")));
-                    resultMap.put("dept", dept.get(resultMap.get("crid")));
+                    resultMap.put("crgcontent",dept.get(resultMap.get("crid")));
+                    resultMap.put("dept",list.get(reid.get("crid")));
                     resultMap.put("dutyid", reid.get("dutyid"));
                     resultMap.put("dutycontent", map.get(reid.get("dutyid")));
                     resultMap.put("workid", reid.get("workid"));
@@ -360,7 +360,7 @@ public class TbPlantaskJobDutyController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"crid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cddid"})) {
                 response = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getContractTemplate Method", "[param error] or [param is null]"));
             } else {
