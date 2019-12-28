@@ -29,6 +29,13 @@ public interface TbProductPriceMapper {
     List<Map<String, Object>> getProductPrice(Map<String, Object> param);
 
     /**
+     * 删除 servicetype
+     * @param param
+     * @return
+     */
+    int updatePriceStatus(Map<String,Object> param);
+
+    /**
      * 新增产品价格报价
      *
      * @param paramList
