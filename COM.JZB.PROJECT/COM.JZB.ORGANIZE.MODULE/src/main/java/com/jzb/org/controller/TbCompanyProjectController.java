@@ -362,7 +362,7 @@ public class TbCompanyProjectController {
             if(JzbTools.isEmpty(param.get("projectid"))){
                 JzbPageConvert.setPageRows(param);
             }
-          
+
             List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectList(param);
             result = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();

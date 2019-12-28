@@ -24,24 +24,27 @@
         INNER JOIN tb_travel_approval tb2
         on  tb1.travelid = tb2.travelid and tb1.rebversion= tb2."version"
         <where>
-            tb1.rebstatus != '1'
-            and (tb2.trstatus = '2' or tb2.trstatus = '3')
+            tb1.rebstatus != '1' and tb1.rebstatus != '4' and tb1.status != '2'
+            <if test="trstatus == -1">and (tb2.trstatus = 2 or tb2.trstatus = 3)</if>
+            <if test="trstatus == 2">and tb2.trstatus = 2</if>
+            <if test="trstatus == 3">and  tb2.trstatus = 3</if>
             <if test="uid != null and uid != '' ">
                 and tb2.truid = #{uid}
             </if>
             <if test="travelid != null and travelid != '' ">
                 and tb1.travelid = #{travelid}
             </if>
-            <if test="beginTime != null and beginTime != '' ">
-                and tb1.orgtime &gt;= #{beginTime}
+            <if test="orgtime != null and orgtime != '' ">
+                and tb1.orgtime &gt;= #{orgtime}
             </if>
-            <if test="endTime != null and endTime != '' ">
-                and tb1.endtime &lt;= #{endTime}
+            <if test="endtime != null and endtime != '' ">
+                and tb1.endtime &lt;= #{endtime}
             </if>
             <if test="aptype != '' and aptype!=null"  >
                 and tb1.aptype = #{aptype}
             </if>
         </where>
+        order by orgtime desc
         LIMIT #{pagesize} OFFSET #{pageno}
     </select>
 
@@ -52,19 +55,21 @@
         INNER JOIN tb_travel_approval tb2
         on  tb1.travelid = tb2.travelid and tb1.rebversion= tb2."version"
         <where>
-            tb1.rebstatus != '1'
-            and (tb2.trstatus = '2' or tb2.trstatus = '3')
+            tb1.rebstatus != '1' and tb1.rebstatus != '4' and tb1.status != '2'
+            <if test="trstatus == -1">and (tb2.trstatus = 2 or tb2.trstatus = 3)</if>
+            <if test="trstatus == 2">and tb2.trstatus = 2</if>
+            <if test="trstatus == 3">and  tb2.trstatus = 3</if>
             <if test="uid != null and uid != '' ">
                 and tb2.truid = #{uid}
             </if>
             <if test="travelid != null and travelid != '' ">
                 and tb1.travelid = #{travelid}
             </if>
-            <if test="beginTime != null and beginTime != '' ">
-                and tb1.orgtime &gt;= #{beginTime}
+            <if test="orgtime != null and orgtime != '' ">
+                and tb1.orgtime &gt;= #{orgtime}
             </if>
-            <if test="endTime != null and endTime != '' ">
-                and tb1.endtime &lt;= #{endTime}
+            <if test="endtime != null and endtime != '' ">
+                and tb1.endtime &lt;= #{endtime}
             </if>
             <if test="aptype != '' and aptype!=null"  >
                 and tb1.aptype = #{aptype}

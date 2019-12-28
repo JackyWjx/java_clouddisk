@@ -221,4 +221,6 @@ public interface AuthUserMapper {
      * @return java.lang.String
     **/
     String getInitPassWd(Map<String, Object> param);
+
+    List<Map<String, Object>> getUserNameList(Map<String, Object> param);
 } // End interface AuthUserMapper

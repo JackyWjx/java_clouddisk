@@ -137,4 +137,10 @@
     <select id="queryContractTemplateCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_contract_template where status='1'
     </select>
+
+
+    <!-- 删除合同模板 -->
+    <update id="updateContractTemplateStatus" parameterType="java.util.Map">
+        update tb_contract_template set status='2' where tempid=#{tempid}
+    </update>
 </mapper>

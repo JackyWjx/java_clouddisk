@@ -30,15 +30,15 @@
         trim(cid) as cid,
         COALESCE (projectname, '') as projectname,
         COALESCE (tendername, '') as tendername,
-        to_char(TO_TIMESTAMP(tendertime/1000), 'YYYY-MM-DD') as tendertime,
+        tendertime,
         COALESCE (tenderphone, '') as tenderphone,
         COALESCE (tendercompany, '') as tendercompany,
         COALESCE (projecttype, '') as projecttype,
-        COALESCE (mail, '') as mail,
+        COALESCE (mail, '') as promail,
         COALESCE (tenderresultcompany, '') as tenderresultcompany,
         COALESCE (tenderagent, '') as tenderagent,
         COALESCE (agentphone, '') as agentphone,
-        COALESCE (porjcetra, '') as porjcetra,
+        COALESCE (projectras, '') as projectras,
         COALESCE (relation, '') as relation
         from tb_company_project where projectid=#{projectid}
         limit #{pagesize}  offset #{pageno}
@@ -165,7 +165,7 @@
             tenderresultcompany=#{tenderresultcompany},
             tenderagent=#{tenderagent},
             agentphone=#{agentphone},
-            porjcetra=#{porjcetra},
+            projectras=#{projectras},
             relation=#{relation},
             <if test=" uid != null and uid != ''">upduid=#{uid},</if>
             <if test=" updtime != null and updtime != ''">updtime=#{updtime}</if>
@@ -273,7 +273,7 @@
 
     <!--根据projectid查询项目信息-->
     <select id="queryProjectByProid" resultType="java.util.Map" parameterType="java.util.Map">
-        select projectid,cid,projectname,tendername,tenderphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,porjcetra,relation
+        select projectid,cid,projectname,tendername,tenderphone,tendertime,tenderphone,tendercompany,projecttype,mail as promail,tenderresultcompany,tenderagent,agentphone,projectras,relation
          from tb_company_project where projectid=#{projectId}
     </select>
 

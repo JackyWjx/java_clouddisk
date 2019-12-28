@@ -27,6 +27,12 @@ public interface TbProductResListMapper {
      */
     int saveTbProductParameteItem(List<Map<String, Object>> paramList);
 
+    /**
+     * 删除
+     * @param param
+     * @return
+     */
+    int updateTbProductResList(Map<String, Object> param);
 
     /**
      * 修改合同配置中的产品参数列表

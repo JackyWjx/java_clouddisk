@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbPlantaskJobDutyMapper">
+<!--    查询公司下所有角色的岗位职责-->
+    <select id="getAllIdByCid" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.jobdutyid,a.crid,a.dutyid,a.workid,a.outputid,a.workstandardid,a.kpiid from tb_plantask_job_duty
+        as a ,tb_plantask_job_position as b
+        <where>
+            <if test="crid!=null  and  crid !=''">
+                a.crid in
+                <foreach collection="crid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                and
+            </if>
+
+            status='1' and
+            a.crid=b.crid
+            order by b.cddid desc
+            LIMIT #{pagesize} OFFSET #{pageno}
+        </where>
+
+    </select>
+    <select id="AllJobRBE" resultType="java.util.Map">
+        select uniqueid,content,parentid,sort,node from tb_plantask_job_content
+    </select>
+<!--    查询岗位职责总数-->
+    <select id="getAllCount" resultType="java.lang.Integer">
+        select count(1)
+        from tb_plantask_job_duty where status='1'
+    </select>
+<!--    修改岗位职责-->
+    <update id="updateJobResponsibilities">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update tb_plantask_job_content
+            <set>
+                <if test="item.content!=null and item.content!=''">
+                    content = #{item.content},
+                </if>
+                <if test="item.sort!=null and item.sort!=''">
+                    sort = #{item.sort}
+                </if>
+            </set>
+            where uniqueid=#{item.uniqueid}
+        </foreach>
+    </update>
+    <update id="updateJobResponsibilitiesByUidAndTime">
+        update tb_plantask_job_duty
+        <set>
+            <if test="uptime!=null and uptime!=''">
+                uptime = #{uptime},
+            </if>
+            <if test="upuid!=null and upuid!=''">
+                upuid = #{upuid}
+            </if>
+        </set>
+        where jobdutyid in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item.jobdutyid}
+        </foreach>
+    </update>
+
+<!--修改删除状态-->
+    <update id="updateJobResponsibilitiesDelStatus">
+        update tb_plantask_job_duty
+        <set>
+            <if test="uptime!=null and uptime!=''">
+                uptime = #{uptime},
+            </if>
+            <if test="upuid!=null and upuid!=''">
+                upuid = #{upuid},
+            </if>
+            status = '2'
+        </set>
+        where  jobdutyid in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item.uniqueid}
+        </foreach>
+    </update>
+<!--    插入-->
+    <insert id="insertJobResponsibilities">
+        <foreach collection="lists" item="item" index="index" open="" close="" separator=";">
+            insert into tb_plantask_job_duty (jobdutyid,crid,dutyid,workid,outputid,workstandardid,kpiid,
+            adduid,status,addtime) values
+            (#{item.jobdutyid},#{item.crid},#{item.dutyid},#{item.workid},#{item.outputid},#{item.workstandardid},#{item.kpiid},#{item.adduid},'1',#{item.addtime})
+        </foreach>
+    </insert>
+    <insert id="insertJobRBE">
+        <foreach collection="lists" item="item" index="index" open="" close="" separator=";">
+            <if test="item.dutyidExist ==null or  item.dutyidExist ==null or  item.workidExist ==null or  item.outputidExist ==null or  item.kpiidExist ==null">
+            insert into tb_plantask_job_content (uniqueid,content,parentid,sort,node)
+            values
+            <if test="item.dutyidExist ==null ">
+                (#{item.dutyid},#{item.dutycontent},#{item.parentid},#{item.sort},'2'),
+            </if>
+            <if test="item.workidExist ==null ">
+                (#{item.workid},#{item.workcontent},#{item.parentid},#{item.sort},'3'),
+            </if>
+            <if test="item.outputidExist ==null ">
+                (#{item.outputid},#{item.outputcontent},#{item.parentid},#{item.sort},'4'),
+            </if>
+            <if test="item.workstandardidExist ==null ">
+                (#{item.workstandardid},#{item.workstandarcontent},#{item.parentid},#{item.sort},'5'),
+            </if>
+            <if test="item.kpiidExist ==null ">
+                (#{item.kpiid},#{item.kpicontent},#{item.parentid},#{item.sort},'6')
+            </if>
+            </if>
+        </foreach>
+    </insert>
+    <insert id="insertDept">
+        <foreach collection="lists" item="item" index="index" open="" close="" separator=";">
+            <if test="item.cridExist==null">
+                insert into tb_plantask_job_position
+                (crid,content,cddid) values (#{item.crid},#{item.crcontent},#{item.cddid})
+            </if>
+        </foreach>
+    </insert>
+    <select id="selectContentIsNotExist" resultType="java.lang.String">
+        select crid from tb_plantask_job_position where content = #{content} LIMIT 1
+    </select>
+
+    <select id="selectDutyContentIsNotExist" resultType="java.lang.String">
+        select uniqueid from tb_plantask_job_content where
+        content = #{content} LIMIT 1
+    </select>
+    <select id="selectWorkContentIsNotExist" resultType="java.lang.String">
+        select uniqueid from tb_plantask_job_content where
+        content = #{content} LIMIT 1
+    </select>
+    <select id="selectOutputContentIsNotExist" resultType="java.lang.String">
+        select uniqueid from tb_plantask_job_content where
+        content = #{content} LIMIT 1
+    </select>
+    <select id="selectWorkstandarContentIsNotExist" resultType="java.lang.String">
+        select uniqueid from tb_plantask_job_content where
+        content = #{content} LIMIT 1
+    </select>
+    <select id="selectkpiContentIsNotExist" resultType="java.lang.String">
+        select uniqueid from tb_plantask_job_content where
+        content = #{content}  LIMIT 1
+    </select>
+
+    <select id="selectDutyByCid" resultType="Map">
+        SELECT DISTINCT b.uniqueid,b."content"
+FROM "tb_plantask_job_duty" a,"tb_plantask_job_content" b where a.dutyid = b.uniqueid and  a.crid = #{crid}
+    </select>
+</mapper>

@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbPlantaskMapper">
+    <select id="getPantaskList1" parameterType="java.util.Map" resultType="java.util.Map">
+WITH RECURSIVE item AS (
+(
+	SELECT
+		planid,
+		cdid,
+		uid,
+		dutyid,
+		plancontent,
+		starttime,
+		endtime,
+		acceptors,
+		executors,
+		assistants,
+		outcome,
+		tasktype,
+		taskstatus	,
+		notes,
+		path,
+		filenames,
+		addid,
+		review,
+		parentid,
+		sort
+	FROM
+		${tabname}
+    where parentid= '0' and  node=#{node}
+    <if test="cdid!=null and cdid!=''">
+			and cdid= #{cdid}
+	</if>
+	<if test="starttime!=null and starttime!=''">
+		 	and starttime &gt;= #{starttime}
+	</if>
+	<if test="endtime!=null and endtime!=''">
+			and endtime  &lt;= #{endtime}
+	</if>
+		<if test="tasktype!=null and tasktype!=''">
+			and tasktype  &lt;= #{tasktype}
+		</if>
+
+		<if test="taskstatus!=null and taskstatus!=''">
+			and taskstatus  = #{taskstatus}
+		</if>
+		<if test="acceptors!=null and acceptors!=''">
+			and acceptors  like '%'#{acceptors}'%'
+		</if>
+
+		<if test="executors!=null and executors!=''">
+			and executors  like '%'#{executors}'%'
+		</if>
+
+		<if test="assistants!=null and assistants!=''">
+			and assistants  like '%'#{assistants}'%'
+		</if>
+
+		<if test="outcome!=null and outcome!=''">
+			and outcome  > #{outcome}
+		</if>
+		<if test="uid!=null and uid!=''">
+			and uid = #{uid}
+		</if>
+
+    LIMIT #{pagesize} OFFSET #{pageno}
+)
+	UNION all
+	SELECT
+		itema.planid,
+		itema.cdid,
+		itema.uid,
+		itema.dutyid,
+		itema.plancontent,
+		itema.starttime,
+		itema.endtime,
+		itema.acceptors,
+		itema.executors,
+		itema.assistants,
+		itema.outcome,
+		itema.tasktype,
+		itema.taskstatus	,
+		itema.notes,
+		itema.path,
+		itema.filenames,
+		itema.addid,
+		itema.review,
+		itema.parentid,
+		itema.sort
+	FROM
+		${tabname} itema
+		 JOIN item ON itema.parentid = item.planid
+		and itema.node = #{node}
+	) SELECT
+	item.*
+FROM
+	item
+
+ORDER BY
+	item.sort asc
+
+    </select>
+
+	<select id="getPantaskCount"  parameterType="java.util.Map" resultType="java.lang.Integer">
+	SELECT
+		count(1)
+	FROM
+		${tabname}
+    where node=#{node} and parentid= '0'
+		<if test="starttime!=null and starttime!=''">
+			and starttime &gt;= #{starttime}
+		</if>
+		<if test="endtime!=null and endtime!=''">
+			and endtime  &lt;= #{endtime}
+		</if>
+		<if test="tasktype!=null and tasktype!=''">
+			and tasktype  &lt;= #{tasktype}
+		</if>
+
+		<if test="taskstatus!=null and taskstatus!=''">
+			and taskstatus  = #{taskstatus}
+		</if>
+		<if test="acceptors!=null and acceptors!=''">
+			and acceptors  like '%'#{acceptors}'%'
+		</if>
+
+		<if test="executors!=null and executors!=''">
+			and executors  like '%'#{executors}'%'
+		</if>
+
+		<if test="assistants!=null and assistants!=''">
+			and assistants  like '%'#{assistants}'%'
+		</if>
+
+		<if test="outcome!=null and outcome!=''">
+			and outcome  > #{outcome}
+		</if>
+		<if test="uid!=null and uid!=''">
+			and uid = #{uid}
+		</if>
+
+    </select>
+
+	<!--新建计划任务-->
+	<insert id="addPlantaskBrother" parameterType="java.util.List">
+		INSERT INTO ${tabname}
+		( "planid", "cdid", "uid", "dutyid", "plancontent",
+		  "acceptors", "executors", "assistants", "outcome",
+		 "tasktype", "taskstatus", "notes", "path", "filenames", "addid",
+		  "review", "parentid", "sort", "node","starttime","endtime",addtime,uptime)
+		VALUES
+		<foreach collection="List" index="index" item="item" close ="," separator=";">
+		(
+		<choose>
+			<when test="planid !=null">
+				#{item.planid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="cdid !=null">
+				#{item.cdid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="uid !=null">
+				#{item.uid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="dutyid !=null">
+				#{item.dutyid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="plancontent !=null">
+				#{item.plancontent},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="acceptors !=null">
+				#{item.acceptors},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="executors !=null">
+				#{item.executors},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="assistants !=null">
+				#{item.assistants},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="outcome !=null">
+				#{item.outcome},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="tasktype !=null">
+				#{item.tasktype},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="taskstatus !=null">
+				#{item.taskstatus},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="notes !=null">
+				#{item.notes},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="path !=null">
+				#{item.path},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="filenames !=null">
+				#{item.filenames},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="addid !=null">
+				#{item.addid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="review !=null">
+				#{item.review},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="parentid !=null">
+				#{item.parentid},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="sort !=null">
+				#{item.sort},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="node !=null">
+				#{item.node},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+
+		<choose>
+			<when test="starttime !=null">
+				#{item.starttime},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="endtime !=null">
+				#{item.endtime},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="addtime !=null">
+				#{item.addtime},
+			</when>
+			<otherwise>
+				null ,
+			</otherwise>
+		</choose>
+			<choose>
+				<when test="uptime !=null">
+					#{item.uptime}
+				</when>
+				<otherwise>
+					null
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="status !=null">
+					#{item.status}
+				</when>
+				<otherwise>
+					null
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="ptype !=null">
+					#{item.ptype}
+				</when>
+				<otherwise>
+					null
+				</otherwise>
+			</choose>
+		)
+		</foreach>
+	</insert>
+
+	<!--修改计划管理-->
+	<update id="updatePlantask" parameterType="java.util.List" >
+		<foreach collection="List" index="index" item="item" close =";" separator="">
+		UPDATE ${tabname}
+
+		SET
+		<if test="cdid != null">cdid=#{item.cdid},</if>
+		<if test="uid != null">uid=#{item.uid},</if>
+		<if test="dutyid != null">dutyid=#{item.dutyid},</if>
+		<if test="plancontent != null">plancontent=#{item.plancontent},</if>
+		<if test="starttime != null">starttime=#{item.starttime},</if>
+		<if test="endtime != null">endtime=#{item.endtime},</if>
+		<if test="acceptors != null">acceptors=#{item.acceptors},</if>
+		<if test="executors != null">executors=#{item.executors},</if>
+		<if test="assistants != null">assistants=#{item.assistants},</if>
+		<if test="outcome != null">outcome=#{item.outcome},</if>
+		<if test="tasktype != null">tasktype=#{item.tasktype},</if>
+		<if test="taskstatus != null">taskstatus=#{item.taskstatus},</if>
+		<if test="path != null">path=#{item.path},</if>
+		<if test="filenames != null">filenames=#{item.filenames},</if>
+		<if test="addid != null">addid=#{item.addid},</if>
+		<if test="review != null">review=#{item.review},</if>
+		<if test="parentid != null">parentid=#{item.parentid},</if>
+		<if test="sort != null">sort=#{item.sort},</if>
+		<if test="node != null">node=#{item.node},</if>
+		<if test="addtime != null">addtime=#{item.addtime},</if>
+		<if test="uptime != null">uptime=#{item.uptime}</if>
+		<if test="uptime != null">status=#{item.status}</if>
+		where planid=#{planid}
+		</foreach>
+
+	</update>
+
+
+	<select id="getCompanydeptMap" resultType="java.util.Map">
+		select cdid,cname from tb_company_dept
+			where  cid='JZB0001' and cname not in ('资源池')
+	</select>
+
+	<!--删除计划管理-->
+	<update id="delPlantask" parameterType="java.util.Map" >
+
+			UPDATE ${tabname} SET
+			status=#{status}
+			where planid=#{planid}
+
+	</update>
+
+
+
+
+</mapper>

@@ -8,7 +8,7 @@
     <select id="getProductResList" parameterType="java.util.Map" resultType="java.util.Map">
         select
         a.id,
-        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd HH24:MI') as addtime,
+        to_char(to_timestamp(a.addtime / 1000), 'yyyy-MM-dd') as addtime,
         a.cname,
         a.status,
         a.paradesc,
@@ -25,6 +25,7 @@
         tb_product_res_list a
         on a.pid = b.prodid
         where a.id is not null
+        and a.status='1'
         <if test="plid != null and plid!='' and plid!=0">
             and a.plid = #{plid}
         </if>
@@ -53,7 +54,7 @@
            LEFT JOIN
            tb_product_res_list a
            on a.pid = b.prodid
-           where 1=1
+           where a.status='1'
            <if test="plid != null and plid!='' and plid!=0">
                and a.plid = #{plid}
            </if>
@@ -299,7 +300,7 @@
                 #{status},
             </when>
             <otherwise>
-                null,
+                '1',
             </otherwise>
         </choose>
         <choose>
@@ -350,6 +351,10 @@
             pid = #{pid}
     </select>
 
+    <!-- 修改产品参数状态为删除 -->
+    <update id="updateTbProductResList" parameterType="java.util.Map">
+        update tb_product_res_list set status='2' where pid=#{pid}
+    </update>
 </mapper>
 
 
