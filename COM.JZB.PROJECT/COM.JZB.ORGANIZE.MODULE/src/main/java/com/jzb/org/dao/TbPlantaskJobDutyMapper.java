@@ -12,6 +12,8 @@ public interface TbPlantaskJobDutyMapper {
 
     public List<Map<String,Object>> selectDutyByCid (Map<String,Object> param);
 
+    public List<Map<String,Object>> selectExistContent (Map<String,Object> param);
+
     Integer getAllCount(Map<String, Object> param);
 
     Integer updateJobResponsibilities(Map<String, Object> param);
@@ -28,11 +30,7 @@ public interface TbPlantaskJobDutyMapper {
 
     Integer insertDept(Map<String, Object> param);
 
-    String selectContentIsNotExist (String param1);
+    List<Map<String, Object>> selectExistCrContent(Map<String, Object> param);
 
-    String selectDutyContentIsNotExist(String dutycontent);
-    String selectWorkContentIsNotExist(String dutycontent);
-    String selectOutputContentIsNotExist(String dutycontent);
-    String selectWorkstandarContentIsNotExist(String dutycontent);
-    String selectkpiContentIsNotExist(String dutycontent);
+    List<Map<String, Object>> selectAllDutyByRole(Map<String, Object> param);
 }

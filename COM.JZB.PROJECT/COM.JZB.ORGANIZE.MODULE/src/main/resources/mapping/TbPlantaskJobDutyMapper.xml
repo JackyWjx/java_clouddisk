@@ -87,64 +87,55 @@
             (#{item.jobdutyid},#{item.crid},#{item.dutyid},#{item.workid},#{item.outputid},#{item.workstandardid},#{item.kpiid},#{item.adduid},'1',#{item.addtime})
         </foreach>
     </insert>
+<!--    插入字典库   -->
     <insert id="insertJobRBE">
-        <foreach collection="lists" item="item" index="index" open="" close="" separator=";">
-            <if test="item.dutyidExist ==null or  item.dutyidExist ==null or  item.workidExist ==null or  item.outputidExist ==null or  item.kpiidExist ==null">
-            insert into tb_plantask_job_content (uniqueid,content,parentid,sort,node)
+
+            insert into tb_plantask_job_content (uniqueid,content)
             values
-            <if test="item.dutyidExist ==null ">
-                (#{item.dutyid},#{item.dutycontent},#{item.parentid},#{item.sort},'2'),
-            </if>
-            <if test="item.workidExist ==null ">
-                (#{item.workid},#{item.workcontent},#{item.parentid},#{item.sort},'3'),
-            </if>
-            <if test="item.outputidExist ==null ">
-                (#{item.outputid},#{item.outputcontent},#{item.parentid},#{item.sort},'4'),
-            </if>
-            <if test="item.workstandardidExist ==null ">
-                (#{item.workstandardid},#{item.workstandarcontent},#{item.parentid},#{item.sort},'5'),
-            </if>
-            <if test="item.kpiidExist ==null ">
-                (#{item.kpiid},#{item.kpicontent},#{item.parentid},#{item.sort},'6')
-            </if>
-            </if>
-        </foreach>
+            <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+                (#{item.uniqueid},#{item.content})
+            </foreach>
+
     </insert>
     <insert id="insertDept">
-        <foreach collection="lists" item="item" index="index" open="" close="" separator=";">
-            <if test="item.cridExist==null">
-                insert into tb_plantask_job_position
-                (crid,content,cddid) values (#{item.crid},#{item.crcontent},#{item.cddid})
-            </if>
+        <foreach collection="crMap" item="item" index="index" open="" close="" separator=";">
+
+           insert into tb_plantask_job_position
+           (crid,content,cddid) values (#{item.crid},#{item.crcontent},#{item.cddid})
+
         </foreach>
     </insert>
-    <select id="selectContentIsNotExist" resultType="java.lang.String">
-        select crid from tb_plantask_job_position where content = #{content} LIMIT 1
-    </select>
 
-    <select id="selectDutyContentIsNotExist" resultType="java.lang.String">
-        select uniqueid from tb_plantask_job_content where
-        content = #{content} LIMIT 1
-    </select>
-    <select id="selectWorkContentIsNotExist" resultType="java.lang.String">
-        select uniqueid from tb_plantask_job_content where
-        content = #{content} LIMIT 1
-    </select>
-    <select id="selectOutputContentIsNotExist" resultType="java.lang.String">
-        select uniqueid from tb_plantask_job_content where
-        content = #{content} LIMIT 1
-    </select>
-    <select id="selectWorkstandarContentIsNotExist" resultType="java.lang.String">
-        select uniqueid from tb_plantask_job_content where
-        content = #{content} LIMIT 1
-    </select>
-    <select id="selectkpiContentIsNotExist" resultType="java.lang.String">
-        select uniqueid from tb_plantask_job_content where
-        content = #{content}  LIMIT 1
-    </select>
 
     <select id="selectDutyByCid" resultType="Map">
         SELECT DISTINCT b.uniqueid,b."content"
 FROM "tb_plantask_job_duty" a,"tb_plantask_job_content" b where a.dutyid = b.uniqueid and  a.crid = #{crid}
+    </select>
+
+    <select id="selectExistContent" resultType="Map">
+        select content,uniqueid
+        from tb_plantask_job_content
+        where content in
+        <foreach collection="contentList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectExistCrContent" resultType="Map">
+        select content as crcontent,crid
+        from tb_plantask_job_position
+        where content in
+        <foreach collection="crContent" item="item" index="index" open="(" close=")" separator=",">
+            #{item.crcontent}
+        </foreach>
+    </select>
+
+<!--    查询所有职责根据角色-->
+    <select id="selectAllDutyByRole" resultType="Map">
+        select DISTINCT crid,dutyid,(select content from tb_plantask_job_content where uniqueid = dutyid) from
+tb_plantask_job_duty
+where crid in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item.crid}
+        </foreach>
     </select>
 </mapper>

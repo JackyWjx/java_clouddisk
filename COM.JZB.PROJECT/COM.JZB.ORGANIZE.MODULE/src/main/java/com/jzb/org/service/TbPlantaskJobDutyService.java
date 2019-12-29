@@ -25,6 +25,10 @@ public class TbPlantaskJobDutyService {
         return tbPlantaskJobDutyMapper.selectDutyByCid(param);
     }
 
+    public List<Map<String, Object>> selectExistContent(Map<String, Object> param) {
+        return tbPlantaskJobDutyMapper.selectExistContent(param);
+    }
+
     public Integer getAllCount(Map<String, Object> param) {
         return tbPlantaskJobDutyMapper.getAllCount(param);
     }
@@ -72,31 +76,21 @@ public class TbPlantaskJobDutyService {
 
     public Integer insertJobResponsibilities(Map<String, Object> param) {
         tbPlantaskJobDutyMapper.insertDept(param);
-        tbPlantaskJobDutyMapper.insertJobRBE(param);
+        List<Map<String,Object>> list=(List)param.get("list");
+        if(list.size()>0){
+            tbPlantaskJobDutyMapper.insertJobRBE(param);
+        }
         return tbPlantaskJobDutyMapper.insertJobResponsibilities(param);
     }
 
-    public String selectContentIsNotExist(String param) {
-        return tbPlantaskJobDutyMapper.selectContentIsNotExist(param);
+
+
+    public List<Map<String, Object>> selectExistCrContent(Map<String, Object> param) {
+        return tbPlantaskJobDutyMapper.selectExistCrContent(param);
     }
 
-    public String selectDutyContentIsNotExist(String dutycontent) {
-        return tbPlantaskJobDutyMapper.selectDutyContentIsNotExist(dutycontent);
-    }
 
-    public String selectWorkContentIsNotExist(String dutycontent) {
-        return tbPlantaskJobDutyMapper.selectDutyContentIsNotExist(dutycontent);
-    }
-
-    public String selectOutputContentIsNotExist(String dutycontent) {
-        return tbPlantaskJobDutyMapper.selectDutyContentIsNotExist(dutycontent);
-    }
-
-    public String selectWorkstandarContentIsNotExist(String dutycontent) {
-        return tbPlantaskJobDutyMapper.selectDutyContentIsNotExist(dutycontent);
-    }
-
-    public String selectkpiContentIsNotExist(String dutycontent) {
-        return tbPlantaskJobDutyMapper.selectDutyContentIsNotExist(dutycontent);
+    public List<Map<String, Object>> selectAllDutyByRole(Map<String, Object> param) {
+        return tbPlantaskJobDutyMapper.selectAllDutyByRole(param);
     }
 }
