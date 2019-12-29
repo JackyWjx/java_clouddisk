@@ -144,17 +144,17 @@ ORDER BY
     </select>
 
 	<!--新建计划任务-->
-	<insert id="addPlantaskBrother" parameterType="java.util.List">
+	<insert id="addPlantaskBrother" parameterType="java.util.Map">
 		INSERT INTO ${tabname}
 		( "planid", "cdid", "uid", "dutyid", "plancontent",
 		  "acceptors", "executors", "assistants", "outcome",
 		 "tasktype", "taskstatus", "notes", "path", "filenames", "addid",
-		  "review", "parentid", "sort", "node","starttime","endtime",addtime,uptime)
+		  "review", "parentid", "sort", "node","starttime","endtime",addtime,uptime,status,ptype)
 		VALUES
-		<foreach collection="List" index="index" item="item" close ="," separator=";">
+		<foreach collection="list" index="index" item="item"  separator=",">
 		(
 		<choose>
-			<when test="planid !=null">
+			<when test="item.planid !=null">
 				#{item.planid},
 			</when>
 			<otherwise>
@@ -162,7 +162,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="cdid !=null">
+			<when test="item.cdid !=null">
 				#{item.cdid},
 			</when>
 			<otherwise>
@@ -170,7 +170,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="uid !=null">
+			<when test="item.uid !=null">
 				#{item.uid},
 			</when>
 			<otherwise>
@@ -178,7 +178,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="dutyid !=null">
+			<when test="item.dutyid !=null">
 				#{item.dutyid},
 			</when>
 			<otherwise>
@@ -186,7 +186,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="plancontent !=null">
+			<when test="item.plancontent !=null">
 				#{item.plancontent},
 			</when>
 			<otherwise>
@@ -194,7 +194,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="acceptors !=null">
+			<when test="item.acceptors !=null">
 				#{item.acceptors},
 			</when>
 			<otherwise>
@@ -202,7 +202,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="executors !=null">
+			<when test="item.executors !=null">
 				#{item.executors},
 			</when>
 			<otherwise>
@@ -210,7 +210,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="assistants !=null">
+			<when test="item.assistants !=null">
 				#{item.assistants},
 			</when>
 			<otherwise>
@@ -218,7 +218,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="outcome !=null">
+			<when test="item.outcome !=null">
 				#{item.outcome},
 			</when>
 			<otherwise>
@@ -226,7 +226,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="tasktype !=null">
+			<when test="item.tasktype !=null">
 				#{item.tasktype},
 			</when>
 			<otherwise>
@@ -234,7 +234,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="taskstatus !=null">
+			<when test="item.taskstatus !=null">
 				#{item.taskstatus},
 			</when>
 			<otherwise>
@@ -242,7 +242,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="notes !=null">
+			<when test="item.notes !=null">
 				#{item.notes},
 			</when>
 			<otherwise>
@@ -250,7 +250,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="path !=null">
+			<when test="item.path !=null">
 				#{item.path},
 			</when>
 			<otherwise>
@@ -258,7 +258,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="filenames !=null">
+			<when test="item.filenames !=null">
 				#{item.filenames},
 			</when>
 			<otherwise>
@@ -266,7 +266,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="addid !=null">
+			<when test="item.addid !=null">
 				#{item.addid},
 			</when>
 			<otherwise>
@@ -274,7 +274,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="review !=null">
+			<when test="item.review !=null">
 				#{item.review},
 			</when>
 			<otherwise>
@@ -282,7 +282,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="parentid !=null">
+			<when test="item.parentid !=null">
 				#{item.parentid},
 			</when>
 			<otherwise>
@@ -290,7 +290,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="sort !=null">
+			<when test="item.sort !=null">
 				#{item.sort},
 			</when>
 			<otherwise>
@@ -298,7 +298,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="node !=null">
+			<when test="item.node !=null">
 				#{item.node},
 			</when>
 			<otherwise>
@@ -307,7 +307,7 @@ ORDER BY
 		</choose>
 
 		<choose>
-			<when test="starttime !=null">
+			<when test="item.starttime !=null">
 				#{item.starttime},
 			</when>
 			<otherwise>
@@ -315,7 +315,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="endtime !=null">
+			<when test="item.endtime !=null">
 				#{item.endtime},
 			</when>
 			<otherwise>
@@ -323,7 +323,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="addtime !=null">
+			<when test="item.addtime !=null">
 				#{item.addtime},
 			</when>
 			<otherwise>
@@ -331,23 +331,23 @@ ORDER BY
 			</otherwise>
 		</choose>
 			<choose>
-				<when test="uptime !=null">
-					#{item.uptime}
+				<when test="item.uptime !=null">
+					#{item.uptime},
 				</when>
 				<otherwise>
-					null
+					null,
 				</otherwise>
 			</choose>
 			<choose>
-				<when test="status !=null">
-					#{item.status}
+				<when test="item.status !=null">
+					#{item.status},
 				</when>
 				<otherwise>
-					null
+					null,
 				</otherwise>
 			</choose>
 			<choose>
-				<when test="ptype !=null">
+				<when test="item.ptype !=null">
 					#{item.ptype}
 				</when>
 				<otherwise>
