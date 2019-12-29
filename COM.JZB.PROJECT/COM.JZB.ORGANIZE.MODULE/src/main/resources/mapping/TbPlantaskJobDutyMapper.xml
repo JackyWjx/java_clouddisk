@@ -84,7 +84,7 @@
         <foreach collection="lists" item="item" index="index" open="" close="" separator=";">
             insert into tb_plantask_job_duty (jobdutyid,crid,dutyid,workid,outputid,workstandardid,kpiid,
             adduid,status,addtime) values
-            (#{item.jobdutyid},#{item.crid},#{item.dutyid},#{item.workid},#{item.outputid},#{item.workstandardid},#{item.kpiid},#{item.adduid},'1',#{item.addtime})
+            (#{item.jobdutyid},#{item.crid},#{item.dutyid},#{item.workid},#{item.outputid},#{item.workstandardid},#{item.kpiid},#{adduid},'1',#{addtime})
         </foreach>
     </insert>
 <!--    插入字典库   -->

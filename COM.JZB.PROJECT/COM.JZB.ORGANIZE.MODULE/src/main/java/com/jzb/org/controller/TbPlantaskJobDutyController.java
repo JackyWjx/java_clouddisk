@@ -243,6 +243,8 @@ public class TbPlantaskJobDutyController {
                 //此时lists已变成id的样子
                 //行插入
                 param.put("lists", lists);
+                param.put("adduid",userInfo.get("uid"));
+                param.put("addtime",System.currentTimeMillis());
                 //字典库
                 param.put("list", res);
                 //角色字典库
