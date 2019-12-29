@@ -11,7 +11,7 @@ public interface TbPlantaskMapper {
 
      List<Map<String, Object>> getPantaskList1(Map<String ,Object> param);
 
-     int addPlantaskBrother(List<Map<String, Object>> param);
+     int addPlantaskBrother(Map<String, Object> param);
 
      int updatePlantask(Map<String, Object> param);
 

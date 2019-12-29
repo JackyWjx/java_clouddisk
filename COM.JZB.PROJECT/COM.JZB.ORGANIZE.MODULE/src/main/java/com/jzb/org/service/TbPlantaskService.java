@@ -25,7 +25,7 @@ public class TbPlantaskService {
 
 
 
-    public int addPlantaskBrother(List<Map<String, Object>> param) {
+    public int addPlantaskBrother(Map<String, Object> param) {
         return tbPlantaskMapper.addPlantaskBrother(param);
     }
 

@@ -171,7 +171,7 @@ public class TbPlantaskController {
                     records.get(i).put("yname",usnamesMap.get(records.get(i).get("uid")));//姓名
                     records.get(i).put("bname",bumensMap.get(records.get(i).get("cdid")));//部门
                     records.get(i).put("gname",zhizeMap.get(records.get(i).get("dutyid")));//岗位职责
-
+                    records.get(i).put("addname",usnamesMap.get(records.get(i).get("addid")));//姓名
                     //验收人
                     if(records.get(i).get("acceptors")!=null){
                         if(records.get(i).get("acceptors").toString().indexOf(",")>0){
@@ -269,7 +269,9 @@ public class TbPlantaskController {
                     node.put( "executorsname" ,record.get("executorsname"));
                     node.put( "assistantsname" ,record.get("assistantsname"));
                     node.put("gname",record.get("gname"));
+                    node.put("addname",record.get("addname"));
                     node.put("children", new JSONArray());
+
 
                     // if root node
                     if (parentId.equals(firstParent)) {
@@ -331,11 +333,7 @@ public class TbPlantaskController {
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getMethodType Method", e.toString()));
         }
 
-        if (userInfo != null) {
-            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
-        } else {
-            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
-        }
+
         return response;
     }
 
@@ -385,11 +383,12 @@ public class TbPlantaskController {
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
                 for (Map<String, Object> map:list) {
                     map.put("planid", JzbRandom.getRandomChar(20));
-                    param.put("addtime",System.currentTimeMillis());
+                    map.put("addtime",System.currentTimeMillis());
                 }
+                param.put("list",list);
 
                 // 添加返回值大于0 则添加成功
-                int count = tbPlantaskService.addPlantaskBrother(list);
+                int count = tbPlantaskService.addPlantaskBrother(param);
                 if (count > 0) {
                     // 定义返回结果
                     result = Response.getResponseSuccess(userInfo);
