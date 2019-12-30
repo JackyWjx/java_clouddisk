@@ -7,135 +7,135 @@
     <!-- 添加出差记录-->
     <insert id="addTravelRecord" parameterType="java.util.List">
 
-            insert into tb_travel_record
-            (
-            travelid,
-            uid,
-            uname,
-            fare,
-            expenses,
-            orgtime,
-            endtime,
-            aptype,
-            ccuid,
-            addtime,
-            adduid,
-            status,
-            summary,
-            trip,
-            traversion,
-            rebversion,
-            trastatus,
-            rebstatus
-            )
-            values
-            (
-            #{travelid},
-            <choose>
-                <when test="uid != null and uid!=''">
-                    #{uid},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="uname != null and uname!=''">
-                    #{uname},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="fare != null and fare!=''">
-                    #{fare},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="expenses != null and expenses!=''">
-                    #{expenses},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="orgtime != null and orgtime!=''">
-                    #{orgtime},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="endtime != null and endtime!=''">
-                    #{endtime},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="aptype != null and aptype!=''">
-                    #{aptype},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="ccuid != null and ccuid!=''">
-                    #{ccuid},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
+        insert into tb_travel_record
+        (
+        travelid,
+        uid,
+        uname,
+        fare,
+        expenses,
+        orgtime,
+        endtime,
+        aptype,
+        ccuid,
+        addtime,
+        adduid,
+        status,
+        summary,
+        trip,
+        traversion,
+        rebversion,
+        trastatus,
+        rebstatus
+        )
+        values
+        (
+        #{travelid},
+        <choose>
+            <when test="uid != null and uid!=''">
+                #{uid},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="uname != null and uname!=''">
+                #{uname},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="fare != null and fare!=''">
+                #{fare},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="expenses != null and expenses!=''">
+                #{expenses},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="orgtime != null and orgtime!=''">
+                #{orgtime},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="endtime != null and endtime!=''">
+                #{endtime},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="aptype != null and aptype!=''">
+                #{aptype},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="ccuid != null and ccuid!=''">
+                #{ccuid},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
 
-            <choose>
-                <when test="addtime != null and addtime!=''">
-                    #{addtime},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="adduid != null and adduid!=''">
-                    #{adduid},
-                </when>
-                <otherwise>
-                    null ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="status != null and status!=''">
-                    #{status},
-                </when>
-                <otherwise>
-                    1 ,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="summary != null and summary!=''">
-                    #{summary},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
-            <choose>
-                <when test="trip != null and trip!=''">
-                    #{trip},
-                </when>
-                <otherwise>
-                    null,
-                </otherwise>
-            </choose>
+        <choose>
+            <when test="addtime != null and addtime!=''">
+                #{addtime},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="adduid != null and adduid!=''">
+                #{adduid},
+            </when>
+            <otherwise>
+                null ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="status != null and status!=''">
+                #{status},
+            </when>
+            <otherwise>
+                1 ,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="summary != null and summary!=''">
+                #{summary},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trip != null and trip!=''">
+                #{trip},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="traversion != null and traversion!=''">
                 #{traversion},
@@ -168,40 +168,40 @@
                 null
             </otherwise>
         </choose>
-            )
+        )
     </insert>
 
     <!-- 添加出差详情记录-->
     <insert id="addTravelDetails" parameterType="java.util.List">
-            insert into tb_travel_record_deta
-            (
-            deid,
-            travelid,
-            uid,
-            cid,
-            projectid,
-            did,
-            trpeers,
-            trdefense,
-            trtime,
-            trtype,
-            trregion,
-            trgoal,
-            trip,
-            produce,
-            fare,
-            expenses,
-            amount,
-            addtime,
-            adduid,
-            updtime,
-            upduid,
-            status,
-            summary
-            )
-            values
-        <foreach collection="list" item="detials" separator=",">
+        insert into tb_travel_record_deta
         (
+        deid,
+        travelid,
+        uid,
+        cid,
+        projectid,
+        did,
+        trpeers,
+        trdefense,
+        trtime,
+        trtype,
+        trregion,
+        trgoal,
+        trip,
+        produce,
+        fare,
+        expenses,
+        amount,
+        addtime,
+        adduid,
+        updtime,
+        upduid,
+        status,
+        summary
+        )
+        values
+        <foreach collection="list" item="detials" separator=",">
+            (
             #{detials.deid},
             <choose>
                 <when test="detials.travelid != null and detials.travelid!=''">
@@ -397,7 +397,7 @@
     <!-- 修改出差记录 -->
     <update id="updateTravelRecord" parameterType="java.util.Map">
         update tb_travel_record set
-        <trim  suffixOverrides=",">
+        <trim suffixOverrides=",">
             <if test="uid!='' and uid !=null">
                 uid=#{uid},
             </if>
@@ -452,16 +452,12 @@
     </update>
 
 
-<!-- 修改出差详情 -->
+    <!-- 修改出差详情 -->
     <update id="updateTravelDetials" parameterType="java.util.Map">
         update tb_travel_record_deta set
-        <trim  suffixOverrides=",">
-            <if test="cid!='' and cid !=null">
-                cid=#{cid},
-            </if>
-            <if test="projectid!='' and projectid !=null">
-                projectid=#{projectid},
-            </if>
+        <trim suffixOverrides=",">
+            cid=#{cid},
+            projectid=#{projectid},
             <if test="did!='' and did !=null">
                 did=#{did},
             </if>
@@ -486,7 +482,7 @@
             <if test="trip!='' and trip !=null">
                 trip=#{trip},
             </if>
-            <if test="produce!='' and produce !=null">
+            <if test="produce != '' and produce != null ">
                 produce=#{produce},
             </if>
             <if test="fare!='' and fare !=null">
@@ -566,7 +562,7 @@
         string_agg(to_char(tb2.trstatus,'9'),',') as trstatus
         from tb_travel_record tb1
         LEFT JOIN tb_travel_approval tb2
-        on  tb1.travelid = tb2.travelid
+        on tb1.travelid = tb2.travelid
         and tb1.traversion = tb2."version"
         <where>
             tb1.status != '2'
@@ -605,7 +601,10 @@
     <select id="queryTravelApprovalRecordCountByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_travel_approval
         WHERE
-        truid =#{ uid } and (trstatus = '2' or trstatus = '3')
+        truid =#{ uid }
+        <if test="trstatus == -1">and (trstatus = 2 or trstatus = 3)</if>
+        <if test="trstatus == 2">and trstatus = 2</if>
+        <if test="trstatus == 3">and trstatus = 3</if>
     </select>
 
     <!-- 根据Uid获取出差审批记录   -->
@@ -624,7 +623,7 @@
         tb2.trstatus as trstatus
         from tb_travel_record tb1
         INNER JOIN tb_travel_approval tb2
-        on  tb1.travelid = tb2.travelid
+        on tb1.travelid = tb2.travelid
 
         and tb1.traversion = tb2."version"
 
@@ -633,7 +632,7 @@
 
             <if test="trstatus == -1">and (tb2.trstatus = 2 or tb2.trstatus = 3)</if>
             <if test="trstatus == 2">and tb2.trstatus = 2</if>
-            <if test="trstatus == 3">and  tb2.trstatus = 3</if>
+            <if test="trstatus == 3">and tb2.trstatus = 3</if>
             <if test="uid != null and uid != '' ">
                 and tb2.truid = #{uid}
             </if>
@@ -643,7 +642,7 @@
             <if test="endTime != null and endTime != '' ">
                 and tb1.endtime &lt;= #{endTime}
             </if>
-            <if test="aptype == 2"  >
+            <if test="aptype == 2">
                 and tb1.aptype = #{aptype}
             </if>
 
@@ -652,7 +651,7 @@
     </select>
 
     <!-- 根据 Travelid设置出差详情表状态  -->
-    <update id="setDetailsStatusByTravelid" parameterType="java.util.Map" >
+    <update id="setDetailsStatusByTravelid" parameterType="java.util.Map">
 		update tb_travel_record_deta set status  = '2' where travelid = #{travelid}
 	</update>
 </mapper>
