@@ -3,6 +3,8 @@ package com.jzb.org.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import com.jzb.base.data.JzbDataType;
+import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.log.JzbLoggerUtil;
 
 import com.jzb.base.message.Response;
@@ -96,10 +98,13 @@ public class TbPlantaskController {
                     default:
                         response = Response.getResponseError();
                 }
-                int count = tbPlantaskService.getPantaskCount(param);
+
                 List<Map<String, Object>> records = tbPlantaskService.getPantaskList1(param);
-
-
+                if(records.size()==0){
+                    response = Response.getResponseSuccess(userInfo);
+                    return response;
+                }
+                int count = tbPlantaskService.getPantaskCount(param);
 
                 //处理 其他表数据 拼接 部门id 用户id数据拼接
                 StringBuffer sb=new StringBuffer();
@@ -324,6 +329,7 @@ public class TbPlantaskController {
             // 定义返回结果
             response = Response.getResponseSuccess(userInfo);
             response.setResponseEntity(result);
+
             }
         } catch (Exception e) {
             flag = false;
@@ -359,10 +365,11 @@ public class TbPlantaskController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 验证指定值为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"list","type"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list","type","dept"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addMethodTypeBrother Method", "[param error] or [param is null]"));
             } else {
+
                 switch(param.get("type").toString()){
                     case "y" :
                         param.put("tabname","tb_plantask_year");
@@ -384,7 +391,15 @@ public class TbPlantaskController {
                 for (Map<String, Object> map:list) {
                     map.put("planid", JzbRandom.getRandomChar(20));
                     map.put("addtime",System.currentTimeMillis());
+                    map.put("node",param.get("dept").toString());
+                    map.put("assistants",map.get("assistants").toString().replaceAll("\\[","").replaceAll("\\]",""));
+                    map.put("uid",userInfo.get("uid").toString());
+                    map.put("addid",userInfo.get("uid").toString());
+                    map.put("starttime",JzbDataType.getDateTime(map.get("valueDate").toString().replaceAll("\\[","").replaceAll("\\]","").split(",")[0]).getTime());
+                    map.put("endtime",JzbDataType.getDateTime(map.get("valueDate").toString().replaceAll("\\[","").replaceAll("\\]","").split(",")[0]).getTime());
+
                 }
+
                 param.put("list",list);
 
                 // 添加返回值大于0 则添加成功
@@ -492,7 +507,7 @@ public class TbPlantaskController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 验证指定值为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cdid", "uid","dutyid","plancontent","starttime","endtime","acceptors","executors","assistants","tasktype","taskstatus","addid", "parentid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list","type","dept"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", "[param error] or [param is null]"));
             } else {
@@ -516,8 +531,17 @@ public class TbPlantaskController {
 
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
                 for (Map<String, Object> map:list) {
+                    map.put("planid", JzbRandom.getRandomChar(20));
                     map.put("uptime",System.currentTimeMillis());
+                    map.put("node",param.get("dept").toString());
+                    map.put("assistants",map.get("assistants").toString().replaceAll("\\[","").replaceAll("\\]",""));
+                    map.put("uid",userInfo.get("uid").toString());
+                    map.put("addid",userInfo.get("uid").toString());
+                    map.put("starttime",JzbDataType.getDateTime(map.get("valueDate").toString().replaceAll("\\[","").replaceAll("\\]","").split(",")[0]).getTime());
+                    map.put("endtime",JzbDataType.getDateTime(map.get("valueDate").toString().replaceAll("\\[","").replaceAll("\\]","").split(",")[0]).getTime());
+
                 }
+                param.put("list",list);
 
                 // 添加返回值大于0 则添加成功
                 int count =tbPlantaskService.updatePlantask(param);
@@ -567,7 +591,7 @@ public class TbPlantaskController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 验证指定值为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"planid","tasktype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"planid","addid","dept"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", "[param error] or [param is null]"));
             } else {
@@ -591,13 +615,9 @@ public class TbPlantaskController {
                     default:
                         result = Response.getResponseError();
                 }
-
-                List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
-                for (Map<String, Object> map:list) {
-                    map.put("uptime",System.currentTimeMillis());
-                    // 添加返回值大于0 则添加成功
-                    map.put("status","1");
-                }
+                param.put("node",param.get("dept").toString());
+                param.put("uptime",System.currentTimeMillis());
+                param.put("status","1");
                 int count =tbPlantaskService.delPlantask(param);
 
                 if (count > 0) {

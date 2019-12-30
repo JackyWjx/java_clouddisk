@@ -286,7 +286,7 @@ ORDER BY
 				#{item.parentid},
 			</when>
 			<otherwise>
-				null ,
+				'0',
 			</otherwise>
 		</choose>
 		<choose>
@@ -343,7 +343,7 @@ ORDER BY
 					#{item.status},
 				</when>
 				<otherwise>
-					null,
+					0,
 				</otherwise>
 			</choose>
 			<choose>
@@ -359,34 +359,33 @@ ORDER BY
 	</insert>
 
 	<!--修改计划管理-->
-	<update id="updatePlantask" parameterType="java.util.List" >
-		<foreach collection="List" index="index" item="item" close =";" separator="">
+	<update id="updatePlantask" parameterType="java.util.Map" >
+		<foreach collection="list" index="index" item="item" close =";" >
 		UPDATE ${tabname}
-
 		SET
-		<if test="cdid != null">cdid=#{item.cdid},</if>
-		<if test="uid != null">uid=#{item.uid},</if>
-		<if test="dutyid != null">dutyid=#{item.dutyid},</if>
-		<if test="plancontent != null">plancontent=#{item.plancontent},</if>
-		<if test="starttime != null">starttime=#{item.starttime},</if>
-		<if test="endtime != null">endtime=#{item.endtime},</if>
-		<if test="acceptors != null">acceptors=#{item.acceptors},</if>
-		<if test="executors != null">executors=#{item.executors},</if>
-		<if test="assistants != null">assistants=#{item.assistants},</if>
-		<if test="outcome != null">outcome=#{item.outcome},</if>
-		<if test="tasktype != null">tasktype=#{item.tasktype},</if>
-		<if test="taskstatus != null">taskstatus=#{item.taskstatus},</if>
-		<if test="path != null">path=#{item.path},</if>
-		<if test="filenames != null">filenames=#{item.filenames},</if>
-		<if test="addid != null">addid=#{item.addid},</if>
-		<if test="review != null">review=#{item.review},</if>
-		<if test="parentid != null">parentid=#{item.parentid},</if>
-		<if test="sort != null">sort=#{item.sort},</if>
-		<if test="node != null">node=#{item.node},</if>
-		<if test="addtime != null">addtime=#{item.addtime},</if>
-		<if test="uptime != null">uptime=#{item.uptime}</if>
-		<if test="uptime != null">status=#{item.status}</if>
-		where planid=#{planid}
+		<if test="item.cdid != null">cdid=#{item.cdid},</if>
+		<if test="item.uid != null">uid=#{item.uid},</if>
+		<if test="item.dutyid != null">dutyid=#{item.dutyid},</if>
+		<if test="item.plancontent != null">plancontent=#{item.plancontent},</if>
+		<if test="item.starttime != null">starttime=#{item.starttime},</if>
+		<if test="item.endtime != null">endtime=#{item.endtime},</if>
+		<if test="item.acceptors != null">acceptors=#{item.acceptors},</if>
+		<if test="item.executors != null">executors=#{item.executors},</if>
+		<if test="item.assistants != null">assistants=#{item.assistants},</if>
+		<if test="item.outcome != null">outcome=#{item.outcome},</if>
+		<if test="item.tasktype != null">tasktype=#{item.tasktype},</if>
+		<if test="item.taskstatus != null">taskstatus=#{item.taskstatus},</if>
+		<if test="item.path != null">path=#{item.path},</if>
+		<if test="item.filenames != null">filenames=#{item.filenames},</if>
+		<if test="item.addid != null">addid=#{item.addid},</if>
+		<if test="item.review != null">review=#{item.review},</if>
+		<if test="item.parentid != null">parentid=#{item.parentid},</if>
+		<if test="item.sort != null">sort=#{item.sort},</if>
+		<if test="item.node != null">node=#{item.node},</if>
+		<if test="item.addtime != null">addtime=#{item.addtime},</if>
+		<if test="item.uptime != null">uptime=#{item.uptime}</if>
+		<if test="item.uptime != null">status=#{item.status}</if>
+		where planid=#{item.planid}
 		</foreach>
 
 	</update>
@@ -401,8 +400,10 @@ ORDER BY
 	<update id="delPlantask" parameterType="java.util.Map" >
 
 			UPDATE ${tabname} SET
-			status=#{status}
-			where planid=#{planid}
+			status=#{status},
+			addid=#{addid},
+			uptime=#{uptime}
+			where planid=#{planid} and node=#{node}
 
 	</update>
 
