@@ -101,4 +101,15 @@ public interface TbCompanyServiceMapper {
      */
     int updateCompanyService(Map<String, Object> param);
 
+
+    // 获取已分配售后的项目
+    List<Map<String, Object>> queryServiceListGroupProject(Map<String, Object> param);
+    // 获取已分配售后的项目数量
+    int queryServiceCountGroup(Map<String, Object> projectMap);
+
+    // 查询我服务的项目信息
+    List<Map<String, Object>> queryMyProjectList(Map<String, Object> param);
+
+    // 获取我服务的项目数量
+    int queryMyProjectListCount(Map<String,Object> param);
 }

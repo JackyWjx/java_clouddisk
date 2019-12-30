@@ -460,5 +460,16 @@
     where uid in(${ids} )
     </select>
 
+    <!--根据用户名称查询用户id-->
+    <select id="getUidByUname" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            uid
+        FROM
+            tb_user_list
+        WHERE
+            status = '1'
+            AND cname ~ #{saler}
+    </select>
+
 
 </mapper>

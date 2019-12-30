@@ -47,4 +47,69 @@ public interface TbCompanyProjectApi {
      */
     @RequestMapping(value = "/getServiceProjectUid", method = RequestMethod.POST)
     public Response getServiceProjectUid(Map<String, Object> param);
+
+    /**
+     * CRM-销售业主-我服务的业主-1
+     * 根据服务的项目ID获取项目信息,后台调用不支持前台调用c
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    @RequestMapping(value = "/getServiceByProjectid", method = RequestMethod.POST)
+    public Response getServiceByProjectid(Map<String, Object> param);
+
+    /**
+     *
+     * 根据服务的项目ID获取项目信息
+     *
+     * @Author: chenhui
+     * @DateTime: 2019/12/29
+     */
+    @RequestMapping(value = "/getServiceProjectInfoByProjectid", method = RequestMethod.POST)
+    public Response getServiceProjectInfoByProjectid(Map<String, Object> param);
+
+
+    /**
+     *
+     * 根据项目名称获取项目id
+     *
+     * @Author: chenhui
+     * @DateTime: 2019/12/29 getProjectByCname
+     */
+    @RequestMapping(value = "/getProjectidByname", method = RequestMethod.POST)
+    public Response getProjectidByname(Map<String, Object> param);
+
+    /**
+     *
+     * 根据单位名称获取项目id
+     *
+     * @Author: chenhui
+     * @DateTime: 2019/12/29
+     */
+    @RequestMapping(value = "/getProjectByCname", method = RequestMethod.POST)
+    public Response getProjectByCname(Map<String, Object> param);
+
+
+    /**
+     *
+     * 根据销售员名称获取项目id
+     *
+     * @Author: chenhui
+     * @DateTime: 2019/12/29
+     */
+    @RequestMapping(value = "/getProjectByUname", method = RequestMethod.POST)
+    public Response getProjectByUname(Map<String, Object> param);
+
+
+    /**
+     *
+     * 根据部门id获取项目id
+     *
+     * @Author: chenhui
+     * @DateTime: 2019/12/29
+     */
+    @RequestMapping(value = "/getProjectByCdid", method = RequestMethod.POST)
+    public Response getProjectByCdid(Map<String, Object> param);
+
+
 }

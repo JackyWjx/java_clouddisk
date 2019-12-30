@@ -4,6 +4,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.dao.CockpitMapper;
@@ -23,7 +24,10 @@ public class TbCompanyProjectService {
     private UserRedisServiceApi userRedisServiceApi;
 
     @Autowired
-    CockpitMapper cockpitMapper;
+    private AuthApi authApi;
+
+    @Autowired
+    private    CockpitMapper cockpitMapper;
 
     /**
      * 模糊查询单位名称
@@ -205,4 +209,62 @@ public class TbCompanyProjectService {
         return tbCompanyProjectMapper.getComProjectCount(param);
     }
 
+    public List<Map<String, Object>> getServiceByProjectid(Map<String, Object> param) {
+        List<Map<String,Object>> oList = (List<Map<String, Object>>) tbCompanyProjectMapper.getServiceByProjectid(param);
+        for (int i = 0; i < oList.size(); i++) {
+            Map<String,Object> map = oList.get(i);
+            map.put("uid",map.get("oneheader"));
+            Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+            Map<String,Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+            if (!JzbTools.isEmpty(serviceMap)){
+                map.put("saler", serviceMap.get("cname"));
+            }
+        }
+
+        return oList;
+    }
+
+    /**
+     * 跟进项目id获取项目信息
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getServiceProjectInfoByProjectid(Map<String, Object> param) {
+        return tbCompanyProjectMapper.getServiceProjectInfoByProjectid(param);
+
+    }
+
+    public List<Map<String, Object>> getProjectidByname(Map<String, Object> param) {
+        return tbCompanyProjectMapper.getProjectidByname(param);
+    }
+
+    public List<Map<String, Object>> getProjectByCname(Map<String, Object> param) {
+        return tbCompanyProjectMapper.getProjectByCname(param);
+    }
+
+
+
+    public List<Map<String, Object>> getProjectByUname(Map<String, Object> param) {
+        List<Map<String,Object>> list = null;
+        // 根据销售员名称获取用户id
+        Response response = authApi.getUidByUname(param);
+        List<Map<String,Object>> uidList =  response.getPageInfo().getList();
+        if (!JzbTools.isEmpty(uidList)){
+            param.put("list",uidList);
+        }
+        // 获取销售员的单位里的项目id
+       list = tbCompanyProjectMapper.getProjectByUname(param);
+
+        return list;
+    }
+
+    public List<Map<String, Object>> getProjectByCdid(Map<String, Object> param) {
+        List<Map<String, Object>> allDeptUserUidList = cockpitMapper.getAllDeptUser(param);
+        if (!JzbTools.isEmpty(allDeptUserUidList)){
+            param.put("list",allDeptUserUidList);
+        }
+        //获取销售员的单位里的项目id
+        List<Map<String,Object>> list = tbCompanyProjectMapper.getProjectByUname(param);
+        return list;
+    }
 }

@@ -387,4 +387,8 @@ public class AuthUserService {
     public List<Map<String, Object>> getUserNameList(Map<String, Object> param) {
         return userMapper.getUserNameList(param);
     }
+
+    public List<Map<String, Object>> getUidByUname(Map<String, Object> param) {
+        return userMapper.getUidByUname(param);
+    }
 } // End class AuthUserService

@@ -43,4 +43,14 @@ public interface AuthUserApi {
     @CrossOrigin
     public Response getPersionByName(@RequestBody Map<String, Object> param);
 
+    /**
+     * 模糊查询用户名
+     *
+     * @author 陈辉
+     */
+    @PostMapping(value = "/getUidByUname")
+    @CrossOrigin
+    public Response getUidByUname(@RequestBody Map<String, Object> param);
+
+
 }

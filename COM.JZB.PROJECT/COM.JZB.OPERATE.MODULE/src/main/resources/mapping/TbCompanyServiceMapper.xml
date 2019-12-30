@@ -627,6 +627,79 @@
         #{pageno}
     </select>
 
+    <select id="queryServiceListGroupProject" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            projectid,
+            addtime
+        FROM
+            tb_company_service
+        WHERE
+            status = '1'
+            AND typeid = '2'
+        <if test="projectid != null and projectid != ''">
+            and projectid = #{projectid}
+            and typeid = '2'
+        </if>
+            <if test="uid != null and uid != ''">
+                and uid = #{uid}
+                and typeid = '2'
+            </if>
+            <if test="pagesize != null and pagesize != ''">
+                limit
+                #{pagesize}
+                offset
+                #{pageno}
+            </if>
+
+    </select>
+    <select id="queryServiceCountGroup" parameterType="java.util.Map" resultType="java.lang.Integer">
+       SELECT count(1) FROM
+         tb_company_service
+        WHERE
+            status = '1'
+            AND typeid = '2'
+
+
+    </select>
+
+    <!--获取我服务的项目-->
+    <select id="queryMyProjectList" parameterType="java.util.Map" resultType="java.util.Map">
+        select projectid, addtime from tb_company_service where
+        status = '1'
+        <if test="uid!= null and uid != ''">
+            and  uid = #{uid}
+        </if>
+        <if test="starttime != null and starttime != ''">
+            and addtime &gt;= #{starttime}
+        </if>
+        <if test="endtime != null and endtime != ''">
+            and addtime &lt;= #{endtime}
+        </if>
+        <if test="projectid != null and projectid != ''">
+            and projectid = #{projectid}
+        </if>
+        <if test="pagesize != null and pagesize != ''">
+            limit #{pagesize}
+            offset #{pageno}
+        </if>
+    </select>
+    <!--获取我服务的项目数-->
+    <select id="queryMyProjectListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+
+        select count(1) from tb_company_service where uid = #{uid} and status = '1'
+        <if test="starttime != null and starttime != ''">
+            and addtime &gt;= #{starttime}
+        </if>
+        <if test="endtime != null and endtime != ''">
+            and addtime &lt;= #{endtime}
+        </if>
+        <if test="projectid != null and projectid != ''">
+            and projectid = #{projectid}
+        </if>
+
+    </select>
+
+
     <select id="getHandleItem" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
         a.uid,

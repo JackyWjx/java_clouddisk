@@ -12,6 +12,54 @@
         select * from tb_company_project where projectid = #{projectid} and  projectname like CONCAT('%',#{projectname},'%')
     </select>
 
+    <!--跟进项目id和企业id获取售后人员信息-->
+    <select id="getServiceByProjectid" parameterType="java.util.Map" resultType="java.util.Map">
+   SELECT
+        pp.projectname,
+        ( SELECT cname FROM tb_company_list WHERE cid = #{cid} ),
+        ( SELECT oneheader FROM tb_private_company_list WHERE cid = #{cid} )
+    FROM
+        tb_company_project pp
+    WHERE
+        pp.projectid = #{projectid};
+
+    </select>
+
+    <!--跟进项目id获取服务的项目信息-->
+    <select id="getServiceProjectInfoByProjectid" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            pp.projectname,
+            pp.projectid,
+            pp.region,
+            cc.cname,
+            cc.cid,
+            pc.oneheader
+        FROM
+            tb_company_project pp
+            LEFT JOIN tb_company_list cc ON pp.cid = cc.cid
+            LEFT JOIN tb_private_company_list pc ON cc.cid = pc.cid
+        WHERE
+            pp.projectid = #{projectid}
+    </select>
+
+
+    <!--跟进项目名字获取项目id-->
+    <select id="getProjectidByname" parameterType="java.util.Map" resultType="java.util.Map">
+    select projectid from tb_company_project where projectname ~ #{projectname}
+    </select>
+
+    <!--根据单位名称获取单位下的项目信息-->
+    <select id="getProjectByCname" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            projectid
+        FROM
+            tb_company_project
+        WHERE
+            cid IN ( SELECT cid FROM tb_company_list WHERE cname ~ #{cname} AND status = '1' )
+            AND status = '1'
+    </select>
+
+
     <!--查询项目下的数据-->
     <select id="getComProject" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
@@ -396,8 +444,8 @@
             and status = '1'
             )
         </if>
-        <if test="starttime != null and starttime != ''">and cpp.updtime &gt;= #{starttime}</if>
-        <if test="endtime != null and endtime != ''">and cpp.updtime &lt;= #{endtime}</if>
+        <if test="starttime != null and starttime != ''">and cpp.addtime &gt;= #{starttime}</if>
+        <if test="endtime != null and endtime != ''">and cpp.addtime &lt;= #{endtime}</if>
         <if test="projectname != null and projectname != ''">and cp.projectname LIKE CONCAT( '%',#{projectname},'%')</if>
         ) as company
     </select>
@@ -436,9 +484,9 @@
             and cp.projectid = #{projectid}
         </if>
         <if test="saler != null and saler != ''">
-            and cc.oneheader in (select uid from tb_dept _user where cname ~ #{saler})
+            and cc.oneheader in (select uid from tb_dept_user where cname ~ #{saler})
         </if>
-        <if test="uid != null and uid != ''">and cpp.dictvalue = #{uid}</if>
+--
         <if test="cname != null and cname != ''">and cl.cname ~ #{cname}</if>
         <if test="cdid != null and cdid != ''">
             and cc.oneheader in (
@@ -488,5 +536,27 @@
         addtime &gt;= #{startTime} and addtime &lt;= #{endTime}
     </select>
 
+    <!--根据销售员id查询所负责的项目-->
+    <select id="getProjectByUname" parameterType="java.util.Map" resultType="java.util.Map">
+    <foreach collection="list" separator=";" close="" open="" index="index" item="item">
+        SELECT
+        projectid
+        FROM
+        tb_company_project
+        WHERE
+        status = '1'
+        and
+        cid IN
+        (
+        SELECT
+        cid
+        FROM
+        tb_private_company_list
+        WHERE
+        <foreach collection="list" separator="" close="" open="" index="index" item="item">
+        oneheader = #{item.uid}
+        </foreach>
+        )
+    </select>
 
 </mapper>
