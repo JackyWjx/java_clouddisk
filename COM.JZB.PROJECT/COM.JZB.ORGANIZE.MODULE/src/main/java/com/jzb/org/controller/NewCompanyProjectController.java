@@ -8,6 +8,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.base.util.StrUtil;
+import com.jzb.org.service.CompanyUserService;
 import com.jzb.org.service.NewCompanyProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ public class NewCompanyProjectController {
 
     @Autowired
     private NewCompanyProjectService newCompanyProjectService;
+
+    @Autowired
+    private CompanyUserService companyUserService;
 
     /**
      * 日志记录对象
@@ -213,7 +217,13 @@ public class NewCompanyProjectController {
             } else {
                 param.put("uid",userInfo.get("uid"));
                 param.put("updtime", System.currentTimeMillis());
-                response = newCompanyProjectService.updateCompanyProjectInfo(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                boolean check = newCompanyProjectService.checkHaveInfoByProjectId(param);
+                if(check){
+                    response = newCompanyProjectService.updateCompanyProjectInfo(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                }else {
+                    response = companyUserService.addCompanyProjectInfo(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                }
+
             }
         }catch (Exception ex) {
             flag = false;

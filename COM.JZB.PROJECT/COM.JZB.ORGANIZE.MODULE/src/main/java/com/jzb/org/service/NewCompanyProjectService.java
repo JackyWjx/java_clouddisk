@@ -1,7 +1,5 @@
 package com.jzb.org.service;
 
-import com.jzb.base.data.JzbDataType;
-import com.jzb.base.message.Response;
 import com.jzb.org.dao.NewCompanyProjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,5 +83,16 @@ public class NewCompanyProjectService {
         Map<String,Object> projectInfoList = newCompanyProjectMapper.queryProjectInfoByProid(param);
         project.put("infoList",projectInfoList);
         return project;
+    }
+
+    /**
+     *  @author: gongWei
+     *  @Date:  2019/12/31 11:31
+     *  @description: 更新项目详情时 判断
+     * @return
+     */
+    public boolean checkHaveInfoByProjectId(Map<String, Object> param) {
+        int count = newCompanyProjectMapper.getProjectInfoCountByProid(param);
+        return count > 0 ? true : false;
     }
 }

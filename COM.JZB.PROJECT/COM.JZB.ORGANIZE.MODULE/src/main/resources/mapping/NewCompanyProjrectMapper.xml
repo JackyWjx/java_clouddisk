@@ -311,4 +311,8 @@
        trim(reshphone) as reshphone
         from tb_common_project_info where  projectid=#{projectId}
     </select>
+
+    <select id="getProjectInfoCountByProid" resultType="int" parameterType="java.util.Map">
+        SELECT count(1)  from tb_common_project_info WHERE projectid = #{projectid}
+    </select>
 </mapper>
