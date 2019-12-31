@@ -95,9 +95,9 @@ public class TbTrackUserController {
             JzbPageConvert.setPageRows(param);
             // 查询跟进人员记录信息
             List<Map<String,Object>> list = null;
-            if (!JzbTools.isEmpty(param.get("trackvalue"))){
+//            if (!JzbTools.isEmpty(param.get("trackvalue"))){
                  list = userService.queryTrackUserList(param);
-            }
+//            }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setTotal(count);

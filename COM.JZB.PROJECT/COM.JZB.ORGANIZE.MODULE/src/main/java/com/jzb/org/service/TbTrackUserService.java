@@ -154,12 +154,12 @@ public class TbTrackUserService {
      * @return
      */
     public List<Map<String, Object>> getHandleCount(Map<String, Object> param) {
-        Map<String, Object> map = methodTime(System.currentTimeMillis());
-        if (!JzbTools.isEmpty(param.get("startTime")) || !JzbTools.isEmpty(param.get("endTime"))){
+        if (JzbTools.isEmpty(param.get("startTime")) && JzbTools.isEmpty(param.get("endTime")) ){
+            Map<String, Object> map = methodTime(System.currentTimeMillis());
+            param.putAll(map);
+        }else {
             param.put("zero",param.get("startTime"));
             param.put("twelve",param.get("endTime"));
-        }else {
-            param.putAll(map);
         }
         if (JzbTools.isEmpty(param.get("customer")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&
@@ -240,11 +240,17 @@ public class TbTrackUserService {
     }
 
     public List<Map<String, Object>> getContactList(Map<String, Object> param) {
-        Map<String, Object> map = methodTime(System.currentTimeMillis());
+        if (JzbTools.isEmpty(param.get("startTime")) && JzbTools.isEmpty(param.get("endTime")) ){
+            Map<String, Object> map = methodTime(System.currentTimeMillis());
+            param.putAll(map);
+        }else {
+            param.put("zero",param.get("startTime"));
+            param.put("twelve",param.get("endTime"));
+        }
         if (JzbTools.isEmpty(param.get("customer"))){
             param.put("customer",param.get("adduid"));
         }
-        param.putAll(map);
+
         if (JzbTools.isEmpty(param.get("customer")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
@@ -292,12 +298,12 @@ public class TbTrackUserService {
 
     // 根据跟进人查询 跟进阶段客户列表
     public List<Map<String, Object>> getHandleStage(Map<String, Object> param) {
-        Map<String, Object> map = methodTime(System.currentTimeMillis());
-        if (!JzbTools.isEmpty(param.get("startTime")) || !JzbTools.isEmpty(param.get("endTime"))){
+        if (JzbTools.isEmpty(param.get("startTime")) && JzbTools.isEmpty(param.get("endTime")) ){
+            Map<String, Object> map = methodTime(System.currentTimeMillis());
+            param.putAll(map);
+        }else {
             param.put("zero",param.get("startTime"));
             param.put("twelve",param.get("endTime"));
-        }else {
-            param.putAll(map);
         }
         if (JzbTools.isEmpty(param.get("customer")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&

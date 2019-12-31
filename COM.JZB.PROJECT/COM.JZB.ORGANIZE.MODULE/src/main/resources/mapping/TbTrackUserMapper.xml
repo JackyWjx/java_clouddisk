@@ -365,6 +365,12 @@
             select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
             )
         </if>
+        <if test="zero != null and zero != ''">
+            and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
+        </if>
     </select>
 
 

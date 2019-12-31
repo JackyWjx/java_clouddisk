@@ -538,25 +538,13 @@
 
     <!--根据销售员id查询所负责的项目-->
     <select id="getProjectByUname" parameterType="java.util.Map" resultType="java.util.Map">
-    <foreach collection="list" separator=";" close="" open="" index="index" item="item">
         SELECT
-        projectid
+            projectid
         FROM
-        tb_company_project
+            tb_company_project
         WHERE
-        status = '1'
-        and
-        cid IN
-        (
-        SELECT
-        cid
-        FROM
-        tb_private_company_list
-        WHERE
-        <foreach collection="list" separator="" close="" open="" index="index" item="item">
-        oneheader = #{item.uid}
-        </foreach>
-        )
-    </select>
+            status = '1'
+            AND cid IN ( SELECT cid FROM tb_private_company_list WHERE oneheader IN ( ${uids}))
+            </select>
 
 </mapper>

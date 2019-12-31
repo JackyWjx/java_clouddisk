@@ -250,7 +250,14 @@ public class TbCompanyProjectService {
         Response response = authApi.getUidByUname(param);
         List<Map<String,Object>> uidList =  response.getPageInfo().getList();
         if (!JzbTools.isEmpty(uidList)){
-            param.put("list",uidList);
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < uidList.size(); i++) {
+                sb.append("'"+uidList.get(i).get("uid")+"'");
+                if (i != uidList.size() - 1){
+                    sb.append(",");
+                }
+            }
+            param.put("uids",sb.toString());
         }
         // 获取销售员的单位里的项目id
        list = tbCompanyProjectMapper.getProjectByUname(param);
@@ -259,9 +266,18 @@ public class TbCompanyProjectService {
     }
 
     public List<Map<String, Object>> getProjectByCdid(Map<String, Object> param) {
+        List<Map<String, Object>> cdidlist = cockpitMapper.getDeptChild(param);
+        param.put("list",cdidlist);
         List<Map<String, Object>> allDeptUserUidList = cockpitMapper.getAllDeptUser(param);
         if (!JzbTools.isEmpty(allDeptUserUidList)){
-            param.put("list",allDeptUserUidList);
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < allDeptUserUidList.size(); i++) {
+                sb.append("'"+allDeptUserUidList.get(i).get("uid")+"'");
+                if (i != allDeptUserUidList.size() - 1){
+                    sb.append(",");
+                }
+            }
+            param.put("uids",sb.toString());
         }
         //获取销售员的单位里的项目id
         List<Map<String,Object>> list = tbCompanyProjectMapper.getProjectByUname(param);

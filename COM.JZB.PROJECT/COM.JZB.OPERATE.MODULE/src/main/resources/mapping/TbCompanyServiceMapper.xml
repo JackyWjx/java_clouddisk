@@ -600,7 +600,9 @@
         planid,
         cid,
         projectid,
-        uid,
+        <if test="projectid != null and projectid != ''">
+            (SELECT uid FROM tb_company_service WHERE projectid = #{projectid} and typeid = '2' ) servicer,
+        </if>
         handletime,
         servicetype,
         personid,

@@ -25,20 +25,16 @@ public class CockpitService {
      * @return
      */
     public int getInfo(Map<String, Object> param) {
-//        int count = 0;
-//        if (JzbTools.isEmpty(param.get("cdid")) && JzbTools.isEmpty(param.get("customer"))){
-//            param.put("customer",param.get("adduid"));
-//            count =  cockpitMapper.getInfo(param);
-//        }else {
-//            // 查询该部门下的所有用户的记录数
-//             count = cockpitMapper.getDeptUser(param);
-//        }
-//        if (!JzbTools.isEmpty(param.get("customer"))){
-//            count = cockpitMapper.getInfo(param);
-//        }
-//        if(!JzbTools.isEmpty(param.get("cid")) && !JzbTools.isEmpty(param.get("manager"))){
-//            count = cockpitMapper.getCompanyUser(param);
-//        }
+        if (JzbTools.isEmpty(param.get("startTime")) && JzbTools.isEmpty(param.get("endTime")) ){
+            Map<String, Object> map = methodTime(System.currentTimeMillis());
+            param.putAll(map);
+        }else {
+            param.put("zero",param.get("startTime"));
+            param.put("twelve",param.get("endTime"));
+        }
+        if (JzbTools.isEmpty(param.get("customer"))){
+            param.put("customer",param.get("adduid"));
+        }
         if (JzbTools.isEmpty(param.get("customer")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
