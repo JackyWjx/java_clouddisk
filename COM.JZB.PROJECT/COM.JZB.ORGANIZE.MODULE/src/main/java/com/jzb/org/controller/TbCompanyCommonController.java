@@ -425,6 +425,41 @@ public class TbCompanyCommonController {
 
 
     /**
+     * 调出私海，退回公海
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/rebackCompanys", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response rebackCompanys(@RequestBody Map<String, Object> param) {
+
+        Response result;
+        try {
+            //如果参数为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                result = Response.getResponseError();
+            } else {
+                param.put("addtime",System.currentTimeMillis());
+                //根据id进行修改，添加业务员
+                int count = tbCompanyCommonService.rebackCompanys(param);
+                //如果返回值大于零则响应成功信息
+                if (count > 0) {
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    result = Response.getResponseSuccess(userInfo);
+                } else {
+                    result = Response.getResponseError();
+                }
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
      * 所有业主-业主列表查询
      *
      * @param param

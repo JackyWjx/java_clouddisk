@@ -448,6 +448,10 @@ public class ProductService {
         }
         return result;
     }
+
+    public Map<String, Object> getPhoneByPhone(Map<String, Object> param) {
+        return productMapper.getPhoneByPhone(param);
+    }
 }
 
 

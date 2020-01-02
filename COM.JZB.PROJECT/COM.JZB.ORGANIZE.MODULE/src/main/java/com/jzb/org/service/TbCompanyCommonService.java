@@ -240,8 +240,20 @@ public class TbCompanyCommonService {
      * @return
      */
     public int updateCompanys(Map<String, Object> param) {
-        param.put("status", 2);
+
         return tbCompanyCommonMapper.updateCompanys(param);
+    }
+
+    /**
+     * @Author Reed
+     * @Description 退回公海
+     * @Date 18:54 2020/1/2
+     * @Param [param]
+     * @return int
+    **/
+    public int rebackCompanys(Map<String, Object> param) {
+
+        return tbCompanyCommonMapper.rebackCompanys(param);
     }
 
     /**
@@ -389,4 +401,6 @@ public class TbCompanyCommonService {
         }
         return tbCompanyCommonMapper.updateCompanyListInfo(param);
     }
+
+
 }

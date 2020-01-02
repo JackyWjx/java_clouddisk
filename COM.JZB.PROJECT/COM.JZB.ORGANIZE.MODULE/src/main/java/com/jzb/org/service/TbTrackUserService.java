@@ -7,6 +7,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.dao.CockpitMapper;
 import com.jzb.org.dao.TbConnectionPubMapper;
 import com.jzb.org.dao.TbTrackUserMapper;
+import jdk.nashorn.internal.scripts.JD;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -318,6 +319,7 @@ public class TbTrackUserService {
             }
             param.put("list",list);
         }
+        param.put("trackres",JzbDataType.getInteger(param.get("trackres")));
         return userMapper.getHandleStage(param);
     }
 

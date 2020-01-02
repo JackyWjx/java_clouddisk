@@ -50,8 +50,6 @@ public class TbConnectionPubService {
 
     // 删除发帖信息
     public int removeConnectionList(Map<String, Object> param) {
-        param.put("status",'2');
-        param.put("updtime",System.currentTimeMillis());
         return pubMapper.removeConnectionList(param);
     }
     // 新建任务目标参数

@@ -529,7 +529,7 @@
         from tb_track_user_list
         where
         status = '1'
-        and trackres = #{trackeres}
+        and trackres = #{trackres}
         <if test="zero != null and zero != ''">
             and addtime &gt;= #{zero}
         </if>

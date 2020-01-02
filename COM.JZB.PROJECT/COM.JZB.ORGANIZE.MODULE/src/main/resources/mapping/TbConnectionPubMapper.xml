@@ -147,7 +147,9 @@
 
     <!--删除发帖信息-->
     <update id="removeConnectionList" parameterType="java.util.Map">
-        update  tb_connection_publish_list set status = #{status} where pubid = #{pubid};
+      <foreach collection="list" close="" open="" index="index" item="item" separator="">
+          update  tb_connection_publish_list set status = #{item.status} ,updtime = #{item.updtime} where pubid = #{item.pubid};
+      </foreach>
     </update>
     
     <!--新建任务目标参数-->

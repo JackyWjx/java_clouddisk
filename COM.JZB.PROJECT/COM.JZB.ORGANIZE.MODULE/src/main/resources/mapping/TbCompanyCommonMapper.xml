@@ -331,6 +331,14 @@
 
     </update>
 
+    <!--退回公海-->
+    <update id="rebackCompanys" parameterType="java.util.Map">
+
+        update tb_common_company_list set status='1' where cid=#{cid};
+        update tb_private_company_list set status = '2' where cid = #{cid} and oneheader = #{uid} and status = '1';
+
+    </update>
+
 
     <!-- 所有业主-业主列表查询 -->
     <select id="getCompanyCommoms" parameterType="java.util.Map" resultType="java.util.Map">
