@@ -587,7 +587,9 @@
         tb1.expenses,
         tb1.traversion,
         tb1.trastatus
+        ORDER BY tb1.orgtime DESC
         LIMIT #{pagesize} OFFSET #{pageno}
+
     </select>
 
     <!-- 根据Uid获取出差申请记录数   -->
@@ -647,7 +649,8 @@
             </if>
 
         </where>
-        LIMIT #{pagesize} OFFSET #{pageno}
+        ORDER BY tb2.addtime desc
+        <if test="pagesize != null and pageno != null">LIMIT #{pagesize} OFFSET #{pageno}</if>
     </select>
 
     <!-- 根据 Travelid设置出差详情表状态  -->
