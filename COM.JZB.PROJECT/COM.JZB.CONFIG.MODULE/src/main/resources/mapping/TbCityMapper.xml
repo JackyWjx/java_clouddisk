@@ -161,7 +161,7 @@
 
     <!--获取城市-->
     <select id="getCityList" parameterType="java.util.Map" resultType="java.util.Map">
-        select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where status='1' ORDER BY creaid asc;
+        select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where status='1' ORDER BY spell asc ;
     </select>
 
     <!--根据地区名称获取地区ID信息-->
