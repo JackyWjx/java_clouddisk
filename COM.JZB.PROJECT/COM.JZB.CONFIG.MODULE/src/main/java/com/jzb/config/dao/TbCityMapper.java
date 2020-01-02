@@ -18,9 +18,24 @@ public interface TbCityMapper {
 
 
     /*
-    * 获取城市
+    * 获取省
     * */
    List<Map<String, Object>> getCityList(Map<String, Object> param);
+
+   /*
+    * 获取省
+    * */
+   List<Map<String, Object>> getProvince(Map<String, Object> param);
+
+    /*
+     * 获取城市
+     * */
+    List<Map<String, Object>> getCity(Map<String, Object> param);
+
+    /*
+     * 获取区县
+     * */
+    List<Map<String, Object>> getCounty(Map<String, Object> param);
 
     /**
      * 根据地区名称获取地区ID信息

@@ -159,10 +159,26 @@
         </foreach>
     </insert>
 
-    <!--获取城市-->
+    <!--获取省-->
     <select id="getCityList" parameterType="java.util.Map" resultType="java.util.Map">
-        select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where status='1' ORDER BY spell asc ;
+        select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where status='1' ORDER BY spell asc;
     </select>
+
+    <!--获取省-->
+    <select id="getProvince" parameterType="java.util.Map" resultType="java.util.Map">
+        select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where city is null and status='1' ORDER BY spell asc;
+    </select>
+
+    <!--获取市-->
+    <select id="getCity" parameterType="java.util.Map" resultType="java.util.Map">
+    select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where county is null and status='1' and city is not null and pcode=#{pcode}  ORDER BY spell
+    </select>
+
+    <!--获取区-->
+    <select id="getCounty" parameterType="java.util.Map" resultType="java.util.Map">
+    select * from tb_city_list where county is not  null and status='1' and pcode=#{pcode} and ccode=#{ccode} ORDER BY spell
+    </select>
+
 
     <!--根据地区名称获取地区ID信息-->
     <select id="queryRegionID" parameterType="java.util.Map" resultType="java.util.Map">
