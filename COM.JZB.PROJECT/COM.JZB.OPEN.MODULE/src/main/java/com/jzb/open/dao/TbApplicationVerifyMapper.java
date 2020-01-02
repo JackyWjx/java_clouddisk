@@ -3,6 +3,7 @@ package com.jzb.open.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -44,4 +45,10 @@ public interface TbApplicationVerifyMapper {
      */
     int saveApplicationPageVerify(Map<String, Object> param);
 
+    /**
+     * 单点登录审批通过后显示出来的应用
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getApplicationPageVerify(Map<String, Object> param);
 }
