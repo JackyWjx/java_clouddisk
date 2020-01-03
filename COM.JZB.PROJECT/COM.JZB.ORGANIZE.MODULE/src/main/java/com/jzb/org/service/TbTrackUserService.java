@@ -36,8 +36,8 @@ public class TbTrackUserService {
         param.put("addtime",System.currentTimeMillis());
         param.put("tracktype",JzbDataType.getInteger(param.get("tracktype")));
         param.put("trackid", JzbRandom.getRandomCharCap(17));
-        if (JzbTools.isEmpty(param.get("customer"))){
-            param.put("customer",param.get("adduid"));
+        if (JzbTools.isEmpty(param.get("trackuid"))){
+            param.put("trackuid",param.get("adduid"));
         }
         param.put("status",'1');
         if (!JzbTools.isEmpty(param.get("image"))){
@@ -66,8 +66,8 @@ public class TbTrackUserService {
         }
         List<Map<String, Object>> list = userMapper.queryTrackUserList(param);
         for (int i = 0; i < list.size(); i++) {
-            String trackvalue = JzbDataType.getString(list.get(i).get("trackvalue"));
-            param.put("trackvalue",trackvalue);
+            String trackcid = JzbDataType.getString(list.get(i).get("trackcid"));
+            param.put("trackcid",trackcid);
             String level = userMapper.queryLevel(param);
             if ( !JzbTools.isEmpty(level) && level.length() < 5 ){
                 list.get(i).put("level",level);
@@ -75,14 +75,7 @@ public class TbTrackUserService {
                 list.get(i).put("level",null);
             }
         }
-        if (!JzbTools.isEmpty(param.get("cdid"))){
-            List<Map<String,Object>> deptChildlist = cockpitMapper.getDeptChild(param);
-            for (int i = 0; i < deptChildlist.size(); i++) {
-                deptChildlist.get(i).remove("pcdid");
-                deptChildlist.get(i).remove("idx");
-            }
-            param.put("list",deptChildlist);
-        }
+
         return list;
     }
 
@@ -175,19 +168,19 @@ public class TbTrackUserService {
             }
             param.put("list",list);
         }
-        param.put("trackres",1);
+        param.put("trackres",'1');
         // 愿意见
         int willCount = userMapper.getHandleCount(param);
 
-        param.put("trackres",2);
+        param.put("trackres",'2');
         // 深度见
         int deepCount = userMapper.getHandleCount(param);
 
-        param.put("trackres",4);
+        param.put("trackres",'4');
         // 上会
         int meetCount = userMapper.getHandleCount(param);
 
-        param.put("trackres",8);
+        param.put("trackres",'8');
         // 上会
         int signCount = userMapper.getHandleCount(param);
         Map<String,Object> cmap = new HashMap<>();
@@ -319,7 +312,7 @@ public class TbTrackUserService {
             }
             param.put("list",list);
         }
-        param.put("trackres",JzbDataType.getInteger(param.get("trackres")));
+        param.put("trackres",JzbDataType.getString(param.get("trackres")));
         return userMapper.getHandleStage(param);
     }
 

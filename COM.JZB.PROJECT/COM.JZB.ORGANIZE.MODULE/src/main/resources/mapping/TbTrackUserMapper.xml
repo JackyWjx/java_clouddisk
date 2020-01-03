@@ -5,10 +5,42 @@
 <mapper namespace="com.jzb.org.dao.TbTrackUserMapper">
     <!--新建跟进人员记录-->
     <insert id="addTrackUser" parameterType="java.util.Map" >
-        insert into tb_track_user_list (isservice,nextadvance,abdialogue,trackoutput,trackres,excontent,trackdesc,trackcid,trackproid,
+        insert into tb_track_user_list (returnmoney,signmoney,nexttracktime,trackuid,isservice,nextadvance,abdialogue,trackoutput,trackres,excontent,trackdesc,trackcid,trackproid,
         trackvalue,trackid,tracktime,trackuname,tracktype,customer,trackcontent,image,
         adduid,status,summary,addtime)
         values (
+        <choose>
+            <when test="returnmoney != null and returnmoney != ''">
+                #{returnmoney},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="signmoney != null and signmoney != ''">
+                #{signmoney},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="nexttracktime != null and nexttracktime != ''">
+                #{nexttracktime},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trackuid != null and trackuid != ''">
+                #{trackuid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         <choose>
             <when test="isservice != null and isservice != ''">
                 #{isservice},
@@ -162,6 +194,9 @@
     <!--查询跟进人员记录-->
     <select id="queryTrackUserList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
+        tt.returnmoney,
+        tt.signmoney,
+        tt.nexttracktime,
         trackvalue,
         isservice,
         trackres,
@@ -191,10 +226,10 @@
         on tt.trackproid = pp.projectid
         LEFT JOIN
         tb_company_list cc
-        on tt.trackvalue = cc.cid
+        on tt.trackcid = cc.cid
         LEFT JOIN
         tb_common_user_list  mm
-        on tt.trackvalue = mm.uid
+        on tt.customer = mm.uid
         WHERE
         tt.status = '1'
         <if test="projectname != null and projectname != ''">
@@ -228,7 +263,9 @@
             and trackcid = #{trackcid}
         </if>
         <if test="trackproid != null and trackproid != ''">
-            and trackproid = #{trackproid}
+            and trackuid in (
+            select uid from tb_common_user_list where projectid = #{trackproid} and status = '1'
+            )
         </if>
         <if test="customer != null and customer != '' ">
             and customer = #{customer}
@@ -312,8 +349,8 @@
         </if>
         and status = '1'
         <choose>
-            <when test="customer != null and customer != ''">
-                and customer = #{customer}
+            <when test="trackuid != null and trackuid != ''">
+                and trackuid = #{trackuid}
             </when>
             <otherwise>
                 and adduid = #{adduid}
@@ -334,8 +371,8 @@
         </if>
         and status = '1'
         <choose>
-            <when test="customer != null and customer != ''">
-                and customer = #{customer}
+            <when test="trackuid != null and trackuid != ''">
+                and trackuid = #{trackuid}
             </when>
             <otherwise>
                 and adduid = #{adduid}
@@ -348,11 +385,11 @@
         select count(1) from tb_track_user_list
         where status = '1'
         and trackres = #{trackres}
-        <if test="customer != null and customer != ''">
-            and customer = #{customer}
+        <if test="trackuid != null and trackuid != ''">
+            and trackuid = #{trackuid}
         </if>
         <if test="cdid != null and cdid != ''">
-            and customer in (
+            and trackuid in (
             select uid from tb_dept_user where cdid in
             <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
                 #{item.cdid}
@@ -414,6 +451,15 @@
     <update id="updTrackUser" parameterType="java.util.Map">
         update tb_track_user_list
         set
+        <if test="nexttracktime != null and nexttracktime != ''">
+            nexttracktime = #{nexttracktime},
+        </if>
+        <if test="signmoney != null and signmoney != ''">
+            signmoney = #{signmoney},
+        </if>
+        <if test="returnmoney != null and returnmoney != ''">
+            returnmoney = #{returnmoney},
+        </if>
         <if test="isservice != null and isservice != ''">
             isservice = #{isservice},
         </if>
@@ -516,7 +562,7 @@
 
     <!--查询跟进单位的等级-->
     <select id="queryLevel" parameterType="java.util.Map" resultType="java.lang.String">
-        select dictvalue from  tb_company_property where  cid = #{trackvalue} and status = '1'
+        select dictvalue from  tb_company_property where  cid = #{trackcid} and status = '1'
         <if test="dictvalue != null and dictvalue != ''">
             and dictvalue = #{dictvalue}
         </if>
