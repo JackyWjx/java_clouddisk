@@ -300,25 +300,34 @@ public class TbCityController {
 
         Response response;
         try {
-            // 返回格式map
+            /** 返回格式map */
             Map<String, Object> provinceCodeMap = new HashMap<>();
+            /** 满足前端格式 */
             List<Map<String,Object>> list;
             /** 所有省 */
             List<Map<String, Object>> provinceList = tbCityService.getProvince(params);
             for (int i = 0, l = provinceList.size(); i < l; i++) {
-
+                /** 用来当做查询的参数map */
                 Map<String, Object> queryCityAndCountyMap = new HashMap<>();
+                /** 放入Pcode查市  */
                 queryCityAndCountyMap.put("pcode", provinceList.get(i).get("pcode"));
 
+                /**  根据Pcode查询出的市集合 */
                 List<Map<String, Object>> cityList = tbCityService.getCity(queryCityAndCountyMap);
+                /**  市结构 */
                 Map<String,Object> cityMap=new HashMap<>();
+                /**  遍历市查询区县 */
                 for (int i1 = 0, l1 = cityList.size(); i1 < l1; i1++) {
+                    /**  传参查询区县 */
                     queryCityAndCountyMap.put("ccode",cityList.get(i1).get("ccode"));
+                    /**  区县结构 */
                     Map<String,Object> countyMap=new HashMap<>();
+                    /**  根据省和市查出来的区县 */
                     List<Map<String, Object>> countyList = tbCityService.getCounty(queryCityAndCountyMap);
                     countyMap.put("list",countyList);
                     list=new ArrayList<>();
                     list.add(countyMap);
+                    /**  前端需要的格式 */
                     cityMap.put(JzbDataType.getString(cityList.get(i1).get("creaid")),list);
                 }
                 cityMap.put("list",cityList);
