@@ -2,6 +2,7 @@ package com.jzb.api.service;
 
 import com.jzb.api.api.auth.RoleAuthApi;
 import com.jzb.api.api.auth.UserAuthApi;
+import com.jzb.api.api.org.CommonOrgApi;
 import com.jzb.api.api.org.CompanyOrgApi;
 import com.jzb.api.api.redis.UserRedisApi;
 import com.jzb.base.data.JzbDataType;
@@ -35,6 +36,9 @@ public class CompanyService {
 
     @Autowired
     private UserAuthApi userAuthApi;
+
+    @Autowired
+    private CommonOrgApi commonOrgApi;
 
     /**
      * 创建单位 & 加入单位
@@ -72,6 +76,16 @@ public class CompanyService {
             roleAuthApi.addUserRole(param);
             //创建默认角色组，资源池角色组合管理员角色组
       //      saveInitRoleGroup(param);
+
+            // 给负责人创建公海用户
+            Map<String ,Object> commonMap = new HashMap<>();
+            commonMap.put("phone",param.get("phone"));
+            commonMap.put("uname",param.get("managername"));
+            commonMap.put("cid",param.get("cid"));
+            commonMap.put("uid",param.get("manager"));
+            commonMap.put("userinfo",param.get("userinfo"));
+            commonMap.put("region",param.get("region"));
+            commonOrgApi.addCommonUser(commonMap);
 
         }
         return result;

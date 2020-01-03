@@ -507,14 +507,14 @@ public class CommonUserController {
                 // 获取模板中的用户性别
                 String sex = JzbDataType.getString(map.get(2));
                 param.put("sex", sex);
-                if (JzbDataType.isEmpty(sex)) {
-                    summary += "用户性别不能为空!";
-                    exportMap.put("status", "2");
-                    exportMap.put("summary", summary);
-                    userInfoList.add(exportMap);
-                    errorList.add(exportMap);
-                    continue;
-                }
+//                if (JzbDataType.isEmpty(sex)) {
+//                    summary += "用户性别不能为空!";
+//                    exportMap.put("status", "2");
+//                    exportMap.put("summary", summary);
+//                    userInfoList.add(exportMap);
+//                    errorList.add(exportMap);
+//                    continue;
+//                }
                 // 获取模板中的用户电话号码
                 String phone = JzbDataType.getString(map.get(3));
                 param.put("phone", phone);
@@ -616,6 +616,10 @@ public class CommonUserController {
                 // 获取模板中的用户工作经历
                 String works = JzbDataType.getString(map.get(15));
                 param.put("works", works);
+
+                // 获取模板中的用户固定电话
+                String telphone = JzbDataType.getString(map.get(16));
+                param.put("telphone",telphone);
                 // 调用接口
                 int count = userService.addCommUser(param);
                 if (count == 0) {
