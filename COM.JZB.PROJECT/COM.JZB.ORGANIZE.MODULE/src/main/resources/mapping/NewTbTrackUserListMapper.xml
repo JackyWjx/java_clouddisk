@@ -6,8 +6,8 @@
 
     <select id="queryTrackUserListByKey" resultType="java.util.Map" parameterType="java.util.Map">
         select trackcontent ,abdialogue,nextadvance from tb_track_user_list where status='1'
-        <if test="uid != null and uid != ''">and  customer = #{uid}</if>
-        <if test="cid != null and cid != ''">and trackvalue = #{cid}</if>
+        <if test="uid != null and uid != ''">and  trackuid = #{uid}</if>
+        <if test="cid != null and cid != ''">and trackcid = #{cid}</if>
         <if test="projectid != null and projectid != ''">and trackproid = #{projectid}</if>
         <if test="trtime != null and trtime != ''">and tracktime between #{begDate} and #{endDate} </if>
         limit #{pagesize}  offset #{pageno}
@@ -15,7 +15,7 @@
 
     <select id="countTrackUserListByKey" resultType="java.lang.Integer" parameterType="java.util.Map">
         select count(1) from tb_track_user_list where status='1'
-        <if test="uid != null and uid != ''">and customer = #{uid}</if>
+        <if test="uid != null and uid != ''">and trackuid = #{uid}</if>
         <if test="cid != null and cid != ''">and trackcid = #{cid}</if>
         <if test="projectid != null and projectid != ''">and trackproid = #{projectid}</if>
         <if test="trtime != null and trtime != ''">and tracktime = #{trtime}</if>
