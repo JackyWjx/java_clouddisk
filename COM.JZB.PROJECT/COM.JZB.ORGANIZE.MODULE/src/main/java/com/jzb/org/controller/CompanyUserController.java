@@ -1010,6 +1010,8 @@ public class CompanyUserController {
                 if (!JzbDataType.isEmpty(page.get("kkk"))) {
                     kkk = (Map<String, Object>) page.get("kkk");
                 }
+
+
                 // 获取跟进人
                 String uname = JzbDataType.getString(page.get("trackuname"));
                 sheet.createRow(i + 1).createCell(0).setCellValue(uname);
@@ -1043,6 +1045,59 @@ public class CompanyUserController {
             }
             // 响应到客户端
             response.addHeader("Content-Disposition", "attachment;filename=ImportSellStatistics.xlsx");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            // 将excel写入到输出流中
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            JzbTools.logError(e);
+        }
+    }
+
+    /**
+     * @Author Reed
+     * @Description 统计分析导出跟踪记录
+     * @Date 11:30 2020/1/4
+     * @Param [response, param]
+     * @return void
+    **/
+    @RequestMapping(value = "/createSellTrackExcel", method = RequestMethod.POST)
+    @CrossOrigin
+    public void createSellTrackExcel(HttpServletResponse response, @RequestBody Map<String, Object> param) {
+        try {
+            //static/excel/ImportTrackStatistics .xlsx
+            String srcFilePath = "static/excel/ImportTrackStatistics .xlsx";
+            ClassPathResource resource = new ClassPathResource(srcFilePath);
+            InputStream in = resource.getInputStream();
+            Object object = param.get("list");
+            List<Map<String, Object>> list = new ArrayList<>();
+            if (JzbDataType.isCollection(object)) {
+                list = (List<Map<String, Object>>) object;
+            }
+            // 读取excel模板
+            XSSFWorkbook wb = new XSSFWorkbook(in);
+            // 读取了模板内所有sheet内容
+            XSSFSheet sheet = wb.getSheetAt(0);
+            for (int i = 0; i < list.size(); i++) {
+                Map<String, Object> page = list.get(i);
+                Map<String, Object> kkk = new HashMap<>();
+
+
+                // 获取跟进人
+                String uname = JzbDataType.getString(page.get("trackuname"));
+                sheet.createRow(i + 1).createCell(0).setCellValue(uname);
+                // 获取跟进内容
+                String trackcontent = JzbDataType.getString(page.get("trackcontent"));
+                sheet.getRow(i + 1).createCell(1).setCellValue(trackcontent);
+                // 获取跟进日期 todo
+                long handletime = JzbDataType.getLong(page.get("tracktime"));
+                String result2 = new SimpleDateFormat("yyyy-MM-dd ").format(handletime);
+                sheet.getRow(i + 1).createCell(2).setCellValue(result2);
+            }
+            // 响应到客户端
+            response.addHeader("Content-Disposition", "attachment;filename=ImportTrackStatistics.xlsx");
             OutputStream os = new BufferedOutputStream(response.getOutputStream());
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
             // 将excel写入到输出流中
