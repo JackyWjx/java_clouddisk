@@ -134,7 +134,7 @@ public class TbPlantaskJobPositionController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            param.put("crgid", JzbRandom.getRandomChar(26));
+            param.put("crid", JzbRandom.getRandomChar(26));
             response = tbPlantaskJobPositionService.addRoleAndDept(param)>0?Response.getResponseSuccess(userInfo):Response.getResponseError();
         } catch (Exception ex) {
             flag = false;

@@ -69,32 +69,15 @@
     </select>
 <!--    修改岗位职责-->
     <update id="updateJobResponsibilities">
-        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
-            update tb_plantask_job_content
-            <set>
-                <if test="item.content!=null and item.content!=''">
-                    content = #{item.content},
-                </if>
-                <if test="item.sort!=null and item.sort!=''">
-                    sort = #{item.sort}
-                </if>
-            </set>
-            where uniqueid=#{item.uniqueid}
-        </foreach>
-    </update>
-    <update id="updateJobResponsibilitiesByUidAndTime">
-        update tb_plantask_job_duty
+        <foreach collection="lists" item="item" index="index" open="" close="" separator=";">
+        update "tb_plantask_job_duty"
         <set>
-            <if test="uptime!=null and uptime!=''">
-                uptime = #{uptime},
-            </if>
-            <if test="upuid!=null and upuid!=''">
-                upuid = #{upuid}
-            </if>
+            <if test="item.crid != null and item.crid != ''">crid = #{item.crid},</if>
+            <if test="item.dutyid != null and item.dutyid != ''">dutyid = #{item.dutyid},</if>
+            <if test="item.outputid != null and item.outputid != ''">outputid = #{item.outputid},</if>
+            upuid=#{upuid},uptime=#{uptime}
         </set>
-        where jobdutyid in
-        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-            #{item.jobdutyid}
+        where jobdutyid = #{item.jobdutyid}
         </foreach>
     </update>
 
@@ -124,6 +107,11 @@
         </foreach>
     </insert>
 <!--    插入字典库   -->
+    <insert id="insertDictionary">
+        insert  into tb_plantask_job_content (uniqueid,content)
+        values (#{uniqueid},#{content})
+    </insert>
+<!--    批量插入字典库   -->
     <insert id="insertJobRBE">
 
             insert into tb_plantask_job_content (uniqueid,content)

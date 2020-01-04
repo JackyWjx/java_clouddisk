@@ -35,6 +35,7 @@ public class TbPlantaskJobDutyService {
 
     @Transactional
     public Integer updateJobResponsibilities(Map<String, Object> param) {
+        //修改记录
         return tbPlantaskJobDutyMapper.updateJobResponsibilities(param);
     }
 
@@ -72,5 +73,9 @@ public class TbPlantaskJobDutyService {
 
     public Integer getAllCountParam(Map<String, Object> param) {
         return tbPlantaskJobDutyMapper.getAllCountParam(param);
+    }
+
+    public void insertDictionary(Map<String, Object> dictionary) {
+        tbPlantaskJobDutyMapper.insertDictionary(dictionary);
     }
 }

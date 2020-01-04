@@ -35,8 +35,8 @@
     </select>
 <!--    保存角色    -->
     <insert id="insertRoleAndDept" parameterType="Map">
-        insert  into tb_plantask_job_position (crgid,content,cddid)
-        values (#{crgid},#{content},#{cddid})
+        insert  into tb_plantask_job_position (crid,content,cddid)
+        values (#{crid},#{content},#{cddid})
     </insert>
 <!--    修改角色名称 -->
     <update id="updateRoleName">

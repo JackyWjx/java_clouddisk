@@ -20,8 +20,6 @@ public interface TbPlantaskJobDutyMapper {
 
     Integer updateJobResponsibilitiesDelStatus(Map<String, Object> param);
 
-    void updateJobResponsibilitiesByUidAndTime(Map<String, Object> param);
-
     List<Map<String, Object>> AllJobRBE(Map<String, Object> param);
 
     Integer insertJobResponsibilities(Map<String, Object> param);
@@ -37,4 +35,6 @@ public interface TbPlantaskJobDutyMapper {
     List<Map<String, Object>> getAllIdByCidNotParam(Map<String, Object> param);
 
     Integer getAllCountParam(Map<String, Object> param);
+
+    void insertDictionary(Map<String, Object> dictionary);
 }

@@ -101,7 +101,7 @@ public class TbPlantaskJobDutyController {
                 for (Map reid : resultId) {
                     Map<String, Object> resultMap = new HashMap<>();
                     resultMap.put("crid", reid.get("crid"));
-                    resultMap.put("crgcontent", dept.get(resultMap.get("crid")));
+                    resultMap.put("crcontent", dept.get(resultMap.get("crid")));
                     resultMap.put("dept", list.get(reid.get("crid")));
                     resultMap.put("cddid", deptId.get(reid.get("crid")));
                     resultMap.put("dutyid", reid.get("dutyid"));
@@ -301,36 +301,49 @@ public class TbPlantaskJobDutyController {
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getContractTemplate Method", "[param error] or [param is null]"));
             } else {
                 List<Map<String, Object>> lists = (List<Map<String, Object>>) param.get("list");
-                List<Map<String,Object>> positionList = new ArrayList<>();
-                List<Map<String,Object>> dutyList = new ArrayList<>();
 
-                //将横向数据转化为纵向
-                for (Map<String, Object> map:lists){
-                    Map<String,Object> positionMap = new HashMap<>();
-                    positionMap.put("crid",map.get("crid")==null?"":map.get("crid"));
-                    positionMap.put("cddid",map.get("cddid"));
-                    positionMap.put("content",map.get("content"));
-                    Map<String,Object> dutyMap = new HashMap<>();
-                    dutyMap.put("dutyid",map.get("dutyid"));
-                    dutyMap.put("outputid",map.get("outputid"));
-                    dutyMap.put("dutycontent",map.get("dutycontent"));
-                    dutyMap.put("outputcontent",map.get("outputcontent"));
-                    positionList.add(positionMap);
-                    dutyList.add(dutyMap);
-                }
-                for (int i = 0,j=positionList.size(); i < j; i++) {
-                    if("".equals(positionList.get(i).get("crid"))){
+
+                for (int i = 0,j=lists.size(); i < j; i++) {
+                    if("".equals(lists.get(i).get("crid"))){
                         String crid = JzbRandom.getRandomChar(26);
                         //角色不存在，新创建的
-                        positionList.get(i).put("crgid",crid);
-                        tbPlantaskJobPositionService.addRoleAndDept(positionList.get(i));
+                        lists.get(i).put("crid",crid);
+                        lists.get(i).put("content",lists.get(i).get("crcontent"));
+                        tbPlantaskJobPositionService.addRoleAndDept(lists.get(i));
+                    }
+                    if("".equals(lists.get(i).get("dutyid"))){
+                        String dutyid = JzbRandom.getRandomChar(26);
+                        //职责不存在，新创建的
+                        lists.get(i).put("dutyid",dutyid);
+                        Map<String,Object> dictionary =  new HashMap<>();
+                        dictionary.put("uniqueid",dutyid);
+                        dictionary.put("content",lists.get(i).get("dutycontent"));
+                        tbPlantaskJobDutyService.insertDictionary(dictionary);
+                    }
+                    if("".equals(lists.get(i).get("outputid"))){
+                        //说明output进行了修改
+                        List<String> list = new ArrayList<>();
+                        list.add(JzbDataType.getString(lists.get(i).get("outputcontent")));
+                        Map<String,Object> map = new HashMap<>();
+                        map.put("contentList",list);
+                        List<Map<String, Object>> resultList = tbPlantaskJobDutyService.selectExistContent(map);
+                        if(resultList.size()>0){
+                            //该值已经存在不需要插入了
+                            lists.get(i).put("outputid",resultList.get(0).get("outputid"));
+                        }else {
+                            String outputid = JzbRandom.getRandomChar(26);
+                            //输出不存在，新创建的
+                            lists.get(i).put("outputid",outputid);
+                            Map<String,Object> dictionary =  new HashMap<>();
+                            dictionary.put("uniqueid",outputid);
+                            dictionary.put("content",lists.get(i).get("outputcontent"));
+                            tbPlantaskJobDutyService.insertDictionary(dictionary);
+                        }
 
                     }
+
                 }
-                for (int i = 0,j=dutyList.size(); i < j; i++) {
-                    dutyList.get(i).put("crid",positionList.get(i).get("crgid"));
-                }
-                param.put("dutyList",dutyList);
+                param.put("lists",lists);
                 param.put("upuid", userInfo.get("uid"));
                 param.put("uptime", System.currentTimeMillis());
 
@@ -408,17 +421,14 @@ public class TbPlantaskJobDutyController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"crid"})) {
-                response = Response.getResponseError();
-                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getContractTemplate Method", "[param error] or [param is null]"));
-            } else {
+
 
                 List<Map<String, Object>> list = tbPlantaskJobDutyService.selectDutyByCid(param);
                 response = Response.getResponseSuccess();
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(list);
                 response.setPageInfo(pageInfo);
-            }
+
         } catch (Exception ex) {
             flag = false;
             JzbTools.logError(ex);
