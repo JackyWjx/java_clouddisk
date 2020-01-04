@@ -35,4 +35,8 @@ public interface CockpitMapper {
     List<Map<String, Object>> getAllDeptUser(Map<String, Object> param);
 
     List<Map<String, Object>> getAllTrackInfo(Map<String, Object> param);
+    // 添加模板记录
+    int addTbtrackCount(Map<String, Object> param);
+
+    List<Map<String, Object>> getAllUserByCid(Map<String, Object> param);
 }

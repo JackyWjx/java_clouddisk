@@ -65,7 +65,7 @@
 
     <!--查询部门下所有的用户-->
     <select id="getAllDeptUser" parameterType="java.util.Map" resultType="java.util.Map">
-        select distinct  uid ,cname as label from tb_dept_user where cdid in
+        select distinct  cid,cdid, uid ,cname as label from tb_dept_user where cdid in
         <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
             #{item.cdid}
         </foreach>
@@ -159,6 +159,12 @@
                     and status = '1'
                     )
                 </if>
+                <if test="zero != null and zero != ''">
+                    and addtime &gt;= #{zero}
+                </if>
+                <if test="twelve != null and twelve != ''">
+                    and addtime &lt;= #{twelve}
+                </if>
                  ) ,
             ( SELECT COUNT ( 1 ) AS trainingcount FROM tb_track_user_list WHERE trackres = '32' AND status = '1'
                 <if test="trackuid != null and trackuid != ''">
@@ -178,6 +184,12 @@
                     </foreach>
                     and status = '1'
                     )
+                </if>
+                <if test="zero != null and zero != ''">
+                    and addtime &gt;= #{zero}
+                </if>
+                <if test="twelve != null and twelve != ''">
+                    and addtime &lt;= #{twelve}
                 </if>
                 ),
             ( SELECT COUNT ( 1 ) AS connectcount FROM tb_track_user_list WHERE tracktype IN ( 4, 8, 16 ) AND status = '1'
@@ -199,6 +211,12 @@
                     and status = '1'
                     )
                 </if>
+                <if test="zero != null and zero != ''">
+                    and addtime &gt;= #{zero}
+                </if>
+                <if test="twelve != null and twelve != ''">
+                    and addtime &lt;= #{twelve}
+                </if>
                 ),
             ( SELECT COUNT ( 1 ) AS deepconnectcount FROM tb_track_user_list WHERE trackres = '2' AND status = '1'
                 <if test="trackuid != null and trackuid != ''">
@@ -219,10 +237,16 @@
                     and status = '1'
                     )
                 </if>
+                <if test="zero != null and zero != ''">
+                    and addtime &gt;= #{zero}
+                </if>
+                <if test="twelve != null and twelve != ''">
+                    and addtime &lt;= #{twelve}
+                </if>
                 ),
             ( SELECT COUNT ( 1 ) AS pubcount FROM tb_connection_publish_list WHERE status = '1'
                 <if test="trackuid != null and trackuid != ''">
-                    and trackuid = #{trackuid}
+                    and adduid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
                     and addtime &gt;= #{item.starttime}
@@ -231,13 +255,19 @@
                     and addtime &lt;= #{item.endtime}
                 </if>
                 <if test="cdid != null and cdid != ''">
-                    and trackuid in (
+                    and adduid in (
                     select uid from tb_dept_user where cdid in
                     <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
                         #{item.cdid}
                     </foreach>
                     and status = '1'
                     )
+                </if>
+                <if test="zero != null and zero != ''">
+                    and addtime &gt;= #{zero}
+                </if>
+                <if test="twelve != null and twelve != ''">
+                    and addtime &lt;= #{twelve}
                 </if>
                 ),
             ( SELECT COUNT ( 1 ) AS takeMenucount FROM tb_track_user_list WHERE trackres = '64' AND status = '1'
@@ -259,6 +289,12 @@
                     and status = '1'
                     )
                 </if>
+                <if test="zero != null and zero != ''">
+                    and addtime &gt;= #{zero}
+                </if>
+                <if test="twelve != null and twelve != ''">
+                    and addtime &lt;= #{twelve}
+                </if>
                 ),
             ( SELECT COUNT ( 1 ) AS goodCommentcount FROM tb_track_user_list WHERE trackres = '128' AND status = '1'
                 <if test="trackuid != null and trackuid != ''">
@@ -279,10 +315,104 @@
                     and status = '1'
                     )
                 </if>
+                <if test="zero != null and zero != ''">
+                    and addtime &gt;= #{zero}
+                </if>
+                <if test="twelve != null and twelve != ''">
+                    and addtime &lt;= #{twelve}
+                </if>
                 )
             FROM
 	  tb_track_user_list
+    </select>
+    <insert id="addTbtrackCount" parameterType="java.util.Map">
+        insert  into tb_track_count (trackuname,trackuid,cdid,cid,addtime,goodcommentcount,signcount,signmoney,trainingcount,
+        deepconnectcount,returnmoney,pubcount,takemenucount,connectcount,status
+        )
+        values (
+        #{trackuname},
+        #{trackuid},
+        #{cdid},
+        #{cid},
+        #{addtime},
+        <choose>
+            <when test="goodcommentcount != null and goodcommentcount != ''">
+                #{goodcommentcount},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="signcount != null and signcount != ''">
+                #{signcount},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="signmoney != null and signmoney != ''">
+                #{signmoney},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="trainingcount != null and trainingcount != ''">
+                #{trainingcount},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="deepconnectcount != null and deepconnectcount != ''">
+                #{deepconnectcount},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="returnmoney != null and returnmoney != ''">
+                #{returnmoney},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="pubcount != null and pubcount != ''">
+                #{pubcount},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="takemenucount != null and takemenucount != ''">
+                #{takemenucount},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="connectcount != null and connectcount != ''">
+                #{connectcount},
+            </when>
+            <otherwise>
+                0,
+            </otherwise>
+        </choose>
+        '1'
+        )
+    </insert>
 
-
+    <!---->
+    <select id="getAllUserByCid" parameterType="java.util.Map" resultType="java.util.Map">
+        select cid ,uid,cdid,cname from  tb_dept_user where cid = #{cid} and status = '1'
     </select>
 </mapper>

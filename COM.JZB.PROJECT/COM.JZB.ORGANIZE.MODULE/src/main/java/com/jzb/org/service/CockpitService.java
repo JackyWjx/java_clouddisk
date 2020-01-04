@@ -134,7 +134,6 @@ public class CockpitService {
 
     public List<Map<String, Object>> getAllTrackInfo(Map<String, Object> param) {
         List<Map<String ,Object>> list = new ArrayList<>();
-        List<Map<String,Object>> fList = new ArrayList<>();
         if (!JzbTools.isEmpty(param.get("cdid"))){
             List<Map<String, Object>> cdidlist = cockpitMapper.getDeptChild(param);
             param.put("list",cdidlist);
@@ -175,6 +174,11 @@ public class CockpitService {
         }
         return list;
     }
+
+//    public void addTbtrackCount(){
+//
+//    }
+
     /**
      * @Author Reed
      * @Description 根据时间戳获取每天的时间戳
