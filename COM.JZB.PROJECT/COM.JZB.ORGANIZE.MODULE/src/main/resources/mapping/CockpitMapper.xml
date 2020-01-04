@@ -21,7 +21,7 @@
             )
         </if>
         <if test="cid != null and manager != null and cid != '' and manager != ''">
-            and customer in(
+            and trackuid in(
             select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
             )
         </if>
@@ -76,11 +76,11 @@
         select count(1) from tb_track_user_list
         where status = '1'
         and trackres = #{trackres}
-        <if test="customer != null and customer != ''">
-            and customer = #{customer}
+        <if test="trackuid != null and trackuid != ''">
+            and trackuid = #{trackuid}
         </if>
         <if test="cdid != null and cdid != ''">
-            and customer in (
+            and trackuid in (
             select uid from tb_dept_user where cdid in
             <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
                 #{item.cdid}
@@ -136,6 +136,7 @@
 
     <!--个人驾驶舱查询-->
     <select id="getAllTrackInfo" parameterType="java.util.Map" resultType="java.util.Map">
+
        SELECT
          SUM ( CAST ( returnmoney AS INT ) ) signmoney,
             SUM ( CAST ( signmoney AS INT ) ) returnmoney,
@@ -144,10 +145,19 @@
                      and trackuid = #{trackuid}
                  </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{starttime}
+                    and addtime &gt;= #{item.starttime}
                 </if>
                 <if test="endtime != null and endtime != ''">
-                    and addtime &lt;= #{endtime}
+                    and addtime &lt;= #{item.endtime}
+                </if>
+                <if test="cdid != null and cdid != ''">
+                    and trackuid in (
+                    select uid from tb_dept_user where cdid in
+                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                        #{item.cdid}
+                    </foreach>
+                    and status = '1'
+                    )
                 </if>
                  ) ,
             ( SELECT COUNT ( 1 ) AS trainingcount FROM tb_track_user_list WHERE trackres = '32' AND status = '1'
@@ -155,63 +165,123 @@
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{starttime}
+                    and addtime &gt;= #{item.starttime}
                 </if>
                 <if test="endtime != null and endtime != ''">
-                    and addtime &lt;= #{endtime}
-                </if>),
+                    and addtime &lt;= #{item.endtime}
+                </if>
+                <if test="cdid != null and cdid != ''">
+                    and trackuid in (
+                    select uid from tb_dept_user where cdid in
+                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                        #{item.cdid}
+                    </foreach>
+                    and status = '1'
+                    )
+                </if>
+                ),
             ( SELECT COUNT ( 1 ) AS connectcount FROM tb_track_user_list WHERE tracktype IN ( 4, 8, 16 ) AND status = '1'
                 <if test="trackuid != null and trackuid != ''">
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{starttime}
+                    and addtime &gt;= #{item.starttime}
                 </if>
                 <if test="endtime != null and endtime != ''">
-                    and addtime &lt;= #{endtime}
-                </if>),
+                    and addtime &lt;= #{item.endtime}
+                </if>
+                <if test="cdid != null and cdid != ''">
+                    and trackuid in (
+                    select uid from tb_dept_user where cdid in
+                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                        #{item.cdid}
+                    </foreach>
+                    and status = '1'
+                    )
+                </if>
+                ),
             ( SELECT COUNT ( 1 ) AS deepconnectcount FROM tb_track_user_list WHERE trackres = '2' AND status = '1'
                 <if test="trackuid != null and trackuid != ''">
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{starttime}
+                    and addtime &gt;= #{item.starttime}
                 </if>
                 <if test="endtime != null and endtime != ''">
-                    and addtime &lt;= #{endtime}
-                </if>),
+                    and addtime &lt;= #{item.endtime}
+                </if>
+                <if test="cdid != null and cdid != ''">
+                    and trackuid in (
+                    select uid from tb_dept_user where cdid in
+                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                        #{item.cdid}
+                    </foreach>
+                    and status = '1'
+                    )
+                </if>
+                ),
             ( SELECT COUNT ( 1 ) AS pubcount FROM tb_connection_publish_list WHERE status = '1'
                 <if test="trackuid != null and trackuid != ''">
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{starttime}
+                    and addtime &gt;= #{item.starttime}
                 </if>
                 <if test="endtime != null and endtime != ''">
-                    and addtime &lt;= #{endtime}
-                </if>),
+                    and addtime &lt;= #{item.endtime}
+                </if>
+                <if test="cdid != null and cdid != ''">
+                    and trackuid in (
+                    select uid from tb_dept_user where cdid in
+                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                        #{item.cdid}
+                    </foreach>
+                    and status = '1'
+                    )
+                </if>
+                ),
             ( SELECT COUNT ( 1 ) AS takeMenucount FROM tb_track_user_list WHERE trackres = '64' AND status = '1'
                 <if test="trackuid != null and trackuid != ''">
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{starttime}
+                    and addtime &gt;= #{item.starttime}
                 </if>
                 <if test="endtime != null and endtime != ''">
-                    and addtime &lt;= #{endtime}
-                </if>),
+                    and addtime &lt;= #{item.endtime}
+                </if>
+                <if test="cdid != null and cdid != ''">
+                    and trackuid in (
+                    select uid from tb_dept_user where cdid in
+                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                        #{item.cdid}
+                    </foreach>
+                    and status = '1'
+                    )
+                </if>
+                ),
             ( SELECT COUNT ( 1 ) AS goodCommentcount FROM tb_track_user_list WHERE trackres = '128' AND status = '1'
                 <if test="trackuid != null and trackuid != ''">
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{starttime}
+                    and addtime &gt;= #{item.starttime}
                 </if>
                 <if test="endtime != null and endtime != ''">
-                    and addtime &lt;= #{endtime}
-                </if>)
-        FROM
-	tb_track_user_list
+                    and addtime &lt;= #{item.endtime}
+                </if>
+                <if test="cdid != null and cdid != ''">
+                    and trackuid in (
+                    select uid from tb_dept_user where cdid in
+                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
+                        #{item.cdid}
+                    </foreach>
+                    and status = '1'
+                    )
+                </if>
+                )
+            FROM
+	  tb_track_user_list
 
 
     </select>

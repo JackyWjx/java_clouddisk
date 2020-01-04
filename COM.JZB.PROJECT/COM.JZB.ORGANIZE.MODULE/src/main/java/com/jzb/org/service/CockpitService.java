@@ -36,13 +36,13 @@ public class CockpitService {
             param.put("zero",param.get("startTime"));
             param.put("twelve",param.get("endTime"));
         }
-        if (JzbTools.isEmpty(param.get("customer"))){
-            param.put("customer",param.get("adduid"));
+        if (JzbTools.isEmpty(param.get("trackuid"))){
+            param.put("trackuid",param.get("adduid"));
         }
-        if (JzbTools.isEmpty(param.get("customer")) &&
+        if (JzbTools.isEmpty(param.get("trackuid")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
-            param.put("customer",param.get("adduid"));
+            param.put("trackuid",param.get("adduid"));
         }
         if (!JzbTools.isEmpty(param.get("cid"))){
             List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
@@ -133,13 +133,47 @@ public class CockpitService {
     }
 
     public List<Map<String, Object>> getAllTrackInfo(Map<String, Object> param) {
+        List<Map<String ,Object>> list = new ArrayList<>();
+        List<Map<String,Object>> fList = new ArrayList<>();
+        if (!JzbTools.isEmpty(param.get("cdid"))){
+            List<Map<String, Object>> cdidlist = cockpitMapper.getDeptChild(param);
+            param.put("list",cdidlist);
+        }
         // 判断是否按天数查询
-        if ("1".equals(JzbDataType.getString(param.get("type")))  ){
-
-
+        if ("1".equals(JzbDataType.getString(param.get("type")))){
+            int days = getDays(JzbDataType.getString(param.get("starttime")));
+            List<Map<String, Object>> daysList = getStartAndEndTime(JzbDataType.getString(param.get("starttime")),days);
+            for (int i = 0; i < daysList.size(); i++) {
+                param.put("starttime",JzbDataType.getLong(daysList.get(i).get("starttime")));
+                param.put("endtime",JzbDataType.getLong(daysList.get(i).get("endtime")));
+                List<Map<String, Object>> allDeptUser = cockpitMapper.getAllTrackInfo(param);
+                Map<String,Object> map = new HashMap<>();
+                map.put(JzbDataType.getString(param.get("starttime")),allDeptUser.get(0));
+                list.add(map);
+                map = new HashMap<>();
+            }
+//            Map<String,Object> fMap = new HashMap<>();
+//            for (int i = 0; i < list.size(); i++) {
+//                fMap.put(JzbDataType.getString(list.get(i).get("starttime")),list.get(i));
+//                fList.add(fMap);
+//                fMap = new HashMap<>();
+//            }
         }
 
-        return null;
+        // 按 周查询
+        if ("2".equals(JzbDataType.getString(param.get("type")))){
+            int days = getDays(JzbDataType.getString(param.get("starttime")));
+            List<Map<String, Object>> weekList = getWeekCount(JzbDataType.getString(param.get("starttime")), days);
+            Map<String, Object> wMap = new HashMap<>();
+            for (int i = 0; i < weekList.size(); i++) {
+                param.put("starttime",weekList.get(i).get("starttime"));
+                param.put("endtime",weekList.get(i).get("endtime"));
+                List<Map<String, Object>> wList = cockpitMapper.getAllTrackInfo(param);
+                wMap.put(JzbDataType.getString(i+1),wList.get(0));
+                list.add(wMap);
+            }
+        }
+        return list;
     }
     /**
      * @Author Reed
@@ -148,31 +182,107 @@ public class CockpitService {
      * @Param
      * @return
     **/
-    public List<Map<String,Object>> getStartAndEndTime(Map<String,Object> param) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd mm:ss");
-        Date start = null;
-        Date end = null;
+    public static List<Map<String,Object>> getStartAndEndTime(String time,int days) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<Map<String,Object>> list = null;
+                Date start = null;
         try {
-            start = df.parse(JzbDataType.getString(param.get("starttime")));
-             end = df.parse(JzbDataType.getString(param.get("endtime")));
+            Calendar cal = Calendar.getInstance();
+            start = df.parse(time);
+            cal.setTime(start);
+            long starttime = cal.getTimeInMillis();
+            long endtime = 0;
+            list = new ArrayList<>();
+            Map<String,Object> map = new HashMap<>();
+            for (int i = 0; i < days; i++) {
+                endtime = starttime + 86400000;
+                map.put("starttime",starttime);
+                map.put("endtime",endtime);
+                starttime += 86400000;
+                list.add(map);
+                map = new HashMap<>();
+            }
         } catch (ParseException e) {
-            e.printStackTrace();
+            JzbTools.logError(e);
         }
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(start);
-        long starttime = cal.getTimeInMillis();
-        cal.setTime(end);
-        long finalltime = cal.getTimeInMillis();
-        long days = (finalltime - starttime)/86400000;
-        Map<String,Object> tmap = new HashMap<>();
-        List<Map<String,Object>> tlist = new ArrayList<>();
-        for (int i = 0; i < days; i++) {
-            long endtime = starttime + 86400000;
-            starttime += endtime;
-            tmap.put("starttime",starttime);
-            tmap.put("endtime",endtime);
-            tlist.add(tmap);
+
+        return list;
+    }
+    public static int getDays(String time) {
+        String str = time;
+        String[] s = str.split(" ");
+        String strA = s[0];
+        int  year = JzbDataType.getInteger(strA.substring(0,4));
+        int  month = JzbDataType.getInteger(strA.substring(5,7));
+        int days = 0;
+        boolean isLeapYear = false;
+        if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+            System.out.println("--------------------闰年-------------------");
+            isLeapYear = true;
+        } else {
+            System.out.println("--------------------非闰年-------------------");
+            isLeapYear = false;
         }
-        return tlist;
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                days = 31;
+                break;
+            case 2:
+                if (isLeapYear) {
+                    days = 29;
+                } else {
+                    days = 28;
+                }
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                days = 30;
+                break;
+            default:
+                System.out.println("error!!!");
+                break;
+        }
+        return days;
+    }
+
+    public static List<Map<String,Object>> getWeekCount(String time,int days){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<Map<String ,Object>> list = new ArrayList<>();
+        Map<String,Object> map = new HashMap<>();
+        Date start = null;
+        try {
+            Calendar cal = Calendar.getInstance();
+            start = df.parse(time);
+            cal.setTime(start);
+            long starttime = cal.getTimeInMillis();
+            long endtime = 0;
+            int weeks = days / 7;
+            int weeksend = days %7;
+            for (int i = 0; i <= weeks ; i++) {
+                if (i == weeks){
+                    endtime = starttime + weeksend * 86400000;
+                    map.put("starttime",starttime);
+                    map.put("endtime",endtime);
+                }else {
+                    endtime = starttime + 7 * 86400000;
+                    map.put("starttime",starttime);
+                    map.put("endtime",endtime);
+                    starttime += 7 * 86400000;
+                }
+                list.add(map);
+                map = new HashMap<>();
+            }
+        } catch (ParseException e) {
+            JzbTools.logError(e);
+        }
+        return list;
     }
 }

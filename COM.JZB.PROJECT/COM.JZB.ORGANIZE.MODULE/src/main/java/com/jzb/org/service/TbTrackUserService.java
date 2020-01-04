@@ -155,10 +155,10 @@ public class TbTrackUserService {
             param.put("zero",param.get("startTime"));
             param.put("twelve",param.get("endTime"));
         }
-        if (JzbTools.isEmpty(param.get("customer")) &&
+        if (JzbTools.isEmpty(param.get("trackuid")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
-            param.put("customer",param.get("adduid"));
+            param.put("trackuid",param.get("adduid"));
         }
         if (!JzbTools.isEmpty(param.get("cdid"))){
             List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
@@ -241,14 +241,14 @@ public class TbTrackUserService {
             param.put("zero",param.get("startTime"));
             param.put("twelve",param.get("endTime"));
         }
-        if (JzbTools.isEmpty(param.get("customer"))){
-            param.put("customer",param.get("adduid"));
+        if (JzbTools.isEmpty(param.get("trackuid"))){
+            param.put("trackuid",param.get("adduid"));
         }
 
-        if (JzbTools.isEmpty(param.get("customer")) &&
+        if (JzbTools.isEmpty(param.get("trackuid")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
-            param.put("customer",param.get("adduid"));
+            param.put("trackuid",param.get("adduid"));
         }
         if (!JzbTools.isEmpty(param.get("cid"))){
             List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);
@@ -299,10 +299,10 @@ public class TbTrackUserService {
             param.put("zero",param.get("startTime"));
             param.put("twelve",param.get("endTime"));
         }
-        if (JzbTools.isEmpty(param.get("customer")) &&
+        if (JzbTools.isEmpty(param.get("trackuid")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
-            param.put("customer",param.get("adduid"));
+            param.put("trackuid",param.get("adduid"));
         }
         if (!JzbTools.isEmpty(param.get("cdid"))){
             List<Map<String,Object>> list = cockpitMapper.getDeptChild(param);

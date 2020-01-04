@@ -242,7 +242,7 @@
             and trackuname ~ #{trackuname}
         </if>
         <if test="cdid != null and cdid != ''">
-            and customer in (
+            and trackuid in (
             select uid from tb_dept_user where cdid in
             <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
                 #{item.cdid}
@@ -263,7 +263,7 @@
             and trackcid = #{trackcid}
         </if>
         <if test="trackproid != null and trackproid != ''">
-            and trackuid in (
+            and customer in (
             select uid from tb_common_user_list where projectid = #{trackproid} and status = '1'
             )
         </if>
@@ -398,7 +398,7 @@
             )
         </if>
         <if test="cid != null and manager != null and cid != '' and manager != ''">
-            and customer in(
+            and trackuid in(
             select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
             )
         </if>
@@ -527,11 +527,11 @@
         <if test="twelve != null and twelve != ''">
             and addtime &lt;= #{twelve}
         </if>
-        <if test="customer != null and customer != ''">
-            and customer = #{customer}
+        <if test="trackuid != null and trackuid != ''">
+            and trackuid = #{trackuid}
         </if>
         <if test="cdid != null and cdid != ''">
-            and customer in (
+            and trackuid in (
             select uid from tb_dept_user where cdid in
             <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
                 #{item.cdid}
@@ -540,7 +540,7 @@
             )
         </if>
         <if test="cid != null and manager != null and cid != '' and manager != ''">
-            and customer in(
+            and trackuid in(
             select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
             )
         </if>
@@ -582,11 +582,11 @@
         <if test="twelve != null and twelve != ''">
             and addtime &lt;= #{twelve}
         </if>
-        <if test="customer != null and customer != ''">
-            and customer = #{customer}
+        <if test="trackuid != null and trackuid != ''">
+            and trackuid = #{trackuid}
         </if>
         <if test="cdid != null and cdid != ''">
-            and customer in (
+            and trackuid in (
             select uid from tb_dept_user where cdid in
             <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
                 #{item.cdid}
@@ -595,7 +595,7 @@
             )
         </if>
         <if test="cid != null and manager != null and cid != '' and manager != ''">
-            and customer in(
+            and trackuid in(
             select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
             )
         </if>

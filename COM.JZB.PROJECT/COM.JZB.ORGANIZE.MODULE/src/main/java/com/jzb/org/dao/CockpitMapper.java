@@ -33,4 +33,6 @@ public interface CockpitMapper {
     List<Map<String,Object>> getDeptChild(Map<String, Object> param);
 
     List<Map<String, Object>> getAllDeptUser(Map<String, Object> param);
+
+    List<Map<String, Object>> getAllTrackInfo(Map<String, Object> param);
 }
