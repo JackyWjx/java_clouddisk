@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/org/jobResponsibilities")
@@ -58,16 +55,29 @@ public class TbPlantaskJobDutyController {
             } else {
                 JzbPageConvert.setPageRows(param);
                 List<Map<String, Object>> roleList;
+                List<Map<String, Object>> resultId;
+                Integer count;
                 //1.查询Jzb角色
                 roleList = tbPlantaskJobPositionService.getRoles(param);
-                //判断是否查询部门
-                if (!JzbCheckParam.haveEmpty(param, new String[]{"cddid"})) {
+                //判断是否带条件查询
+                if (!JzbCheckParam.haveEmpty(param, new String[]{"crid"})) {
                     //根据部门id查询其下的角色
                     List<Map<String, Object>> list = tbPlantaskJobPositionService.selectRoleByDeptid(param);
-                    param.put("crid", list);
+                    if(list.size()>0){
+                        param.put("crid", list);
+                    }else {
+                        Map<String,Object> map = new HashMap<>();
+                        map.put("crid","");
+                        list.add(map);
+                        param.put("crid", list);
+                    }
+                    resultId = tbPlantaskJobDutyService.getAllIdByCid(param);
+                    count = tbPlantaskJobDutyService.getAllCount(param);
+                }else {
+                    resultId = tbPlantaskJobDutyService.getAllIdByCidNotParam(param);
+                    count = tbPlantaskJobDutyService.getAllCountParam(param);
                 }
                 //2.查询角色ID的所有岗位职责
-                List<Map<String, Object>> resultId = tbPlantaskJobDutyService.getAllIdByCid(param);
                 //3.查询所有的岗位职责信息
                 List<Map<String, Object>> content = tbPlantaskJobDutyService.getAllJobRBE(param);
 
@@ -75,12 +85,14 @@ public class TbPlantaskJobDutyController {
                 Map<String, Object> map = new HashMap<>();
                 Map<String, Object> list = new HashMap<>();
                 Map<String, Object> dept = new HashMap<>();
+                Map<String, Object> deptId = new HashMap<>();
 
                 for (int i = 0, a = content.size(); i < a; i++) {
                     map.put(content.get(i).get("uniqueid").toString(), content.get(i).get("content"));
                 }
                 for (int i = 0, a = roleList.size(); i < a; i++) {
                     list.put(roleList.get(i).get("crid").toString(), roleList.get(i).get("content"));
+                    deptId.put(roleList.get(i).get("crid").toString(), roleList.get(i).get("cddid"));
                 }
                 for (int i = 0, a = roleList.size(); i < a; i++) {
                     dept.put(roleList.get(i).get("crid").toString(), roleList.get(i).get("cname"));
@@ -91,6 +103,7 @@ public class TbPlantaskJobDutyController {
                     resultMap.put("crid", reid.get("crid"));
                     resultMap.put("crgcontent", dept.get(resultMap.get("crid")));
                     resultMap.put("dept", list.get(reid.get("crid")));
+                    resultMap.put("cddid", deptId.get(reid.get("crid")));
                     resultMap.put("dutyid", reid.get("dutyid"));
                     resultMap.put("dutycontent", map.get(reid.get("dutyid")));
                     resultMap.put("workid", reid.get("workid"));
@@ -109,7 +122,7 @@ public class TbPlantaskJobDutyController {
                 response = Response.getResponseSuccess();
                 PageInfo pageInfo = new PageInfo();
                 pageInfo.setList(result);
-                pageInfo.setTotal(tbPlantaskJobDutyService.getAllCount(param));
+                pageInfo.setTotal(count);
                 response.setPageInfo(pageInfo);
             }
         } catch (Exception ex) {
@@ -164,7 +177,7 @@ public class TbPlantaskJobDutyController {
                     contentList.add(JzbDataType.getString(lists.get(i).get("dutycontent")));
                     contentList.add(JzbDataType.getString(lists.get(i).get("workcontent")));
                     contentList.add(JzbDataType.getString(lists.get(i).get("outputcontent")));
-                    contentList.add(JzbDataType.getString(lists.get(i).get("workstandarcontent")));
+                    contentList.add(JzbDataType.getString(lists.get(i).get("workstandardcontent")));
                     contentList.add(JzbDataType.getString(lists.get(i).get("kpicontent")));
                 }
                 param.put("crContent", crContent);
@@ -222,7 +235,7 @@ public class TbPlantaskJobDutyController {
                         if (lists.get(i).get("outputcontent").equals(list.get(a).get("content"))) {
                             lists.get(i).put("outputid", list.get(a).get("uniqueid"));
                         }
-                        if (lists.get(i).get("workstandarcontent").equals(list.get(a).get("content"))) {
+                        if (lists.get(i).get("workstandardcontent").equals(list.get(a).get("content"))) {
                             lists.get(i).put("workstandardid", list.get(a).get("uniqueid"));
                         }
                         if (lists.get(i).get("kpicontent").equals(list.get(a).get("content"))) {
@@ -288,7 +301,36 @@ public class TbPlantaskJobDutyController {
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getContractTemplate Method", "[param error] or [param is null]"));
             } else {
                 List<Map<String, Object>> lists = (List<Map<String, Object>>) param.get("list");
+                List<Map<String,Object>> positionList = new ArrayList<>();
+                List<Map<String,Object>> dutyList = new ArrayList<>();
 
+                //将横向数据转化为纵向
+                for (Map<String, Object> map:lists){
+                    Map<String,Object> positionMap = new HashMap<>();
+                    positionMap.put("crid",map.get("crid")==null?"":map.get("crid"));
+                    positionMap.put("cddid",map.get("cddid"));
+                    positionMap.put("content",map.get("content"));
+                    Map<String,Object> dutyMap = new HashMap<>();
+                    dutyMap.put("dutyid",map.get("dutyid"));
+                    dutyMap.put("outputid",map.get("outputid"));
+                    dutyMap.put("dutycontent",map.get("dutycontent"));
+                    dutyMap.put("outputcontent",map.get("outputcontent"));
+                    positionList.add(positionMap);
+                    dutyList.add(dutyMap);
+                }
+                for (int i = 0,j=positionList.size(); i < j; i++) {
+                    if("".equals(positionList.get(i).get("crid"))){
+                        String crid = JzbRandom.getRandomChar(26);
+                        //角色不存在，新创建的
+                        positionList.get(i).put("crgid",crid);
+                        tbPlantaskJobPositionService.addRoleAndDept(positionList.get(i));
+
+                    }
+                }
+                for (int i = 0,j=dutyList.size(); i < j; i++) {
+                    dutyList.get(i).put("crid",positionList.get(i).get("crgid"));
+                }
+                param.put("dutyList",dutyList);
                 param.put("upuid", userInfo.get("uid"));
                 param.put("uptime", System.currentTimeMillis());
 
@@ -410,7 +452,7 @@ public class TbPlantaskJobDutyController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cddid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"crid"})) {
                 response = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getContractTemplate Method", "[param error] or [param is null]"));
             } else {

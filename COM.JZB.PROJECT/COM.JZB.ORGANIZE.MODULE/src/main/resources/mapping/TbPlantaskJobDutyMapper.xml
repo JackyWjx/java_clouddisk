@@ -8,14 +8,27 @@
         select a.jobdutyid,a.crid,a.dutyid,a.workid,a.outputid,a.workstandardid,a.kpiid from tb_plantask_job_duty
         as a ,tb_plantask_job_position as b
         <where>
-            <if test="crid!=null  and  crid !=''">
+            <if test="crid!=null and crid.size()>0">
                 a.crid in
                 <foreach collection="crid" item="item" separator="," open="(" close=")">
-                    #{item}
+                    #{item.crid}
                 </foreach>
                 and
             </if>
 
+            status='1' and
+            a.crid=b.crid
+            order by b.cddid desc
+            LIMIT #{pagesize} OFFSET #{pageno}
+        </where>
+
+    </select>
+
+    <!--    查询公司下所有角色的岗位职责-->
+    <select id="getAllIdByCidNotParam" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.jobdutyid,a.crid,a.dutyid,a.workid,a.outputid,a.workstandardid,a.kpiid from tb_plantask_job_duty
+        as a ,tb_plantask_job_position as b
+        <where>
             status='1' and
             a.crid=b.crid
             order by b.cddid desc
@@ -28,8 +41,31 @@
     </select>
 <!--    查询岗位职责总数-->
     <select id="getAllCount" resultType="java.lang.Integer">
-        select count(1)
-        from tb_plantask_job_duty where status='1'
+        select count(1) from tb_plantask_job_duty
+        as a ,tb_plantask_job_position as b
+        <where>
+        <if test="  crid!=null and crid.size()>0 ">
+            a.crid in
+            <foreach collection="crid" item="item" separator="," open="(" close=")">
+                #{item.crid}
+            </foreach>
+            and
+        </if>
+
+        status='1' and
+        a.crid=b.crid
+        </where>
+    </select>
+
+    <!--    查询岗位职责总数-->
+    <select id="getAllCountParam" resultType="java.lang.Integer">
+        select count(1) from tb_plantask_job_duty
+        as a ,tb_plantask_job_position as b
+        <where>
+
+        status='1' and
+        a.crid=b.crid
+        </where>
     </select>
 <!--    修改岗位职责-->
     <update id="updateJobResponsibilities">
@@ -131,7 +167,7 @@ FROM "tb_plantask_job_duty" a,"tb_plantask_job_content" b where a.dutyid = b.uni
 
 <!--    查询所有职责根据角色-->
     <select id="selectAllDutyByRole" resultType="Map">
-        select DISTINCT crid,dutyid,(select content from tb_plantask_job_content where uniqueid = dutyid) from
+        select DISTINCT crid,dutyid,(select content from tb_plantask_job_content where uniqueid = dutyid) as cname from
 tb_plantask_job_duty
 where crid in
         <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">

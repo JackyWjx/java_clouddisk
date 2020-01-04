@@ -51,6 +51,7 @@ public class TbPlantaskJobPositionController {
             for(int i = 0,j=depts.size();i<j;i++){
                 List<Map<String,Object>> list = new ArrayList<>();
                 for (int a = 0,b=roles.size();a<b;a++){
+                    roles.get(a).put("cdid",roles.get(a).get("crid"));
                     if(depts.get(i).get("cdid").equals(roles.get(a).get("cddid"))){
                         list.add(roles.get(a));
                     }

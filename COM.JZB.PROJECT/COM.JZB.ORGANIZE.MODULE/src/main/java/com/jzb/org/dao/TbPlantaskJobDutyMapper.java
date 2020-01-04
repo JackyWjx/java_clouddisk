@@ -33,4 +33,8 @@ public interface TbPlantaskJobDutyMapper {
     List<Map<String, Object>> selectExistCrContent(Map<String, Object> param);
 
     List<Map<String, Object>> selectAllDutyByRole(Map<String, Object> param);
+
+    List<Map<String, Object>> getAllIdByCidNotParam(Map<String, Object> param);
+
+    Integer getAllCountParam(Map<String, Object> param);
 }

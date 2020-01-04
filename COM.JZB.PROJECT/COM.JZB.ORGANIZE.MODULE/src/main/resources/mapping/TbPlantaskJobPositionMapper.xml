@@ -8,9 +8,9 @@
     <select id="selectRoleByDeptid" resultType="Map">
         select crid,content,cddid from
         tb_plantask_job_position
-        <if test="cddid!=null and cddid!=''">
-            where cddid = #{cddid}
-        </if>
+
+            where cddid = #{crid} or crid = #{crid}
+
     </select>
 
 
@@ -25,7 +25,7 @@
 
 <!--    查询角色    -->
     <select id="selectRole" resultType="Map">
-        select crid,content as cname,(SELECT cname FROM "tb_company_dept" where cdid =cddid) as content from
+        select crid,content as cname,(SELECT cname FROM "tb_company_dept" where cdid =cddid) as content,cddid  from
         tb_plantask_job_position
     </select>
 <!--    查询部门    -->

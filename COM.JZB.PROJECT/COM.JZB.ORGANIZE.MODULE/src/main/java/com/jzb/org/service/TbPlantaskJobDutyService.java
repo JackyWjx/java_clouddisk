@@ -35,34 +35,6 @@ public class TbPlantaskJobDutyService {
 
     @Transactional
     public Integer updateJobResponsibilities(Map<String, Object> param) {
-        tbPlantaskJobDutyMapper.updateJobResponsibilitiesByUidAndTime(param);
-      /*  List<Map<String,Object>> lists= (List<Map<String, Object>>) param.get("lists");
-        List<Map<String,Object>> uniqueids = new ArrayList<>();
-        for (int i=0,j=lists.size();i<j;i++){
-            Map <String,Object> map = new HashMap<>();
-            if(!"dutyid".equals(lists.get(i).get("dutyid"))&&lists.get(i).get("dutyid")!=null){
-                map.put("id",lists.get(i).get("dutyid"));
-                map.put("content",lists.get(i).get("dutycontent"));
-            }
-            if(!"workid".equals(lists.get(i).get("workid"))&&lists.get(i).get("workid")!=null){
-                map.put("id",lists.get(i).get("workid"));
-                map.put("content",lists.get(i).get("workcontent"));
-            }
-            if(!"outputid".equals(lists.get(i).get("outputid"))&&lists.get(i).get("outputid")!=null){
-                map.put("id",lists.get(i).get("outputid"));
-                map.put("content",lists.get(i).get("outputcontent"));
-            }
-            if(!"workstandardid".equals(lists.get(i).get("workstandardid"))&&lists.get(i).get("workstandardid")!=null){
-                map.put("id",lists.get(i).get("workstandardid"));
-                map.put("content",lists.get(i).get("workstandarcontent"));
-            }
-            if(!"kpiid".equals(lists.get(i).get("kpiid"))&&lists.get(i).get("kpiid")!=null){
-                map.put("id",lists.get(i).get("kpiid"));
-                map.put("content",lists.get(i).get("kpicontent"));
-            }
-            param.put("uniqueids",map);
-        }*/
-        tbPlantaskJobPositionMapper.updateRoleName(param);
         return tbPlantaskJobDutyMapper.updateJobResponsibilities(param);
     }
 
@@ -92,5 +64,13 @@ public class TbPlantaskJobDutyService {
 
     public List<Map<String, Object>> selectAllDutyByRole(Map<String, Object> param) {
         return tbPlantaskJobDutyMapper.selectAllDutyByRole(param);
+    }
+
+    public List<Map<String, Object>> getAllIdByCidNotParam(Map<String, Object> param) {
+        return tbPlantaskJobDutyMapper.getAllIdByCidNotParam(param);
+    }
+
+    public Integer getAllCountParam(Map<String, Object> param) {
+        return tbPlantaskJobDutyMapper.getAllCountParam(param);
     }
 }
