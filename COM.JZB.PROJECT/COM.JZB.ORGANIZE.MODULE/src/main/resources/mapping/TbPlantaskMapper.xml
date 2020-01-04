@@ -373,6 +373,7 @@ ORDER BY
 		<if test="item.executors != null">executors=#{item.executors},</if>
 		<if test="item.assistants != null">assistants=#{item.assistants},</if>
 		<if test="item.outcome != null">outcome=#{item.outcome},</if>
+		<if test="item.progressOfWork != null">progressOfWork=#{item.progressOfWork},</if>
 		<if test="item.tasktype != null">tasktype=#{item.tasktype},</if>
 		<if test="item.taskstatus != null">taskstatus=#{item.taskstatus},</if>
 		<if test="item.path != null">path=#{item.path},</if>
@@ -384,7 +385,7 @@ ORDER BY
 		<if test="item.node != null">node=#{item.node},</if>
 		<if test="item.addtime != null">addtime=#{item.addtime},</if>
 		<if test="item.uptime != null">uptime=#{item.uptime}</if>
-		<if test="item.uptime != null">status=#{item.status}</if>
+		<if test="item.status != null">status=#{item.status}</if>
 		where planid=#{item.planid}
 		</foreach>
 

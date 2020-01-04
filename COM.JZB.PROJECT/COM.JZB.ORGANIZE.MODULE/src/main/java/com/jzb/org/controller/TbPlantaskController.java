@@ -2,26 +2,19 @@ package com.jzb.org.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import com.jzb.base.data.JzbDataType;
-import com.jzb.base.data.date.JzbDateUtil;
 import com.jzb.base.log.JzbLoggerUtil;
-
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
-
 import com.jzb.org.api.auth.AuthApi;
-
-import com.jzb.org.service.TbPlantaskService;
 import com.jzb.org.service.TbPlantaskJobPositionService;
-
+import com.jzb.org.service.TbPlantaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.HashMap;
 import java.util.List;
@@ -379,6 +372,7 @@ public class TbPlantaskController {
                         break;
                     case "d" :
                         param.put("tabname","tb_plantask_day");
+                        param.put("progressOfWork",0);
                         break;
                     case "w" :
                         param.put("tabname","tb_plantask_week");
@@ -531,14 +525,13 @@ public class TbPlantaskController {
 
                 List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
                 for (Map<String, Object> map:list) {
-                    map.put("planid", JzbRandom.getRandomChar(20));
                     map.put("uptime",System.currentTimeMillis());
                     map.put("node",param.get("dept").toString());
-                    map.put("assistants",map.get("assistants").toString().replaceAll("\\[","").replaceAll("\\]",""));
+                    map.put("assistants",map.get("assistants")==null?null:map.get("assistants").toString().replaceAll("\\[","").replaceAll("\\]",""));
                     map.put("uid",userInfo.get("uid").toString());
                     map.put("addid",userInfo.get("uid").toString());
-                    map.put("starttime",JzbDataType.getDateTime(map.get("valueDate").toString().replaceAll("\\[","").replaceAll("\\]","").split(",")[0]).getTime());
-                    map.put("endtime",JzbDataType.getDateTime(map.get("valueDate").toString().replaceAll("\\[","").replaceAll("\\]","").split(",")[0]).getTime());
+                    map.put("starttime",map.get("valueDate")==null?null:JzbDataType.getDateTime(map.get("valueDate").toString().replaceAll("\\[","").replaceAll("\\]","").split(",")[0]).getTime());
+                    map.put("endtime",map.get("valueDate")==null?null:JzbDataType.getDateTime(map.get("valueDate").toString().replaceAll("\\[","").replaceAll("\\]","").split(",")[0]).getTime());
 
                 }
                 param.put("list",list);
