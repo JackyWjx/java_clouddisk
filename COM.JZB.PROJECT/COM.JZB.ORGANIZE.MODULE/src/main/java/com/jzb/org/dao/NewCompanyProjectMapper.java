@@ -46,4 +46,6 @@ public interface NewCompanyProjectMapper {
 
     // 根据projectId查询单个项目下的情报信息
     Map<String, Object> queryProjectInfoByProid(Map<String, Object> param);
+
+    int getProjectInfoCountByProid(Map<String, Object> param);
 }

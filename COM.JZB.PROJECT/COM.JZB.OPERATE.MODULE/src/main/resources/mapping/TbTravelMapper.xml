@@ -179,7 +179,7 @@
         COALESCE (npodenature, '') as  npodenature,
         COALESCE (setb, '') as  setb,
         COALESCE (sepr, '') as  sepr,
-        COALESCE (seli, '') as  setli,
+        COALESCE (setli, '') as  setli,
         COALESCE (recname, '') as  recname,
         COALESCE (reluname, '') as  reluname,
         COALESCE (relphone, '') as  relphone,
@@ -224,11 +224,11 @@
         trstatus,
         truid,
         status,
-        version,
+        "version",
         idx
         from tb_travel_approval where status = '1' and  travelid = #{travelid}
         <if test="trstatus != null and trstatus != ''">and trstatus = #{trstatus}</if>
-        <if test="rebversion != null and rebversion != ''">and version = #{rebversion}</if>
+        <if test="rebversion != null and rebversion != ''">and "version" = #{rebversion}</if>
         order by idx asc
     </select>
 
@@ -286,7 +286,7 @@
             <if test="npodenature != null and npodenature != ''"> npodenature = #{npodenature},</if>
             <if test="setb != null and setb != ''"> setb = #{setb},</if>
             <if test="sepr != null and sepr != ''"> sepr = #{sepr},</if>
-            <if test="setli != null and setli != ''">  seli = #{setli},</if>
+            <if test="setli != null and setli != ''">  setli = #{setli},</if>
             <if test="recname != null and recname != ''">  recname = #{recname},</if>
             <if test="reluname != null and addrelunameuid != ''">  reluname = #{reluname},</if>
             <if test="relphone != null and relphone != ''"> relphone = #{relphone},</if>

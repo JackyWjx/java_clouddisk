@@ -173,18 +173,20 @@ public class TbCompanyServiceController {
             if (JzbDataType.getString(userInfo.get("uid")) != "JZBDCDCJZBDC") {
                 param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             }
+            int count = 0;
+            count = JzbDataType.getInteger(param.get("count"));
+            JzbPageConvert.setPageRows(param);
+            if (count == 0){
+                count = tbCompanyService.queryMyProjectListCount(param);
+            }
+
             //  返回所有的企业列表
             List<Map<String, Object>> companyList = tbCompanyService.getCompanyServiceList(param);
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
+            pageInfo.setTotal(count);
             pageInfo.setList(companyList);
-            // 判断结果是否为空
-            if (!JzbDataType.isEmpty(companyList)) {
-                pageInfo.setTotal(JzbDataType.getInteger(companyList.get(0).get("count")));
-            } else {
-                // 等于空返回总数0
-                pageInfo.setTotal(0);
-            }
+
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             flag = false;
@@ -201,6 +203,60 @@ public class TbCompanyServiceController {
         return result;
     }
 
+    /**
+     * CRM-统计分析-服务统计分析
+     * 获取所有服务的项目记录
+     *
+     * @Author: Kuang Bin
+     * @DateTime: 2019/10/19
+     */
+    @RequestMapping(value = "/getCompanyProjectTrackList", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getCompanyProjectTrackList(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/CompanyService/getCompanyProjectTrackList";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+//            if (JzbDataType.getString(userInfo.get("uid")) != "JZBDCDCJZBDC") {
+//                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+//            }
+            int count = 0;
+            count = JzbDataType.getInteger(param.get("count"));
+            JzbPageConvert.setPageRows(param);
+            if (count == 0){
+                count = tbCompanyService.queryServiceCountGroup(param);
+            }
+
+            //  返回所有的企业列表
+            List<Map<String, Object>> companyList = tbCompanyService.getCompanyProjectTrackList(param);
+            result = Response.getResponseSuccess(userInfo);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            pageInfo.setTotal(count);
+
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyProjectTrackList Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
     /**
      * 修改 服务记录
      *

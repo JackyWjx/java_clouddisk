@@ -114,6 +114,25 @@
        where
        appid = #{appid}
    </update>
+
+
+    <!--单点登录审批通过后显示出来的应用-->
+    <select id="getApplicationPageVerify" parameterType="java.util.Map" resultType="java.util.Map">
+          select
+          uid,
+          appid,
+          appline,
+          cid,
+          appname,
+          applogo,
+          appdesc,
+          appurl,
+          upduid,
+          status
+          from
+          where
+          devtype = #{devtype} and apptype = #{apptype} and status = '2'
+    </select>
 </mapper>
 
 

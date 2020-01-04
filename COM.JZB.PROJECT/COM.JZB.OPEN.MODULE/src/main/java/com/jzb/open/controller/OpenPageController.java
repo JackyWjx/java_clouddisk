@@ -95,15 +95,20 @@ public class OpenPageController {
                     map.put("uid", param.get("uid"));
                     //从缓存中查询用户信息
                     Response response = getCid(map);
-                    Map<String,Object> entity = (Map<String, Object>) response.getResponseEntity();
+                    Map<String, Object> entity = (Map<String, Object>) response.getResponseEntity();
                     Response cacheUserInfo = userAuthApi.getUserInfo(map);
                     Map<String, Object> Entity = (Map<String, Object>) cacheUserInfo.getResponseEntity();
                     map1.put("uid", Entity.get("uid"));
                     map1.put("cname", Entity.get("cname"));
                     map1.put("cid", Entity.get("cid"));
+                    result = Response.getResponseSuccess();
+                    result.setResponseEntity(map1);
+                } else {
+                    result = Response.getResponseError();
+                    map1.put("error", "checkcode加密错误");
+                    result.setResponseEntity(map1);
+
                 }
-                result = Response.getResponseSuccess();
-                result.setResponseEntity(map1);
             }
         } catch (Exception ex) {
             //打印错误信息

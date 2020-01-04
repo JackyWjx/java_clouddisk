@@ -8,6 +8,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.base.util.StrUtil;
+import com.jzb.org.service.CompanyUserService;
 import com.jzb.org.service.NewCompanyProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ public class NewCompanyProjectController {
 
     @Autowired
     private NewCompanyProjectService newCompanyProjectService;
+
+    @Autowired
+    private CompanyUserService companyUserService;
 
     /**
      * 日志记录对象
@@ -52,10 +56,9 @@ public class NewCompanyProjectController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "cid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{ "cid"})) {
                 response = Response.getResponseError();
             } else {
-                JzbPageConvert.setPageRows(param);
                 param.put("cid",param.get("cid").toString().trim());
                 //获取单位信息
                 List<Map<String, Object>> list = newCompanyProjectService.queryCommonCompanyListBycid(param);
@@ -68,8 +71,6 @@ public class NewCompanyProjectController {
                         list.get(i).put("prolistArr",new ArrayList<>());
                     }
                     Map<String, Object> proMap = new HashMap<>();
-                    proMap.put("pageno",param.get("pageno"));
-                    proMap.put("pagesize",param.get("pagesize"));
                     proMap.put("cid", param.get("cid"));
                     if(!JzbTools.isEmpty(param.get("projectid"))) {
                         proMap.put("projectid",param.get("projectid"));
@@ -83,7 +84,6 @@ public class NewCompanyProjectController {
                 }
                 response = Response.getResponseSuccess(userInfo);
                 PageInfo pageInfo = new PageInfo();
-                pageInfo.setTotal(newCompanyProjectService.countProjectInfo(param));
                 pageInfo.setList(list);
                 response.setPageInfo(pageInfo);
             }
@@ -217,7 +217,13 @@ public class NewCompanyProjectController {
             } else {
                 param.put("uid",userInfo.get("uid"));
                 param.put("updtime", System.currentTimeMillis());
-                response = newCompanyProjectService.updateCompanyProjectInfo(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                boolean check = newCompanyProjectService.checkHaveInfoByProjectId(param);
+                if(check){
+                    response = newCompanyProjectService.updateCompanyProjectInfo(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                }else {
+                    response = companyUserService.addCompanyProjectInfo(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                }
+
             }
         }catch (Exception ex) {
             flag = false;

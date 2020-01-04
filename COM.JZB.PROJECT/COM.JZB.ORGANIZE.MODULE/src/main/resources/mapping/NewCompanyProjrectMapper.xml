@@ -41,7 +41,6 @@
         COALESCE (projectras, '') as projectras,
         COALESCE (relation, '') as relation
         from tb_company_project where projectid=#{projectid}
-        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--根据项目id查询项目情报-->
@@ -90,7 +89,6 @@
         COALESCE (lineuid,'') as status,
         COALESCE (summary,'') as summary
         from tb_common_project_info where  projectid=#{projectid}
-        limit #{pagesize}  offset #{pageno}
     </select>
 
     <!--根据项目id查询项目情报-->
@@ -280,37 +278,41 @@
     <!--根据projectid查询项目情报-->
     <select id="queryProjectInfoByProid" resultType="java.util.Map" parameterType="java.util.Map">
         select
-        projectid,
-        lineuname,
-        linephone,
-        linejob,
-        linenature,
-        podeperson,
-        podephone,
-        podejob,
-        podenature,
-        npodeperson,
-        npodephone,
-        npodejob,
-        npodenature,
-        setb,
-        sepr,
-        setli,
-        relation,
-        recname,
-        reluname,
-        relphone,
-        brandname,
-        contrast,
-        mail,
-        nreluname,
-        nrelphone,
-        nbrandname,
-        ncontrast,
-        nmail,
-        reshid,
-        reshname,
-        reshphone
+        trim(projectid) as projectid,
+        trim(lineuname) as lineuname,
+        trim(linephone) as linephone,
+        trim(linejob) as linejob,
+        trim(linenature) as linenature,
+        trim(podeperson) as podeperson,
+       trim(podephone) as podephone,
+       trim(podejob) as podejob,
+       trim(podenature) as podenature,
+       trim(npodeperson) as npodeperson,
+       trim(npodephone) as npodephone,
+       trim(npodejob) as npodejob,
+       trim(npodenature) as npodenature,
+       trim(setb) as setb,
+       trim(sepr) as sepr,
+       trim(setli) as setli,
+       trim(relation) as relation,
+       trim(recname) as recname,
+       trim(reluname) as reluname,
+       trim(relphone) as relphone,
+       trim(brandname) as brandname,
+       trim(contrast) as contrast,
+       trim(mail) as mail,
+       trim(nreluname) as nreluname,
+       trim(nrelphone) as nrelphone,
+       trim(nbrandname) as nbrandname,
+       trim(ncontrast) as ncontrast,
+       trim(nmail) as nmail,
+       trim(reshid) as reshid,
+       trim(reshname) as reshname,
+       trim(reshphone) as reshphone
         from tb_common_project_info where  projectid=#{projectId}
+    </select>
+
+    <select id="getProjectInfoCountByProid" resultType="int" parameterType="java.util.Map">
+        SELECT count(1)  from tb_common_project_info WHERE projectid = #{projectid}
     </select>
 </mapper>

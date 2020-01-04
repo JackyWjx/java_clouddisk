@@ -4,7 +4,7 @@
 <mapper namespace="com.jzb.operate.dao.TbTravelInfoMapper">
 
     <select id="get" resultType="java.util.Map">
-		select  id , travelid , deid , inid , cid , cname , supervise , prodesc , prolist , projectid , projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone , tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature , npodeperson , npodephone , npodejob , npodenature , setb , sepr , seli , recname , reluname , relphone , brandname , contrast , mail , nreluname , nrelphone , nbrandname , ncontrast , nmail , reshid , reshname , reshphone , lineuname , linejob , linephone , linenature , adduid , addtime , upduid , updtime , status , summary  from tb_travel_info where id = #{value}
+		select  id , travelid , deid , inid , cid , cname , supervise , prodesc , prolist , projectid , projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone , tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature , npodeperson , npodephone , npodejob , npodenature , setb , sepr , setli , recname , reluname , relphone , brandname , contrast , mail , nreluname , nrelphone , nbrandname , ncontrast , nmail , reshid , reshname , reshphone , lineuname , linejob , linephone , linenature , adduid , addtime , upduid , updtime , status , summary  from tb_travel_info where id = #{value}
 	</select>
 
     <select id="list" resultType="java.util.Map">
@@ -15,9 +15,9 @@
         cname, orgrelation,supervise , prodesc ,
         COALESCE(prolist,'') as prolist ,
         trim(projectid) as projectid,
-        projectname , tendercompany , tendername , projecttype , promail , projectras , tenderphone ,
+        projectname , tendercompany , tendername , trim(projecttype) as projecttype , trim(promail) as promail , projectras , tenderphone ,
         tenderresultcompany , tendertime , tenderagent , relation , idx , podeperson , podephone , podejob , podenature
-        , npodeperson , npodephone , npodejob , npodenature , setb , sepr , seli , recname , reluname , relphone ,
+        , npodeperson , npodephone , npodejob , npodenature , setb , sepr , setli , recname , reluname , trim(relphone) as relphone,
         brandname , contrast , mail , nreluname , nrelphone , nbrandname , ncontrast , nmail , trim(reshid) as reshid,
         reshname , reshphone , lineuname , linejob , linephone , linenature , adduid , addtime , upduid , updtime ,
         status , summary from tb_travel_info
@@ -56,7 +56,7 @@
             <if test="npodenature != null and npodenature != ''">and npodenature = #{npodenature}</if>
             <if test="setb != null and setb != ''">and setb = #{setb}</if>
             <if test="sepr != null and sepr != ''">and sepr = #{sepr}</if>
-            <if test="seli != null and seli != ''">and seli = #{seli}</if>
+            <if test="setli != null and setli != ''">and setli = #{setli}</if>
             <if test="recname != null and recname != ''">and recname = #{recname}</if>
             <if test="reluname != null and reluname != ''">and reluname = #{reluname}</if>
             <if test="relphone != null and relphone != ''">and relphone = #{relphone}</if>
@@ -124,7 +124,7 @@
             <if test="npodenature != null and npodenature != ''">and npodenature = #{npodenature}</if>
             <if test="setb != null and setb != ''">and setb = #{setb}</if>
             <if test="sepr != null and sepr != ''">and sepr = #{sepr}</if>
-            <if test="seli != null and seli != ''">and seli = #{seli}</if>
+            <if test="setli != null and setli != ''">and setli = #{setli}</if>
             <if test="recname != null and recname != ''">and recname = #{recname}</if>
             <if test="reluname != null and reluname != ''">and reluname = #{reluname}</if>
             <if test="relphone != null and relphone != ''">and relphone = #{relphone}</if>
@@ -187,7 +187,7 @@
         npodenature ,
         setb ,
         sepr ,
-        seli ,
+        setli ,
         recname ,
         reluname ,
         relphone ,
@@ -475,8 +475,8 @@
                 </otherwise>
             </choose>
             <choose>
-                <when test="seli != null and seli !=''">
-                    #{seli},
+                <when test="setli != null and setli !=''">
+                    #{setli},
                 </when>
                 <otherwise>
                     null ,
@@ -668,6 +668,8 @@
         update tb_travel_info
         <set>
             <trim suffixOverrides=",">
+                cid = #{cid},
+                cname = #{cname},
                 orgrelation = #{orgrelation},
                 supervise = #{supervise},
                 prodesc = #{prodesc},
@@ -709,7 +711,7 @@
                 npodenature = #{npodenature},
                 setb = #{setb},
                 sepr = #{sepr},
-                seli = #{seli},
+                setli = #{setli},
                 recname = #{recname},
                 reluname = #{reluname},
                 relphone = #{relphone},

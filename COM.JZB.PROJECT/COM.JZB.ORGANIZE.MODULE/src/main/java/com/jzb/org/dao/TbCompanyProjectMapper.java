@@ -93,4 +93,18 @@ public interface TbCompanyProjectMapper {
      */
     int getComProjectCount(Map<String, Object> param);
 
+    List<Map<String, Object>> getServiceByProjectid(Map<String, Object> param);
+
+    /**
+     * 跟进项目id获取项目信息
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getServiceProjectInfoByProjectid(Map<String, Object> param);
+
+    List<Map<String, Object>> getProjectidByname(Map<String, Object> param);
+
+    List<Map<String, Object>> getProjectByCname(Map<String, Object> param);
+
+    List<Map<String, Object>> getProjectByUname(Map<String, Object> param);
 }

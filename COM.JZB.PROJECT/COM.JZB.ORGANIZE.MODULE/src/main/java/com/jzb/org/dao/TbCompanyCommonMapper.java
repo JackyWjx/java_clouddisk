@@ -87,6 +87,15 @@ public interface TbCompanyCommonMapper {
     int updateCompanys(Map<String, Object> param);
 
     /**
+     * @Author Reed
+     * @Description 退回公海
+     * @Date 18:55 2020/1/2
+     * @Param [param]
+     * @return int
+    **/
+    int rebackCompanys(Map<String, Object> param);
+
+    /**
      * 所有业主-业主列表查询
      * @param param
      * @return
@@ -101,4 +110,5 @@ public interface TbCompanyCommonMapper {
      * @DateTime: 2019/10/11
      */
     int updateCompanyListInfo(Map<String, Object> param);
+
 }

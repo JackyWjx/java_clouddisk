@@ -1,11 +1,15 @@
 package com.jzb.org.service;
 
+import com.alibaba.fastjson.serializer.MapSerializer;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.dao.CockpitMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -25,20 +29,16 @@ public class CockpitService {
      * @return
      */
     public int getInfo(Map<String, Object> param) {
-//        int count = 0;
-//        if (JzbTools.isEmpty(param.get("cdid")) && JzbTools.isEmpty(param.get("customer"))){
-//            param.put("customer",param.get("adduid"));
-//            count =  cockpitMapper.getInfo(param);
-//        }else {
-//            // 查询该部门下的所有用户的记录数
-//             count = cockpitMapper.getDeptUser(param);
-//        }
-//        if (!JzbTools.isEmpty(param.get("customer"))){
-//            count = cockpitMapper.getInfo(param);
-//        }
-//        if(!JzbTools.isEmpty(param.get("cid")) && !JzbTools.isEmpty(param.get("manager"))){
-//            count = cockpitMapper.getCompanyUser(param);
-//        }
+        if (JzbTools.isEmpty(param.get("startTime")) && JzbTools.isEmpty(param.get("endTime")) ){
+            Map<String, Object> map = methodTime(System.currentTimeMillis());
+            param.putAll(map);
+        }else {
+            param.put("zero",param.get("startTime"));
+            param.put("twelve",param.get("endTime"));
+        }
+        if (JzbTools.isEmpty(param.get("customer"))){
+            param.put("customer",param.get("adduid"));
+        }
         if (JzbTools.isEmpty(param.get("customer")) &&
                 JzbTools.isEmpty(param.get("cdid")) &&
                 JzbTools.isEmpty(param.get("cid")) && JzbTools.isEmpty(param.get("manager"))){
@@ -130,5 +130,49 @@ public class CockpitService {
         List<Map<String, Object>> list = cockpitMapper.getDeptChild(param);
         param.put("list",list);
         return cockpitMapper.getAllDeptUser(param);
+    }
+
+    public List<Map<String, Object>> getAllTrackInfo(Map<String, Object> param) {
+        // 判断是否按天数查询
+        if ("1".equals(JzbDataType.getString(param.get("type")))  ){
+
+
+        }
+
+        return null;
+    }
+    /**
+     * @Author Reed
+     * @Description 根据时间戳获取每天的时间戳
+     * @Date 18:03 2020/1/3
+     * @Param
+     * @return
+    **/
+    public List<Map<String,Object>> getStartAndEndTime(Map<String,Object> param) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd mm:ss");
+        Date start = null;
+        Date end = null;
+        try {
+            start = df.parse(JzbDataType.getString(param.get("starttime")));
+             end = df.parse(JzbDataType.getString(param.get("endtime")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start);
+        long starttime = cal.getTimeInMillis();
+        cal.setTime(end);
+        long finalltime = cal.getTimeInMillis();
+        long days = (finalltime - starttime)/86400000;
+        Map<String,Object> tmap = new HashMap<>();
+        List<Map<String,Object>> tlist = new ArrayList<>();
+        for (int i = 0; i < days; i++) {
+            long endtime = starttime + 86400000;
+            starttime += endtime;
+            tmap.put("starttime",starttime);
+            tmap.put("endtime",endtime);
+            tlist.add(tmap);
+        }
+        return tlist;
     }
 }

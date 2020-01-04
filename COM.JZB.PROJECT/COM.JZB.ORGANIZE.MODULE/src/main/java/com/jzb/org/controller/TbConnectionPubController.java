@@ -180,12 +180,20 @@ public class TbConnectionPubController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             //如果指定参数为空的话，则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pubid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list"})) {
                 result = Response.getResponseError();
             }else{
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                // 新建发帖信息
+                // 删除发帖
                 param.put("adduid",userInfo.get("uid"));
+                List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+                if (!JzbTools.isEmpty(list) && list.size() > 0){
+                    for (int i = 0; i < list.size(); i++) {
+                        list.get(i).put("status",'2');
+                        list.get(i).put("updtime",System.currentTimeMillis());
+                    }
+                }
+                param.put("list",list);
                 int count = pubService.removeConnectionList(param);
                 // 设置响应成功的结果
                 result = count > 0 ? Response.getResponseSuccess(userInfo):Response.getResponseError();

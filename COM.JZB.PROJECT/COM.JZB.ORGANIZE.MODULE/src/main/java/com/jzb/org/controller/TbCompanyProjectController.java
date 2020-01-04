@@ -377,6 +377,61 @@ public class TbCompanyProjectController {
         return result;
     }
 
+
+    /**
+     *
+     * 跟进项目id获取服务信息
+     *
+     * @Author:
+     * @DateTime: 2019/12/29
+     */
+    @RequestMapping(value = "/getServiceProjectInfoByProjectid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getServiceProjectInfoByProjectid(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            //判断前端传过来的分页总数
+            int count = JzbDataType.getInteger(param.get("count"));
+            // 获取产品报价总数
+
+            List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectInfoByProjectid(param);
+            result = Response.getResponseSuccess();
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     *
+     * 跟进项目名称模糊获取项目id
+     *
+     * @Author:
+     * @DateTime: 2019/12/29
+     */
+    @RequestMapping(value = "/getProjectidByname", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getProjectidByname(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+
+            List<Map<String, Object>> companyList = tbCompanyProjectService.getProjectidByname(param);
+            result = Response.getResponseSuccess();
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
     /**
      * CRM-销售业主-我服务的业主-2
      * 获取所有人的uid
@@ -391,6 +446,30 @@ public class TbCompanyProjectController {
         try {
             // 返回所有的企业列表
             List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceProjectUid(param);
+            result = Response.getResponseSuccess();
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(companyList);
+            result.setPageInfo(pageInfo);
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**
+     * 统计分析-获取已分配售后的项目信息/内部调用
+     *
+     * @Author: chenhui
+     * @DateTime: 2019/12/28
+     */
+    @RequestMapping(value = "/getServiceByProjectid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getServiceByProjectid(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            // 返回所有的企业列表
+            List<Map<String, Object>> companyList = tbCompanyProjectService.getServiceByProjectid(param);
             result = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(companyList);
@@ -448,5 +527,138 @@ public class TbCompanyProjectController {
         }
         return result;
     }
+
+    /**
+     * 根据单位名称查询单位下的所有项目信息
+     */
+
+    @RequestMapping(value = "/getProjectByCname",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getProjectByCname(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/CompanyProject/getProjectByCname";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            List<Map<String,Object>> list = tbCompanyProjectService.getProjectByCname(param);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            // 获取用户信息返回
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            result.setPageInfo(pageInfo);
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getProjectByCname Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+    /**
+     * 根据销售员名称查询单位下的所有项目信息
+     */
+
+    @RequestMapping(value = "/getProjectByUname",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getProjectByUname(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/CompanyProject/getProjectByUname";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            List<Map<String,Object>> list = null;
+            if (!JzbTools.isEmpty(param.get("saler"))){
+                 list = tbCompanyProjectService.getProjectByUname(param);
+            }
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            // 获取用户信息返回
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            result.setPageInfo(pageInfo);
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getProjectByUname Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+    /**
+     * 根据部门id查询单位下的所有用户（销售员）的项目信息
+     */
+
+    @RequestMapping(value = "/getProjectByCdid",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getProjectByCdid(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/CompanyProject/getProjectByCdid";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            List<Map<String,Object>> list = null;
+            if (!JzbTools.isEmpty(param.get("cdid"))){
+                list = tbCompanyProjectService.getProjectByCdid(param);
+            }
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            // 获取用户信息返回
+            result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+            result.setPageInfo(pageInfo);
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getProjectByCdid Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 
 }

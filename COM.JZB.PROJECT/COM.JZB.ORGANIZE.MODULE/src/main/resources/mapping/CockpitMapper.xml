@@ -8,11 +8,11 @@
     <select id="getInfo" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1) from tb_track_user_list where tracktype in (4,8,16)
         and status = '1'
-        <if test="customer != null and customer != ''">
-            and customer = #{customer}
+        <if test="trackuid != null and trackuid != ''">
+            and trackuid = #{trackuid}
         </if>
         <if test="cdid != null and cdid != ''">
-            and customer in (
+            and trackuid in (
             select uid from tb_dept_user where cdid in
             <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
                 #{item.cdid}
@@ -24,6 +24,12 @@
             and customer in(
             select uid from tb_dept_user where cid = (select cid from tb_company_list where cid = #{cid} and manager = #{manager}) and status = '1'
             )
+        </if>
+        <if test="zero != null and zero != ''">
+            and addtime &gt;= #{zero}
+        </if>
+        <if test="twelve != null and twelve != ''">
+            and addtime &lt;= #{twelve}
         </if>
     </select>
 
@@ -126,5 +132,87 @@
         (select count(1) from tb_company_list where authid = 8 and status = '1' ) middle,
         (select count(1) from tb_company_list where authid = 16 and status = '1' ) higher,
         count(1) gorvrn from tb_company_list where authid = 32 and status = '1'
+    </select>
+
+    <!--个人驾驶舱查询-->
+    <select id="getAllTrackInfo" parameterType="java.util.Map" resultType="java.util.Map">
+       SELECT
+         SUM ( CAST ( returnmoney AS INT ) ) signmoney,
+            SUM ( CAST ( signmoney AS INT ) ) returnmoney,
+            ( SELECT COUNT ( 1 ) AS signcount FROM tb_track_user_list WHERE trackres = '8' AND status = '1'
+                 <if test="trackuid != null and trackuid != ''">
+                     and trackuid = #{trackuid}
+                 </if>
+                <if test="starttime != null and starttime != ''">
+                    and addtime &gt;= #{starttime}
+                </if>
+                <if test="endtime != null and endtime != ''">
+                    and addtime &lt;= #{endtime}
+                </if>
+                 ) ,
+            ( SELECT COUNT ( 1 ) AS trainingcount FROM tb_track_user_list WHERE trackres = '32' AND status = '1'
+                <if test="trackuid != null and trackuid != ''">
+                    and trackuid = #{trackuid}
+                </if>
+                <if test="starttime != null and starttime != ''">
+                    and addtime &gt;= #{starttime}
+                </if>
+                <if test="endtime != null and endtime != ''">
+                    and addtime &lt;= #{endtime}
+                </if>),
+            ( SELECT COUNT ( 1 ) AS connectcount FROM tb_track_user_list WHERE tracktype IN ( 4, 8, 16 ) AND status = '1'
+                <if test="trackuid != null and trackuid != ''">
+                    and trackuid = #{trackuid}
+                </if>
+                <if test="starttime != null and starttime != ''">
+                    and addtime &gt;= #{starttime}
+                </if>
+                <if test="endtime != null and endtime != ''">
+                    and addtime &lt;= #{endtime}
+                </if>),
+            ( SELECT COUNT ( 1 ) AS deepconnectcount FROM tb_track_user_list WHERE trackres = '2' AND status = '1'
+                <if test="trackuid != null and trackuid != ''">
+                    and trackuid = #{trackuid}
+                </if>
+                <if test="starttime != null and starttime != ''">
+                    and addtime &gt;= #{starttime}
+                </if>
+                <if test="endtime != null and endtime != ''">
+                    and addtime &lt;= #{endtime}
+                </if>),
+            ( SELECT COUNT ( 1 ) AS pubcount FROM tb_connection_publish_list WHERE status = '1'
+                <if test="trackuid != null and trackuid != ''">
+                    and trackuid = #{trackuid}
+                </if>
+                <if test="starttime != null and starttime != ''">
+                    and addtime &gt;= #{starttime}
+                </if>
+                <if test="endtime != null and endtime != ''">
+                    and addtime &lt;= #{endtime}
+                </if>),
+            ( SELECT COUNT ( 1 ) AS takeMenucount FROM tb_track_user_list WHERE trackres = '64' AND status = '1'
+                <if test="trackuid != null and trackuid != ''">
+                    and trackuid = #{trackuid}
+                </if>
+                <if test="starttime != null and starttime != ''">
+                    and addtime &gt;= #{starttime}
+                </if>
+                <if test="endtime != null and endtime != ''">
+                    and addtime &lt;= #{endtime}
+                </if>),
+            ( SELECT COUNT ( 1 ) AS goodCommentcount FROM tb_track_user_list WHERE trackres = '128' AND status = '1'
+                <if test="trackuid != null and trackuid != ''">
+                    and trackuid = #{trackuid}
+                </if>
+                <if test="starttime != null and starttime != ''">
+                    and addtime &gt;= #{starttime}
+                </if>
+                <if test="endtime != null and endtime != ''">
+                    and addtime &lt;= #{endtime}
+                </if>)
+        FROM
+	tb_track_user_list
+
+
     </select>
 </mapper>

@@ -18,6 +18,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -195,6 +196,27 @@ public class AuthUserController {
         return response;
     } //
 
+    /**
+     * 根据用户名称 获取用户id
+     *
+     * @author kuangbin
+     */
+    @PostMapping(value = "/getUidByUname")
+    @CrossOrigin
+    public Response getUidByUname(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            List<Map<String,Object>> list  = userService.getUidByUname(param);
+            response = Response.getResponseSuccess();
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            response.setPageInfo(pageInfo);
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+        }
+        return response;
+    } //
     /**
      * 更改个人认证信息
      *

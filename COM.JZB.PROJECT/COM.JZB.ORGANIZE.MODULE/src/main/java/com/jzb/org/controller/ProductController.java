@@ -6,6 +6,7 @@ import com.jzb.base.message.Response;
 import com.jzb.base.office.JzbExcelOperater;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.api.ApiAuthApi;
 import com.jzb.org.api.api.DeptUserControllerApi;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.config.OrgConfigProperties;
@@ -62,6 +63,9 @@ public class ProductController {
 
     @Autowired
     private OrgConfigProperties config;
+
+    @Autowired
+    private ApiAuthApi apiAuthApi;
 
     /**
      * 查询产品的信息
@@ -733,6 +737,7 @@ public class ProductController {
             Map<String, Object> userInfo = orgToken.getUserInfoByToken(token);
             Map<String, Object> param = new HashMap<>();
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+            param.put("token",token);
             param.put("userinfo", userInfo);
             // 获取上传文件名称
             long time = System.currentTimeMillis();
@@ -827,20 +832,28 @@ public class ProductController {
                     userInfoList.add(exportMap);
                     continue;
                 }
+                param.put("managername",name);
+                param.put("phone",phone);
+                // 根据电话查询是否已存在该负责人
+                Map<String ,Object> objectMap = productService.getPhoneByPhone(param);
                 if (JzbDataType.isEmpty(phone)) {
                     exportMap.put("status", "2");
                     summary += "用户手机号不能为空!";
                     exportMap.put("summary", summary);
                     userInfoList.add(exportMap);
                     continue;
-                } else {
-                    if (!toPhone(phone)) {
+                } else if (!toPhone(phone)) {
                         exportMap.put("status", "2");
                         summary += "手机号不合规范";
                         exportMap.put("summary", summary);
                         userInfoList.add(exportMap);
                         continue;
-                    }
+                }else if(!JzbTools.isEmpty(objectMap)){
+                    exportMap.put("status", "2");
+                    summary += "该手机号已存在";
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
                 }
                 if (JzbDataType.isEmpty(cname)) {
                     exportMap.put("status", "2");
@@ -865,17 +878,18 @@ public class ProductController {
                 // 获取模板中的单位地址
                 String address = JzbDataType.getString(map.get(4));
 
-                // 获取模板中的备注
-                String systemname = JzbDataType.getString(map.get(5));
+                // 获取模板中的电子邮箱
+                String relmail = JzbDataType.getString(map.get(5));
                 param.put("name", name);
                 param.put("authid", "8");
                 param.put("phone", phone);
                 param.put("cname", cname);
                 param.put("region", region);
                 param.put("address", address);
-                param.put("systemname", systemname);
+                param.put("relmail", relmail);
                 // 调用接口
-                result = productService.addRegistrationCompany(param);
+//                result = productService.addRegistrationCompany(param);
+                result = apiAuthApi.addRegistrationCompany(param,JzbDataType.getString(param.get("token")));
                 if (JzbDataType.isString(result.getResponseEntity())){
                     exportMap.put("status", "2");
                     exportMap.put("summary", result.getResponseEntity());

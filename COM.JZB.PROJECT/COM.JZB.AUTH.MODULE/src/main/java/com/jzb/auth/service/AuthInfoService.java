@@ -1,6 +1,7 @@
 package com.jzb.auth.service;
 
 import com.jzb.auth.dao.AuthInfoMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +19,8 @@ public class AuthInfoService {
     private AuthInfoMapper authInfoMapper;
 
     public Map<String, Object> getUserByUids(Map<String, Object> param) {
-        Map<String,Object> whereMap = new HashMap<>();
-        String[] uids = param.get("uids").toString().split(",");
-        List<String> uidList = new ArrayList<>(Arrays.asList(uids));
-        whereMap.put("uids",uidList);
-        Map<String, Object> userMap = authInfoMapper.getUserByUids(whereMap);
+
+        Map<String, Object> userMap = authInfoMapper.getUserByUids(param);
         return userMap;
     }
 }

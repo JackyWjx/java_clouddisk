@@ -71,4 +71,6 @@ public interface ProductMapper {
      * @author kuangbin
      */
     int insertControlPowerList(List<Map<String, Object>> pageList);
+
+    Map<String,Object> getPhoneByPhone(Map<String, Object> param);
 }

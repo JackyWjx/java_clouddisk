@@ -292,4 +292,9 @@
             )
         </foreach>
     </insert>
+
+    <!--根据电话查询是否已存在该联系人-->
+    <select id="getPhoneByPhone" parameterType="java.util.Map" resultType="java.util.Map">
+        select cid from tb_company_list where relphone = #{phone} limit 1
+    </select>
 </mapper>

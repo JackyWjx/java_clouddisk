@@ -26,7 +26,7 @@ public class TbCityService {
     }
 
     /**
-     * 查询城市
+     * 查询省
      *
      * @param param
      * @return
@@ -34,6 +34,31 @@ public class TbCityService {
     public List<Map<String, Object>> getCityList(Map<String, Object> param) {
         return tbCityMapper.getCityList(param);
     }
+    /**
+     * 查询省
+     *
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getProvince(Map<String, Object> param) {
+        return tbCityMapper.getProvince(param);
+    }
+
+    /*
+     * 获取城市
+     * */
+    public  List<Map<String, Object>> getCity(Map<String, Object> param) {
+        return tbCityMapper.getCity(param);
+    }
+
+    /*
+     * 获取区县
+     * */
+    public  List<Map<String, Object>> getCounty(Map<String, Object> param) {
+        return tbCityMapper.getCounty(param);
+    }
+
+
 
     /**
      * 根据地区名称获取地区ID信息

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -75,4 +76,12 @@ public class TbApplicationVerifyService {
         return tbApplicationVerifyMapper.saveApplicationPageVerify(param);
     }
 
+    /**
+     * 单点登录审批通过后的显示出来的应用
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getApplicationPageVerify(Map<String, Object> param) {
+        return tbApplicationVerifyMapper.getApplicationPageVerify(param);
+    }
 }
