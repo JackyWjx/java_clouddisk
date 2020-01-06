@@ -670,14 +670,15 @@ public class CompanyUserController {
                 }
                 // 获取模板中的单位地区
                 String regionName = JzbDataType.getString(map.get(4));
+                if (!JzbTools.isEmpty(regionName)) {
                 param.put("regionName", regionName);
-                if (JzbDataType.isEmpty(regionName)) {
-                    summary += "项目所属地区不能为空!";
-                    exportMap.put("status", "2");
-                    exportMap.put("summary", summary);
-                    userInfoList.add(exportMap);
-                    continue;
-                }
+//                if (JzbDataType.isEmpty(regionName)) {
+//                    summary += "项目所属地区不能为空!";
+//                    exportMap.put("status", "2");
+//                    exportMap.put("summary", summary);
+//                    userInfoList.add(exportMap);
+//                    continue;
+//                }
                 // 调用获取地区ID的接口
                 Response regionID = regionBaseApi.getRegionID(param);
                 Object obj = regionID.getResponseEntity();
@@ -687,7 +688,9 @@ public class CompanyUserController {
                     Map<Object, Object> regionMap = (Map<Object, Object>) obj;
                     region = JzbDataType.getString(regionMap.get("creaid"));
                 }
-                param.put("region", region);
+                    param.put("region", region);
+            }
+
                 // 获取模板中的单位地址
                 String address = JzbDataType.getString(map.get(5));
                 param.put("address", address);
@@ -696,7 +699,7 @@ public class CompanyUserController {
                 Response response = companyUserController.addCompanyProject(param);
                 int resultCode = response.getServerResult().getResultCode();
                 companyUserController.addCompanyProjectInfo(param);
-                if (resultCode == 200) {
+                if (resultCode != 200) {
                     exportMap.put("status", "2");
                     exportMap.put("summary", "创建项目失败!");
                     userInfoList.add(exportMap);

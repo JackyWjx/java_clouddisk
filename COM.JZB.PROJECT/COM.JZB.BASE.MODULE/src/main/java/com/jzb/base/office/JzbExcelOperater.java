@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +82,9 @@ public final class JzbExcelOperater {
                         if (cell == null){
                             value = "";
                         }else if (cell.getCellType().equals(CellType.NUMERIC)) {
-                            value = cell.getNumericCellValue() + "";
+                            DecimalFormat df=new DecimalFormat("0");
+                            value =df.format(cell.getNumericCellValue());
+//                            value = cell.getNumericCellValue() + "";
                         } else if (cell.getCellType().equals(CellType.FORMULA)) {
                             value = cell.getCellFormula();
                         } else {

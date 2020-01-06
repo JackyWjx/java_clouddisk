@@ -517,6 +517,7 @@ public class CommonUserController {
 //                }
                 // 获取模板中的用户电话号码
                 String phone = JzbDataType.getString(map.get(3));
+              
                 param.put("phone", phone);
                 if (JzbTools.isEmpty(userService.getPhoneKey(param))){
                     if (JzbDataType.isEmpty(phone)) {
@@ -621,6 +622,7 @@ public class CommonUserController {
                 String telphone = JzbDataType.getString(map.get(16));
                 param.put("telphone",telphone);
                 // 调用接口
+                param.put("uid",JzbRandom.getRandomCharCap(12));
                 int count = userService.addCommUser(param);
                 if (count == 0) {
                     exportMap.put("status", "2");
