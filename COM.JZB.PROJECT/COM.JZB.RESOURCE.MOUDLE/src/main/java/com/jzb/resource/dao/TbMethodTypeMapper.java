@@ -55,4 +55,8 @@ public interface TbMethodTypeMapper {
      * 6.查询方法论资料tab方法论类别第一级  如果传了parentid就查子级，没传就查第一级
      * */
     List<Map<String, Object>> queryMethodLevel(Map<String, Object> param);
+
+    int delMethodType(Map<String, Object> param);
+
+    List<Map<String, Object>> getMethodTypeDel(Map<String, Object> param);
 }

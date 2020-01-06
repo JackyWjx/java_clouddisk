@@ -15,7 +15,11 @@
                 days,
                 typedesc,
                 addtime,
-                idx
+                idx,
+                money,
+                information,
+                constraintcondition,
+                summary
             FROM
                 tb_method_type
             WHERE
@@ -34,7 +38,11 @@
                 tmt.days,
                 tmt.typedesc,
                 tmt.addtime,
-                tmt.idx
+                tmt.idx,
+                tmt.money,
+                tmt.information,
+                tmt.constraintcondition,
+                tmt.summary
             FROM
                 tb_method_type tmt
                 JOIN modt ON tmt.parentid = modt.typeid
@@ -107,12 +115,14 @@
 
     <!--2.新建方法论-->
     <insert id="saveMethodType" parameterType="java.util.Map">
-        insert into tb_method_type(typeid,cname,parentid,score,days,typedesc,idx,ouid,addtime,updtime,status,summary)
+        insert into tb_method_type(typeid,cname,parentid,score,days,typedesc,idx,ouid,addtime,updtime,status,summary,money,
+        information,
+        constraintcondition)
         values(
         #{typeid},
         #{cname},
         <choose>
-            <when test="parentid !=null">
+            <when test="parentid !=null and parentid !=''">
                 #{parentid},
             </when>
             <otherwise>
@@ -120,7 +130,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="score !=null">
+            <when test="score !=null and score !='' ">
                 #{score},
             </when>
             <otherwise>
@@ -128,7 +138,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="days !=null">
+            <when test="days !=null and days !=''">
                 #{days},
             </when>
             <otherwise>
@@ -136,7 +146,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="typedesc !=null">
+            <when test="typedesc !=null and typedesc !=''">
                 #{typedesc},
             </when>
             <otherwise>
@@ -144,7 +154,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="idx !=null">
+            <when test="idx !=null and idx !=''">
                 #{idx},
             </when>
             <otherwise>
@@ -152,7 +162,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="ouid !=null">
+            <when test="ouid !=null and ouid !=''">
                 #{ouid},
             </when>
             <otherwise>
@@ -160,7 +170,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="addtime !=null">
+            <when test="addtime !=null and addtime !=''">
                 #{addtime},
             </when>
             <otherwise>
@@ -168,7 +178,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="updtime !=null">
+            <when test="updtime !=null and updtime !=''">
                 #{updtime},
             </when>
             <otherwise>
@@ -176,7 +186,7 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="status !=null">
+            <when test="status !=null and status !=''">
                 #{status},
             </when>
             <otherwise>
@@ -184,13 +194,39 @@
             </otherwise>
         </choose>
         <choose>
-            <when test="summary !=null">
-                #{summary}
+            <when test="summary !=null and summary !=''">
+                #{summary},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="money !=null and money !=''">
+                #{money},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+
+        <choose>
+            <when test="information !=null and information !=''">
+                #{information},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="constraintcondition !=null and constraintcondition !=''">
+                #{constraintcondition}
             </when>
             <otherwise>
                 null
             </otherwise>
         </choose>
+
         );
     </insert>
 
@@ -198,7 +234,12 @@
     <update id="updateMethodType" parameterType="java.util.Map">
         update tb_method_type set
         <if test="cname != null">cname=#{cname},</if>
+        <if test="money != null">money=#{money},</if>
+        <if test="information != null">information=#{information},</if>
+        <if test="constraintcondition != null">constraintcondition=#{constraintcondition},</if>
         <if test="score != null">score=#{score},</if>
+        <if test="idx != null">idx=#{idx},</if>
+        <if test="summary != null">summary=#{summary},</if>
         <if test="days != null">days=#{days},</if>
         <if test="typedesc != null">typedesc=#{typedesc},</if>
         <if test="updtime != null">updtime=#{updtime}</if>
@@ -225,6 +266,40 @@
             and parentid='0000000'
         </if>
         order by idx asc
+    </select>
+
+
+    <!--2.删除方法论资料-->
+    <update id="delMethodType" parameterType="java.util.Map">
+        update tb_method_type set
+        <if test="updtime!=null">updtime=#{updtime}</if>
+        status='0'
+        where typeid in (${typeids})
+    </update>
+
+
+
+    <select id="getMethodTypeDel"  resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+                typeid,
+                cname,
+                parentid,
+                score,
+                days,
+                typedesc,
+                addtime,
+                idx,
+                money,
+                information,
+                constraintcondition,
+                summary
+            FROM
+                tb_method_type
+            WHERE
+             status = '1' and
+                parentid = '0000000' and
+
+                typeid not in(${typeids});
     </select>
 
 </mapper>

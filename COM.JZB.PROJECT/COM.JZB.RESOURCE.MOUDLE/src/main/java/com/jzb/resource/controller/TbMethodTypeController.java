@@ -9,6 +9,7 @@ import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
+import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.TbMethodTypeService;
 import com.jzb.resource.util.PageConvert;
@@ -88,11 +89,20 @@ public class TbMethodTypeController {
                 }
                 // set default JSON and childern node
                 JSONObject node = new JSONObject();
-                node.put("typeid", record.get("typeid").toString());
-                node.put("cname", record.get("cname").toString());
+                node.put("methodInfo",record.get("methodInfo"));
+                System.out.println(record.get("methodInfo"));
+
+                node.put("money", record.get("money")==null?"":record.get("money").toString());
+                node.put("information", record.get("information")==null?"":record.get("information").toString());
+                node.put("constraintcondition", record.get("constraintcondition")==null?"":record.get("constraintcondition").toString());
+                node.put("typeid", record.get("typeid")==null?"":record.get("typeid").toString());
+
+                node.put("cname", record.get("cname")==null?"":record.get("cname").toString());
                 node.put("parentid", parentId);
                 node.put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(record.get("addtime")), JzbDateStr.yyyy_MM_dd));
-                node.put("typedesc", record.get("typedesc").toString());
+                node.put("typedesc", record.get("typedesc")==null?"":record.get("typedesc").toString());
+                node.put("idx", record.get("idx")==null?"":record.get("idx").toString());
+                node.put("summary", record.get("summary")==null?"":record.get("summary").toString());
                 node.put("children", new JSONArray());
                 if (JzbTools.isEmpty(record.get("score"))) {
                     node.put("score", null);
@@ -346,7 +356,7 @@ public class TbMethodTypeController {
 
     /**
      * @param param
-     * @return
+     * @return 暂时废弃 取消了添加子级 lifei
      * @deprecated 添加方法论子级
      */
     @RequestMapping(value = "/addMethodTypeSon", method = RequestMethod.POST)
@@ -490,5 +500,130 @@ public class TbMethodTypeController {
         }
         return result;
     }
+
+
+
+
+    /**
+     * @param param
+     * @return
+     * @deprecated 批量删除方法论类别
+     */
+    @RequestMapping(value = "/delMethodType", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Response delMethodType(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/methodType/delMethodType";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 验证指定值为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"typeids"})) {
+                result = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", "[param error] or [param is null]"));
+            } else {
+                StringBuffer sb=new StringBuffer();
+                String [] s=param.get("typeids").toString().replaceAll("\\[","").replaceAll("\\]","").split(",");
+                for (int i=0;i<s.length;i++){
+                    sb.append("'"+s[i].trim()+"'");
+                    if(i!=s.length-1){
+                        sb.append(",");
+                    }
+                }
+                param.put("typeids",sb.toString());
+                // 添加返回值大于0 则添加成功
+                int count = tbMethodTypeService.delMethodType(param);
+                if (count > 0) {
+                    // 定义返回结果
+                    result = Response.getResponseSuccess(userInfo);
+                } else {
+                    result = Response.getResponseError();
+                    logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", "[addResult error]"));
+                }
+            }
+        } catch (Exception e) {
+            flag=false;
+            // 打印异常信息
+            e.printStackTrace();
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+
+
+    /**
+     * @param param
+     * @return
+     * @deprecated 获取方法论类别排除已勾选的 类别 单位 项目
+     */
+    @RequestMapping(value = "/getMethodTypedels", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response getMethodTypedels(@RequestBody(required = false) Map<String, Object> param) {
+        Response response = null;
+        Map<String, Object> userInfo = null;
+        String api = "/methodType/getMethodTypedels";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+
+            if (JzbCheckParam.haveEmpty(param, new String[]{"typeids"})) {
+                response = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", "[param error] or [param is null]"));
+            }else{
+                //参照tbTempitemController
+                List<Map<String, Object>> records = tbMethodTypeService.getMethodTypeDel(param);
+
+                for (int i=0;i<records.size();i++){
+                    records.get(i).put("addtime", JzbDateUtil.toDateString(JzbDataType.getLong(records.get(i).get("addtime")), JzbDateStr.yyyy_MM_dd));
+                }
+
+
+                PageInfo pi = new PageInfo();
+                pi.setList(records);
+                // 定义返回结果
+                response = Response.getResponseSuccess(userInfo);
+                response.setPageInfo(pi);
+            }
+
+        } catch (Exception e) {
+            flag = false;
+            // 打印异常信息
+            e.printStackTrace();
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getMethodType Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
+
 
 }

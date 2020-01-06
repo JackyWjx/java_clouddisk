@@ -8,7 +8,9 @@
     <insert id="addCompanyMethod" parameterType="java.util.List">
         <foreach collection="list" index="index" item="method" separator=";">
             insert into tb_company_method
-            (cid,projectid,methodid,cname,parentid,plantime,days,score,remark,idx,adduid,addtime,upduid,updtime,status,summary)
+            (cid,projectid,methodid,cname,parentid,plantime,days,score,remark,idx,adduid,addtime,upduid,updtime,status,summary,money,
+            information,
+            constraintcondition,numberone)
             values (
             <choose>
                 <when test="method.cid!=null and method.cid!=''">
@@ -87,7 +89,7 @@
                     #{method.idx},
                 </when>
                 <otherwise>
-                    (select count(1)+#{index} from tb_company_method) ,
+                    null ,
                 </otherwise>
             </choose>
             <choose>
@@ -132,12 +134,46 @@
             </choose>
             <choose>
                 <when test="method.summary!=null and method.summary!=''">
-                    #{method.summary}
+                    #{method.summary},
                 </when>
                 <otherwise>
-                    NULL
+                    NULL,
                 </otherwise>
             </choose>
+            <choose>
+                <when test="method.money!=null and method.money!=''">
+                    #{method.money},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.information!=null and method.information!=''">
+                    #{method.information},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.constraintcondition!=null and method.constraintcondition!=''">
+                    #{method.constraintcondition},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="method.numberone!=null and method.numberone!=''">
+                    #{method.numberone}
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+
+
             );
         </foreach>
     </insert>
@@ -161,7 +197,11 @@
         upduid,
         updtime,
         status,
-        summary
+        summary,
+        money,
+        information,
+        constraintCondition,
+        numberone
         FROM
         tb_company_method
         WHERE
@@ -191,7 +231,11 @@
         tmt.upduid,
         tmt.updtime,
         tmt.status,
-        tmt.summary
+        tmt.summary,
+        tmt.money,
+        tmt.information,
+        tmt.constraintCondition,
+        tmt.numberone
         FROM
         tb_company_method tmt
         JOIN modt ON tmt.parentid = modt.methodid
@@ -213,6 +257,251 @@
         </if>
         and methodid=#{methodid}
     </update>
+
+
+    <select id="getCompanyMethodByids" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        cid,
+        projectid,
+        methodid,
+        parentid,
+        cname,
+        plantime,
+        days,
+        score,
+        remark,
+        idx,
+        adduid,
+        addtime,
+        upduid,
+        updtime,
+        status,
+        summary,
+        money,
+        information,
+        constraintcondition,
+        numberone
+        FROM
+        tb_company_method
+        WHERE
+        parentid = '0000000'
+
+        <if test="cid!=null and cid!=''">
+            and cid = #{cid}
+        </if>
+        <if test="projectid!=null and projectid!=''">
+            and projectid = #{projectid}
+        </if>
+        AND status = '1'
+
+    </select>
+
+
+    <delete id="delCompanyMethod" parameterType="java.lang.String" >
+        delete from tb_company_method
+            where
+            numberone in (${numberone})
+            ;
+            delete from tb_company_method_data
+            where
+            numberone in (${numberone})
+            ;
+
+    </delete>
+
+
+
+    <insert id="addMethodData" parameterType="java.util.List">
+        insert into
+        tb_company_method_data(dataid,typeid,cname,typedesc,idx,ouid,addtime,updtime,status,summary,parentid,paststandards,information,grade,projectid,numberone,cid)
+        values
+        <foreach collection="list" index="index" item="item"  separator=",">
+        (
+            <choose>
+                <when test="item.dataid!=null">
+                    #{item.dataid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.typeid!=null">
+                    #{item.typeid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.cname!=null">
+                    #{item.cname},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.typedesc!=null">
+                    #{item.typedesc},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.idx!=null">
+                    #{item.idx},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.ouid!=null">
+                    #{item.ouid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.addtime!=null">
+                    #{item.addtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.updtime!=null">
+                    #{item.updtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.status!=null">
+                    #{item.status},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.summary!=null">
+                    #{item.summary},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.parentid!=null">
+                    #{item.parentid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.paststandards!=null">
+                    #{item.paststandards},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.information!=null">
+                    #{item.information},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.grade!=null">
+                    #{item.grade},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.projectid!=null">
+                    #{item.projectid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.numberone!=null">
+                    #{item.numberone},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="item.cid!=null">
+                    #{item.cid}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+
+    <select id="getCompanyMethoddataAll" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            typeid,
+            cname,
+            context,
+            addtime,
+            typedesc,
+            idx,
+            parentid,
+            paststandards,
+            information,
+            grade,
+            dataid,
+            numberone
+        FROM
+            tb_company_method_data
+        WHERE
+            status = '1'
+            AND typeid in (${ typeids })
+            and cid=#{cid}
+            and projectid=#{projectid}
+    </select>
+
+
+    <delete id="delcidsandprojectid" parameterType="java.util.Map">
+    delete from tb_company_method_data
+    where
+        <if test="cid!=null and cid!=''">
+            cid=#{cid}
+        </if>
+        <if test="projectid!=null and projectid!=''">
+          and  projectid=#{projectid}
+        </if>
+     ;
+        delete from tb_company_method
+        where
+        <if test="cid!=null and cid!=''">
+            cid=#{cid}
+        </if>
+        <if test="projectid!=null and projectid!=''">
+            and  projectid=#{projectid}
+        </if>
+    </delete>
+
 
 
 </mapper>

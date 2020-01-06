@@ -15,12 +15,35 @@ public class TbMethodTypeService {
     @Autowired
     private TbMethodTypeMapper tbMethodTypeMapper;
 
+    @Autowired
+    private TbMethodDataService tbMethodDataService;
+
     /*
      * 1.查询方法论（父子级）
      * */
     public List<Map<String, Object>> getMethodType(Map<String, Object> param) {
-        return tbMethodTypeMapper.queryMethodType(param);
+        List<Map<String,Object>> list = tbMethodTypeMapper.queryMethodType(param);
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).put("methodInfo",0);
+            param.put("typeid",list.get(i).get("typeid"));
+            List<Map<String,Object>> reMap =  tbMethodDataService.getMethodDataByTypeid(param);
+            if (reMap.size() > 0){
+                list.get(i).put("methodInfo",1);
+            }
+            System.out.println(list.get(i).get("methodInfo"));
+        }
+
+        return list;
     }
+
+    /*
+     * 1.查询方法论（父子级）
+     * */
+    public List<Map<String, Object>> getMethodTypeDel(Map<String, Object> param) {
+        return tbMethodTypeMapper.getMethodTypeDel(param);
+    }
+
+
 
     /*
      * 1.查询方法论（父子级）(分页)
@@ -62,7 +85,7 @@ public class TbMethodTypeService {
         param.put("addtime", time);
         param.put("updtime", time);
         param.put("typeid", JzbRandom.getRandomCharCap(7));
-        param.put("idx", getMethodTypeIdx());
+        //param.put("idx", getMethodTypeIdx());
         return tbMethodTypeMapper.saveMethodType(param);
     }
 
@@ -109,4 +132,7 @@ public class TbMethodTypeService {
         return tbMethodTypeMapper.queryMethodLevel(param);
     }
 
+    public int delMethodType(Map<String, Object> param) {
+        return tbMethodTypeMapper.delMethodType(param);
+    }
 }

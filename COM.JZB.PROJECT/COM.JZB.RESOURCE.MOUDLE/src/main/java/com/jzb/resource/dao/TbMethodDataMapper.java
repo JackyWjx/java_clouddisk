@@ -29,4 +29,18 @@ public interface TbMethodDataMapper {
      * 4.获取排序
      * */
     int getMethodDataIdx();
+
+
+
+    List<Map<String, Object>> getMethodDataItme(Map<String, Object> param);
+
+    int delMethodData(Map<String, Object> param);
+
+    int getMethodDatazi(Map<String, Object> param);
+
+    List<Map<String, Object>> getMethodDataTypeIdsAll(Map<String, Object> param);
+
+    int delMethodDataids(Map<String, Object> param);
+
+    List<Map<String, Object>> getMethodDataByTypeid(Map<String, Object> param);
 }

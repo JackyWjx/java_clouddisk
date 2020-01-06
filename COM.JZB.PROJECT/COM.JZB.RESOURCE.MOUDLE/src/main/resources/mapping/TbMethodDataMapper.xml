@@ -31,14 +31,18 @@
         <if test="typedesc!=null">typedesc=#{typedesc},</if>
         <if test="idx!=null">idx=#{idx},</if>
         <if test="ouid!=null">ouid=#{ouid},</if>
-        <if test="updtime!=null">updtime=#{updtime}</if>
+        <if test="updtime!=null">updtime=#{updtime},</if>
+        <if test="summary!=null">summary=#{summary},</if>
+        <if test="paststandards!=null">paststandards=#{paststandards},</if>
+        <if test="information!=null">information=#{information},</if>
+        <if test="grade!=null">grade=#{grade}</if>
         where dataid=#{dataid}
     </update>
 
     <!--3.添加方法论资料-->
     <insert id="saveMethodData" parameterType="java.util.Map">
         insert into
-        tb_method_data(dataid,datacode,typeid,cname,context,typedesc,idx,ouid,addtime,updtime,status,summary) values(
+        tb_method_data(dataid,datacode,typeid,cname,context,typedesc,idx,ouid,addtime,updtime,status,summary,parentid,paststandards,information,grade) values(
         #{dataid},
         <choose>
             <when test="datacode!=null">
@@ -115,12 +119,46 @@
         </choose>
         <choose>
             <when test="summary!=null">
-                #{summary}
+                #{summary},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="parentid!=null">
+                #{parentid},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="paststandards!=null">
+                #{paststandards},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="information!=null">
+                #{information},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="grade!=null">
+                #{grade}
             </when>
             <otherwise>
                 null
             </otherwise>
         </choose>
+
+
         );
     </insert>
 
@@ -128,5 +166,118 @@
     <select id="getMethodDataIdx" resultType="java.lang.Integer">
         select count(1)+1 from tb_method_data
     </select>
+
+
+    <!--1.查询方法论资料（父子级）-->
+    <select id="getMethodDataItme" resultType="java.util.Map" parameterType="java.util.Map">
+        WITH RECURSIVE modt AS (
+        SELECT
+        dataid,
+        addtime,
+        parentid,
+        cname,
+        context,
+        typeid,
+        typedesc,
+        idx,
+        datacode,
+        paststandards,
+        information,
+        grade,
+        summary
+        FROM
+        tb_method_data
+        WHERE
+        parentid = '0000000'
+        and typeid=#{typeid}
+        <if test="keyword!=null and keyword!=''">
+            and cname ~ #{keyword}
+        </if>
+        AND status = '1'
+        UNION ALL
+        SELECT
+        tmt.dataid,
+        tmt.addtime,
+        tmt.parentid,
+        tmt.cname,
+        tmt.context,
+        tmt.typeid,
+        tmt.typedesc,
+        tmt.idx,
+        tmt.datacode,
+        tmt.paststandards,
+        tmt.information,
+        tmt.grade,
+        tmt.summary
+        FROM
+        tb_method_data tmt
+        JOIN modt ON tmt.parentid = modt.dataid
+        AND tmt.status = '1'
+        )
+        SELECT
+        modt.*
+        FROM
+        modt
+        ORDER BY
+        modt.idx ASC
+    </select>
+
+
+    <!--2.删除方法论资料-->
+    <update id="delMethodData" parameterType="java.util.Map">
+        update tb_method_data set
+        <if test="idx!=null">idx=#{idx},</if>
+        <if test="ouid!=null">ouid=#{ouid},</if>
+        <if test="updtime!=null">updtime=#{updtime}</if>
+        status='0'
+        where typeid=#{typeid} and (dataid=#{dataid} or parentid =#{dataid})
+    </update>
+
+
+
+    <!--2.批量 删除方法论资料-->
+    <update id="delMethodDataids" parameterType="java.util.Map">
+        update tb_method_data set
+        <if test="idx!=null">idx=#{idx},</if>
+        <if test="ouid!=null">ouid=#{ouid},</if>
+        <if test="updtime!=null">updtime=#{updtime}</if>
+        status='0'
+        where dataid in (${dataids})
+    </update>
+
+
+    <!--3.查询是否有子级-->
+    <select id="getMethodDatazi" resultType="java.lang.Integer">
+        select count(1) from tb_method_data
+        where parentid=#{dataid} and status='1'
+    </select>
+
+
+    <!--3.查询所有方法论分类子级-->
+    <select id="getMethodDataTypeIdsAll" resultType="java.util.Map" parameterType="java.util.Map">
+      SELECT
+            dataid,
+            datacode,
+            typeid,
+            cname,
+            context,
+            addtime,
+            typedesc,
+            idx,
+            parentid,
+            paststandards,
+            information,
+            grade
+        FROM
+            tb_method_data
+        WHERE
+            status = '1'
+            AND typeid in (${ typeids })
+    </select>
+
+    <select id="getMethodDataByTypeid" parameterType="java.util.Map" resultType="java.util.Map">
+        select dataid from  tb_method_data where typeid =#{typeid} and status = '1'
+    </select>
+
 
 </mapper>

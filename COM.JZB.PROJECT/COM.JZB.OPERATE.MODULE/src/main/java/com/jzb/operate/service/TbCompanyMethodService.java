@@ -1,5 +1,6 @@
 package com.jzb.operate.service;
 
+import com.jzb.operate.api.resource.MethodDataApi;
 import com.jzb.operate.dao.TbCompanyMethodMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ import java.util.Map;
 public class TbCompanyMethodService {
     @Autowired
     private TbCompanyMethodMapper tbCompanyMethodMapper;
+
+    @Autowired
+    private MethodDataApi methodDataApi;
 
 
     /**
@@ -29,7 +33,8 @@ public class TbCompanyMethodService {
      * @return
      */
     public List<Map<String, Object>> queryCompanyMethod(Map<String, Object> param){
-        return tbCompanyMethodMapper.queryCompanyMethod(param);
+        List<Map<String, Object>> list = tbCompanyMethodMapper.queryCompanyMethod(param);
+        return list;
     }
 
     /**
@@ -38,6 +43,29 @@ public class TbCompanyMethodService {
      * @return
      */
     public int updateCompanyMethodStatus(Map<String, Object> param){
+        param.put("status",'0');
         return tbCompanyMethodMapper.updateCompanyMethodStatus(param);
+    }
+
+    public List<Map<String, Object>> getCompanyMethodByids(Map<String, Object> param) {
+
+        return tbCompanyMethodMapper.getCompanyMethodByids(param);
+    }
+
+    public int addMethodData(List<Map<String, Object>> datalist) {
+
+        return tbCompanyMethodMapper.addMethodData(datalist);
+    }
+
+    public List<Map<String, Object>> getCompanyMethoddataAll(Map<String, Object> param) {
+        return tbCompanyMethodMapper.getCompanyMethoddataAll(param);
+    }
+
+    public int delCompanyMethod(String param) {
+        return tbCompanyMethodMapper.delCompanyMethod(param);
+    }
+
+    public void delcidsandprojectid(Map<String, Object> map) {
+         tbCompanyMethodMapper.delcidsandprojectid(map);
     }
 }

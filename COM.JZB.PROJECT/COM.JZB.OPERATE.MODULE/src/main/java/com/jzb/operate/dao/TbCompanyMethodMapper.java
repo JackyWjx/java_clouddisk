@@ -30,4 +30,17 @@ public interface TbCompanyMethodMapper {
      * @return
      */
     int updateCompanyMethodStatus(Map<String, Object> list);
+
+
+    List<Map<String, Object>> getCompanyMethodByids(Map<String, Object> param);
+
+    int addMethodData(List<Map<String, Object>> datalist);
+
+    List<Map<String, Object>> getCompanyMethoddataAll(Map<String, Object> param);
+
+    int delCompanyMethod(String param);
+
+    void delCompanyMethod(Map<String, Object> map);
+
+    void delcidsandprojectid(Map<String, Object> map);
 }
