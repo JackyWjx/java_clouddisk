@@ -553,6 +553,19 @@ public class TbTravelPlanController {
                 query.put("region", detailsList.get(i).get("trregion"));
                 Response resApi = regionBaseApi.getRegionInfo(query);
                 detailsList.get(i).put("trregion", resApi.getResponseEntity());
+
+                //获取单位名称
+                if (JzbTools.isEmpty(detailsList.get(i).get("cid"))) {
+                    detailsList.get(i).put("clist", null);
+                } else {
+                    query.put("cid", detailsList.get(i).get("cid"));
+                    query.put("userinfo", userInfo);
+                    resApi = newTbCompanyListApi.queryCompanyNameBycid(query);
+                    List<Map<String, Object>> calist = resApi.getPageInfo().getList();
+                    if(!calist.isEmpty()){
+                        detailsList.get(i).put("cname", calist.get(0).get("cname"));
+                    }
+                }
                 //情报收集
                 travelInfoList = travelInfoService.list(query);
                 for (int l = 0, d = travelInfoList.size();l < d;l++){
