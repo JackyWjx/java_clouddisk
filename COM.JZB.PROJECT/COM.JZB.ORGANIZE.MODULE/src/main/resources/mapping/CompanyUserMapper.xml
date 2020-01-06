@@ -484,6 +484,7 @@
         <choose><when test=" contrast != null and contrast !=''">,contrast = #{contrast}</when></choose>
         <choose><when test=" reluid != null and reluid !=''">,reluid = #{reluid}</when></choose>
         <choose><when test=" reluname != null and reluname !=''">,reluname = #{reluname}</when></choose>
+        <choose><when test=" relcname != null and relcname !=''">,relcname = #{relcname}</when></choose>
         <choose><when test=" relphone != null and relphone !=''">,relphone = #{relphone}</when></choose>
         where  projectid = #{projectid}
     </update>

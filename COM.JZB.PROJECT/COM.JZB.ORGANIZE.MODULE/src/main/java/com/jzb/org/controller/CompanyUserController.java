@@ -48,6 +48,9 @@ import java.util.regex.Pattern;
 @RequestMapping("org/company")
 public class CompanyUserController {
     @Autowired
+    CompanyUserController companyUserController;
+
+    @Autowired
     private CompanyUserService companyUserService;
 
     @Autowired
@@ -258,7 +261,9 @@ public class CompanyUserController {
         try {
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            param.put("projectid", JzbRandom.getRandomCharCap(19));
+            if (JzbTools.isEmpty(param.get("projectid"))){
+                param.put("projectid", JzbRandom.getRandomCharCap(19));
+            }
             // 返回所有的企业列表
             int count = companyUserService.addCompanyProject(param);
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
@@ -687,8 +692,11 @@ public class CompanyUserController {
                 String address = JzbDataType.getString(map.get(5));
                 param.put("address", address);
                 // 调用接口
-                int count = companyUserService.addCompanyProject(param);
-                if (count == 0) {
+                param.put("projectid", JzbRandom.getRandomCharCap(19));
+                Response response = companyUserController.addCompanyProject(param);
+                int resultCode = response.getServerResult().getResultCode();
+                companyUserController.addCompanyProjectInfo(param);
+                if (resultCode == 200) {
                     exportMap.put("status", "2");
                     exportMap.put("summary", "创建项目失败!");
                     userInfoList.add(exportMap);

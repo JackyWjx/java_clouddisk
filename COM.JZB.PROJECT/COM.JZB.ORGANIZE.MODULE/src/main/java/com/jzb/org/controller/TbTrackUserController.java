@@ -30,6 +30,8 @@ public class TbTrackUserController {
     @Autowired
     TbTrackUserService userService;
 
+
+
     /**
      * 日志记录对象
      */
@@ -144,7 +146,6 @@ public class TbTrackUserController {
             if (count == 0){
                 count = userService.getTrackCountOnSales(param);
             }
-
             // 查询跟进人员记录信息
             List<Map<String,Object>> list = null;
 
