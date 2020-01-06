@@ -1,6 +1,5 @@
 package com.jzb.org.service;
 
-import com.alibaba.fastjson.serializer.MapSerializer;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.dao.CockpitMapper;
@@ -133,6 +132,8 @@ public class CockpitService {
     }
 
     public List<Map<String, Object>> getAllTrackInfo(Map<String, Object> param) {
+        List<Object> objects = null;
+
         List<Map<String ,Object>> list = new ArrayList<>();
         if (!JzbTools.isEmpty(param.get("cdid"))){
             List<Map<String, Object>> cdidlist = cockpitMapper.getDeptChild(param);
@@ -142,34 +143,44 @@ public class CockpitService {
         if ("1".equals(JzbDataType.getString(param.get("type")))){
             int days = getDays(JzbDataType.getString(param.get("starttime")));
             List<Map<String, Object>> daysList = getStartAndEndTime(JzbDataType.getString(param.get("starttime")),days);
-            for (int i = 0; i < daysList.size(); i++) {
-                param.put("starttime",JzbDataType.getLong(daysList.get(i).get("starttime")));
-                param.put("endtime",JzbDataType.getLong(daysList.get(i).get("endtime")));
-                List<Map<String, Object>> allDeptUser = cockpitMapper.getAllTrackInfo(param);
+            param.put("list",daysList);
+            List<Map<String, Object>> allDeptUser = cockpitMapper.getAllTrackInfo(param);
+            for (int i = 0; i < allDeptUser.size(); i++) {
                 Map<String,Object> map = new HashMap<>();
-                map.put(JzbDataType.getString(param.get("starttime")),allDeptUser.get(0));
+                map.put(JzbDataType.getString(JzbDataType.getString(daysList.get(i).get("starttime"))),allDeptUser.get(i));
                 list.add(map);
                 map = new HashMap<>();
             }
-//            Map<String,Object> fMap = new HashMap<>();
-//            for (int i = 0; i < list.size(); i++) {
-//                fMap.put(JzbDataType.getString(list.get(i).get("starttime")),list.get(i));
-//                fList.add(fMap);
-//                fMap = new HashMap<>();
-//            }
+
+
+//
         }
 
         // 按 周查询
         if ("2".equals(JzbDataType.getString(param.get("type")))){
             int days = getDays(JzbDataType.getString(param.get("starttime")));
             List<Map<String, Object>> weekList = getWeekCount(JzbDataType.getString(param.get("starttime")), days);
+            param.put("list",weekList);
             Map<String, Object> wMap = new HashMap<>();
-            for (int i = 0; i < weekList.size(); i++) {
-                param.put("starttime",weekList.get(i).get("starttime"));
-                param.put("endtime",weekList.get(i).get("endtime"));
-                List<Map<String, Object>> wList = cockpitMapper.getAllTrackInfo(param);
-                wMap.put(JzbDataType.getString(i+1),wList.get(0));
+            List<Map<String, Object>> wList = cockpitMapper.getAllTrackInfo(param);
+            for (int i = 0; i < wList.size(); i++) {
+                wMap.put(JzbDataType.getString(i+1),wList.get(i));
                 list.add(wMap);
+                wMap = new HashMap<>();
+            }
+
+        }
+
+        // 按 年查询
+        if ("4".equals(JzbDataType.getString(param.get("type")))){
+            List<Map<String, Object>> mlist = getMonthCount(JzbDataType.getString(param.get("starttime")));
+            param.put("list",mlist);
+            List<Map<String,Object>> clist  = cockpitMapper.getAllTrackInfo(param);
+            for (int i = 0; i < clist.size(); i++) {
+                Map<String,Object> mMap = new HashMap<>();
+                mMap.put(JzbDataType.getString(i+1),clist.get(i));
+                list.add(mMap);
+                mMap = new HashMap<>();
             }
         }
         return list;
@@ -288,5 +299,71 @@ public class CockpitService {
             JzbTools.logError(e);
         }
         return list;
+    }
+
+    public static List<Map<String,Object>> getMonthCount(String  time){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date start = null;
+        List<Map<String,Object>> mlist = null;
+        try {
+            Calendar cal = Calendar.getInstance();
+            start = df.parse(time);
+            cal.setTime(start);
+            long starttime = cal.getTimeInMillis();
+
+            mlist = new ArrayList<>();
+            int  year = JzbDataType.getInteger(time.substring(0,4));
+            Boolean isLeapYear;
+            if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+                System.out.println("--------------------闰年-------------------");
+                isLeapYear = true;
+            } else {
+                System.out.println("--------------------非闰年-------------------");
+                isLeapYear = false;
+            }
+            Map<String,Object>  mMap = new HashMap<>();
+            for (int i = 1; i <= 12; i++) {
+                long periodtime = monthMethod(i, isLeapYear);
+                long endtime = starttime + periodtime ;
+                mMap.put("starttime",starttime );
+                mMap.put("endtime",endtime);
+                mlist.add(mMap);
+                starttime = endtime;
+                mMap = new HashMap<>();
+            }
+        } catch (ParseException e) {
+            JzbTools.logError(e);
+        }
+        return mlist;
+    }
+
+    public static long monthMethod(int num,boolean isLeapYear){
+        long time = 0;
+        
+        switch (num){
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                time = 31 * 86400;
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                time = 31 * 86400;
+                break;
+            case 2:
+                if (isLeapYear){
+                    time = 29 * 86400;
+                }else {
+                    time = 28 * 86400;
+                }
+                 break;   
+        }
+        return time * 1000;
     }
 }

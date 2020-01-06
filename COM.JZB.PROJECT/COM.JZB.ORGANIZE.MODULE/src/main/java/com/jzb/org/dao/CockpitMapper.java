@@ -39,4 +39,6 @@ public interface CockpitMapper {
     int addTbtrackCount(Map<String, Object> param);
 
     List<Map<String, Object>> getAllUserByCid(Map<String, Object> param);
+
+    List<Map> queryTest(Map<String, Object> param);
 }

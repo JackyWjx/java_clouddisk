@@ -136,7 +136,7 @@
 
     <!--个人驾驶舱查询-->
     <select id="getAllTrackInfo" parameterType="java.util.Map" resultType="java.util.Map">
-
+        <foreach collection="list" close="" open="" index="index" item="item" separator="union all">
        SELECT
          SUM ( CAST ( returnmoney AS INT ) ) signmoney,
             SUM ( CAST ( signmoney AS INT ) ) returnmoney,
@@ -146,10 +146,9 @@
                  </if>
                 <if test="starttime != null and starttime != ''">
                     and addtime &gt;= #{item.starttime}
-                </if>
-                <if test="endtime != null and endtime != ''">
                     and addtime &lt;= #{item.endtime}
                 </if>
+
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
@@ -172,10 +171,9 @@
                 </if>
                 <if test="starttime != null and starttime != ''">
                     and addtime &gt;= #{item.starttime}
-                </if>
-                <if test="endtime != null and endtime != ''">
                     and addtime &lt;= #{item.endtime}
                 </if>
+
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
@@ -198,10 +196,9 @@
                 </if>
                 <if test="starttime != null and starttime != ''">
                     and addtime &gt;= #{item.starttime}
-                </if>
-                <if test="endtime != null and endtime != ''">
                     and addtime &lt;= #{item.endtime}
                 </if>
+
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
@@ -224,10 +221,9 @@
                 </if>
                 <if test="starttime != null and starttime != ''">
                     and addtime &gt;= #{item.starttime}
-                </if>
-                <if test="endtime != null and endtime != ''">
                     and addtime &lt;= #{item.endtime}
                 </if>
+
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
@@ -250,10 +246,9 @@
                 </if>
                 <if test="starttime != null and starttime != ''">
                     and addtime &gt;= #{item.starttime}
-                </if>
-                <if test="endtime != null and endtime != ''">
                     and addtime &lt;= #{item.endtime}
                 </if>
+
                 <if test="cdid != null and cdid != ''">
                     and adduid in (
                     select uid from tb_dept_user where cdid in
@@ -276,10 +271,9 @@
                 </if>
                 <if test="starttime != null and starttime != ''">
                     and addtime &gt;= #{item.starttime}
-                </if>
-                <if test="endtime != null and endtime != ''">
                     and addtime &lt;= #{item.endtime}
                 </if>
+
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
@@ -302,10 +296,9 @@
                 </if>
                 <if test="starttime != null and starttime != ''">
                     and addtime &gt;= #{item.starttime}
-                </if>
-                <if test="endtime != null and endtime != ''">
                     and addtime &lt;= #{item.endtime}
                 </if>
+
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
@@ -324,7 +317,14 @@
                 )
             FROM
 	  tb_track_user_list
+            where status = '1'
+            <if test="starttime != null and starttime != ''">
+                and addtime &gt;= #{item.starttime}
+                and addtime &lt;= #{item.endtime}
+            </if>
+        </foreach>
     </select>
+
     <insert id="addTbtrackCount" parameterType="java.util.Map">
         insert  into tb_track_count (trackuname,trackuid,cdid,cid,addtime,goodcommentcount,signcount,signmoney,trainingcount,
         deepconnectcount,returnmoney,pubcount,takemenucount,connectcount,status
@@ -414,5 +414,17 @@
     <!---->
     <select id="getAllUserByCid" parameterType="java.util.Map" resultType="java.util.Map">
         select cid ,uid,cdid,cname from  tb_dept_user where cid = #{cid} and status = '1'
+    </select>
+
+    <select id="queryTest" parameterType="java.util.Map" resultType="java.util.Map">
+        <foreach collection="list" close="" open="" index="index" item="item" separator="union all">
+                select
+                SUM ( CAST ( returnmoney AS INT ) ) signmoney,
+                SUM ( CAST ( signmoney AS INT ) ) returnmoney
+                from tb_track_user_list
+                where status = '1'
+                and addtime &gt;= #{item.starttime}
+                and addtime &lt;= #{item.endtime}
+            </foreach>
     </select>
 </mapper>

@@ -197,6 +197,7 @@
         tt.returnmoney,
         tt.signmoney,
         tt.nexttracktime,
+        tt.trackuid,
         trackvalue,
         isservice,
         trackres,
@@ -266,9 +267,13 @@
             and customer in (
             select uid from tb_common_user_list where projectid = #{trackproid} and status = '1'
             )
+            and trackproid = #{trackproid}
         </if>
         <if test="customer != null and customer != '' ">
             and customer = #{customer}
+        </if>
+        <if test="trackuid != null and trackuid != '' ">
+            and trackuid = #{trackuid}
         </if>
         order by tt.tracktime desc
         <if test="pagesize != null and pagesize != ''">

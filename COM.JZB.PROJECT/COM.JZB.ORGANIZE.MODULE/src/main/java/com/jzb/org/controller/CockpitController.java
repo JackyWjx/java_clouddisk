@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sun.net.www.http.HttpClient;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -232,11 +233,11 @@ public class CockpitController {
             List<Map<String, Object>> List = null;
             param.put("adduid",userInfo.get("uid"));
 
-            List = cockpitService.getAllTrackInfo(param);
+            List<Map<String,Object>> list = cockpitService.getAllTrackInfo(param);
 
             result = Response.getResponseSuccess(userInfo);
             PageInfo pageInfo = new PageInfo();
-            pageInfo.setList(List);
+            pageInfo.setList(list);
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
             flag = false;
