@@ -100,36 +100,36 @@ public class TbCompanyService {
      * @DateTime: 2019/10/19
      */
     public List<Map<String, Object>> getCompanyServiceList(Map<String, Object> param) {
-        List<Map<String, Object>> myProjectList = null;
+        List<Map<String, Object>> myProjectList = new ArrayList<>();
         if (!JzbTools.isEmpty(param.get("projectname"))){
             Response projectidByname = tbCompanyProjectApi.getProjectidByname(param);
             List<Map<String,Object>> nList = projectidByname.getPageInfo().getList();
             if (!JzbTools.isEmpty(nList)){
             for (int i = 0; i < nList.size(); i++) {
-                param.put("projectid",nList.get(i).get("projectid"));
+                param.put("projectid", nList.get(i).get("projectid"));
                 // 查询我服务的项目信息
-                myProjectList = tbCompanyServiceMapper.queryMyProjectList(param);
-                for (int j = 0; j < myProjectList.size(); j++) {
-                    Map<String,Object> pmap = myProjectList.get(j);
-                    param.put("projectid",pmap.get("projectid"));
-                    // 跟进项目id获取项目信息
-                    Response res = tbCompanyProjectApi.getServiceProjectInfoByProjectid(param);
-                    Map<String,Object> omap = (Map<String, Object>) res.getPageInfo().getList().get(0);
-                    if (!JzbTools.isEmpty(omap)){
-                        pmap.putAll(omap);
-                    }
-                    Response region = regionBaseApi.getRegionInfo(omap);
-                    pmap.put("region",region.getResponseEntity());
-                    int count = tbCompanyServiceMapper.queryServiceCount(pmap);
-                    pmap.put("service",count);
-
-                    pmap.put("uid",pmap.get("oneheader"));
-                    Response serviceRegion = userRedisServiceApi.getCacheUserInfo(pmap);
-                    Map<String,Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
-                    if (!JzbTools.isEmpty(serviceMap)){
-                        pmap.put("saler", serviceMap.get("cname"));
-                    }
+                List<Map<String, Object>> myList = tbCompanyServiceMapper.queryMyProjectList(param);
+                if (myList.size() > 0) {
+                Map<String, Object> pmap = myList.get(0);
+                // 跟进项目id获取项目信息
+                Response res = tbCompanyProjectApi.getServiceProjectInfoByProjectid(param);
+                Map<String, Object> omap = (Map<String, Object>) res.getPageInfo().getList().get(0);
+                if (!JzbTools.isEmpty(omap)) {
+                    pmap.putAll(omap);
                 }
+                Response region = regionBaseApi.getRegionInfo(omap);
+                pmap.put("region", region.getResponseEntity());
+                int count = tbCompanyServiceMapper.queryServiceCount(pmap);
+                pmap.put("service", count);
+
+                pmap.put("uid", pmap.get("oneheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(pmap);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    pmap.put("saler", serviceMap.get("cname"));
+                }
+                myProjectList.add(pmap);
+            }
             }
             }
         }else {
@@ -306,8 +306,10 @@ public class TbCompanyService {
         }else {
             // 查询已分配售后人员的项目信息
             List<Map<String,Object>> pList = tbCompanyServiceMapper.queryServiceListGroupProject(param);
-            Map<String, Object> projectMap = new HashMap<>();
+
+
             for (int i = 0; i < pList.size(); i++) {
+                Map<String, Object> projectMap = new HashMap<>();
                 param.put("projectid", pList.get(i).get("projectid"));
                 // 跟进项目id获取项目信息
                 Response res = tbCompanyProjectApi.getServiceProjectInfoByProjectid(param);

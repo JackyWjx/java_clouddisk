@@ -667,6 +667,7 @@
     <select id="queryMyProjectList" parameterType="java.util.Map" resultType="java.util.Map">
         select projectid, addtime from tb_company_service where
         status = '1'
+        and typeid = '2'
         <if test="uid!= null and uid != ''">
             and  uid = #{uid}
         </if>
