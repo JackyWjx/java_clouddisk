@@ -305,12 +305,14 @@ public class TbCompanyService {
             }
         }else {
             // 查询已分配售后人员的项目信息
-            projectList = tbCompanyServiceMapper.queryServiceListGroupProject(param);
-            for (int i = 0; i < projectList.size(); i++) {
-                Map<String, Object> projectMap = projectList.get(i);
-                param.put("projectid", projectMap.get("projectid"));
+            List<Map<String,Object>> pList = tbCompanyServiceMapper.queryServiceListGroupProject(param);
+            Map<String, Object> projectMap = new HashMap<>();
+            for (int i = 0; i < pList.size(); i++) {
+                param.put("projectid", pList.get(i).get("projectid"));
                 // 跟进项目id获取项目信息
                 Response res = tbCompanyProjectApi.getServiceProjectInfoByProjectid(param);
+                if (res.getPageInfo().getList().size() > 0) {
+                    projectMap.put("addtime",pList.get(i).get("addtime"));
                 Map<String, Object> omap = (Map<String, Object>) res.getPageInfo().getList().get(0);
                 if (!JzbTools.isEmpty(omap)) {
                     projectMap.putAll(omap);
@@ -318,7 +320,7 @@ public class TbCompanyService {
                 Response region = regionBaseApi.getRegionInfo(omap);
                 projectMap.put("region", region.getResponseEntity());
                 // 获取服务记录数
-                int count = tbCompanyServiceMapper.queryServiceCount(projectMap);
+                int count = tbCompanyServiceMapper.queryServiceCount(omap);
                 projectMap.put("service", count);
 
                 projectMap.put("uid", projectMap.get("oneheader"));
@@ -327,6 +329,8 @@ public class TbCompanyService {
                 if (!JzbTools.isEmpty(serviceMap)) {
                     projectMap.put("saler", serviceMap.get("cname"));
                 }
+                projectList.add(projectMap);
+            }
             }
         }
         return projectList;

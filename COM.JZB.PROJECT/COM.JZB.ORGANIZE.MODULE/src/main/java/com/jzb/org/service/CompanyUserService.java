@@ -194,6 +194,11 @@ public class CompanyUserService {
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
 
+                // 查询本身
+                Map<String, Object> regionProvince = new HashMap<>();
+                regionProvince.put("region", param.get("province"));
+                regionList.add(regionProvince);
+
                 // 获取所有的地区信息
                 Response response = tbCityRedisApi.getCityJson(param);
 
@@ -230,6 +235,7 @@ public class CompanyUserService {
                     }
                 }
             }
+
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }

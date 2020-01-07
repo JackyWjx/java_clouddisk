@@ -661,7 +661,6 @@
             status = '1'
             AND typeid = '2'
 
-
     </select>
 
     <!--获取我服务的项目-->
