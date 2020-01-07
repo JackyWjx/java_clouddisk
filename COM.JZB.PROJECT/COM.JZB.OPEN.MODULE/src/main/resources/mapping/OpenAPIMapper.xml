@@ -573,7 +573,8 @@
         appips = #{appips},
         manurl = #{manurl},
         ouid = #{uid},
-        updtime = #{updtime}
+        updtime = #{updtime},
+        summary = '0'
         WHERE
         appid = #{appid}
     </update>
