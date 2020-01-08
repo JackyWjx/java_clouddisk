@@ -260,6 +260,7 @@
     <!--点击业主下的项目获取项目列表-->
     <select id="queryCompanyProjectList" parameterType="java.util.Map" resultType="java.util.Map">
         SELECT
+        telphone,
         prouname,
         prouphone,
         cid,
@@ -318,12 +319,20 @@
     <!--CRM-销售业主-公海-业主下的项目7-点击业主下的项目中新建项目-->
     <insert id="insertCompanyProject" parameterType="java.util.Map">
         INSERT INTO tb_company_project
-        (cid, projectid, projectname, region, address, tendertime, tenderuid,
+        (telphone,cid, projectid, projectname, region, address, tendertime, tenderuid,
         tendername, tenderphone,prouname,prouphone,
         tendercompany , projecttype , mail ,tenderresultcompany ,  tenderagent ,
         agent ,agentphone , wintime, idx, adduid, addtime, status, summary)
         VALUES
         (
+        <choose>
+            <when test=" telphone != null and telphone !=''">
+                #{telphone},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
         #{cid},
         #{projectid},
         #{projectname},

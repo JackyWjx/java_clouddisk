@@ -225,7 +225,7 @@
         <if test="uname != null and uname != ''">
             and  uname  like CONCAT('%',#{uname},'%')
         </if>
-        order by addtime desc
+        order by id desc
         <if test="pagesize != null and pagesize != '' and pagesize != 0 ">
             limit #{pagesize}
             offset #{pageno}

@@ -990,12 +990,20 @@ public class ProductController {
             // 获取上传文件名称
             String fileName = file.getOriginalFilename();
 
-            // 设置保存文件名路径和文件名
-            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
+            //获取后缀名
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            String filepath = config.getImportPath() + "/" + batchId + suffix;
             param.put("batchid", batchId);
             param.put("address", filepath);
             param.put("status", "2");
-            param.put("cname", fileName);
+//            param.put("cname", fileName);
+
+            // 设置保存文件名路径和文件名
+//            String filepath = "D:\\v3\\static\\Import\\" + time + fileName;
+//            param.put("batchid", batchId);
+//            param.put("address", filepath);
+//            param.put("status", "2");
+//            param.put("cname", fileName);
             try {
                 // 保存文件到本地
                 File intoFile = new File(filepath);
@@ -1056,6 +1064,7 @@ public class ProductController {
             Map<String, Object> exportMap = null;
             // 保存到用户导入信息表
             List<Map<String, Object>> userInfoList = new ArrayList<>();
+
             // 遍历结果行,菜单数据从第2行开始
             for (int i = 1; i < list.size(); i++) {
                 exportMap = new HashMap<>(param);
@@ -1074,7 +1083,9 @@ public class ProductController {
                     continue;
                 }
                 param.put("managername",name);
-                param.put("relperson",name);
+
+               param.put("relperson",name);
+
                 // 获取模板中的用户手机号
                 String phone = JzbDataType.getString(map.get(1));
                 if (JzbDataType.isEmpty(phone)) {
@@ -1092,10 +1103,12 @@ public class ProductController {
                         continue;
                     }
                 }
-                param.put("relphone",phone);
+               param.put("relphone",phone);
+
                 // 获取模板中的单位名称
                 String cname = JzbDataType.getString(map.get(2));
-                param.put("companyname", cname);
+               param.put("commpanyname", cname);
+
 
                 if (JzbDataType.isEmpty(cname)) {
                     summary += "单位名称不能为空!";
@@ -1106,7 +1119,8 @@ public class ProductController {
                 }
                 // 获取模板中的单位地区
                 String regionName = JzbDataType.getString(map.get(3));
-                param.put("regionName", regionName);
+               param.put("regionName", regionName);
+
                 // 调用获取地区ID的接口
                 Response regionID = regionBaseApi.getRegionID(param);
                 Object obj = regionID.getResponseEntity();
@@ -1128,6 +1142,7 @@ public class ProductController {
                 param.put("region", region);
                 param.put("address", address);
                 param.put("summary", summary1);
+
                 // 调用接口
 //                result = productService.addRegistrationCompany(param);
                 result =  deptUserControllerApi.addCompanyCommon(param,JzbDataType.getString(param.get("token")));

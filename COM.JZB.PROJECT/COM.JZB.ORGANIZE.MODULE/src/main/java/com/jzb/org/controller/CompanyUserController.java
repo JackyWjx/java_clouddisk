@@ -599,9 +599,10 @@ public class CompanyUserController {
 
             // 保存到用户导入信息表
             List<Map<String, Object>> userInfoList = new ArrayList<>();
-            Map<String, Object> exportMap = new HashMap<>(param);
+            Map<String, Object> exportMap = null;
             // 遍历结果行,菜单数据从第2行开始
             for (int i = 1; i < list.size(); i++) {
+                exportMap = new HashMap<>(param);
                 // 设置行信息
                 exportMap.put("idx", i);
                 Map<Integer, String> map = list.get(i);
@@ -632,27 +633,23 @@ public class CompanyUserController {
                 }
                 // 获取模板中的招标人联系方式
                 String phone = JzbDataType.getString(map.get(2));
-                param.put("tenderphone", phone);
+
                 if (JzbDataType.isEmpty(phone)) {
                     summary += "招标人手机号不能为空!";
                     exportMap.put("status", "2");
                     exportMap.put("summary", summary);
                     userInfoList.add(exportMap);
                     continue;
-                } else {
-                    if (!toPhone(phone)) {
-                        exportMap.put("status", "2");
-                        summary += "手机号不合规范";
-                        exportMap.put("summary", summary);
-                        userInfoList.add(exportMap);
-                        continue;
+                } else if (toPhone(phone)) {
+                        param.put("tenderphone", phone);
+                    }else {
+                        param.put("telphone",phone);
                     }
-                }
                 // 获取模板中的招标日期
                 String time = JzbDataType.getString(map.get(3));
                 long tenderTime = 0;
                 try {
-                    tenderTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time).getTime();
+                    tenderTime = new SimpleDateFormat("yyyy-MM-dd ").parse(time).getTime();
                 } catch (Exception e) {
                     JzbTools.logError(e);
                     summary += "招标日期格式不正确!";

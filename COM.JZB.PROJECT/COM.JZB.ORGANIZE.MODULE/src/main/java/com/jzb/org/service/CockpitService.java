@@ -269,18 +269,37 @@ public class CockpitService {
     }
 
     public static List<Map<String,Object>> getWeekCount(String time,int days){
+        String str = time;
+        String[] s = str.split(" ");
+        String strA = s[0];
+        int  year = JzbDataType.getInteger(strA.substring(0,4));
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<Map<String ,Object>> list = new ArrayList<>();
         Map<String,Object> map = new HashMap<>();
         Date start = null;
+        boolean isLeapYear = true;
         try {
+            if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+                System.out.println("--------------------闰年-------------------");
+                isLeapYear = true;
+            } else {
+                System.out.println("--------------------非闰年-------------------");
+                isLeapYear = false;
+            }
             Calendar cal = Calendar.getInstance();
             start = df.parse(time);
             cal.setTime(start);
             long starttime = cal.getTimeInMillis();
             long endtime = 0;
-            int weeks = days / 7;
-            int weeksend = days %7;
+            int weeks = 0;
+            int weeksend = 0;
+            if (isLeapYear){
+                weeks = 366 / 7;
+                weeksend = 366 %7;
+            }else {
+                weeks = 365 / 7;
+                weeksend = 365 %7;
+            }
             for (int i = 0; i <= weeks ; i++) {
                 if (i == weeks){
                     endtime = starttime + weeksend * 86400000;
@@ -295,6 +314,11 @@ public class CockpitService {
                 list.add(map);
                 map = new HashMap<>();
             }
+            for (int i = 1; i <= list.size(); i++) {
+
+            }
+
+
         } catch (ParseException e) {
             JzbTools.logError(e);
         }

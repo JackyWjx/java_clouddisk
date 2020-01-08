@@ -177,6 +177,14 @@
         <if test=" cids != null  ">
             or av.cid in (SELECT regexp_split_to_table(#{cids}, ','))
         </if>
+        <choose>
+            <when test="apptype != null and devtype != null">
+              and av.apptype = cast(#{apptype} as integer) and av.devtype = cast(#{devtype} as char)
+            </when>
+            <otherwise>
+                and av.devtype &lt;&gt; '1'
+            </otherwise>
+        </choose>
         order by av.cid, av.showvsn LIMIT #{pagesize} OFFSET #{start}
 
     </select>
@@ -199,6 +207,14 @@
         <if test=" cids != null  ">
             or av.cid in (SELECT regexp_split_to_table(#{cids}, ','))
         </if>
+        <choose>
+            <when test="apptype != null and devtype != null">
+                and av.apptype = cast(#{apptype} as integer) and av.devtype = cast(#{devtype} as char)
+            </when>
+            <otherwise>
+                and av.devtype &lt;&gt; '1'
+            </otherwise>
+        </choose>
         ) as aaa
     </select>
     <!--查询应用审批表数据-->
