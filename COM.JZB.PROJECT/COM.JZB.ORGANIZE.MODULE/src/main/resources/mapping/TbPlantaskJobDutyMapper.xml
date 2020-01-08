@@ -145,11 +145,11 @@ FROM "tb_plantask_job_duty" a,"tb_plantask_job_content" b where a.dutyid = b.uni
         </foreach>
     </select>
     <select id="selectExistCrContent" resultType="Map">
-        select content as crcontent,crid
-        from tb_plantask_job_position
-        where content in
-        <foreach collection="crContent" item="item" index="index" open="(" close=")" separator=",">
-            #{item.crcontent}
+        <foreach collection="crContent" item="item" index="index" open="" close="" separator=";">
+            select content as crcontent,crid
+            from tb_plantask_job_position
+            where content =  #{item.crcontent}
+            and cddid = #{item.cddid}
         </foreach>
     </select>
 
