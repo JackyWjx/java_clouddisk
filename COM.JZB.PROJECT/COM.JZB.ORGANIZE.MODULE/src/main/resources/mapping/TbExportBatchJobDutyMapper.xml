@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzb.org.dao.TbExportBatchJobDutyMapper">
+    <!--保存用户导入批次表-->
+    <insert id="insertExportBatch">
+        INSERT INTO tb_export_batch_jobDuty ( batchid, cid, uid, addtime, cname, address, status, summary )
+        VALUES
+        (#{batchid},#{cid},#{uid},#{addtime},#{cname},#{address},#{status},#{summary})
+    </insert>
+<!--    查询部门id根据名称-->
+    <select id="selectDeptIdByDeptName" resultType="java.lang.String">
+        select cdid from tb_company_dept
+where cid='JZB0001' and cname not in('资源池') and cname = #{name}
+    </select>
+<!--    插入到info表-->
+    <insert id="insertExportDutyInfoList">
+        insert into tb_export_job_duty_info (batchid,cddid,role,duty,output,status,summary,idx)
+        values
+        <foreach separator="," close="" open="" index="index" item="item" collection="list">
+            (#{item.batchid},#{item.deptName},#{item.roleName},#{item.dutyName},#{item.outputName},#{item.status},#{item.summary},#{item.idx})
+        </foreach>
+    </insert>
+    <update id="updateExportBatch">
+        UPDATE tb_export_batch_jobDuty
+        SET endtime =#{endtime},
+        status = #{status}
+        WHERE
+        batchid = #{batchid}
+        <if test="cid !=null and cid!=''">AND cid=#{cid}</if>
+    </update>
+
+    <!--获取导入批次信息-->
+    <select id="queryExportBatch" resultType="java.util.Map">
+        SELECT
+        batchid,
+        cname,
+        addtime,
+        status,
+        summary
+        FROM
+        tb_export_batch_jobduty
+        WHERE
+        batchid = #{batchid}
+    </select>
+<!--    获取导入信息-->
+    <!--根据企业id和批次id获取导入信息-->
+    <select id="queryExportList" resultType="java.util.Map">
+    SELECT *
+    FROM
+    tb_export_job_duty_info
+    WHERE
+    batchid = #{batchid}
+    </select>
+</mapper>

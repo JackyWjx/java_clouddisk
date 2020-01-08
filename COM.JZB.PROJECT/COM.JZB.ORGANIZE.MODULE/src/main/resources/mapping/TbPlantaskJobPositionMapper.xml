@@ -27,6 +27,9 @@
     <select id="selectRole" resultType="Map">
         select crid,content as cname,(SELECT cname FROM "tb_company_dept" where cdid =cddid) as content,cddid  from
         tb_plantask_job_position
+        <if test="cddid!='' and cddid != null">
+            where cddid = #{cddid}
+        </if>
     </select>
 <!--    查询部门    -->
     <select id="selectDept"  resultType="Map">
