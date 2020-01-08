@@ -933,6 +933,17 @@ public class ProductController {
         return result;
     }
 
+    private static boolean isPhone(String obj) {
+        boolean result = false;
+        try {
+            String eg = "^[0-9-()（）]{7,18}$";
+            result = Pattern.matches(eg, obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     /**
      * CRM-销售业主-公海-业主
      * 导出新增业主模板
@@ -1067,6 +1078,7 @@ public class ProductController {
 
             // 遍历结果行,菜单数据从第2行开始
             for (int i = 1; i < list.size(); i++) {
+                Map<String,Object> fmap = new HashMap<>();
                 exportMap = new HashMap<>(param);
                 // 设置行信息
                 exportMap.put("idx", i);
@@ -1082,32 +1094,28 @@ public class ProductController {
                     userInfoList.add(exportMap);
                     continue;
                 }
-                param.put("managername",name);
+//                param.put("managername",name);
+                fmap.put("managername",name);
 
-               param.put("relperson",name);
+//               param.put("relperson",name);
+                fmap.put("relperson",name);
 
                 // 获取模板中的用户手机号
                 String phone = JzbDataType.getString(map.get(1));
-                if (JzbDataType.isEmpty(phone)) {
-                    summary += "用户手机号不能为空!";
-                    exportMap.put("status", "2");
-                    exportMap.put("summary", summary);
-                    userInfoList.add(exportMap);
-                    continue;
-                } else {
-                    if (!toPhone(phone)) {
+                if (!JzbDataType.isEmpty(phone) && !toPhone(phone)) {
                         exportMap.put("status", "2");
                         summary += "手机号不合规范";
                         exportMap.put("summary", summary);
                         userInfoList.add(exportMap);
                         continue;
-                    }
                 }
-               param.put("relphone",phone);
+//               param.put("relphone",phone);
+                fmap.put("relphone",phone);
 
                 // 获取模板中的单位名称
                 String cname = JzbDataType.getString(map.get(2));
                param.put("commpanyname", cname);
+                fmap.put("commpanyname", cname);
 
 
                 if (JzbDataType.isEmpty(cname)) {
@@ -1117,12 +1125,26 @@ public class ProductController {
                     userInfoList.add(exportMap);
                     continue;
                 }
+                // 获取座机号码
+                String telphone = JzbDataType.getString(map.get(3));
+//                param.put("telphone",telphone);
+                fmap.put("telphone",telphone);
+                if (!JzbTools.isEmpty(telphone) && !isPhone(telphone)){
+                    summary += "座机号码不规范!";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
+
                 // 获取模板中的单位地区
-                String regionName = JzbDataType.getString(map.get(3));
-               param.put("regionName", regionName);
+                String regionName = JzbDataType.getString(map.get(4));
+//               param.put("regionName", regionName);
+                fmap.put("regionName", regionName);
+
 
                 // 调用获取地区ID的接口
-                Response regionID = regionBaseApi.getRegionID(param);
+                Response regionID = regionBaseApi.getRegionID(fmap);
                 Object obj = regionID.getResponseEntity();
                 // 定义地区ID
                 String region = "";
@@ -1131,21 +1153,29 @@ public class ProductController {
                     region = JzbDataType.getString(regionMap.get("creaid"));
                 }
                 // 获取模板中的单位地址
-                String address = JzbDataType.getString(map.get(4));
+                String address = JzbDataType.getString(map.get(5));
 
                 // 获取模板中的备注
-                String summary1 = JzbDataType.getString(map.get(5));
-                param.put("authid", "0");
-                param.put("name", name);
-                param.put("cname", cname);
-                param.put("phone", phone);
-                param.put("region", region);
-                param.put("address", address);
-                param.put("summary", summary1);
-
+                String summary1 = JzbDataType.getString(map.get(6));
+//                param.put("authid", "0");
+//                param.put("name", name);
+//                param.put("cname", cname);
+//                param.put("phone", phone);
+//                param.put("region", region);
+//                param.put("address", address);
+//                param.put("summary", summary1);
+                fmap.put("authid", "0");
+                fmap.put("name", name);
+                fmap.put("cname", cname);
+                fmap.put("phone", phone);
+                fmap.put("region", region);
+                fmap.put("address", address);
+                fmap.put("summary", summary1);
+                param.putAll(fmap);
                 // 调用接口
 //                result = productService.addRegistrationCompany(param);
                 result =  deptUserControllerApi.addCompanyCommon(param,JzbDataType.getString(param.get("token")));
+                fmap = new HashMap<>();
                 if (JzbDataType.isString(result.getResponseEntity())){
                     exportMap.put("status", "2");
                     exportMap.put("summary", result.getResponseEntity());

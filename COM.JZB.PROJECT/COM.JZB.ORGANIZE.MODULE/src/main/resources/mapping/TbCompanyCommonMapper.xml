@@ -18,7 +18,12 @@
         tcc.relphone,
         tcc.prodesc,
         tpcl.oneheader,
-        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
+        tpcl.twoheader,
+        tpcl.threeheader,
+        tpcl.fourheader,
+        tpcl.fiveheader,
+        tpcl.sixheader,
+        (select cname from tb_dept_user where uid=#{uid} limit 1) sales,
         tcc.status,
         tcl.cname,
         tcl.manager,
@@ -42,7 +47,8 @@
         tcc.status = '2'
         ) a where 1=1
         <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
-            and a.oneheader = #{uid}
+            and (a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid}
+             or a.fiveheader = #{uid}  or a.sixheader = #{uid})
         </if>
         limit
         #{pagesize}
@@ -444,9 +450,7 @@
         <if test="region!=null and region !=''">
             and a.region=#{region}
         </if>
-        <if test="uid != null and uid != ''">
-            and a.oneheader = #{uid}
-        </if>
+
         <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
             and a.dictvalue=#{dictvalue}
         </if>

@@ -6,6 +6,7 @@ import com.jzb.org.dao.CockpitMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.rowset.JdbcRowSet;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -146,28 +147,24 @@ public class CockpitService {
             param.put("list",daysList);
             List<Map<String, Object>> allDeptUser = cockpitMapper.getAllTrackInfo(param);
             for (int i = 0; i < allDeptUser.size(); i++) {
-                Map<String,Object> map = new HashMap<>();
-                map.put(JzbDataType.getString(JzbDataType.getString(daysList.get(i).get("starttime"))),allDeptUser.get(i));
-                list.add(map);
-                map = new HashMap<>();
+                allDeptUser.get(i).put("num",daysList.get(i).get("starttime"));
             }
-
+            list = allDeptUser;
 
 //
         }
 
         // 按 周查询
-        if ("2".equals(JzbDataType.getString(param.get("type")))){
+        if ("2".equals(JzbDataType.getString(param.get("type"))) && !JzbTools.isEmpty(param.get("pageno")) && !JzbTools.isEmpty(param.get("pagesize"))){
             int days = getDays(JzbDataType.getString(param.get("starttime")));
-            List<Map<String, Object>> weekList = getWeekCount(JzbDataType.getString(param.get("starttime")), days);
+            List<Map<String, Object>> weekList = getWeekCount(JzbDataType.getString(param.get("starttime")), days,param);
             param.put("list",weekList);
             Map<String, Object> wMap = new HashMap<>();
             List<Map<String, Object>> wList = cockpitMapper.getAllTrackInfo(param);
             for (int i = 0; i < wList.size(); i++) {
-                wMap.put(JzbDataType.getString(i+1),wList.get(i));
-                list.add(wMap);
-                wMap = new HashMap<>();
+                wList.get(i).put("num",JzbDataType.getString(i+1));
             }
+            list = wList;
 
         }
 
@@ -178,9 +175,11 @@ public class CockpitService {
             List<Map<String,Object>> clist  = cockpitMapper.getAllTrackInfo(param);
             for (int i = 0; i < clist.size(); i++) {
                 Map<String,Object> mMap = new HashMap<>();
-                mMap.put(JzbDataType.getString(i+1),clist.get(i));
-                list.add(mMap);
-                mMap = new HashMap<>();
+                for ( ; i < mlist.size(); i++) {
+                    clist.get(i).put("num",JzbDataType.getString(mlist.get(i).get("num")));
+                    break;
+                }
+                list = clist;
             }
         }
         return list;
@@ -268,7 +267,10 @@ public class CockpitService {
         return days;
     }
 
-    public static List<Map<String,Object>> getWeekCount(String time,int days){
+    public static List<Map<String,Object>> getWeekCount(String time,int days,Map<String,Object> param){
+        List<Map<String,Object>> aList = new ArrayList<>();
+        int pageno = JzbDataType.getInteger(param.get("pageno"));
+        int pagesize = JzbDataType.getInteger(param.get("pagesize"));
         String str = time;
         String[] s = str.split(" ");
         String strA = s[0];
@@ -305,24 +307,29 @@ public class CockpitService {
                     endtime = starttime + weeksend * 86400000;
                     map.put("starttime",starttime);
                     map.put("endtime",endtime);
+                    starttime = endtime;
                 }else {
                     endtime = starttime + 7 * 86400000;
                     map.put("starttime",starttime);
                     map.put("endtime",endtime);
-                    starttime += 7 * 86400000;
+                    starttime = endtime;
                 }
                 list.add(map);
                 map = new HashMap<>();
             }
+            int end = pageno * pagesize;
+            int begin = end - pagesize;
             for (int i = 1; i <= list.size(); i++) {
-
+                if (i <= end && i > begin){
+                    list.get(i-1).put("num",i);
+                    aList.add(list.get(i));
+                }
             }
-
 
         } catch (ParseException e) {
             JzbTools.logError(e);
         }
-        return list;
+        return aList;
     }
 
     public static List<Map<String,Object>> getMonthCount(String  time){
@@ -351,6 +358,7 @@ public class CockpitService {
                 long endtime = starttime + periodtime ;
                 mMap.put("starttime",starttime );
                 mMap.put("endtime",endtime);
+                mMap.put("num",i);
                 mlist.add(mMap);
                 starttime = endtime;
                 mMap = new HashMap<>();

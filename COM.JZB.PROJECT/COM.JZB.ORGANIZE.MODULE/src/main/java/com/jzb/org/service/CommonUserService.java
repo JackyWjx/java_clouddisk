@@ -59,15 +59,6 @@ public class CommonUserService {
 
     // 获取公海用户信息
     public List<Map<String, Object>> queryCommonUser(Map<String, Object> paramp) {
-
-        if (!JzbTools.isEmpty(paramp.get("searchtext"))){
-            String searchtext = (String) paramp.get("searchtext");
-            if (searchtext.length() == 11){
-                paramp.put("phone",searchtext);
-            }else {
-                paramp.put("uname",searchtext);
-            }
-        }
         return userMapper.queryComUser(paramp);
     }
     // 修改公海用户信息

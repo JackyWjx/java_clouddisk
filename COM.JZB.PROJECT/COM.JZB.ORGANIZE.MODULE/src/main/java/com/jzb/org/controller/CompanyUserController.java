@@ -642,9 +642,16 @@ public class CompanyUserController {
                     continue;
                 } else if (toPhone(phone)) {
                         param.put("tenderphone", phone);
-                    }else {
+                    }else if(isPhone(phone))
+                    {
                         param.put("telphone",phone);
-                    }
+                    }else {
+                    summary += "招标人手机号格式不规范";
+                    exportMap.put("status", "2");
+                    exportMap.put("summary", summary);
+                    userInfoList.add(exportMap);
+                    continue;
+                }
                 // 获取模板中的招标日期
                 String time = JzbDataType.getString(map.get(3));
                 long tenderTime = 0;
@@ -696,6 +703,14 @@ public class CompanyUserController {
                 Response response = companyUserController.addCompanyProject(param);
                 int resultCode = response.getServerResult().getResultCode();
                 companyUserController.addCompanyProjectInfo(param);
+                param.remove("projectname");
+                param.remove("region");
+                param.remove("tenderphone");
+                param.remove("telphone");
+                param.remove("telphone");
+                param.remove("tendertime");
+                param.remove("address");
+
                 if (resultCode != 200) {
                     exportMap.put("status", "2");
                     exportMap.put("summary", "创建项目失败!");
@@ -735,6 +750,16 @@ public class CompanyUserController {
             result = Pattern.matches(eg, obj);
         } catch (Exception e) {
             JzbTools.logError(e);
+        }
+        return result;
+    }
+    private static boolean isPhone(String obj) {
+        boolean result = false;
+        try {
+            String eg = "^[0-9-()（）]{7,18}$";
+            result = Pattern.matches(eg, obj);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return result;
     }
