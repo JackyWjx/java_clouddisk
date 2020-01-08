@@ -173,18 +173,34 @@
 
     </update>
 
+    <!--批量删除用户-->
+    <update id="updateDeptUserBatch">
+        <foreach separator=";" close="" open="" index="index" item="item" collection="list">
+        UPDATE tb_dept_user SET
+            <if test=" item.status !=null and item.status!=''">status =#{item.status},</if>
+            <if test=" item.cname !=null and item.cname!=''">cname =#{item.cname},</if>
+            <if test=" item.index !=null and item.index!=''">idx =#{item.index},</if>
+            <if test=" item.summary !=null and item.summary!=''">summary =#{item.summary},</if>
+            <if test=" item.phone !=null and item.phone!=''">phone =#{item.phone},</if>
+            <if test=" item.mail !=null and item.mail!=''">mail =#{item.mail},</if>
+            updtime = #{item.time}
+            WHERE
+            uid =#{item.uid} AND cid=#{item.cid} AND cdid=#{item.cdid}
+        </foreach>
+    </update>
+
+    <!--单个删除用户-->
     <update id="updateDeptUser">
-        UPDATE tb_dept_user
-        SET
-        <if test=" status !=null and status!=''">status =#{status},</if>
-        <if test=" cname !=null and cname!=''">cname =#{cname},</if>
-        <if test=" index !=null and index!=''">idx =#{index},</if>
-        <if test=" summary !=null and summary!=''">summary =#{summary},</if>
-        <if test=" phone !=null and phone!=''">phone =#{phone},</if>
-        <if test=" mail !=null and mail!=''">mail =#{mail},</if>
-        updtime = #{time}
-        WHERE
-        uid =#{uid} AND cid=#{cid} AND cdid=#{cdid}
+            UPDATE tb_dept_user SET
+            <if test=" status !=null and status!=''">status =#{status},</if>
+            <if test=" cname !=null and cname!=''">cname =#{cname},</if>
+            <if test=" index !=null and index!=''">idx =#{index},</if>
+            <if test=" summary !=null and summary!=''">summary =#{summary},</if>
+            <if test=" phone !=null and phone!=''">phone =#{phone},</if>
+            <if test=" mail !=null and item.mail!=''">mail =#{mail},</if>
+            updtime = #{time}
+            WHERE
+            uid =#{uid} AND cid=#{cid} AND cdid=#{cdid}
     </update>
 
     <update id="updateDeptUserByUid">

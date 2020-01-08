@@ -526,15 +526,13 @@ public class DeptController {
     public Response removeDeptUser(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"cdid", "cid", "uid"};
-            if (JzbCheckParam.allNotEmpty(param, str)) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("status", "2");
-                deptService.updateDeptUser(param);
-                result = Response.getResponseSuccess(userInfo);
-            } else {
-                result = Response.getResponseError();
+            List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            for(int i = 0, a = list.size();i < a; i++){
+                list.get(i).put("status", "2");
+                list.get(i).put("time",System.currentTimeMillis());
             }
+            result = deptService.updateDeptUserBatch(list) > 0 ?Response.getResponseSuccess(userInfo) :Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

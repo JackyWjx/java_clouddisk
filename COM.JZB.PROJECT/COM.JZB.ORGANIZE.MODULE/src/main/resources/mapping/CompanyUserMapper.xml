@@ -37,6 +37,7 @@
         cl.telephone,
         cl.relmail,
         cl.logo,
+        (select count (1) from tb_common_company_list where cid = cl.cid and status = '1') As isExist,
         du.cname AS uname,
         du.phone,
         cs.systemname,

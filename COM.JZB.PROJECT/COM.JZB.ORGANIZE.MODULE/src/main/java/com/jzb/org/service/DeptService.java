@@ -274,6 +274,14 @@ public class DeptService {
         return result;
     }
 
+    /**
+     * @Author sapientia
+     * @Date 16:29 2020/1/8
+     * @Description
+     **/
+    public int updateDeptUserBatch(List<Map<String, Object>> param) {
+        return deptMapper.updateDeptUserBatch(param);
+    }
 
     /**
      * 修改部门用户表信息

@@ -129,6 +129,13 @@ public interface DeptMapper {
      * @return
      */
     int updateDeptUser(Map<String, Object> map);
+
+    /**
+     * @Author sapientia
+     * @Date 16:27 2020/1/8
+     * @Description 批量修改
+     **/
+    int updateDeptUserBatch(List<Map<String, Object>> param);
     /**
      * 修改部门用户表信息
      *
