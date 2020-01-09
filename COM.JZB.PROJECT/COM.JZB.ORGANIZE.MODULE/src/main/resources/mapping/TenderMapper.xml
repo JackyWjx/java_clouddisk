@@ -116,7 +116,7 @@
         </if>
 
         <if test="keyword!=null and keyword != ''">
-            and title ~ #{keyword}
+            and title like CONCAT('%',#{keyword},'%')
         </if>
 
         ORDER BY
@@ -146,7 +146,7 @@
         </if>
 
         <if test="keyword!=null and keyword != ''">
-            and title ~ #{keyword}
+            and title like CONCAT('%',#{keyword},'%')
         </if>
     </select>
 
