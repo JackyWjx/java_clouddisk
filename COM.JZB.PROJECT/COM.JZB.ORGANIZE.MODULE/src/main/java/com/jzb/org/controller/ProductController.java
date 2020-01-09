@@ -44,6 +44,9 @@ import java.util.regex.Pattern;
 public class ProductController {
 
     @Autowired
+    private NewCompanyCommonController newCompanyCommonController;
+
+    @Autowired
     private ProductService productService;
 
     @Autowired
@@ -1174,11 +1177,13 @@ public class ProductController {
                 param.putAll(fmap);
                 // 调用接口
 //                result = productService.addRegistrationCompany(param);
-                result =  deptUserControllerApi.addCompanyCommon(param,JzbDataType.getString(param.get("token")));
+//                result =  deptUserControllerApi.addCompanyCommon(param,JzbDataType.getString(param.get("token")));
+                result =  newCompanyCommonController.addCompanyCommonList(param);
+                int resultCode = result.getServerResult().getResultCode();
                 fmap = new HashMap<>();
-                if (JzbDataType.isString(result.getResponseEntity())){
+                if (resultCode != 200){
                     exportMap.put("status", "2");
-                    exportMap.put("summary", result.getResponseEntity());
+                    exportMap.put("summary","创建单位失败!");
                     userInfoList.add(exportMap);
                     continue;
                 }
@@ -1196,6 +1201,7 @@ public class ProductController {
             } else if (export == 0) {
                 exportMap.put("status", "4");
             }
+            exportMap.remove("cid");
             deptService.updateExportBatch(exportMap);
             return result;
         }

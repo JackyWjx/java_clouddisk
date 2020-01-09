@@ -92,4 +92,9 @@ public class CommonUserService {
     public Map<String,Object> getPhoneKey(Map<String, Object> param) {
         return userMapper.getPhoneKey(param);
     }
+
+    public int querRelCommonCount(Map<String, Object> param) {
+        param.put("isrelation",1);
+        return userMapper.querRelCommonCount(param);
+    }
 }

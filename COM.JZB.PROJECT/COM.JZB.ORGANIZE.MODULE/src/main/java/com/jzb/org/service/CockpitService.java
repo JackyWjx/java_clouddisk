@@ -133,21 +133,25 @@ public class CockpitService {
     }
 
     public List<Map<String, Object>> getAllTrackInfo(Map<String, Object> param) {
-        List<Object> objects = null;
 
         List<Map<String ,Object>> list = new ArrayList<>();
         if (!JzbTools.isEmpty(param.get("cdid"))){
-            List<Map<String, Object>> cdidlist = cockpitMapper.getDeptChild(param);
-            param.put("list",cdidlist);
+            List<Map<String,Object>> deptChildlist = cockpitMapper.getDeptChild(param);
+            for (int i = 0; i < deptChildlist.size(); i++) {
+                deptChildlist.get(i).remove("pcdid");
+                deptChildlist.get(i).remove("idx");
+            }
+            param.put("list",deptChildlist);
         }
         // 判断是否按天数查询
         if ("1".equals(JzbDataType.getString(param.get("type")))){
             int days = getDays(JzbDataType.getString(param.get("starttime")));
             List<Map<String, Object>> daysList = getStartAndEndTime(JzbDataType.getString(param.get("starttime")),days);
-            param.put("list",daysList);
+            param.put("cdlist",daysList);
             List<Map<String, Object>> allDeptUser = cockpitMapper.getAllTrackInfo(param);
             for (int i = 0; i < allDeptUser.size(); i++) {
-                allDeptUser.get(i).put("num",daysList.get(i).get("starttime"));
+                String starttime = timeToFormat(JzbDataType.getString(daysList.get(i).get("starttime")));
+                allDeptUser.get(i).put("num",starttime);
             }
             list = allDeptUser;
 
@@ -156,13 +160,11 @@ public class CockpitService {
 
         // 按 周查询
         if ("2".equals(JzbDataType.getString(param.get("type"))) && !JzbTools.isEmpty(param.get("pageno")) && !JzbTools.isEmpty(param.get("pagesize"))){
-            int days = getDays(JzbDataType.getString(param.get("starttime")));
-            List<Map<String, Object>> weekList = getWeekCount(JzbDataType.getString(param.get("starttime")), days,param);
-            param.put("list",weekList);
-            Map<String, Object> wMap = new HashMap<>();
+            List<Map<String, Object>> weekList = getWeekCount(JzbDataType.getString(param.get("starttime")),param);
+            param.put("cdlist",weekList);
             List<Map<String, Object>> wList = cockpitMapper.getAllTrackInfo(param);
             for (int i = 0; i < wList.size(); i++) {
-                wList.get(i).put("num",JzbDataType.getString(i+1));
+                wList.get(i).put("num",JzbDataType.getString("第"+(i+1)+"周"));
             }
             list = wList;
 
@@ -171,12 +173,12 @@ public class CockpitService {
         // 按 年查询
         if ("4".equals(JzbDataType.getString(param.get("type")))){
             List<Map<String, Object>> mlist = getMonthCount(JzbDataType.getString(param.get("starttime")));
-            param.put("list",mlist);
+            param.put("cdlist",mlist);
             List<Map<String,Object>> clist  = cockpitMapper.getAllTrackInfo(param);
             for (int i = 0; i < clist.size(); i++) {
                 Map<String,Object> mMap = new HashMap<>();
                 for ( ; i < mlist.size(); i++) {
-                    clist.get(i).put("num",JzbDataType.getString(mlist.get(i).get("num")));
+                    clist.get(i).put("num",JzbDataType.getString(mlist.get(i).get("num"))+"月");
                     break;
                 }
                 list = clist;
@@ -267,7 +269,7 @@ public class CockpitService {
         return days;
     }
 
-    public static List<Map<String,Object>> getWeekCount(String time,int days,Map<String,Object> param){
+    public static List<Map<String,Object>> getWeekCount(String time,Map<String,Object> param){
         List<Map<String,Object>> aList = new ArrayList<>();
         int pageno = JzbDataType.getInteger(param.get("pageno"));
         int pagesize = JzbDataType.getInteger(param.get("pagesize"));
@@ -322,7 +324,7 @@ public class CockpitService {
             for (int i = 1; i <= list.size(); i++) {
                 if (i <= end && i > begin){
                     list.get(i-1).put("num",i);
-                    aList.add(list.get(i));
+                    aList.add(list.get(i-1));
                 }
             }
 
@@ -397,5 +399,10 @@ public class CockpitService {
                  break;   
         }
         return time * 1000;
+    }
+    private String timeToFormat(String time){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String format = sdf.format(new Date(Long.valueOf(time)));
+        return format;
     }
 }

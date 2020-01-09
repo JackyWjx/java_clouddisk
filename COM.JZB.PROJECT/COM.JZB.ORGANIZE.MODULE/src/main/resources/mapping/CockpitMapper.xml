@@ -136,7 +136,7 @@
 
     <!--个人驾驶舱查询-->
     <select id="getAllTrackInfo" parameterType="java.util.Map" resultType="java.util.Map">
-        <foreach collection="list" close="" open="" index="index" item="item" separator="union all">
+        <foreach collection="cdlist" close="" open="" index="index" item="item" separator="union all">
        SELECT
          SUM ( CAST ( returnmoney AS INT ) ) signmoney,
             SUM ( CAST ( signmoney AS INT ) ) returnmoney,
@@ -152,8 +152,8 @@
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
-                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
-                        #{item.cdid}
+                    <foreach collection="list" separator="," item="cditem" index="index" open="(" close=")">
+                        #{cditem.cdid}
                     </foreach>
                     and status = '1'
                     )
@@ -177,8 +177,8 @@
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
-                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
-                        #{item.cdid}
+                    <foreach collection="list" separator="," item="cditem" index="index" open="(" close=")">
+                        #{cditem.cdid}
                     </foreach>
                     and status = '1'
                     )
@@ -202,8 +202,8 @@
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
-                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
-                        #{item.cdid}
+                    <foreach collection="list" separator="," item="cditem" index="index" open="(" close=")">
+                        #{cditem.cdid}
                     </foreach>
                     and status = '1'
                     )
@@ -227,8 +227,8 @@
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
-                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
-                        #{item.cdid}
+                    <foreach collection="list" separator="," item="cditem" index="index" open="(" close=")">
+                        #{cditem.cdid}
                     </foreach>
                     and status = '1'
                     )
@@ -252,8 +252,8 @@
                 <if test="cdid != null and cdid != ''">
                     and adduid in (
                     select uid from tb_dept_user where cdid in
-                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
-                        #{item.cdid}
+                    <foreach collection="list" separator="," item="cditem" index="index" open="(" close=")">
+                        #{cditem.cdid}
                     </foreach>
                     and status = '1'
                     )
@@ -277,8 +277,8 @@
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
-                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
-                        #{item.cdid}
+                    <foreach collection="list" separator="," item="cditem" index="index" open="(" close=")">
+                        #{cditem.cdid}
                     </foreach>
                     and status = '1'
                     )
@@ -302,8 +302,8 @@
                 <if test="cdid != null and cdid != ''">
                     and trackuid in (
                     select uid from tb_dept_user where cdid in
-                    <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
-                        #{item.cdid}
+                    <foreach collection="list" separator="," item="cditem" index="index" open="(" close=")">
+                        #{cditem.cdid}
                     </foreach>
                     and status = '1'
                     )
@@ -321,6 +321,18 @@
             <if test="starttime != null and starttime != ''">
                 and addtime &gt;= #{item.starttime}
                 and addtime &lt;= #{item.endtime}
+            </if>
+            <if test="cdid != null and cdid != ''">
+                and trackuid in (
+                select uid from tb_dept_user where cdid in
+                <foreach collection="list" separator="," item="cditem" index="index" open="(" close=")">
+                    #{cditem.cdid}
+                </foreach>
+                and status = '1'
+                )
+            </if>
+            <if test="trackuid != null and trackuid != ''">
+                and trackuid = #{trackuid}
             </if>
         </foreach>
     </select>

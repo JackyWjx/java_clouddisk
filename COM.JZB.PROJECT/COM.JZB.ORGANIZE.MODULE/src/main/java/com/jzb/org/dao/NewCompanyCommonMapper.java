@@ -53,4 +53,8 @@ public interface NewCompanyCommonMapper {
      * @author kuangbin
      */
     int deleteCompanyCommonList(Map<String, Object> param);
+
+    int  insertTbCompanyList(Map<String, Object> param);
+
+    int insertTbInfo(Map<String, Object> param);
 }

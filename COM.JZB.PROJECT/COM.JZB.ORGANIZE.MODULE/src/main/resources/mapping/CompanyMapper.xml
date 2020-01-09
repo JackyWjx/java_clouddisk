@@ -1073,9 +1073,9 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
     <!--删除企业单位-->
     <update id="delCompany" parameterType="java.util.Map" >
        <foreach collection="list" separator="" item="item" index="index" open="" close="">
-           update tb_company_list set status = '2' where cid = #{item.cid};
-           update tb_company_common set status = '2' where cid = #{item.cid};
-           update tb_common_company_list set status = '2' where cid = #{item.cid};
+           update tb_company_list set status = '4' where cid = #{item.cid};
+           update tb_company_common set status = '4' where cid = #{item.cid};
+           update tb_common_company_list set status = '4' where cid = #{item.cid};
        </foreach>
 
     </update>

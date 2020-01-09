@@ -300,4 +300,18 @@
             and uid = #{uid}
         </if>
     </select>
+
+    <select id="querRelCommonCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+         count(1)
+        from tb_common_user_list
+        where isrelation = #{isrelation}
+        and status = '1'
+        <if test="cid != null and cid != ''">
+            and cid = #{cid}
+        </if>
+        <if test="uid != null and uid != ''">
+            and uid = #{uid}
+        </if>
+    </select>
 </mapper>

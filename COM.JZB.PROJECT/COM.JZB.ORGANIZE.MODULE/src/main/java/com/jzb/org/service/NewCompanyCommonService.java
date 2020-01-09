@@ -7,6 +7,7 @@ import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.config.OrgConfigProperties;
+import com.jzb.org.controller.CommonUserController;
 import com.jzb.org.dao.NewCompanyCommonMapper;
 import com.jzb.org.dao.TbHandleContractMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class NewCompanyCommonService {
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private CommonUserController userController;
 
     /**
      * 查询地区信息
@@ -183,22 +187,32 @@ public class NewCompanyCommonService {
      * @DateTime: 2019/9/20 18:00
      */
     public int addCompanyCommonList(Map<String, Object> param) {
-        if (JzbDataType.isMap(param.get("send"))) {
-            Map<String, Object> send = (Map<String, Object>) param.get("send");
-            if (!JzbTools.isEmpty(send.get("relphone"))) {
-                //给负责人发送短信
-                send.put("groupid", orgConfigProperties.getAddCompany());
-                send.put("msgtag", "addCommon1013");
-                send.put("senduid", "addCommon1013");
-                companyService.sendRemind(send);
-            }
-        } else {
-            //给负责人发送短信
-            param.put("groupid", orgConfigProperties.getChangeManager());
-            param.put("msgtag", "addCommon1013");
-            param.put("senduid", "addCommon1013");
-            companyService.sendRemind(param);
+//        if (JzbDataType.isMap(param.get("send"))) {
+//            Map<String, Object> send = (Map<String, Object>) param.get("send");
+//            if (!JzbTools.isEmpty(send.get("relphone"))) {
+//                //给负责人发送短信
+//                send.put("groupid", orgConfigProperties.getAddCompany());
+//                send.put("msgtag", "addCommon1013");
+//                send.put("senduid", "addCommon1013");
+//                companyService.sendRemind(send);
+//            }
+//        } else {
+//            //给负责人发送短信
+//            param.put("groupid", orgConfigProperties.getChangeManager());
+//            param.put("msgtag", "addCommon1013");
+//            param.put("senduid", "addCommon1013");
+//            companyService.sendRemind(param);
+//        }
+        if (!JzbTools.isEmpty(param.get("relphone"))){
+            Map<String,Object> umap = new HashMap<>();
+            umap.put("uname",param.get("relperson"));
+            umap.put("phone",param.get("relphone"));
+            umap.put("cid",param.get("cid"));
+            umap.put("userinfo",param.get("userinfo"));
+            userController.addCommonUser(umap);
         }
+            newCompanyCommonMapper.insertTbCompanyList(param);
+            newCompanyCommonMapper.insertTbInfo(param);
         return newCompanyCommonMapper.insertCompanyCommonList(param);
     }
 

@@ -41,5 +41,5 @@ public interface CommonUserMapper {
     Map<String,Object> getPhoneKey(Map<String, Object> param);
 
 
-
+    int querRelCommonCount(Map<String, Object> param);
 }

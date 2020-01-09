@@ -76,18 +76,19 @@ public class NewCompanyCommonController {
     public Response addCompanyCommonList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"cid"};
-            if (JzbCheckParam.allNotEmpty(param, str)) {
+
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                param.put("authid",JzbDataType.getInteger(param.get("authid")));
                 param.put("tcid", JzbRandom.getRandomCharCap(6));
+                param.put("cid", JzbRandom.getRandomCharCap(7));
                 param.put("status", "1");
                 param.put("addtime", System.currentTimeMillis());
+                param.put("updtime", System.currentTimeMillis());
                 param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+                param.put("adduid", JzbDataType.getString(userInfo.get("uid")));
                 result = newCompanyCommonService.addCompanyCommonList(param) > 0 ?
                         Response.getResponseSuccess(userInfo) : Response.getResponseError();
-            } else {
-                result = Response.getResponseError();
-            }
+
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

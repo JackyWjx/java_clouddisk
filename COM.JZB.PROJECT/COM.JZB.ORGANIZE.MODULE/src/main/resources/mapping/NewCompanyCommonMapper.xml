@@ -96,97 +96,117 @@
 
     <!--管理员创建公海单位-->
     <insert id="insertCompanyCommonList" parameterType="java.util.Map">
-        INSERT INTO tb_common_company_list (
-        tcid, cid, cname, nickname, region, uscc, reluid, relperson, relphone, telephone, relmail, logo,
-        photo, cstatus, curl, fax, limitday, address, range, ctype, legaleid, legaler, cardid, capital,
-        birthday, content, authstatus, supervise, orgrelation, prodesc, prolist, source, adduid, addtime,
-        upduid, updtime, status, summary
-        )
+        INSERT INTO tb_common_company_list (tcid, cid, cname,
+        nickname, region, uscc, reluid, relperson, relphone, telephone,
+         relmail, logo, photo, cstatus, curl, fax, limitday, address, range,
+          ctype, legaleid, legaler, cardid, capital, birthday, content, authstatus,
+          supervise, orgrelation, prodesc, prolist, source, adduid, addtime, upduid,
+           updtime,  summary,status)
+
         VALUES
         (
-        #{tcid},
-        #{cid},
-        #{companyname},
-        #{nickname},
-        #{region},
-        #{uscc},
-        #{manager},
-        #{managername},
-        #{phone},
-        #{telephone},
-        #{relmail},
-        #{logo},
-        #{photo},
-        <choose>
-            <when test=" cstatus != null and cstatus !=''">
-                #{cstatus},
-            </when>
-            <otherwise>
-                '1',
-            </otherwise>
-        </choose>
-        #{curl},
-        #{fax},
-        <choose>
-            <when test=" limitday != null and limitday !=''">
-                cast(#{limitday} as Integer),
-            </when>
-            <otherwise>
-                0,
-            </otherwise>
-        </choose>
-        #{address},
-        #{range},
-        #{ctype},
-        #{legaleid},
-        #{legaler},
-        #{cardid},
-        #{capital},
-        <choose>
-            <when test=" birthday != null and birthday !=''">
-                cast(#{birthday} as Integer),
-            </when>
-            <otherwise>
-                0,
-            </otherwise>
-        </choose>
-        #{content},
-        <choose>
-            <when test=" authstatus != null and authstatus !=''">
-                cast(#{authstatus} as Integer),
-            </when>
-            <otherwise>
-                0,
-            </otherwise>
-        </choose>
-        #{supervise},
-        #{orgrelation},
-        #{prodesc},
-        #{prolist},
-        <choose>
-            <when test=" source != null and source !=''">
-                cast(#{source} as Integer),
-            </when>
-            <otherwise>
-                0,
-            </otherwise>
-        </choose>
-        #{uid},
-        #{addtime},
-        #{uid},
-        #{addtime},
-        #{status},
-        <choose>
-            <when test=" summary != null and summary !=''">
-                #{summary}
-            </when>
-            <otherwise>
-                null
-            </otherwise>
-        </choose>
+        <choose><when test="tcid != null and tcid != ''"> #{tcid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{cid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{cname},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{nickname},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{region},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{uscc},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{reluid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{relperson},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{relphone},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{telephone},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{relmail},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{logo},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{photo},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{cstatus},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{curl},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{fax},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{limitday},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{address},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{range},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{ctype},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{legaleid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{legaler},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{cardid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{capital},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{birthday},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{content},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{authstatus},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{supervise},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{orgrelation},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{prodesc},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{prolist},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{source},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{adduid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{addtime},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{upduid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{updtime},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{summary},</when> <otherwise>null ,</otherwise></choose>
+         #{status}
         )
-        ON conflict(cid) DO UPDATE SET
-        updtime = #{addtime}
+    </insert>
+
+    <insert id="insertTbCompanyList" parameterType="java.util.Map">
+           insert into
+           tb_company_list(cid, cname, nickname, region, uscc, idx,
+            relperson, relphone, telephone, relmail, reguid, regtime,
+            manager, logo, photo, authid, ouid, upduid, updtime,
+            summary, oldcid,status)
+        values (
+        <choose><when test="tcid != null and tcid != ''"> #{cid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''">#{cname},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''">#{nickname},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{region},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{uscc},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{idx},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{relperson},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{relphone},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{telephone},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''">#{relmail},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{reguid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{regtime},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{manager},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{logo},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{photo},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{authid},</when> <otherwise>0, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{ouid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{upduid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{updtime},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{summary},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{oldcid},</when> <otherwise>null, </otherwise></choose>
+         #{status}
+        )
+    </insert>
+
+
+    <insert id="insertTbInfo" parameterType="java.util.Map">
+        insert into tb_company_info( curl, fax,
+        limitday, address, range, ctype, legaler, cardid, capital,
+        birthday, content, license, idcardup, idecarddown, authorg,
+        orgads, authfile, authtext, ouid, updtime ,cid)
+        values (
+        <choose><when test="tcid != null and tcid != ''"> #{curl},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{fax},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{limitday},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{address},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{range},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{ctype},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{legaler},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{cardid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{capital},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{birthday},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{content},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{license},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{idcardup},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{idecarddown},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{authorg},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{orgads},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{authfile},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{authtext},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{ouid},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{updtime},</when> <otherwise>null, </otherwise></choose>
+         #{cid}
+         )
     </insert>
 
     <!-- 点击修改按钮,进行公海单位修改 -->

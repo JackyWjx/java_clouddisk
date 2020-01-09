@@ -156,6 +156,8 @@
     <select id="queryCompanyCommonList" parameterType="java.util.Map" resultType="java.util.Map">
 
         SELECT
+        distinct
+        tccl.id,
         tccl.cid,
         tccl.cname,
         tccl.region,

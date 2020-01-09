@@ -339,6 +339,7 @@ public class CommonUserController {
         try {
             Map<String,Object> userInfo = (Map<String, Object>) param.get("userinfo");
             param.put("adduid",userInfo.get("uid"));
+            int count = userService.querRelCommonCount(param);
             List<Map<String,Object>> list = userService.queryRelCommonUser(param);
             //获取用户信息
             for (int i = 0; i < list.size(); i++) {
@@ -347,6 +348,7 @@ public class CommonUserController {
             }
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(list);
+            pageInfo.setTotal(count);
             response = Response.getResponseSuccess(userInfo);
             response.setPageInfo(pageInfo);
         } catch (Exception e) {
