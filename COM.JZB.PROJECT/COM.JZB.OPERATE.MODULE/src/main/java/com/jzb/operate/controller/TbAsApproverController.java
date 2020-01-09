@@ -20,10 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Author sapientia
@@ -88,6 +86,16 @@ public class TbAsApproverController {
                 JzbPageConvert.setPageRows(param);
                 // 获取出差记录
                 param.put("uid",userInfo.get("uid"));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                // 如果起始时间参数不为空则转为时间戳
+                if (!JzbTools.isEmpty(param.get("orgtime"))) {
+                    Date beginTime = sdf.parse(JzbDataType.getString(param.get("orgtime")));
+                    param.put("orgtime", beginTime.getTime());
+                }
+                if (!JzbTools.isEmpty(param.get("endtime"))) {
+                    Date beginTime = sdf.parse(JzbDataType.getString(param.get("endtime")));
+                    param.put("endtime", beginTime.getTime());
+                }
                 List<Map<String, Object>> list = tbAsApproverService.queryAsApprover(param);
                 for(int i = 0 , a = list.size(); i < a;i++){
                     Map<String,Object> appMap =new HashMap<>();
