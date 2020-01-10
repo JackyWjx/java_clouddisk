@@ -388,8 +388,8 @@ public class TbCompanyCommonController {
         return result;
     }
 
-    /**
-     * 所有业主-业主列表-分配业务员
+    /**私海-添加销售员
+     * 所有业主-业主列表-添加销售员
      *
      * @param param
      * @return
@@ -407,6 +407,79 @@ public class TbCompanyCommonController {
                 param.put("addtime",System.currentTimeMillis());
                 //根据id进行修改，添加业务员
                 int count = tbCompanyCommonService.updateCompanys(param);
+                //如果返回值大于零则响应成功信息
+                if (count > 0) {
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    result = Response.getResponseSuccess(userInfo);
+                } else {
+                    result = Response.getResponseError();
+                    result.setResponseEntity("销售员名额已满");
+                }
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+
+    /**
+     * 私海-更换销售员
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/relpaceCompanysSales", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response relpaceCompanysSales(@RequestBody Map<String, Object> param) {
+
+        Response result;
+        try {
+            //如果参数为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                result = Response.getResponseError();
+            } else {
+                param.put("addtime",System.currentTimeMillis());
+                //根据id进行修改，添加业务员
+                int count = tbCompanyCommonService.relpaceCompanysSales(param);
+                //如果返回值大于零则响应成功信息
+                if (count > 0) {
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    result = Response.getResponseSuccess(userInfo);
+                } else {
+                    result = Response.getResponseError();
+                }
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+    /**主管使用
+     * 私海-删除销售员 todo
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/delCompanysSales", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response delCompanysSales(@RequestBody Map<String, Object> param) {
+
+        Response result;
+        try {
+            //如果参数为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                result = Response.getResponseError();
+            } else {
+                param.put("addtime",System.currentTimeMillis());
+                //根据id进行修改，删除业务员
+                int count = tbCompanyCommonService.delCompanysSales(param);
                 //如果返回值大于零则响应成功信息
                 if (count > 0) {
                     Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
@@ -436,12 +509,9 @@ public class TbCompanyCommonController {
 
         Response result;
         try {
-            //如果参数为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
-                result = Response.getResponseError();
-            } else {
-                param.put("addtime",System.currentTimeMillis());
-                //根据id进行修改，添加业务员
+            Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
+            param.put("addtime",System.currentTimeMillis());
+            param.put("uid",userinfo.get("uid"));
                 int count = tbCompanyCommonService.rebackCompanys(param);
                 //如果返回值大于零则响应成功信息
                 if (count > 0) {
@@ -450,7 +520,7 @@ public class TbCompanyCommonController {
                 } else {
                     result = Response.getResponseError();
                 }
-            }
+
         } catch (Exception e) {
             //打印错误信息
             JzbTools.logError(e);
@@ -459,6 +529,39 @@ public class TbCompanyCommonController {
         return result;
     }
 
+
+
+    /**
+     * 退回公海  加入历史私海记录
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/rebackCompanysToHistory", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response rebackCompanysToHistory(@RequestBody Map<String, Object> param) {
+
+        Response result;
+        try {
+            Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
+            param.put("addtime",System.currentTimeMillis());
+            param.put("uid",userinfo.get("uid"));
+            int count = tbCompanyCommonService.rebackCompanysToHistory(param);
+            //如果返回值大于零则响应成功信息
+            if (count > 0) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+            } else {
+                result = Response.getResponseError();
+            }
+
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
     /**
      * 所有业主-业主列表查询
      *

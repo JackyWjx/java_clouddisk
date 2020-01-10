@@ -4,16 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
+import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
+import com.jzb.org.controller.TbCompanyCommonController;
 import com.jzb.org.dao.DeptMapper;
 import com.jzb.org.dao.TbCompanyCommonMapper;
 import com.jzb.org.dao.TbCompanyListMapper;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.jta.JtaAfterCompletionSynchronization;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +31,9 @@ public class TbCompanyCommonService {
 
     @Autowired
     private TbCompanyCommonMapper tbCompanyCommonMapper;
+
+    @Autowired
+    private TbCompanyCommonController companyCommonController;
 
 
     @Autowired
@@ -240,8 +246,39 @@ public class TbCompanyCommonService {
      * @return
      */
     public int updateCompanys(Map<String, Object> param) {
+        int count = 0;
+        int num = 0;
+        // 查询该单位是否已经分配销售员
+        Map<String, Object> sMap = tbCompanyCommonMapper.queryCompanySales(param);
 
-        return tbCompanyCommonMapper.updateCompanys(param);
+        // 第一次分配销售员
+        if (JzbTools.isEmpty(sMap)) {
+            param.put("oneheader", param.get("uid"));
+            count = tbCompanyCommonMapper.updateCompanys(param);
+        } else {
+            if (JzbTools.isEmpty(sMap.get("oneheader"))) {
+                sMap.put("oneheader", param.get("uid"));
+                num ++;
+            } else if (JzbTools.isEmpty(sMap.get("twoheader")) && num == 0 ) {
+                sMap.put("twoheader", param.get("uid"));
+                num ++;
+            } else if (JzbTools.isEmpty(sMap.get("threeheader")) && num == 0 ) {
+                sMap.put("threeheader", param.get("uid"));
+                num ++;
+            } else if (JzbTools.isEmpty(sMap.get("fourheader")) && num == 0 ) {
+                sMap.put("fourheader", param.get("uid"));
+                num ++;
+            } else if (JzbTools.isEmpty(sMap.get("fiveheader")) && num == 0 ) {
+                sMap.put("fiveheader", param.get("uid"));
+                num ++;
+            } else if (JzbTools.isEmpty(sMap.get("sixheader")) && num == 0 ) {
+                sMap.put("sixheader", param.get("uid"));
+                num ++;
+            }
+            count = tbCompanyCommonMapper.updateCompanysAddSales(sMap);
+            num = 0;
+    }
+        return count ;
     }
 
     /**
@@ -252,8 +289,23 @@ public class TbCompanyCommonService {
      * @return int
     **/
     public int rebackCompanys(Map<String, Object> param) {
+        int count = 0;
+        // 删除自己对该单位的跟进
+        param.put("saler",param.get("uid"));
+        Response response = companyCommonController.delCompanysSales(param);
+        int resultCode = response.getServerResult().getResultCode();
+        if (resultCode == 200){
+            count = 1;
+        }
+        // 查询该单位是否已经分配销售员
+        Map<String,Object> sMap = tbCompanyCommonMapper.queryCompanySales(param);
+        if (!JzbTools.isEmpty(sMap.get("oneheader")) || !JzbTools.isEmpty(sMap.get("twoheader"))  || !JzbTools.isEmpty(sMap.get("threeheader")) ||
+                !JzbTools.isEmpty(sMap.get("fourheader"))  || !JzbTools.isEmpty(sMap.get("fiveheader"))  || !JzbTools.isEmpty(sMap.get("sixheader")) ){
+            return count;
+        }else {
+            return tbCompanyCommonMapper.rebackCompanys(param);
+        }
 
-        return tbCompanyCommonMapper.rebackCompanys(param);
     }
 
     /**
@@ -403,4 +455,51 @@ public class TbCompanyCommonService {
     }
 
 
+    // 私海-更换销售员
+    public int relpaceCompanysSales(Map<String, Object> param) {
+        Map<String, Object> map = tbCompanyCommonMapper.queryCompanySales(param);
+        if (param.get("uid").equals(map.get("oneheader"))){
+            map.put("oneheader",param.get("saler"));
+        }else if(param.get("uid").equals(map.get("twoheader"))){
+            map.put("twoheader",param.get("saler"));
+        }else if(param.get("uid").equals(map.get("threeheader"))){
+            map.put("threeheader",param.get("saler"));
+        }else if(param.get("uid").equals(map.get("fourheader"))){
+            map.put("fourheader",param.get("saler"));
+        }else if(param.get("uid").equals(map.get("fiveheader"))){
+            map.put("fiveheader",param.get("saler"));
+        }else if(param.get("uid").equals(map.get("sixheader"))){
+            map.put("sixheader",param.get("saler"));
+        }
+        map.put("updtime",System.currentTimeMillis());
+         return tbCompanyCommonMapper.updateCompanysAddSales(param);
+
+    }
+
+    public int delCompanysSales(Map<String, Object> param) {
+        Map<String, Object> map = tbCompanyCommonMapper.queryCompanySales(param);
+        if (param.get("saler").equals(map.get("oneheader"))){
+            map.put("oneheader",null);
+        }else if(param.get("saler").equals(map.get("twoheader"))){
+            map.put("twoheader",null);
+        }else if(param.get("saler").equals(map.get("threeheader"))){
+            map.put("threeheader",null);
+        }else if(param.get("saler").equals(map.get("fourheader"))){
+            map.put("fourheader",null);
+        }else if(param.get("saler").equals(map.get("fiveheader"))){
+            map.put("fiveheader",null);
+        }else if(param.get("saler").equals(map.get("sixheader"))){
+            map.put("sixheader",null);
+        }
+        map.put("updtime",System.currentTimeMillis());
+        return tbCompanyCommonMapper.updateCompanysAddSales(map);
+    }
+
+    // 退回公海  加入历史私海记录 todo
+    public int rebackCompanysToHistory(Map<String, Object> param) {
+
+        int count = tbCompanyCommonMapper.rebackCompanysToHistory(param);
+
+    return 0;
+    }
 }

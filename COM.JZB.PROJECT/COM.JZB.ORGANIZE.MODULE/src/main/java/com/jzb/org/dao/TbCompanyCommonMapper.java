@@ -111,4 +111,11 @@ public interface TbCompanyCommonMapper {
      */
     int updateCompanyListInfo(Map<String, Object> param);
 
+    Map<String, Object> queryCompanySales(Map<String, Object> param);
+
+    int  updateCompanysAddSales(Map<String, Object> sMap);
+
+    int relpaceCompanysSales(Map<String, Object> param);
+
+    int rebackCompanysToHistory(Map<String, Object> param);
 }

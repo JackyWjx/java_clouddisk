@@ -23,6 +23,7 @@
         tpcl.fourheader,
         tpcl.fiveheader,
         tpcl.sixheader,
+        tpcl.status,
         (select cname from tb_dept_user where uid=#{uid} limit 1) sales,
         tcc.status,
         tcl.cname,
@@ -45,6 +46,7 @@
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status = '2'
+        and tpcl.status = '1'
         ) a where 1=1
         <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
             and (a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid}
@@ -339,8 +341,16 @@
         update tb_common_company_list
         set status='2' where cid=#{cid};
 
-        insert into tb_private_company_list (cid,tracktype,oneheader,status,addtime)
-        values (#{cid},1,#{uid},1,#{addtime});
+        insert into tb_private_company_list (cid,tracktype,
+        oneheader,twoheader,threeheader,fourheader,fiveheader,sixheader,status,addtime)
+        values (#{cid},1,
+        <choose><when test="oneheader != null and oneheader != ''">#{uid}, </when><otherwise>null,</otherwise></choose>
+        <choose><when test="twoheader != null and twoheader != ''">#{uid}, </when><otherwise>null,</otherwise></choose>
+        <choose><when test="threeheader != null and threeheader != ''">#{uid}, </when><otherwise>null,</otherwise></choose>
+        <choose><when test="fourheader != null and fourheader != ''">#{uid}, </when><otherwise>null,</otherwise></choose>
+        <choose><when test="fiveheader != null and fiveheader != ''">#{uid}, </when><otherwise>null,</otherwise></choose>
+        <choose><when test="sixheader != null and sixheader != ''">#{uid}, </when><otherwise>null,</otherwise></choose>
+        1,#{addtime});
 
     </update>
 
@@ -348,7 +358,7 @@
     <update id="rebackCompanys" parameterType="java.util.Map">
 
         update tb_common_company_list set status='1' where cid=#{cid};
-        update tb_private_company_list set status = '2' where cid = #{cid} and oneheader = #{uid} and status = '1';
+        DELETE FROM tb_private_company_list WHERE cid = #{cid} and status = '1'
 
     </update>
 
@@ -443,6 +453,7 @@
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status != '4'
+        and tpcl.status in ('1','2')
         ) a where 1=1
         <if test="status != null and status != ''">
             and a.status = #{status}
@@ -508,4 +519,33 @@
         where
         cid = #{cid};
     </update>
+
+    <select id="queryCompanySales" parameterType="java.util.Map" resultType="java.util.Map">
+        select cid ,oneheader,twoheader,threeheader,fourheader,fiveheader,sixheader from tb_private_company_list
+        where cid = #{cid} and status = '1'
+    </select>
+
+    <update id="updateCompanysAddSales" parameterType="java.util.Map" >
+        update tb_private_company_list
+        set
+        <choose><when test="oneheader != null and oneheader != ''">oneheader = #{oneheader}, </when><otherwise>oneheader = null,</otherwise></choose>
+        <choose><when test="twoheader != null and twoheader != ''">twoheader = #{twoheader}, </when><otherwise>twoheader = null,</otherwise></choose>
+        <choose><when test="threeheader != null and threeheader != ''">threeheader = #{threeheader}, </when><otherwise>threeheader = null,</otherwise></choose>
+        <choose><when test="fourheader != null and fourheader != ''">fourheader = #{fourheader}, </when><otherwise>fourheader = null,</otherwise></choose>
+        <choose><when test="fiveheader != null and fiveheader != ''">fiveheader = #{fiveheader}, </when><otherwise>fiveheader = null,</otherwise></choose>
+        <choose><when test="sixheader != null and sixheader != ''">sixheader = #{sixheader}, </when><otherwise>sixheader = null,</otherwise></choose>
+        updtime = #{updtime}
+        where cid = #{cid}
+        and status = '1'
+    </update>
+
+    <!--退回公海/加入历史私海单位-->
+    <update id="rebackCompanysToHistory" parameterType="java.util.Map">
+        update  tb_common_company_list set status = '1' where  cid = #{cid} and status = '2';
+        update tb_private_company_list set status = '2'  where cid = #{cid} and status = '1' ;
+    </update>
+
+
+
+
 </mapper>
