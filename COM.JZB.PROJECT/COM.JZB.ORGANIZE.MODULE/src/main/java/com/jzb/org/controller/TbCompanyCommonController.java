@@ -175,6 +175,93 @@ public class TbCompanyCommonController {
         return result;
     }
 
+
+    /**
+     * 获取历史私海单位
+     *
+     * @param param
+     * @return
+     * @author chenzhengduan
+     */
+    @RequestMapping(value = "/getCompanyCommonListHistory", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response getCompanyCommonListHistory(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyCommon/getCompanyCommonListHistory";
+        boolean flag = true;
+        try {
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 如果指定参数为空的话返回error
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "count"})) {
+                result = Response.getResponseError();
+            } else {
+
+                // 设置参数
+                JzbPageConvert.setPageRows(param);
+
+                // 获取list
+                List<Map<String, Object>> list = tbCompanyCommonService.getCompanyCommonListHistory(param);
+
+                // 创建map用来获取地区信息
+                Map<String, Object> map = new HashMap<>();
+
+                for (int i = 0, l = list.size(); i < l; i++) {
+
+                    map.put("key", list.get(i).get("region"));
+                    Response cityList = tbCityRedisApi.getCityList(map);
+                    // 获取地区map
+                    Map<String, Object> resultParam = null;
+                    if (cityList.getResponseEntity() != null) {
+                        resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
+                        if(resultParam!=null){
+                            resultParam.put("region", resultParam.get("creaid"));
+                        }else {
+                            resultParam=new HashMap<>();
+                            resultParam.put("region",null);
+                        }
+                    }
+                    // 转map
+                    if (resultParam != null) {
+                        Response response = regionBaseApi.getRegionInfo(resultParam);
+                        list.get(i).put("region", response.getResponseEntity());
+                    }
+                }
+                // 分页对象
+                PageInfo pageInfo = new PageInfo();
+
+                pageInfo.setList(list);
+                // 如果前端传的count 大于0 则返回list大小
+                pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? tbCompanyCommonService.getCompanyCommonListHistoryCount(param) : 0);
+                // 获取用户信息返回
+                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+                result.setPageInfo(pageInfo);
+            }
+
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getCompanyCommonListHistory Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
     /**
      * 获取已分配的业主单位 (带条件查询)
      *
@@ -562,6 +649,7 @@ public class TbCompanyCommonController {
         }
         return result;
     }
+
     /**
      * 所有业主-业主列表查询
      *

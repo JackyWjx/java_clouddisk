@@ -118,4 +118,8 @@ public interface TbCompanyCommonMapper {
     int relpaceCompanysSales(Map<String, Object> param);
 
     int rebackCompanysToHistory(Map<String, Object> param);
+
+    List<Map<String, Object>> getCompanyCommonListHistory(Map<String, Object> param);
+
+    int getCompanyCommonListHistoryCount(Map<String, Object> param);
 }

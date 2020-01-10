@@ -87,9 +87,11 @@
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status = '2'
+        and tpcl.status = '1'
         ) a where 1=1
         <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
-            and a.oneheader = #{uid}
+            and (a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid}
+            or a.fiveheader = #{uid}  or a.sixheader = #{uid})
         </if>
     </select>
 
@@ -283,15 +285,13 @@
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status != '4'
+        and tpcl.status in ('1','2')
         ) a where 1=1
         <if test="status != null and status != ''">
             and a.status = #{status}
         </if>
         <if test="region!=null and region !=''">
             and a.region=#{region}
-        </if>
-        <if test="uid != null and uid != ''">
-            and a.oneheader = #{uid}
         </if>
         <if test="dictvalue != null and dictvalue !='' and dictvalue !='全部'">
             and a.dictvalue=#{dictvalue}
@@ -545,6 +545,94 @@
         update tb_private_company_list set status = '2'  where cid = #{cid} and status = '1' ;
     </update>
 
+    <select id="getCompanyCommonListHistory" parameterType="java.util.Map" resultType="java.util.Map"  >
+        select * from (
+        SELECT
+        DISTINCT
+        tcc.cid,
+        tcc.relmail,
+        tcc.relperson,
+        tcc.orgrelation,
+        tcc.prolist,
+        tcc.supervise,
+        tcc.relphone,
+        tcc.prodesc,
+        tpcl.oneheader,
+        tpcl.twoheader,
+        tpcl.threeheader,
+        tpcl.fourheader,
+        tpcl.fiveheader,
+        tpcl.sixheader,
+        tpcl.status,
+        (select cname from tb_dept_user where uid=#{uid} limit 1) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) companyLevel,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
+        FROM
+        tb_common_company_list tcc
+        INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
+        LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+        AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
+        WHERE
+        tcc.status = '2'
+        and tpcl.status = '2'
+        ) a where 1=1
+        <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
+            and (a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid}
+            or a.fiveheader = #{uid}  or a.sixheader = #{uid})
+        </if>
+        limit
+        #{pagesize}
+        offset
+        #{pageno}
+    </select>
+
+    <select id="getCompanyCommonListHistoryCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from (
+        SELECT
+        DISTINCT
+        tcc.cid,
+        tpcl.oneheader,
+        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) companyLevel,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
+        FROM
+        tb_common_company_list tcc
+        INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
+        LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+        AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
+        WHERE
+        tcc.status = '2'
+        and tpcl.status = '2'
+        ) a where 1=1
+        <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
+            and a.oneheader = #{uid}
+        </if>
+
+    </select>
 
 
 

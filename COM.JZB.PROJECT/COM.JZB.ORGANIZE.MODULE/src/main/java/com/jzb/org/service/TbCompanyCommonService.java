@@ -500,6 +500,14 @@ public class TbCompanyCommonService {
 
         int count = tbCompanyCommonMapper.rebackCompanysToHistory(param);
 
-    return 0;
+    return count;
+    }
+
+    public List<Map<String, Object>> getCompanyCommonListHistory(Map<String, Object> param) {
+        return tbCompanyCommonMapper.getCompanyCommonListHistory(param);
+    }
+
+    public int getCompanyCommonListHistoryCount(Map<String, Object> param) {
+        return tbCompanyCommonMapper.getCompanyCommonListHistoryCount(param);
     }
 }
