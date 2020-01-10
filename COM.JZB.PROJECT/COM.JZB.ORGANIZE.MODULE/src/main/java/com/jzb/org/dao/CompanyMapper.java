@@ -359,4 +359,11 @@ public interface CompanyMapper {
     int addCompanyToCommon(Map<String, Object> param);
 
     List<Map<String, Object>> queryUserByCid(Map<String, Object> param);
+
+    /**
+     * 根据企业名称查询企业负责人
+     * @param map
+     * @return
+     */
+    Map<String, Object> getAddCompany(Map<String, Object> map);
 } // End interface CompanyMapper
