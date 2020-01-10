@@ -165,6 +165,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
 
         //---- begin operate
         GATEWAY_WHITE_LIST.put("/JZB-OPERATE/resourceVotes/getResourceVotes", "");
+        GATEWAY_WHITE_LIST.put("/JZB-OPERATE/operate/log/searchVersionLog", "");
         //---- end operate
 
         //---- begin resource
