@@ -11,6 +11,7 @@ import com.jzb.base.tree.JzbTree;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 
+import com.jzb.base.util.SendSysMsgUtil;
 import com.jzb.org.api.auth.AuthApi;
 import com.jzb.org.api.message.MessageApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
@@ -233,6 +234,14 @@ public class CompanyService {
         int type = Integer.parseInt(map.get("type").toString());
         String cname = map.get("cname").toString();
         //type的种类
+        Map<String,Object> map1 = companyMapper.getAddCompany(map);
+        map1.put("senduid", map1.get("senduid"));
+        map1.put("msg", "您有一条加入单位的消息未处理");
+        map1.put("code", "JRDW");
+        map1.put("topic_name", map1.get("senduid") + "/org/addCompany");
+        //发送系统平台消息 并添加存储到数据库
+        messageApi.sendShortMsg(SendSysMsgUtil.setMsgArg(map1));
+
         int found = 1;
         int join = 2;
         if (type == found) {

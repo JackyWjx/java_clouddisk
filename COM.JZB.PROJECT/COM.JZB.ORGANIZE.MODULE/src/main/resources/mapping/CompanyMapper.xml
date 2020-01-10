@@ -1111,4 +1111,13 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
         status = #{status}
     </insert>
 
+    <select id="getAddCompany" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        reguid as senduid
+        from
+        tb_company_list
+        where
+        cname = #{cname}
+    </select>
+
 </mapper>
