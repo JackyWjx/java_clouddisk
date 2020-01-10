@@ -519,6 +519,7 @@ public class TbPlantaskJobDutyController {
                     }
                 }
                 roles.get(i).put("children",tempList);
+                roles.get(i).put("dutyid",roles.get(i).get("crid"));
             }
             response = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();

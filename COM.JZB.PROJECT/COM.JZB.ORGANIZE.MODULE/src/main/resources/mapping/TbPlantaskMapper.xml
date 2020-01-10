@@ -29,41 +29,22 @@ WITH RECURSIVE item AS (
 		sort
 	FROM
 		${tabname}
-    where parentid= '0' and  node=#{node}
-    <if test="cdid!=null and cdid!=''">
-			and cdid= #{cdid}
+    where parentid= '0000000' and  node=#{node}
+    and status=0
+    <if test="bumen!=null and bumen!=''">
+			and cdid like '%${bumen}%'
 	</if>
-	<if test="starttime!=null and starttime!=''">
-		 	and starttime &gt;= #{starttime}
+	<if test="ktime!=null and ktime!=''">
+		 	and starttime &gt;= ${ktime}
 	</if>
-	<if test="endtime!=null and endtime!=''">
-			and endtime  &lt;= #{endtime}
+	<if test="etime!=null and etime!=''">
+			and endtime  &lt;= ${etime}
 	</if>
-		<if test="tasktype!=null and tasktype!=''">
-			and tasktype  &lt;= #{tasktype}
-		</if>
+	<if test="zhuangtai!=null and zhuangtai!=''">
+			and tasktype  like '%${zhuangtai}%'
+	</if>
 
-		<if test="taskstatus!=null and taskstatus!=''">
-			and taskstatus  = #{taskstatus}
-		</if>
-		<if test="acceptors!=null and acceptors!=''">
-			and acceptors  like '%'#{acceptors}'%'
-		</if>
 
-		<if test="executors!=null and executors!=''">
-			and executors  like '%'#{executors}'%'
-		</if>
-
-		<if test="assistants!=null and assistants!=''">
-			and assistants  like '%'#{assistants}'%'
-		</if>
-
-		<if test="outcome!=null and outcome!=''">
-			and outcome  > #{outcome}
-		</if>
-		<if test="uid!=null and uid!=''">
-			and uid = #{uid}
-		</if>
 
     LIMIT #{pagesize} OFFSET #{pageno}
 )
@@ -93,6 +74,19 @@ WITH RECURSIVE item AS (
 		${tabname} itema
 		 JOIN item ON itema.parentid = item.planid
 		and itema.node = #{node}
+		and itema.status=0
+		<if test="bumen!=null and bumen!=''">
+			and itema.cdid like '%${bumen}%'
+		</if>
+		<if test="ktime!=null and ktime!=''">
+			and itema.starttime &gt;= ${ktime}
+		</if>
+		<if test="etime!=null and etime!=''">
+			and itema.endtime  &lt;= ${etime}
+		</if>
+		<if test="zhuangtai!=null and zhuangtai!=''">
+			and itema.tasktype  like '%${zhuangtai}%'
+		</if>
 	) SELECT
 	item.*
 FROM
@@ -149,12 +143,12 @@ ORDER BY
 		( "planid", "cdid", "uid", "dutyid", "plancontent",
 		  "acceptors", "executors", "assistants", "outcome",
 		 "tasktype", "taskstatus", "notes", "path", "filenames", "addid",
-		  "review", "parentid", "sort", "node","starttime","endtime",addtime,uptime,status,ptype)
+		  "review", "parentid", "sort", "node","starttime","endtime","addtime","uptime","status","ptype",progressofwork)
 		VALUES
-		<foreach collection="list" index="index" item="item"  separator=",">
+		<foreach collection="inerlist" index="index" item="item"  separator=",">
 		(
 		<choose>
-			<when test="item.planid !=null">
+			<when test="item.planid !=null and item.planid !=''">
 				#{item.planid},
 			</when>
 			<otherwise>
@@ -162,7 +156,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.cdid !=null">
+			<when test="item.cdid !=null and item.cdid !=''">
 				#{item.cdid},
 			</when>
 			<otherwise>
@@ -170,7 +164,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.uid !=null">
+			<when test="item.uid !=null and item.uid !=''">
 				#{item.uid},
 			</when>
 			<otherwise>
@@ -178,7 +172,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.dutyid !=null">
+			<when test="item.dutyid !=null and item.dutyid !=''">
 				#{item.dutyid},
 			</when>
 			<otherwise>
@@ -186,7 +180,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.plancontent !=null">
+			<when test="item.plancontent !=null and item.plancontent !=''">
 				#{item.plancontent},
 			</when>
 			<otherwise>
@@ -194,7 +188,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.acceptors !=null">
+			<when test="item.acceptors !=null and item.acceptors !=''">
 				#{item.acceptors},
 			</when>
 			<otherwise>
@@ -202,7 +196,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.executors !=null">
+			<when test="item.executors !=null and item.executors !=''">
 				#{item.executors},
 			</when>
 			<otherwise>
@@ -210,7 +204,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.assistants !=null">
+			<when test="item.assistants !=null and item.assistants !=''">
 				#{item.assistants},
 			</when>
 			<otherwise>
@@ -218,7 +212,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.outcome !=null">
+			<when test="item.outcome !=null and item.outcome !=''">
 				#{item.outcome},
 			</when>
 			<otherwise>
@@ -226,7 +220,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.tasktype !=null">
+			<when test="item.tasktype !=null and item.tasktype !=''">
 				#{item.tasktype},
 			</when>
 			<otherwise>
@@ -234,7 +228,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.taskstatus !=null">
+			<when test="item.taskstatus !=null and item.taskstatus !=''">
 				#{item.taskstatus},
 			</when>
 			<otherwise>
@@ -242,7 +236,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.notes !=null">
+			<when test="item.notes !=null and item.notes !=''">
 				#{item.notes},
 			</when>
 			<otherwise>
@@ -250,7 +244,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.path !=null">
+			<when test="item.path !=null and item.path !=''">
 				#{item.path},
 			</when>
 			<otherwise>
@@ -258,7 +252,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.filenames !=null">
+			<when test="item.filenames !=null and item.filenames !=''">
 				#{item.filenames},
 			</when>
 			<otherwise>
@@ -266,7 +260,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.addid !=null">
+			<when test="item.addid !=null and item.addid !=''">
 				#{item.addid},
 			</when>
 			<otherwise>
@@ -274,7 +268,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.review !=null">
+			<when test="item.review !=null and item.review !=''">
 				#{item.review},
 			</when>
 			<otherwise>
@@ -282,15 +276,15 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.parentid !=null">
+			<when test="item.parentid !=null and item.parentid !=''">
 				#{item.parentid},
 			</when>
 			<otherwise>
-				'0',
+				'0000000',
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.sort !=null">
+			<when test="item.sort !=null and item.sort !=''">
 				#{item.sort},
 			</when>
 			<otherwise>
@@ -298,7 +292,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.node !=null">
+			<when test="item.node !=null and item.node !=''">
 				#{item.node},
 			</when>
 			<otherwise>
@@ -307,7 +301,7 @@ ORDER BY
 		</choose>
 
 		<choose>
-			<when test="item.starttime !=null">
+			<when test="item.starttime !=null and item.starttime !=''">
 				#{item.starttime},
 			</when>
 			<otherwise>
@@ -315,7 +309,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.endtime !=null">
+			<when test="item.endtime !=null and item.endtime !=''">
 				#{item.endtime},
 			</when>
 			<otherwise>
@@ -323,7 +317,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 		<choose>
-			<when test="item.addtime !=null">
+			<when test="item.addtime !=null and item.addtime !=''">
 				#{item.addtime},
 			</when>
 			<otherwise>
@@ -331,7 +325,7 @@ ORDER BY
 			</otherwise>
 		</choose>
 			<choose>
-				<when test="item.uptime !=null">
+				<when test="item.uptime !=null and item.uptime !=''">
 					#{item.uptime},
 				</when>
 				<otherwise>
@@ -339,7 +333,7 @@ ORDER BY
 				</otherwise>
 			</choose>
 			<choose>
-				<when test="item.status !=null">
+				<when test="item.status !=null and item.status !=''">
 					#{item.status},
 				</when>
 				<otherwise>
@@ -347,8 +341,16 @@ ORDER BY
 				</otherwise>
 			</choose>
 			<choose>
-				<when test="item.ptype !=null">
-					#{item.ptype}
+				<when test="item.ptype !=null and item.ptype !=''">
+					#{item.ptype},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="item.progressofwork !=null and item.progressofwork !=''">
+					#{item.progressofwork}
 				</when>
 				<otherwise>
 					null
@@ -360,32 +362,34 @@ ORDER BY
 
 	<!--修改计划管理-->
 	<update id="updatePlantask" parameterType="java.util.Map" >
-		<foreach collection="list" index="index" item="item" close =";" >
+		<foreach collection="uplist" index="index" item="item"  separator=";"  >
 		UPDATE ${tabname}
 		SET
-		<if test="item.cdid != null">cdid=#{item.cdid},</if>
-		<if test="item.uid != null">uid=#{item.uid},</if>
-		<if test="item.dutyid != null">dutyid=#{item.dutyid},</if>
-		<if test="item.plancontent != null">plancontent=#{item.plancontent},</if>
-		<if test="item.starttime != null">starttime=#{item.starttime},</if>
-		<if test="item.endtime != null">endtime=#{item.endtime},</if>
-		<if test="item.acceptors != null">acceptors=#{item.acceptors},</if>
-		<if test="item.executors != null">executors=#{item.executors},</if>
-		<if test="item.assistants != null">assistants=#{item.assistants},</if>
-		<if test="item.outcome != null">outcome=#{item.outcome},</if>
-		<if test="item.progressOfWork != null">progressOfWork=#{item.progressOfWork},</if>
-		<if test="item.tasktype != null">tasktype=#{item.tasktype},</if>
-		<if test="item.taskstatus != null">taskstatus=#{item.taskstatus},</if>
-		<if test="item.path != null">path=#{item.path},</if>
-		<if test="item.filenames != null">filenames=#{item.filenames},</if>
-		<if test="item.addid != null">addid=#{item.addid},</if>
-		<if test="item.review != null">review=#{item.review},</if>
-		<if test="item.parentid != null">parentid=#{item.parentid},</if>
-		<if test="item.sort != null">sort=#{item.sort},</if>
-		<if test="item.node != null">node=#{item.node},</if>
-		<if test="item.addtime != null">addtime=#{item.addtime},</if>
-		<if test="item.uptime != null">uptime=#{item.uptime}</if>
-		<if test="item.status != null">status=#{item.status}</if>
+		<if test="item.cdid != null and item.uptime!=''">cdid=#{item.cdid},</if>
+		<if test="item.uid != null and item.uid!=''">uid=#{item.uid},</if>
+		<if test="item.dutyid != null and item.dutyid!=''">dutyid=#{item.dutyid},</if>
+		<if test="item.plancontent != null and item.plancontent!=''">plancontent=#{item.plancontent},</if>
+		<if test="item.starttime != null and item.starttime!=''">starttime=#{item.starttime},</if>
+		<if test="item.endtime != null and item.endtime!=''">endtime=#{item.endtime},</if>
+		<if test="item.acceptors != null and item.acceptors!=''">acceptors=#{item.acceptors},</if>
+		<if test="item.executors != null and item.executors!=''">executors=#{item.executors},</if>
+		<if test="item.assistants != null and item.assistants!=''">assistants=#{item.assistants},</if>
+		<if test="item.outcome != null and item.outcome!=''">outcome=#{item.outcome},</if>
+		<if test="item.progressOfWork != null and item.progressOfWork!=''">progressOfWork=#{item.progressOfWork},</if>
+		<if test="item.tasktype != null and item.tasktype!=''">tasktype=#{item.tasktype},</if>
+		<if test="item.taskstatus != null and item.taskstatus!=''">taskstatus=#{item.taskstatus},</if>
+		<if test="item.path != null and item.path!=''">path=#{item.path},</if>
+		<if test="item.filenames != null and item.filenames!=''">filenames=#{item.filenames},</if>
+		<if test="item.review != null and item.review!=''">review=#{item.review},</if>
+		<if test="item.parentid != null and item.parentid!=''">parentid=#{item.parentid},</if>
+		<if test="item.sort != null and item.sort!=''">sort=#{item.sort},</if>
+		<if test="item.node != null and item.node!=''">node=#{item.node},</if>
+		<if test="item.progressofwork != null and item.progressofwork!=''">progressofwork=#{item.progressofwork},</if>
+		<if test="item.status != null and item.status!=''">status=#{item.status},</if>
+		<if test="item.addtime != null and item.addtime!=''">addtime=#{item.addtime},</if>
+		<if test="item.uptime != null and item.uptime!=''">uptime=#{item.uptime}</if>
+
+
 		where planid=#{item.planid}
 		</foreach>
 
@@ -402,13 +406,93 @@ ORDER BY
 
 			UPDATE ${tabname} SET
 			status=#{status},
-			addid=#{addid},
 			uptime=#{uptime}
 			where planid=#{planid} and node=#{node}
 
 	</update>
 
 
+	<select id="selPantaskids" parameterType="java.util.Map" resultType="java.util.Map">
+		select planid from
+		${tabname}
+   		where
+   		planid in (${planids})
+	</select>
 
 
+
+
+
+	<select id="getPantaskDas" parameterType="java.util.Map" resultType="java.util.Map">
+
+   		select planid,
+		cdid,
+		uid,
+		dutyid,
+		plancontent,
+		starttime,
+		endtime,
+		acceptors,
+		executors,
+		assistants,
+		outcome,
+		tasktype,
+		taskstatus	,
+		notes,
+		path,
+		filenames,
+		addid,
+		review,
+		parentid,
+		sort,progressofwork from tb_plantask_year
+		where
+		(
+		acceptors like '%${uid}%'
+		or
+		assistants like'%${uid}%'
+		or
+		executors like '%${uid}%'
+		or
+		uid like  '%${uid}%'
+		)  and starttime &lt;= #{starttime} and endtime &gt;= #{endtime}
+		and status=0
+	</select>
+
+	<select id="getPantaskDasXiangxi" parameterType="java.util.Map" resultType="java.util.Map">
+   		select planid,
+		cdid,
+		uid,
+		dutyid,
+		plancontent,
+		starttime,
+		endtime,
+		acceptors,
+		executors,
+		assistants,
+		outcome,
+		tasktype,
+		taskstatus	,
+		notes,
+		path,
+		filenames,
+		addid,
+		review,
+		parentid,
+		sort,progressofwork from tb_plantask_year
+		where
+		planid=#{planid}
+	</select>
+
+
+	<update id="upDayXiangxi" parameterType="java.util.Map" >
+
+			UPDATE ${tabname}
+			SET
+			<if test="notes != null and notes!=''">notes=#{notes},</if>
+			<if test="progressofwork != null and progressofwork!=''">progressofwork=#{progressofwork},</if>
+			<if test="uptime != null and uptime!=''">uptime=#{uptime}</if>
+			where planid=#{planid}
+
+
+	</update>
 </mapper>

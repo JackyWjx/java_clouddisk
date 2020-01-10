@@ -19,8 +19,14 @@
         select crid,content,cddid from
         tb_plantask_job_position
 
-            where cddid in (${cddids})
+            where cddid in ('${cddids}')
 
+    </select>
+
+    <!--    查询岗位职责字典内容   lifei -->
+    <select id="selecttContent" resultType="Map">
+        select uniqueid,"content" from tb_plantask_job_content
+        where uniqueid=#{dutyids}
     </select>
 
 <!--    查询角色    -->

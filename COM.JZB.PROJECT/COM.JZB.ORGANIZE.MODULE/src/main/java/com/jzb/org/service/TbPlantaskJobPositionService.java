@@ -31,4 +31,9 @@ public class TbPlantaskJobPositionService {
     public List<Map<String, Object>> selectRoleByDeptids(Map<String, Object> param) {
         return tbPlantaskJobPositionMapper.selectRoleByDeptids(param);
     }
+
+
+    public Map<String, Object> selecttContent(Map<String, Object> param) {
+        return tbPlantaskJobPositionMapper.selecttContent(param);
+    }
 }

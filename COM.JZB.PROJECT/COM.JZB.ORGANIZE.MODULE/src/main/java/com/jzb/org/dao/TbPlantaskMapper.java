@@ -20,4 +20,12 @@ public interface TbPlantaskMapper {
      List<Map<String, Object>> getCompanydeptMap();
 
      int delPlantask(Map<String, Object> param);
+
+     List<Map<String, Object>> selPantaskids(Map<String, Object> param);
+
+     List<Map<String, Object>> getPantaskDas(Map<String, Object> param);
+
+     Map<String, Object> getPantaskDasXiangxi(Map<String, Object> param);
+
+    int upDayXiangxi(Map<String, Object> param);
 }

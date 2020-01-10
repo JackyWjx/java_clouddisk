@@ -45,5 +45,21 @@ public class TbPlantaskService {
     public int delPlantask(Map<String, Object> param) {
         return tbPlantaskMapper.delPlantask(param);
     }
+
+    public List<Map<String, Object>> selPantaskids(Map<String, Object> param) {
+        return tbPlantaskMapper.selPantaskids(param);
+    }
+
+    public List<Map<String, Object>> getPantaskDas(Map<String, Object> param) {
+        return tbPlantaskMapper.getPantaskDas(param);
+    }
+
+    public Map<String, Object> getPantaskDasXiangxi(Map<String, Object> param) {
+        return tbPlantaskMapper.getPantaskDasXiangxi(param);
+    }
+
+    public int upDayXiangxi(Map<String, Object> param) {
+        return tbPlantaskMapper.upDayXiangxi(param);
+    }
 }
 
