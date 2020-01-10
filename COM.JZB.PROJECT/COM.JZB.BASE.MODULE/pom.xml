@@ -84,5 +84,12 @@
             <scope>compile</scope>
         </dependency>
         <!--lifei end-->
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.1.41</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
