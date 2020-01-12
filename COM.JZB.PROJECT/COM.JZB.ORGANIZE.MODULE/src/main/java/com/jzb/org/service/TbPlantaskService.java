@@ -61,5 +61,9 @@ public class TbPlantaskService {
     public int upDayXiangxi(Map<String, Object> param) {
         return tbPlantaskMapper.upDayXiangxi(param);
     }
+
+    public List<Map<String, Object>> selcdids(String uid) {
+        return tbPlantaskMapper.selcdids(uid);
+    }
 }
 

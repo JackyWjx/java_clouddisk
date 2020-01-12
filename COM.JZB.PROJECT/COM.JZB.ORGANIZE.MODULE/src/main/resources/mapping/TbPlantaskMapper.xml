@@ -35,15 +35,17 @@ WITH RECURSIVE item AS (
 			and cdid like '%${bumen}%'
 	</if>
 	<if test="ktime!=null and ktime!=''">
-		 	and starttime &gt;= ${ktime}
+		 	and starttime &lt;= ${ktime}
 	</if>
 	<if test="etime!=null and etime!=''">
-			and endtime  &lt;= ${etime}
+			and endtime  &gt;= ${etime}
 	</if>
 	<if test="zhuangtai!=null and zhuangtai!=''">
 			and tasktype  like '%${zhuangtai}%'
 	</if>
-
+		<if test="touid!=null and touid!=''">
+			and uid  = '${touid}'
+		</if>
 
 
     LIMIT #{pagesize} OFFSET #{pageno}
@@ -79,19 +81,20 @@ WITH RECURSIVE item AS (
 			and itema.cdid like '%${bumen}%'
 		</if>
 		<if test="ktime!=null and ktime!=''">
-			and itema.starttime &gt;= ${ktime}
+			and itema.starttime &lt;= ${ktime}
 		</if>
 		<if test="etime!=null and etime!=''">
-			and itema.endtime  &lt;= ${etime}
+			and itema.endtime  &gt;= ${etime}
 		</if>
 		<if test="zhuangtai!=null and zhuangtai!=''">
 			and itema.tasktype  like '%${zhuangtai}%'
 		</if>
-	) SELECT
+	)
+
+SELECT
 	item.*
 FROM
 	item
-
 ORDER BY
 	item.sort asc
 
@@ -341,8 +344,8 @@ ORDER BY
 				</otherwise>
 			</choose>
 			<choose>
-				<when test="item.ptype !=null and item.ptype !=''">
-					#{item.ptype},
+				<when test="ptype !=null and ptype !=''">
+					'${ptype}',
 				</when>
 				<otherwise>
 					null,
@@ -365,8 +368,7 @@ ORDER BY
 		<foreach collection="uplist" index="index" item="item"  separator=";"  >
 		UPDATE ${tabname}
 		SET
-		<if test="item.cdid != null and item.uptime!=''">cdid=#{item.cdid},</if>
-		<if test="item.uid != null and item.uid!=''">uid=#{item.uid},</if>
+		<if test="item.cdid != null and item.cdid!=''">cdid=#{item.cdid},</if>
 		<if test="item.dutyid != null and item.dutyid!=''">dutyid=#{item.dutyid},</if>
 		<if test="item.plancontent != null and item.plancontent!=''">plancontent=#{item.plancontent},</if>
 		<if test="item.starttime != null and item.starttime!=''">starttime=#{item.starttime},</if>
@@ -444,7 +446,7 @@ ORDER BY
 		addid,
 		review,
 		parentid,
-		sort,progressofwork from tb_plantask_year
+		sort,progressofwork from tb_plantask
 		where
 		(
 		acceptors like '%${uid}%'
@@ -478,15 +480,14 @@ ORDER BY
 		addid,
 		review,
 		parentid,
-		sort,progressofwork from tb_plantask_year
+		sort,progressofwork from tb_plantask
 		where
 		planid=#{planid}
 	</select>
 
 
 	<update id="upDayXiangxi" parameterType="java.util.Map" >
-
-			UPDATE ${tabname}
+			UPDATE tb_plantask
 			SET
 			<if test="notes != null and notes!=''">notes=#{notes},</if>
 			<if test="progressofwork != null and progressofwork!=''">progressofwork=#{progressofwork},</if>
@@ -495,4 +496,17 @@ ORDER BY
 
 
 	</update>
+
+
+
+	<select id="selcdids" parameterType="java.lang.String" resultType="java.util.Map">
+		select cdid from tb_dept_user
+		where uid='${uid}' and cid='JZB0001'
+	</select>
+
+	<select id="selcdidFus" parameterType="java.util.Map">
+		select cdid,pcdid,cname
+		from tb_company_dept
+		where cid='JZB0001' and cdid=#{cdid}
+	</select>
 </mapper>

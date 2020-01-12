@@ -623,8 +623,6 @@ public class TbPlantaskController {
                 response = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addMethodTypeBrother Method", "[param error] or [param is null]"));
             } else {
-
-
                 switch (param.get("type").toString()) {
                     case "y":
                         param.put("tabname", "tb_plantask_year");
@@ -634,7 +632,7 @@ public class TbPlantaskController {
                         break;
                     case "d":
                         param.put("tabname", "tb_plantask_day");
-                        param.put("progressOfWork", 0);
+                        param.put("progressofwork", 0);
                         break;
                     case "w":
                         param.put("tabname", "tb_plantask_week");
@@ -642,50 +640,10 @@ public class TbPlantaskController {
                     default:
                         response = Response.getResponseError();
                 }
-
                 List<Map<String, Object>> a = (List<Map<String, Object>>) param.get("data");
                 List<Map<String, Object>> list = null;
-                //{data=[{planid=1,
-                // parentid=0,
-                // children=[],
-                // select=1,
-                // assistantsname=[ATMJQCPEGACB, AFIUMIIJDCNL, AZZZVGGQCKTC, AQSAYGJOPGMY],
-                // cdid=[JZB00010000],
-                // plancontent=21312,
-                // outcome=1231231,
-                // valueDate=[2020-01-15T16:00:00.000Z, 2020-02-10T16:00:00.000Z],
-                // executorsname=AFIUMIIJDCNL,
-                // acceptorsname=AQSAYGJOPGMY,
-                // gname=[mkVVqYdrPManUwtqncUvXWQWlo, mkVVqYdrPManUwtqncUvXWQWlo],
-                // taskstatus=2,
-                // tasktype=3,
-                // review=3,
-                // addname=33,
-                // filenames=33,
-                // notes=333额}],
-                System.out.println("\n\n\n\n\n");
+               // System.out.println("\n\n\n\n\n");
                 list = getChildCategory(a);
-//                for (int i = 0; i < list.size(); i++) {
-//                    System.out.println("planid-----" + (list.get(i).get("planid") == null ? "" : list.get(i).get("planid").toString()));
-//                    System.out.println("parentid-----" + (list.get(i).get("parentid") == null ? "" : list.get(i).get("parentid").toString()));
-//                    //System.out.println(list.get(i).get("children")==null?"":list.get(i).get("children").toString()));
-//                    System.out.println("select-----" + (list.get(i).get("select") == null ? "" : list.get(i).get("select").toString()));
-//                    System.out.println("assistantsname-----" + (list.get(i).get("assistantsname") == null ? "" : list.get(i).get("assistantsname").toString()));
-//                    System.out.println("cdid-----" + (list.get(i).get("cdid") == null ? "" : list.get(i).get("cdid").toString()));
-//                    System.out.println("plancontent-----" + (list.get(i).get("plancontent") == null ? "" : list.get(i).get("plancontent").toString()));
-//                    System.out.println("outcome-----" + (list.get(i).get("outcome") == null ? "" : list.get(i).get("outcome").toString()));
-//                    System.out.println("valueDate-----" + (list.get(i).get("valueDate") == null ? "" : list.get(i).get("valueDate").toString()));
-//                    System.out.println("executorsname-----" + (list.get(i).get("executorsname") == null ? "" : list.get(i).get("executorsname").toString()));
-//                    System.out.println("acceptorsname-----" + (list.get(i).get("acceptorsname") == null ? "" : list.get(i).get("acceptorsname").toString()));
-//                    System.out.println("gname-----" + (list.get(i).get("gname") == null ? "" : list.get(i).get("gname").toString()));
-//                    System.out.println("taskstatus-----" + (list.get(i).get("taskstatus") == null ? "" : list.get(i).get("taskstatus").toString()));
-//                    System.out.println("tasktype-----" + (list.get(i).get("tasktype") == null ? "" : list.get(i).get("tasktype").toString()));
-//                    System.out.println("review-----" + (list.get(i).get("review") == null ? "" : list.get(i).get("review").toString()));
-//                    System.out.println("addname-----" + (list.get(i).get("addname") == null ? "" : list.get(i).get("addname").toString()));
-//                    System.out.println("filenames-----" + (list.get(i).get("filenames") == null ? "" : list.get(i).get("filenames").toString()));
-//                    System.out.println("notes-----" + (list.get(i).get("notes") == null ? "" : list.get(i).get("notes").toString()));
-//                    System.out.println("\n\n\n\n\n");
-//                }
                 StringBuffer sb = new StringBuffer();
                 List<Map<String, Object>> idslist = new ArrayList<>();
                 if (list.size() > 0) {
@@ -753,9 +711,9 @@ public class TbPlantaskController {
                     list.get(i).put("node", param.get("dept").toString());
                     list.get(i).put("addid", userInfo.get("nickname").toString());
                     list.get(i).put("uid", userInfo.get("uid").toString());
-                    System.out.println("\n\n\n\n\n\n");
-                    System.out.println(userInfo.get("uid").toString());
-                    System.out.println("\n\n\n\n\n\n");
+//                    System.out.println("\n\n\n\n\n\n");
+//                    System.out.println(userInfo.get("uid").toString());
+//                    System.out.println("\n\n\n\n\n\n");
 
                     if (upstr.indexOf(list.get(i).get("planid").toString()) > -1) {
                         list.get(i).put("addtime", System.currentTimeMillis());
@@ -994,7 +952,7 @@ public class TbPlantaskController {
     /**
      * @param param
      * @return
-     * @deprecated 删除机会管理
+     * @deprecated 个人日计划 右边 删除
      */
     @RequestMapping(value = "/delPlantask", method = RequestMethod.POST)
     @ResponseBody
@@ -1067,12 +1025,10 @@ public class TbPlantaskController {
     }
 
 
-
-
     /**
      * @param
      * @return TbTempItemController
-     * @deprecated 周计划 年机会 部门计划 月计划 通用查询
+     * @deprecated 个人日计划 右边 详情
      */
     @RequestMapping(value = "/getPlantaskDayItem", method = RequestMethod.POST)
     @ResponseBody
@@ -1188,8 +1144,6 @@ public class TbPlantaskController {
         }
         return response;
     }
-
-
 
 
     /**
@@ -1455,7 +1409,7 @@ public class TbPlantaskController {
     /**
      * @param
      * @return TbTempItemController
-     * @deprecated 周计划 年机会 部门计划 月计划 通用查询
+     * @deprecated 所有计支宝 去重复后用户 cid cname
      */
     @RequestMapping(value = "/getPlantaskUsers", method = RequestMethod.POST)
     @ResponseBody
@@ -1477,13 +1431,10 @@ public class TbPlantaskController {
                 param.put("pagesize",5000);
                 param.put("pageno","1");
                 param.put("start",1);
-
                 List<Map<String, Object>> duList = deptService.queryDeptUser(param);
-
-                HashSet h = new HashSet(duList);
-
+                HashSet h = new HashSet();
                 for (Map<String,Object> map : duList) {
-                    System.out.println(map.get("cname")+ " : " +map.get("uid"));
+                    //System.out.println(map.get("cname")+ " : " +map.get("uid"));
                     Map<String,Object> addmap=new HashMap<>();
                     addmap.put("cname",map.get("cname"));
                     addmap.put("uid",map.get("uid"));
@@ -1534,12 +1485,13 @@ public class TbPlantaskController {
             // type=w 代表周
             // dept=1 代表部门
             // dept=0 代表个人
-            if (JzbCheckParam.haveEmpty(param, new String[]{"pageno","pagesize","time"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pageno","pagesize","type","dept"})) {
                 response = Response.getResponseError();
             } else {
 
                 param.put("bumen",param.get("bumen").toString().replaceAll("\\[","").replaceAll("\\]",""));
                 param.put("zhuangtai",param.get("zhuangtai").toString().replaceAll("\\[","").replaceAll("\\]",""));
+                param.put("touid",param.get("touid").toString().replaceAll("\\[","").replaceAll("\\]",""));
 
                 if(param.get("time")!=null) {
                     if (!param.get("time").toString().equals("")) {
@@ -1547,7 +1499,7 @@ public class TbPlantaskController {
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(format1.parse(param.get("time").toString()));
                         //代表周
-                        if (param.get("aaaa").toString().equals("1")) {
+                        if (param.get("type").toString().equals("w")) {
                             //获取周
                             int lastDay = cal.getActualMaximum(Calendar.DAY_OF_WEEK);
                             cal.add(Calendar.DATE, 7);
@@ -1556,7 +1508,7 @@ public class TbPlantaskController {
 
                             System.out.println("一周" + param.get("ktime"));
                             System.out.println("一周" + param.get("etime"));
-                        } else if (param.get("aaaa").toString().equals("2")) {
+                        } else if (param.get("type").toString().equals("y")) {
                             cal.setTime(format1.parse(param.get("time").toString()));
                             //获取某月最大天数
                             int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -1567,7 +1519,7 @@ public class TbPlantaskController {
                             param.put("etime", cal.getTimeInMillis());
                             System.out.println("一月" + param.get("ktime"));
                             System.out.println("一月" + param.get("etime"));
-                        } else if (param.get("aaaa").toString().equals("3")) {
+                        } else if (param.get("type").toString().equals("y")) {
                             cal.setTime(format1.parse(param.get("time").toString()));
                             //获取年最大天数
                             int lastDay = cal.getActualMaximum(Calendar.DAY_OF_YEAR);
@@ -1590,29 +1542,26 @@ public class TbPlantaskController {
                             System.out.println("一天" + param.get("ktime"));
                             System.out.println("一天" + param.get("etime"));
                         }
-
+                    }else{
+                        if (param.get("type").toString().equals("m")) {
+                            param.put("ktime", JzbDateUtil.getCurrentMonthFirstDay());
+                            param.put("etime", JzbDateUtil.getCurrentMonthLastDay());
+                        }else if(param.get("type").toString().equals("w")){
+                            param.put("ktime", JzbDateUtil.getFirstDayOfWeek(new Date()));
+                            param.put("etime", JzbDateUtil.getLastDayOfWeek(new Date()));
+                        }else if(param.get("type").toString().equals("d")){
+                            param.put("ktime", JzbDateUtil.getFirstDayOfDay(new Date()));
+                            param.put("etime", JzbDateUtil.getLastDayOfDay(new Date()));
+                        }else if (param.get("type").toString().equals("y")){
+                            param.put("ktime",JzbDateUtil.getCurrYearFirst().getTime());
+                            param.put("etime",JzbDateUtil.getCurrYearLast().getTime());
+                        }
                     }
                 }
                 //参照tbTempitemController
                 JzbPageConvert.setPageRows(param);
                 param.put("node",param.get("dept").toString());
-                switch(param.get("type").toString()){
-                    case "y" :
-                        param.put("tabname","tb_plantask_year");
-                        break;
-                    case "m" :
-                        param.put("tabname","tb_plantask_month");
-                        break;
-                    case "d" :
-                        param.put("tabname","tb_plantask_day");
-                        break;
-                    case "w" :
-                        param.put("tabname","tb_plantask_week");
-                        break;
-                    default:
-                        response = Response.getResponseError();
-                }
-
+                param.put("tabname","tb_plantask");
                 List<Map<String, Object>> records = tbPlantaskService.getPantaskList1(param);
                 if(records.size()==0){
                     response = Response.getResponseSuccess(userInfo);
@@ -1755,4 +1704,231 @@ public class TbPlantaskController {
 
 
 
+    /**
+     * @param
+     * @return TbTempItemController
+     * @deprecated 周计划 年机会 部门计划 月计划 通用查询
+     */
+    @RequestMapping(value = "/addPlantaskUserItem", method = RequestMethod.POST)
+    @ResponseBody
+    public Response addPlantaskUserItem(@RequestBody Map<String, Object> param) {
+        Response response=null;
+        Map<String, Object> userInfo = null;
+        String api = "/org/plantask/addPlantaskUserItem";
+        childCategoryList = new ArrayList<Map<String, Object>>();
+        boolean flag = true;
+        try {
+            // 判断参数为空返回404
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            //System.out.println(param);
+
+            if (JzbCheckParam.haveEmpty(param, new String[]{"type","dept"})) {
+                response = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addMethodTypeBrother Method", "[param error] or [param is null]"));
+            } else {
+                param.put("tabname", "tb_plantask");
+                param.put("ptype",param.get("type").toString());
+                List<Map<String, Object>> a = (List<Map<String, Object>>) param.get("data");
+                List<Map<String, Object>> list = null;
+                // System.out.println("\n\n\n\n\n");
+                list = getChildCategory(a);
+                StringBuffer sb = new StringBuffer();
+                List<Map<String, Object>> idslist = new ArrayList<>();
+                if (list.size() > 0) {
+                    for (int i = 0, l = list.size(); i < l; i++) {
+                        sb.append("'" + list.get(i).get("planid").toString() + "'");
+                        if (i != l - 1) {
+                            sb.append(",");
+                        }
+                    }
+
+                    param.put("planids", sb.toString());
+                    //查询数据库
+                    idslist = tbPlantaskService.selPantaskids(param);
+                }
+
+                sb = new StringBuffer();
+                if (idslist.size() > 0) {
+                    for (int i = 0, y = idslist.size(); i < y; i++) {
+                        sb.append("'" + idslist.get(i).get("planid").toString() + "'");
+                        if (i != y - 1) {
+                            sb.append(",");
+                        }
+                    }
+
+                }
+                String upstr = sb.toString();
+                List<Map<String, Object>> uplist = new ArrayList<>();
+                List<Map<String, Object>> inerlist = new ArrayList<>();
+
+                for (int i = 0, y = list.size(); i < y; i++) {
+                    //数据处理
+                    list.get(i).put("assistants", list.get(i).get("assistantsname") == null ? "" : list.get(i).get("assistantsname").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim());
+                    list.get(i).put("acceptors", list.get(i).get("acceptorsname") == null ? "" : list.get(i).get("acceptorsname").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim());
+                    list.get(i).put("executors", list.get(i).get("executorsname") == null ? "" : list.get(i).get("executorsname").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim());
+
+
+
+                   StringBuffer bumenids=new StringBuffer();
+                    if(list.get(i).get("cdid")==null){
+                        List<Map<String,Object>> cdids=tbPlantaskService.selcdids(userInfo.get("uid").toString());
+                        for (Map<String,Object>map:cdids){
+                            bumenids.append(map.get("cdid")+",");
+                        }
+                        list.get(i).put("cdid", bumenids.toString().substring(0,bumenids.toString().length()-1));
+                    }else{
+                        list.get(i).put("cdid", list.get(i).get("cdid").toString().replaceAll("\\[","").replaceAll("\\]","").trim());
+                    }
+
+
+                    //时间处理
+                    if (list.get(i).get("valueDate") != null) {
+                        if(!list.get(i).get("valueDate").equals("")) {
+                            list.get(i).put("starttime", JzbDataType.getDateTime(list.get(i).get("valueDate").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim().split(",")[0]).getTime());
+                            list.get(i).put("endtime", JzbDataType.getDateTime(list.get(i).get("valueDate").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim().split(",")[1]).getTime());
+                        }else{
+                            list.get(i).put("starttime", "");
+                            list.get(i).put("endtime", "");
+                        }
+                    } else {
+                        list.get(i).put("starttime", "");
+                        list.get(i).put("endtime", "");
+                    }
+
+
+                    if (list.get(i).get("dutyid") != null) {
+                        list.get(i).put("dutyid", (list.get(i).get("dutyid").toString().replaceAll("\\[", "").replaceAll("\\]", "")).trim());
+
+                    }
+                    //转换Int类型
+                    list.get(i).put("taskstatus",list.get(i).get("taskstatus")==null?"":(list.get(i).get("taskstatus").toString().equals("")?"":Integer.parseInt(list.get(i).get("taskstatus").toString())));
+                    list.get(i).put("tasktype",list.get(i).get("tasktype")==null?"":list.get(i).get("tasktype").toString());
+                    list.get(i).put("sort",list.get(i).get("sort")==null?"":(list.get(i).get("sort").toString().equals("")?"":Integer.parseInt(list.get(i).get("sort").toString())));
+
+
+                    list.get(i).put("node", param.get("dept").toString());
+                    list.get(i).put("addid", userInfo.get("nickname").toString());
+                    list.get(i).put("uid", userInfo.get("uid").toString());
+
+//                    System.out.println("\n\n\n\n\n\n");
+//                    System.out.println(userInfo.get("uid").toString());
+//                    System.out.println("\n\n\n\n\n\n");
+
+                    if (upstr.indexOf(list.get(i).get("planid").toString()) > -1) {
+                        list.get(i).put("addtime", System.currentTimeMillis());
+                        list.get(i).put("uptime", System.currentTimeMillis());
+                        uplist.add(list.get(i));
+                    } else {
+                        list.get(i).put("addtime", System.currentTimeMillis());
+                        inerlist.add(list.get(i));
+                    }
+                }
+
+
+                int upcount = 0, addcount = 0;
+                param.put("uplist", uplist);
+                param.put("inerlist", inerlist);
+                if (inerlist.size() > 0) {
+                    addcount = tbPlantaskService.addPlantaskBrother(param);
+                }
+                if (uplist.size() > 0) {
+                    upcount = tbPlantaskService.updatePlantask(param);
+                }
+                if (addcount > 0 || upcount > 0) {
+                    // 判断参数为空返回404
+                    response = Response.getResponseSuccess();
+                } else {
+                    response = Response.getResponseError();
+                }
+                response=Response.getResponseSuccess();
+            }
+        } catch (Exception e) {
+            flag = false;
+            // 打印异常信息
+            e.printStackTrace();
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getMethodType Method", e.toString()));
+        }
+
+
+        return response;
+    }
+
+
+
+    /**
+     * @param param
+     * @return
+     * @deprecated 个人日计划 右边 删除
+     */
+    @RequestMapping(value = "/delPlantaskUser", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Response delPlantaskUser(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/plantask/delPlantaskUser";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 验证指定值为空则返回404
+            if (JzbCheckParam.haveEmpty(param, new String[]{"type","planid","dept"})) {
+                result = Response.getResponseError();
+                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", "[param error] or [param is null]"));
+            } else {
+
+
+                param.put("tabname","tb_plantask");
+
+                param.put("node",param.get("dept").toString());
+                param.put("uptime",System.currentTimeMillis());
+                param.put("status",1);
+                int count =tbPlantaskService.delPlantask(param);
+
+                if (count > 0) {
+                    // 定义返回结果
+                    result = Response.getResponseSuccess(userInfo);
+                } else {
+                    result = Response.getResponseError();
+                    logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", "[addResult error]"));
+                }
+            }
+        } catch (Exception e) {
+            flag=false;
+            // 打印异常信息
+            e.printStackTrace();
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodType Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+
+
+
+    public static List<Map<String,Object>>  getPlantaskUserItem(List<Map<String,Object>> lt) {
+        List<Map<String,Object>> ret= new ArrayList();
+
+
+
+        return ret;
+    }
 }
