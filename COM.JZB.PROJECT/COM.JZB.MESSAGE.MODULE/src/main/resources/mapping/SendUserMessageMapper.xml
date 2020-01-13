@@ -68,7 +68,7 @@
 <!--        </foreach>-->
 <!--    </delete>-->
     <update id="deleteSend"  parameterType="java.util.Map">
-        update  tb_send_user_message set  status = '8'  where msgid in
+        update  tb_send_user_message set  status = '8'  where msgtype = '4' and msgid in
         <foreach item="msgid" collection="list" open="(" separator="," close=")">
             #{msgid}
         </foreach>
