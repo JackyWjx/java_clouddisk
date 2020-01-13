@@ -34,4 +34,6 @@ public interface TbPlantaskMapper {
     List<Map<String, Object>> selFu(Map<String, Object> param);
 
     int upDayzhongzhi(Map<String, Object> param);
+
+    List<Map<String, Object>> getPantaskZifu(Map<String, Object> param);
 }

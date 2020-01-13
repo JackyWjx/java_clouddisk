@@ -71,5 +71,9 @@ public class TbPlantaskService {
     public int upDayzhongzhi(Map<String, Object> param) {
         return tbPlantaskMapper.upDayzhongzhi(param);
     }
+
+    public List<Map<String, Object>> getPantaskZifu(Map<String, Object> param) {
+        return tbPlantaskMapper.getPantaskZifu(param);
+    }
 }
 
