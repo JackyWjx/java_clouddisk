@@ -387,7 +387,8 @@ ORDER BY
 		<if test="item.filenames != null and item.filenames!=''">filenames=#{item.filenames},</if>
 		<if test="item.review != null and item.review!=''">review=#{item.review},</if>
 		<if test="item.sort != null and item.sort!=''">sort=#{item.sort},</if>
-		<if test="item.node != null and item.node!=''">node=#{item.node},</if>
+			<if test="item.node != null and item.node!=''">node=#{item.node},</if>
+			<if test="item.notes != null and item.notes!=''">notes=#{item.notes},</if>
 		<if test="item.status != null and item.status!=''">status=#{item.status},</if>
 		<if test="item.addtime != null and item.addtime!=''">addtime=#{item.addtime},</if>
 		<if test="item.uptime != null and item.uptime!=''">uptime=#{item.uptime}</if>
