@@ -34,7 +34,7 @@ import java.util.*;
 public class TbPlantaskController {
 
     @Autowired
-    private TbPlantaskService tbPlantaskService;
+    private  TbPlantaskService tbPlantaskService;
     @Autowired
     private DeptService deptService;
     @Autowired
@@ -395,8 +395,8 @@ public class TbPlantaskController {
                             param.put("ktime", format1.parse(param.get("time").toString()).getTime());
                             param.put("etime", cal.getTimeInMillis());
 
-                            System.out.println("一周" + param.get("ktime"));
-                            System.out.println("一周" + param.get("etime"));
+                            //System.out.println("一周" + param.get("ktime"));
+                            //System.out.println("一周" + param.get("etime"));
                         } else if (param.get("aaaa").toString().equals("2")) {
                             cal.setTime(format1.parse(param.get("time").toString()));
                             //获取某月最大天数
@@ -406,8 +406,8 @@ public class TbPlantaskController {
 
                             param.put("ktime", format1.parse(param.get("time").toString()).getTime());
                             param.put("etime", cal.getTimeInMillis());
-                            System.out.println("一月" + param.get("ktime"));
-                            System.out.println("一月" + param.get("etime"));
+                            //System.out.println("一月" + param.get("ktime"));
+                            //System.out.println("一月" + param.get("etime"));
                         } else if (param.get("aaaa").toString().equals("3")) {
                             cal.setTime(format1.parse(param.get("time").toString()));
                             //获取年最大天数
@@ -417,8 +417,8 @@ public class TbPlantaskController {
 
                             param.put("ktime", format1.parse(param.get("time").toString()).getTime());
                             param.put("etime", cal.getTimeInMillis());
-                            System.out.println("一年" + param.get("ktime"));
-                            System.out.println("一年" + param.get("etime"));
+                            //System.out.println("一年" + param.get("ktime"));
+                            //System.out.println("一年" + param.get("etime"));
                         } else {
                             cal.setTime(format1.parse(param.get("time").toString()));
                             cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -428,8 +428,8 @@ public class TbPlantaskController {
 
                             param.put("ktime", format1.parse(param.get("time").toString()).getTime());
                             param.put("etime", cal.getTimeInMillis());
-                            System.out.println("一天" + param.get("ktime"));
-                            System.out.println("一天" + param.get("etime"));
+                            //System.out.println("一天" + param.get("ktime"));
+                            //System.out.println("一天" + param.get("etime"));
                         }
 
                     }
@@ -578,7 +578,7 @@ public class TbPlantaskController {
                 inf.setPages(count);
                 // 定义返回结果
                 response = Response.getResponseSuccess(userInfo);
-                System.out.println(result==null?"[]":result);
+                //System.out.println(result==null?"[]":result);
                 response.setResponseEntity(result);
 
             }
@@ -775,7 +775,7 @@ public class TbPlantaskController {
             }
 
         }
-        System.out.println("childCategoryList=" + childCategoryList.size());
+        //System.out.println("childCategoryList=" + childCategoryList.size());
         return childCategoryList;
     }
 
@@ -1064,7 +1064,7 @@ public class TbPlantaskController {
                 calendar1.set(Calendar.SECOND, 00);
                 calendar1.set(Calendar.MILLISECOND, 000);
                 Long j=(calendar1.getTime()).getTime();//今天
-                System.out.println(j);
+
                 Long m=j+86400000;//明天
                 Long h=m+86400000;//后天
                 if(param.get("time").equals("0")){
@@ -1123,11 +1123,13 @@ public class TbPlantaskController {
                     }else{
                         hm.put("date","");
                     }
-                    hm.put("name",userInfo.get("cname")==null?"":userInfo.get("cname").toString());
+                    hm.put("name",map.get("plancontent")==null?"":map.get("plancontent").toString());
                     hm.put("plancontent",map.get("plancontent")==null?"":map.get("plancontent").toString());
                     //map.put("value1",map.get("addname").toString()+"至"+map.get("endtime").toString());
                     hm.put("taskstatus",map.get("taskstatus")==null?"":map.get("taskstatus").toString());
                     hm.put("input",map.get("progressofwork")==null?"0":map.get("progressofwork").toString());
+                    hm.put("starttime",map.get("starttime"));
+                    hm.put("endtime",map.get("endtime"));
                     ret.add(hm);
                 }
                 // 定义返回结果
@@ -1370,25 +1372,32 @@ public class TbPlantaskController {
                 response = Response.getResponseError();
             } else {
 
-                switch (param.get("type").toString()) {
-                    case "y":
-                        param.put("tabname", "tb_plantask_year");
-                        break;
-                    case "m":
-                        param.put("tabname", "tb_plantask_month");
-                        break;
-                    case "d":
-                        param.put("tabname", "tb_plantask_day");
-                        param.put("progressOfWork", 0);
-                        break;
-                    case "w":
-                        param.put("tabname", "tb_plantask_week");
-                        break;
-                    default:
-                        response = Response.getResponseError();
-                }
+                param.put("tabname", "tb_plantask");
                 param.put("uptime",System.currentTimeMillis());
 
+                int progressofwork =Integer.parseInt(param.get("progressofwork").toString());
+                Long starttime =Long.parseLong(param.get("starttime").toString());
+                Long endtime =Long.parseLong(param.get("endtime").toString());
+                Long dtime=(new Date()).getTime();
+
+                if(progressofwork>0&&progressofwork<100&&(!param.get("tasktype").toString().equals("已终止"))){
+                    if(endtime<dtime){
+                        param.put("tasktype","已逾期");
+                    }
+                    if(starttime<=dtime&&endtime>dtime){
+                        param.put("tasktype","进行中");
+                    }else{
+                        param.put("tasktype","未开始");
+                    }
+                }else if(progressofwork==100&&(!param.get("tasktype").toString().equals("已终止"))){
+                    if(endtime<dtime){
+                        param.put("tasktype","逾期完成");
+                    }
+                    if(endtime>dtime){
+                        param.put("tasktype","已完成");
+                    }
+                }
+                param.put("progressofwork",progressofwork);
                 int count = tbPlantaskService.upDayXiangxi(param);
                 // 定义返回结果
                 response = Response.getResponseSuccess(userInfo);
@@ -1431,7 +1440,11 @@ public class TbPlantaskController {
                 param.put("pagesize",5000);
                 param.put("pageno","1");
                 param.put("start",1);
+                Long st=System.currentTimeMillis();
+
                 List<Map<String, Object>> duList = deptService.queryDeptUser(param);
+                Long en=System.currentTimeMillis();
+                System.out.println(en-st);
                 HashSet h = new HashSet();
                 for (Map<String,Object> map : duList) {
                     //System.out.println(map.get("cname")+ " : " +map.get("uid"));
@@ -1440,6 +1453,8 @@ public class TbPlantaskController {
                     addmap.put("uid",map.get("uid"));
                     h.add(addmap);
                 }
+                en=System.currentTimeMillis();
+                System.out.println(en-st);
                 // 定义返回结果
                 response = Response.getResponseSuccess(userInfo);
                 response.setResponseEntity(h);
@@ -1503,35 +1518,31 @@ public class TbPlantaskController {
                             //获取周
                             int lastDay = cal.getActualMaximum(Calendar.DAY_OF_WEEK);
                             cal.add(Calendar.DATE, 7);
-                            param.put("ktime", format1.parse(param.get("time").toString()).getTime());
-                            param.put("etime", cal.getTimeInMillis());
 
-                            System.out.println("一周" + param.get("ktime"));
-                            System.out.println("一周" + param.get("etime"));
-                        } else if (param.get("type").toString().equals("y")) {
+                            param.put("ktime", format1.parse(param.get("time").toString()).getTime());
+                            param.put("etime", cal.getTimeInMillis()-1);
+                            //System.out.println("一周" + param.get("ktime"));
+                            //System.out.println("一周" + param.get("etime"));
+                        } else if (param.get("type").toString().equals("m")) {
                             cal.setTime(format1.parse(param.get("time").toString()));
                             //获取某月最大天数
                             int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
                             //设置日历中月份的最大天数
                             cal.set(Calendar.DAY_OF_MONTH, lastDay);
-
+                            cal.set(Calendar.HOUR_OF_DAY, 23);
+                            cal.set(Calendar.MINUTE, 59);
+                            cal.set(Calendar.SECOND, 59);
+                            cal.set(Calendar.MILLISECOND, 999);
                             param.put("ktime", format1.parse(param.get("time").toString()).getTime());
                             param.put("etime", cal.getTimeInMillis());
-                            System.out.println("一月" + param.get("ktime"));
-                            System.out.println("一月" + param.get("etime"));
+                            //System.out.println("一月" + param.get("ktime"));
+                            //System.out.println("一月" + param.get("etime"));
                         } else if (param.get("type").toString().equals("y")) {
                             cal.setTime(format1.parse(param.get("time").toString()));
                             //获取年最大天数
                             int lastDay = cal.getActualMaximum(Calendar.DAY_OF_YEAR);
                             //设置日历中月份的最大天数
                             cal.set(Calendar.DAY_OF_YEAR, lastDay);
-
-                            param.put("ktime", format1.parse(param.get("time").toString()).getTime());
-                            param.put("etime", cal.getTimeInMillis());
-                            System.out.println("一年" + param.get("ktime"));
-                            System.out.println("一年" + param.get("etime"));
-                        } else {
-                            cal.setTime(format1.parse(param.get("time").toString()));
                             cal.set(Calendar.HOUR_OF_DAY, 23);
                             cal.set(Calendar.MINUTE, 59);
                             cal.set(Calendar.SECOND, 59);
@@ -1539,8 +1550,18 @@ public class TbPlantaskController {
 
                             param.put("ktime", format1.parse(param.get("time").toString()).getTime());
                             param.put("etime", cal.getTimeInMillis());
-                            System.out.println("一天" + param.get("ktime"));
-                            System.out.println("一天" + param.get("etime"));
+                            //System.out.println("一年" + param.get("ktime"));
+                            //System.out.println("一年" + param.get("etime"));
+                        } else {
+                            cal.setTime(format1.parse(param.get("time").toString()));
+                            cal.set(Calendar.HOUR_OF_DAY, 23);
+                            cal.set(Calendar.MINUTE, 59);
+                            cal.set(Calendar.SECOND, 59);
+                            cal.set(Calendar.MILLISECOND, 999);
+                            param.put("ktime", format1.parse(param.get("time").toString()).getTime());
+                            param.put("etime", cal.getTimeInMillis());
+                            //System.out.println("一天" + param.get("ktime"));
+                            //System.out.println("一天" + param.get("etime"));
                         }
                     }else{
                         if (param.get("type").toString().equals("m")) {
@@ -1615,6 +1636,7 @@ public class TbPlantaskController {
                     node.put( "uptime" ,record.get("uptime")==null?"":record.get("uptime").toString());
                     node.put( "starttime" ,record.get("starttime")==null?"":record.get("starttime").toString());
                     node.put( "endtime" ,record.get("endtime")==null?"":record.get("endtime").toString());
+                    node.put( "progressofwork" ,record.get("progressofwork")==null?"":record.get("progressofwork").toString());
                     if (record.get("starttime")!=null && record.get("endtime")!=null){
                         String [] valuedate={record.get("starttime").toString(),record.get("endtime").toString()};
                         node.put("valueDate",valuedate);
@@ -1686,7 +1708,7 @@ public class TbPlantaskController {
                 inf.setPages(count);
                 // 定义返回结果
                 response = Response.getResponseSuccess(userInfo);
-                System.out.println(result==null?"[]":result);
+                //System.out.println(result==null?"[]":result);
                 response.setResponseEntity(result);
 
             }
@@ -1735,7 +1757,7 @@ public class TbPlantaskController {
                 param.put("tabname", "tb_plantask");
                 param.put("ptype",param.get("type").toString());
                 List<Map<String, Object>> a = (List<Map<String, Object>>) param.get("data");
-                List<Map<String, Object>> list = null;
+                List<Map<String, Object>> list = new ArrayList<>();
                 // System.out.println("\n\n\n\n\n");
                 list = getChildCategory(a);
                 StringBuffer sb = new StringBuffer();
@@ -1752,16 +1774,17 @@ public class TbPlantaskController {
                     //查询数据库
                     idslist = tbPlantaskService.selPantaskids(param);
                 }
-
-                sb = new StringBuffer();
-                if (idslist.size() > 0) {
-                    for (int i = 0, y = idslist.size(); i < y; i++) {
-                        sb.append("'" + idslist.get(i).get("planid").toString() + "'");
-                        if (i != y - 1) {
-                            sb.append(",");
+                if (null!=idslist){
+                    sb = new StringBuffer();
+                    if (idslist.size() > 0) {
+                        for (int i = 0, y = idslist.size(); i < y; i++) {
+                            sb.append("'" + idslist.get(i).get("planid").toString() + "'");
+                            if (i != y - 1) {
+                                sb.append(",");
+                            }
                         }
-                    }
 
+                    }
                 }
                 String upstr = sb.toString();
                 List<Map<String, Object>> uplist = new ArrayList<>();
@@ -1790,8 +1813,43 @@ public class TbPlantaskController {
                     //时间处理
                     if (list.get(i).get("valueDate") != null) {
                         if(!list.get(i).get("valueDate").equals("")) {
-                            list.get(i).put("starttime", JzbDataType.getDateTime(list.get(i).get("valueDate").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim().split(",")[0]).getTime());
-                            list.get(i).put("endtime", JzbDataType.getDateTime(list.get(i).get("valueDate").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim().split(",")[1]).getTime());
+
+                            List shijian= (List) list.get(i).get("valueDate");
+                            if(shijian.get(0).toString().equals(shijian.get(1).toString())){
+                                list.get(i).put("starttime",shijian.get(0)+"");
+                                list.get(i).put("endtime",((Long)shijian.get(1))+100+"");
+                            }else{
+                                list.get(i).put("starttime",shijian.get(0)+"");
+                                list.get(i).put("endtime",shijian.get(1)+"");
+                            }
+
+                            if(list.get(i).get("progressofwork")!=null){
+                                if(list.get(i).get("progressofwork").toString().equals("")){
+                                    list.get(i).put("progressofwork",0);
+                                }
+                                int progressofwork=Integer.parseInt(list.get(i).get("progressofwork").toString());
+                                Long starttime =Long.parseLong(list.get(i).get("starttime").toString());
+                                Long endtime =Long.parseLong(list.get(i).get("endtime").toString());
+                                Long dtime=(new Date()).getTime();
+
+                                if(progressofwork>=0&&progressofwork<100&&(!list.get(i).get("tasktype").toString().equals("已终止"))){
+                                    if(endtime<dtime){
+                                        list.get(i).put("tasktype","已逾期");
+                                    }
+                                    if(starttime<=dtime&&endtime>dtime&&progressofwork>0){
+                                        list.get(i).put("tasktype","进行中");
+                                    }else{
+                                        list.get(i).put("tasktype","未开始");
+                                    }
+                                }else if(progressofwork==100&&(!list.get(i).get("tasktype").toString().equals("已终止"))){
+                                    if(endtime<dtime){
+                                        list.get(i).put("tasktype","逾期完成");
+                                    }
+                                    if(endtime>dtime){
+                                        list.get(i).put("tasktype","已完成");
+                                    }
+                                }
+                            }
                         }else{
                             list.get(i).put("starttime", "");
                             list.get(i).put("endtime", "");
@@ -1806,9 +1864,15 @@ public class TbPlantaskController {
                         list.get(i).put("dutyid", (list.get(i).get("dutyid").toString().replaceAll("\\[", "").replaceAll("\\]", "")).trim());
 
                     }
+                    //修改状态
+//                    list.get(i).get("starttime")
+//                    list.get(i).get("endtime")
+
+
+
                     //转换Int类型
                     list.get(i).put("taskstatus",list.get(i).get("taskstatus")==null?"":(list.get(i).get("taskstatus").toString().equals("")?"":Integer.parseInt(list.get(i).get("taskstatus").toString())));
-                    list.get(i).put("tasktype",list.get(i).get("tasktype")==null?"":list.get(i).get("tasktype").toString());
+                    list.get(i).put("tasktype",list.get(i).get("tasktype")==null?"":list.get(i).get("tasktype").toString().trim());
                     list.get(i).put("sort",list.get(i).get("sort")==null?"":(list.get(i).get("sort").toString().equals("")?"":Integer.parseInt(list.get(i).get("sort").toString())));
 
 
@@ -1829,6 +1893,7 @@ public class TbPlantaskController {
                         inerlist.add(list.get(i));
                     }
                 }
+
 
 
                 int upcount = 0, addcount = 0;
@@ -1890,12 +1955,18 @@ public class TbPlantaskController {
             } else {
 
 
-                param.put("tabname","tb_plantask");
 
                 param.put("node",param.get("dept").toString());
-                param.put("uptime",System.currentTimeMillis());
-                param.put("status",1);
-                int count =tbPlantaskService.delPlantask(param);
+                //param.put("uptime",System.currentTimeMillis());
+
+
+
+                List<Map<String, Object>>lt=  tbPlantaskService.selFu(param);
+                int count=0;
+                for (Map<String,Object> map:lt){
+                    map.put("uptime",System.currentTimeMillis());
+                count =tbPlantaskService.delPlantask(map);
+                }
 
                 if (count > 0) {
                     // 定义返回结果
@@ -1923,12 +1994,52 @@ public class TbPlantaskController {
 
 
 
+    @RequestMapping(value = "/upDayzhongzhi", method = RequestMethod.POST)
+    @ResponseBody
+    public Response upDayzhongzhi(@RequestBody Map<String, Object> param) {
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/org/plantask/upDayzhongzhi";
+        boolean flag = true;
+        try {
+            // 判断参数为空返回404
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 判断参数为空返回404
 
-    public static List<Map<String,Object>>  getPlantaskUserItem(List<Map<String,Object>> lt) {
-        List<Map<String,Object>> ret= new ArrayList();
+            // type=y 代表年计划
+            // type=m 代表月份
+            // type=d 代表天
+            // type=w 代表周
 
+            // dept=1 代表部门
+            // dept=0 代表个人
+            if (JzbCheckParam.haveEmpty(param, new String[]{"planid"})) {
+                response = Response.getResponseError();
+            } else {
 
+                param.put("tabname", "tb_plantask");
+                param.put("uptime",System.currentTimeMillis());
+                param.put("tasktype","已终止");
+                int count = tbPlantaskService.upDayzhongzhi(param);
+                // 定义返回结果
+                response = Response.getResponseSuccess(userInfo);
+                response.setResponseEntity(count);
 
-        return ret;
+            }
+        } catch (Exception e) {
+            flag = false;
+            // 打印异常信息
+            e.printStackTrace();
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getMethodType Method", e.toString()));
+        }
+        return response;
     }
+
 }
