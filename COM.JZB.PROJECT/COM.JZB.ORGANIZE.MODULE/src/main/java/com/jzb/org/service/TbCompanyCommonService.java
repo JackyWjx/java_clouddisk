@@ -132,6 +132,11 @@ public class TbCompanyCommonService {
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
 
+                // 查询本身
+                Map<String, Object> regionProvince = new HashMap<>();
+                regionProvince.put("region", param.get("province"));
+                regionList.add(regionProvince);
+
                 // 获取所有的地区信息
                 Response response = tbCityRedisApi.getCityJson(param);
 
@@ -168,6 +173,7 @@ public class TbCompanyCommonService {
                     }
                 }
             }
+
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }
@@ -497,10 +503,7 @@ public class TbCompanyCommonService {
 
     // 退回公海  加入历史私海记录 todo
     public int rebackCompanysToHistory(Map<String, Object> param) {
-
-        int count = tbCompanyCommonMapper.rebackCompanysToHistory(param);
-
-    return count;
+    return tbCompanyCommonMapper.rebackCompanysToHistory(param);
     }
 
     public List<Map<String, Object>> getCompanyCommonListHistory(Map<String, Object> param) {
