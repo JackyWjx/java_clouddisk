@@ -1126,6 +1126,7 @@ public class TbPlantaskController {
 //                    map.put( "status" ,map.get("status")==null?"":map.get("status").toString());
 //                    map.put( "dutyid" ,map.get("dutyid")==null?"":map.get("dutyid").toString().trim().split(","));
 //                    map.put("gname",map.get("dutyid")==null?"":map.get("dutyid").toString().trim().split(","));
+                    hm.put( "tasktype" ,map.get("tasktype")==null?"":map.get("tasktype").toString());
                     hm.put("planid", map.get("planid")==null?"":map.get("planid").toString());
                     if(map.get("starttime")!=null&&map.get("endtime")!=null){
                         hm.put("date",  JzbDateUtil.toDateString(JzbDataType.getLong(map.get("starttime")), JzbDateStr.yyyy_MM_dd)+"至"+JzbDateUtil.toDateString(JzbDataType.getLong(map.get("endtime")), JzbDateStr.yyyy_MM_dd));
@@ -1808,7 +1809,7 @@ public class TbPlantaskController {
                     list.get(i).put("acceptors", list.get(i).get("acceptorsname") == null ? "" : list.get(i).get("acceptorsname").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim());
                     list.get(i).put("executors", list.get(i).get("executorsname") == null ? "" : list.get(i).get("executorsname").toString().replaceAll("\\[", "").replaceAll("\\]", "").trim());
 
-                    list.get(i).put("progressofwork",0);
+
 
                    StringBuffer bumenids=new StringBuffer();
                     if(list.get(i).get("cdid")==null){
