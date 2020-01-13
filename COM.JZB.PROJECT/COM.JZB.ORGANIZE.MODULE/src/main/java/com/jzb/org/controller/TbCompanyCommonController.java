@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.jws.Oneway;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,10 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/org/companyCommon")
 public class TbCompanyCommonController {
+
+
+    @Autowired
+    private RegionBaseApi RegionBaseApi;
 
     @Autowired
     private TbCompanyCommonService tbCompanyCommonService;
@@ -121,33 +126,109 @@ public class TbCompanyCommonController {
 
                 // 设置参数
                 JzbPageConvert.setPageRows(param);
+                List<Map<String, Object>> regionList = new ArrayList<>();
+                if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
+                    // 传入3代表查询县级地区
+                    if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("county")))) {
+                        // 定义存放每个省市县地区的map
+                        Map<String, Object> regionMap = new HashMap<>();
+                        // 加入县级地区id到参数对象中
+                        regionMap.put("region", JzbDataType.getString(param.get("county")));
+                        regionList.add(regionMap);
+                        // 等于2代表传入的是市级地区ID
+                    } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("city")))) {
+                        // 添加查询地区的key
+                        param.put("key", "jzb.system.city");
 
+                        // 获取所有的地区信息
+                        Response response = tbCityRedisApi.getCityJson(param);
+
+                        // 将字符串转化为map
+                        Map<String, Object> myJsonArray = (Map<String, Object>) JSON.parse(response.getResponseEntity().toString());
+                        // 判断返回值中是否存在省信息
+                        if (!JzbDataType.isEmpty(myJsonArray.get(JzbDataType.getString(param.get("province"))))) {
+                            // 获取对应省下所有的城市信息
+                            List<Map<String, Object>> myJsonList = (List<Map<String, Object>>) myJsonArray.get(JzbDataType.getString(param.get("province")));
+                            for (int i = 0; i < myJsonList.size(); i++) {
+                                // 获取省份下所有城市的信息
+                                Map<String, Object> provinceMap = myJsonList.get(i);
+
+                                // 如果为传入的城市ID则进行下一步
+                                if (!JzbDataType.isEmpty(provinceMap.get(JzbDataType.getString(param.get("city"))))) {
+                                    // 获取城市下所有的县级信息
+                                    List<Map<String, Object>> countyMap = (List<Map<String, Object>>) provinceMap.get(JzbDataType.getString(param.get("city")));
+                                    Map<String, Object> county =  countyMap.get(0);
+                                    List<Map<String, Object>> cityList = (List<Map<String, Object>>) county.get("list");
+                                    for (int b = 0; b < cityList.size(); b++) {
+                                        // 获取城市下单个的县级信息
+                                        Map<String, Object> cityMap = cityList.get(b);
+
+                                        // 定义存放每个省市县地区的map
+                                        Map<String, Object> regionMap = new HashMap<>();
+
+                                        // 将县级ID加入地区map对象中
+                                        regionMap.put("region", JzbDataType.getString(cityMap.get("creaid")));
+                                        regionList.add(regionMap);
+                                    }
+                                }
+                            }
+                        }
+                    } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
+                        // 添加查询地区的key
+                        param.put("key", "jzb.system.city");
+
+                        // 查询本身
+                        Map<String, Object> regionProvince = new HashMap<>();
+                        regionProvince.put("region", param.get("province"));
+                        regionList.add(regionProvince);
+
+                        // 获取所有的地区信息
+                        Response response = tbCityRedisApi.getCityJson(param);
+
+                        // 将字符串转化为map
+                        Map<String, Object> myJsonArray = (Map<String, Object>) JSON.parse(response.getResponseEntity().toString());
+                        if (!JzbDataType.isEmpty(myJsonArray.get(JzbDataType.getString(param.get("province"))))) {
+                            List<Map<String, Object>> myJsonList = (List<Map<String, Object>>) myJsonArray.get(JzbDataType.getString(param.get("province")));
+                            for (int i = 0; i < myJsonList.size(); i++) {
+                                // 获取城市信息
+                                Map<String, Object> provinceMap = myJsonList.get(i);
+                                for (Map.Entry<String, Object> entry : provinceMap.entrySet()) {
+                                    if (!"list".equals(entry.getKey())) {
+                                        String key = entry.getKey();
+                                        // 定义存放每个省市县地区的map
+                                        Map<String, Object> regionMap = new HashMap<>();
+                                        regionMap.put("region", key);
+                                        regionList.add(regionMap);
+                                        List<Map<String, Object>> cityList = (List<Map<String, Object>>) entry.getValue();
+                                        Map<String, Object> cityMap = cityList.get(0);
+                                        List<Map<String, Object>> city = (List<Map<String, Object>>) cityMap.get("list");
+                                        for (int k = 0; k < city.size(); k++) {
+                                            // 获取城市下单个的县级信息
+                                            Map<String, Object> cityMap1 = city.get(k);
+
+                                            // 定义存放每个省市县地区的map
+                                            Map<String, Object> region = new HashMap<>();
+
+                                            // 将县级ID加入地区map对象中
+                                            region.put("region", JzbDataType.getString(cityMap1.get("creaid")));
+                                            regionList.add(region);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // 将所有结果加入参数中传入
+                    param.put("list", regionList);
+                }
                 // 获取list
                 List<Map<String, Object>> list = tbCompanyCommonService.queryCompanyCommon(param);
 
-                // 创建map用来获取地区信息
-                Map<String, Object> map = new HashMap<>();
-
-                for (int i = 0, l = list.size(); i < l; i++) {
-
-                    map.put("key", list.get(i).get("region"));
-                    Response cityList = tbCityRedisApi.getCityList(map);
-                    // 获取地区map
-                    Map<String, Object> resultParam = null;
-                    if (cityList.getResponseEntity() != null) {
-                        resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
-                        if(resultParam!=null){
-                            resultParam.put("region", resultParam.get("creaid"));
-                        }else {
-                            resultParam=new HashMap<>();
-                            resultParam.put("region",null);
-                        }
-                    }
-                    // 转map
-                    if (resultParam != null) {
-                        Response response = regionBaseApi.getRegionInfo(resultParam);
-                        list.get(i).put("region", response.getResponseEntity());
-                    }
+                //获取地区信息
+                for (int i = 0; i < list.size(); i++) {
+                    Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
+                    list.get(i).put("region",cityList.getResponseEntity());
                 }
                 // 分页对象
                 PageInfo pageInfo = new PageInfo();
@@ -299,21 +380,9 @@ public class TbCompanyCommonController {
                 List<Map<String, Object>> list = tbCompanyCommonService.queryCompanyCommonByKeyWord(param);
 
                 // 遍历获取地区调用redis返回
-                for (int i = 0, l = list.size(); i < l; i++) {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("key", list.get(i).get("region"));
-                    Response cityList = tbCityRedisApi.getCityList(map);
-                    // 获取地区map
-                    Map<String, Object> resultParam = null;
-                    if (cityList.getResponseEntity() != null) {
-                        resultParam = (Map<String, Object>) JSON.parse(cityList.getResponseEntity().toString());
-                        resultParam.put("region", resultParam.get("creaid"));
-                    }
-                    // 转map
-                    if (resultParam != null) {
-                        Response response = regionBaseApi.getRegionInfo(resultParam);
-                        list.get(i).put("region", response.getResponseEntity());
-                    }
+                for (int i = 0; i < list.size(); i++) {
+                    Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
+                    list.get(i).put("region",cityList.getResponseEntity());
                 }
                 // 分页对象
                 PageInfo pageInfo = new PageInfo();
@@ -650,6 +719,39 @@ public class TbCompanyCommonController {
         return result;
     }
 
+
+
+    /**
+     * 查询历史私海记录
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/queryCompanysToHistory", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryCompanysToHistory(@RequestBody Map<String, Object> param) {
+
+        Response result;
+        try {
+            Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
+            param.put("addtime",System.currentTimeMillis());
+            param.put("uid",userinfo.get("uid"));
+//            int count = tbCompanyCommonService.queryCompanysToHistory(param);
+            //如果返回值大于零则响应成功信息
+            if (1  > 0) {
+                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                result = Response.getResponseSuccess(userInfo);
+            } else {
+                result = Response.getResponseError();
+            }
+
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
     /**
      * 所有业主-业主列表查询
      *
