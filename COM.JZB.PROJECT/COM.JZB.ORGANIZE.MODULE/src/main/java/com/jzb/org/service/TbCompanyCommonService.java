@@ -424,7 +424,7 @@ public class TbCompanyCommonService {
         long updtime = System.currentTimeMillis();
         param.put("updtime", updtime);
         param.put("status", "1");
-        if (!JzbDataType.isEmpty(JzbDataType.getString("oldphone"))) {
+        if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("oldphone")))) {
             param.put("companyname", JzbDataType.getString(param.get("cname")));
             if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("password")))) {
                 // 给新负责人发送短信,系统中不存在的用户
