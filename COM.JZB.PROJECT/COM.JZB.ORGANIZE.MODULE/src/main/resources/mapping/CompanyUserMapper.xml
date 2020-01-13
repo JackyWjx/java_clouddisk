@@ -34,6 +34,7 @@
         cl.cname,
         cl.region,
         cl.relperson,
+        cl.relphone,
         cl.telephone,
         cl.relmail,
         cl.logo,
