@@ -1130,6 +1130,7 @@ public class TbPlantaskController {
                     hm.put("input",map.get("progressofwork")==null?"0":map.get("progressofwork").toString());
                     hm.put("starttime",map.get("starttime"));
                     hm.put("endtime",map.get("endtime"));
+                    hm.put("assistants",map.get("assistants").toString().split(","));
                     ret.add(hm);
                 }
                 // 定义返回结果
