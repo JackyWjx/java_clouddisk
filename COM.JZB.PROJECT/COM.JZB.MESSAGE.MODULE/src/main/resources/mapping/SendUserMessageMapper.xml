@@ -36,7 +36,8 @@ FROM
 	INNER JOIN tb_message_list tml ON tsum.msgid = tml.msgid
 WHERE
 	tsum.msgtype = '4'
-	AND tsum.receiveuid = 'RCBHPFQILATZ'
+	AND tsum.receiveuid = #{receiveuid}
+ 	<!-- 'RCBHPFQILATZ'-->
 	ORDER BY tml.addtime DESC
             limit  #{pagesize}  offset #{pageno}
     </select>
