@@ -26,7 +26,8 @@ WITH RECURSIVE item AS (
 		addid,
 		review,
 		parentid,
-		sort
+		sort,
+		progressofwork
 	FROM
 		${tabname}
     where parentid= '0000000' and  node=#{node}
@@ -34,17 +35,26 @@ WITH RECURSIVE item AS (
     <if test="bumen!=null and bumen!=''">
 			and cdid like '%${bumen}%'
 	</if>
-	<if test="ktime!=null and ktime!=''">
-		 	and starttime &lt;= ${ktime}
-	</if>
-	<if test="etime!=null and etime!=''">
-			and endtime  &gt;= ${etime}
+	<if test="ktime!=null and ktime!='' and etime!=null and etime!=''">
+		 	and
+		 	 starttime &lt;=${etime}
+			and endtime >=${ktime}
+
+
 	</if>
 	<if test="zhuangtai!=null and zhuangtai!=''">
 			and tasktype  like '%${zhuangtai}%'
 	</if>
 		<if test="touid!=null and touid!=''">
-			and uid  = '${touid}'
+			and (
+			acceptors like '%${touid}%'
+			or
+			assistants like'%${touid}%'
+			or
+			executors like '%${touid}%'
+			or
+			uid ='%${touid}%'
+			)
 		</if>
 
 
@@ -64,14 +74,15 @@ WITH RECURSIVE item AS (
 		itema.assistants,
 		itema.outcome,
 		itema.tasktype,
-		itema.taskstatus	,
+		itema.taskstatus,
 		itema.notes,
 		itema.path,
 		itema.filenames,
 		itema.addid,
 		itema.review,
 		itema.parentid,
-		itema.sort
+		itema.sort,
+		itema.progressofwork
 	FROM
 		${tabname} itema
 		 JOIN item ON itema.parentid = item.planid
@@ -81,11 +92,9 @@ WITH RECURSIVE item AS (
 			and itema.cdid like '%${bumen}%'
 		</if>
 		<if test="ktime!=null and ktime!=''">
-			and itema.starttime &lt;= ${ktime}
+			and itema.starttime &lt;=${etime} and itema.endtime >=${ktime}
 		</if>
-		<if test="etime!=null and etime!=''">
-			and itema.endtime  &gt;= ${etime}
-		</if>
+
 		<if test="zhuangtai!=null and zhuangtai!=''">
 			and itema.tasktype  like '%${zhuangtai}%'
 		</if>
@@ -305,7 +314,7 @@ ORDER BY
 
 		<choose>
 			<when test="item.starttime !=null and item.starttime !=''">
-				#{item.starttime},
+				${item.starttime},
 			</when>
 			<otherwise>
 				null ,
@@ -313,7 +322,7 @@ ORDER BY
 		</choose>
 		<choose>
 			<when test="item.endtime !=null and item.endtime !=''">
-				#{item.endtime},
+				${item.endtime},
 			</when>
 			<otherwise>
 				null ,
@@ -371,13 +380,12 @@ ORDER BY
 		<if test="item.cdid != null and item.cdid!=''">cdid=#{item.cdid},</if>
 		<if test="item.dutyid != null and item.dutyid!=''">dutyid=#{item.dutyid},</if>
 		<if test="item.plancontent != null and item.plancontent!=''">plancontent=#{item.plancontent},</if>
-		<if test="item.starttime != null and item.starttime!=''">starttime=#{item.starttime},</if>
-		<if test="item.endtime != null and item.endtime!=''">endtime=#{item.endtime},</if>
+		<if test="item.starttime != null and item.starttime!=''">starttime=${item.starttime},</if>
+		<if test="item.endtime != null and item.endtime!=''">endtime=${item.endtime},</if>
 		<if test="item.acceptors != null and item.acceptors!=''">acceptors=#{item.acceptors},</if>
 		<if test="item.executors != null and item.executors!=''">executors=#{item.executors},</if>
 		<if test="item.assistants != null and item.assistants!=''">assistants=#{item.assistants},</if>
 		<if test="item.outcome != null and item.outcome!=''">outcome=#{item.outcome},</if>
-		<if test="item.progressOfWork != null and item.progressOfWork!=''">progressOfWork=#{item.progressOfWork},</if>
 		<if test="item.tasktype != null and item.tasktype!=''">tasktype=#{item.tasktype},</if>
 		<if test="item.taskstatus != null and item.taskstatus!=''">taskstatus=#{item.taskstatus},</if>
 		<if test="item.path != null and item.path!=''">path=#{item.path},</if>
@@ -386,7 +394,6 @@ ORDER BY
 		<if test="item.parentid != null and item.parentid!=''">parentid=#{item.parentid},</if>
 		<if test="item.sort != null and item.sort!=''">sort=#{item.sort},</if>
 		<if test="item.node != null and item.node!=''">node=#{item.node},</if>
-		<if test="item.progressofwork != null and item.progressofwork!=''">progressofwork=#{item.progressofwork},</if>
 		<if test="item.status != null and item.status!=''">status=#{item.status},</if>
 		<if test="item.addtime != null and item.addtime!=''">addtime=#{item.addtime},</if>
 		<if test="item.uptime != null and item.uptime!=''">uptime=#{item.uptime}</if>
@@ -405,9 +412,8 @@ ORDER BY
 
 	<!--删除计划管理-->
 	<update id="delPlantask" parameterType="java.util.Map" >
-
-			UPDATE ${tabname} SET
-			status=#{status},
+			UPDATE tb_plantask SET
+			status=1,
 			uptime=#{uptime}
 			where planid=#{planid} and node=#{node}
 
@@ -420,9 +426,6 @@ ORDER BY
    		where
    		planid in (${planids})
 	</select>
-
-
-
 
 
 	<select id="getPantaskDas" parameterType="java.util.Map" resultType="java.util.Map">
@@ -448,7 +451,7 @@ ORDER BY
 		parentid,
 		sort,progressofwork from tb_plantask
 		where
-		(
+		((
 		acceptors like '%${uid}%'
 		or
 		assistants like'%${uid}%'
@@ -457,7 +460,7 @@ ORDER BY
 		or
 		uid like  '%${uid}%'
 		)  and starttime &lt;= #{starttime} and endtime &gt;= #{endtime}
-		and status=0
+		and status=0)or progressofwork &lt; 100
 	</select>
 
 	<select id="getPantaskDasXiangxi" parameterType="java.util.Map" resultType="java.util.Map">
@@ -491,6 +494,7 @@ ORDER BY
 			SET
 			<if test="notes != null and notes!=''">notes=#{notes},</if>
 			<if test="progressofwork != null and progressofwork!=''">progressofwork=#{progressofwork},</if>
+			<if test="tasktype != null and tasktype!=''">tasktype=#{tasktype},</if>
 			<if test="uptime != null and uptime!=''">uptime=#{uptime}</if>
 			where planid=#{planid}
 
@@ -509,4 +513,45 @@ ORDER BY
 		from tb_company_dept
 		where cid='JZB0001' and cdid=#{cdid}
 	</select>
+
+
+		<!--通过父级找子级-->
+	<select id="selFu" parameterType="java.util.Map" resultType="java.util.Map">
+			WITH RECURSIVE item AS (
+			(
+				SELECT
+					planid,parentid,node,status
+				FROM
+					tb_plantask
+				where planid= #{planid} and  node='1'
+				and status=0
+			)
+				UNION all
+				SELECT
+					itema.planid,itema.parentid,itema.node,itema.status
+				FROM
+					 tb_plantask itema
+					 JOIN item ON itema.parentid = item.planid
+					and itema.node = '1'
+					and itema.status=0
+				)
+			SELECT
+				item.*
+			FROM
+				item
+	</select>
+
+
+
+
+	<update id="upDayzhongzhi" parameterType="java.util.Map" >
+		UPDATE tb_plantask
+		SET
+
+		<if test="tasktype != null and tasktype!=''">tasktype=#{tasktype},</if>
+		<if test="uptime != null and uptime!=''">uptime=${uptime}</if>
+		where planid=#{planid}
+
+
+	</update>
 </mapper>

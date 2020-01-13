@@ -1,8 +1,6 @@
 
 package com.jzb.org.service;
 
-        import com.jzb.base.util.JzbCheckParam;
-        import com.jzb.base.util.JzbRandom;
         import com.jzb.org.dao.TbPlantaskMapper;
         import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.stereotype.Service;
@@ -64,6 +62,14 @@ public class TbPlantaskService {
 
     public List<Map<String, Object>> selcdids(String uid) {
         return tbPlantaskMapper.selcdids(uid);
+    }
+
+    public List<Map<String, Object>> selFu(Map<String, Object> param) {
+        return tbPlantaskMapper.selFu(param);
+    }
+
+    public int upDayzhongzhi(Map<String, Object> param) {
+        return tbPlantaskMapper.upDayzhongzhi(param);
     }
 }
 

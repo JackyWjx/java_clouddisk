@@ -30,4 +30,8 @@ public interface TbPlantaskMapper {
     int upDayXiangxi(Map<String, Object> param);
 
     List<Map<String, Object>> selcdids(String uid);
+
+    List<Map<String, Object>> selFu(Map<String, Object> param);
+
+    int upDayzhongzhi(Map<String, Object> param);
 }
