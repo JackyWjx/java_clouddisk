@@ -1,5 +1,6 @@
 package com.jzb.org.dao;
 
+import com.jzb.base.message.Response;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -57,4 +58,8 @@ public interface NewCompanyCommonMapper {
     int  insertTbCompanyList(Map<String, Object> param);
 
     int insertTbInfo(Map<String, Object> param);
+
+    int addCompanyCommonListSuppler(Map<String, Object> param);
+
+    List<Map<String,Object>> queryCommonCompanyByUscc(Map<String, Object> umap);
 }

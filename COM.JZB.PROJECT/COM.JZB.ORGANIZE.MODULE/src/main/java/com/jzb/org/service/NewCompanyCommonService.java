@@ -8,6 +8,7 @@ import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.controller.CommonUserController;
+import com.jzb.org.controller.NewCompanyCommonController;
 import com.jzb.org.dao.NewCompanyCommonMapper;
 import com.jzb.org.dao.TbHandleContractMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ import java.util.Map;
  */
 @Service
 public class NewCompanyCommonService {
+
+    @Autowired
+    private NewCompanyCommonController companyCommonController;
 
     @Autowired
     private NewCompanyCommonMapper newCompanyCommonMapper;
@@ -235,5 +239,32 @@ public class NewCompanyCommonService {
     public int removeCompanyCommonList(Map<String, Object> param) {
         param.put("status", "4");
         return newCompanyCommonMapper.deleteCompanyCommonList(param);
+    }
+
+    public int addCompanyCommonListSuppler(Map<String, Object> param) {
+        Map<String,Object> remap = new HashMap<>();
+        if (!JzbTools.isEmpty(param.get("uscc"))){
+            Map<String,Object> umap = new HashMap<>();
+            umap.put("uscc",param.get("uscc"));
+            // 查询是否已经存在该公海单位
+            List<Map<String,Object>> list = newCompanyCommonMapper.queryCommonCompanyByUscc(umap);
+            if (JzbTools.isEmpty(list)){
+                param.remove("birthday");
+                param.put("relphone",param.get("phone"));
+                param.put("relperson",param.get("managername"));
+                // 新建供应商到公海单位
+                Response response = companyCommonController.addCompanyCommonList(param);
+                remap = (Map<String, Object>) response.getResponseEntity();
+            }else {
+                remap = list.get(0);
+            }
+        }
+        // 新建供应商表
+        param.put("supid",remap.get("cid"));
+        param.put("addtime",System.currentTimeMillis());
+        param.put("updtime",System.currentTimeMillis());
+        param.put("status",'1');
+        param.put("cid",param.get("maincid"));
+        return newCompanyCommonMapper.addCompanyCommonListSuppler(param);
     }
 }

@@ -214,8 +214,8 @@
         cs.supid,
         cl.cname,
         cl.region,
-        du.cname AS uname,
-        du.phone,
+        cl.relperson AS uname,
+        cl.relphone as phone,
         ci.address,
         cl.authid
         FROM

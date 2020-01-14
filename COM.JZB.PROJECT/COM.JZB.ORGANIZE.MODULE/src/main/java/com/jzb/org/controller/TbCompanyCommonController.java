@@ -690,7 +690,7 @@ public class TbCompanyCommonController {
     /**
      * 退回公海  加入历史私海记录
      *
-     * @param param
+     * @param param  todo
      * @return
      */
     @RequestMapping(value = "/rebackCompanysToHistory", method = RequestMethod.POST)
@@ -719,39 +719,74 @@ public class TbCompanyCommonController {
         return result;
     }
 
-
-
     /**
-     * 查询历史私海记录
+     * 获取私海历史单位
      *
      * @param param
      * @return
+     * @author chenhui todo
      */
     @RequestMapping(value = "/queryCompanysToHistory", method = RequestMethod.POST)
+    @ResponseBody
     @CrossOrigin
+    @Transactional
     public Response queryCompanysToHistory(@RequestBody Map<String, Object> param) {
-
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/org/companyCommon/queryCompanysToHistory";
+        boolean flag = true;
         try {
-            Map<String,Object> userinfo = (Map<String, Object>) param.get("userinfo");
-            param.put("addtime",System.currentTimeMillis());
-            param.put("uid",userinfo.get("uid"));
-//            int count = tbCompanyCommonService.queryCompanysToHistory(param);
-            //如果返回值大于零则响应成功信息
-            if (1  > 0) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                result = Response.getResponseSuccess(userInfo);
+            // 如果获取参数userinfo不为空的话
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 如果指定参数为空的话返回error
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno", "count"})) {
                 result = Response.getResponseError();
+            } else {
+
+                // 设置参数
+                JzbPageConvert.setPageRows(param);
+
+                // 获取list
+                List<Map<String, Object>> list = tbCompanyCommonService.queryCompanysToHistory(param);
+
+                // 遍历获取地区调用redis返回
+                for (int i = 0; i < list.size(); i++) {
+                    Response cityList = RegionBaseApi.getRegionInfo(list.get(i));
+                    list.get(i).put("region",cityList.getResponseEntity());
+                }
+                // 分页对象
+                PageInfo pageInfo = new PageInfo();
+
+                pageInfo.setList(list);
+                // 如果前端传的count 大于0 则返回list大小
+                pageInfo.setTotal(JzbDataType.getInteger(param.get("count")) > 0 ? tbCompanyCommonService.queryCompanysToHistoryCount(param) : 0);
+                // 获取用户信息返回
+                result = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+                result.setPageInfo(pageInfo);
             }
 
-        } catch (Exception e) {
-            //打印错误信息
-            JzbTools.logError(e);
+        } catch (Exception ex) {
+            flag = false;
+            JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryCompanysToHistory Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
+
+
     /**
      * 所有业主-业主列表查询
      *
