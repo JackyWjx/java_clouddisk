@@ -92,6 +92,11 @@ public class TbCompanyCommonService {
                 regionList.add(regionMap);
                 // 等于2代表传入的是市级地区ID
             } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("city")))) {
+                // 查询市级本身
+                Map<String,Object> cmap = new HashMap<>();
+                cmap.put("region",JzbDataType.getString(param.get("city")));
+                regionList.add(cmap);
+
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
 
@@ -262,22 +267,22 @@ public class TbCompanyCommonService {
             param.put("oneheader", param.get("uid"));
             count = tbCompanyCommonMapper.updateCompanys(param);
         } else {
-            if (JzbTools.isEmpty(sMap.get("oneheader"))) {
+            if (JzbTools.isEmpty(sMap.get("oneheader")) && !param.get("uid").equals(sMap.get("oneheader"))) {
                 sMap.put("oneheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("twoheader")) && num == 0 ) {
+            } else if (JzbTools.isEmpty(sMap.get("twoheader")) && num == 0 && !param.get("uid").equals(sMap.get("twoheader")) ) {
                 sMap.put("twoheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("threeheader")) && num == 0 ) {
+            } else if (JzbTools.isEmpty(sMap.get("threeheader")) && num == 0 && !param.get("uid").equals(sMap.get("threeheader"))) {
                 sMap.put("threeheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("fourheader")) && num == 0 ) {
+            } else if (JzbTools.isEmpty(sMap.get("fourheader")) && num == 0 && !param.get("uid").equals(sMap.get("fourheader"))) {
                 sMap.put("fourheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("fiveheader")) && num == 0 ) {
+            } else if (JzbTools.isEmpty(sMap.get("fiveheader")) && num == 0 && !param.get("uid").equals(sMap.get("fiveheader"))) {
                 sMap.put("fiveheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("sixheader")) && num == 0 ) {
+            } else if (JzbTools.isEmpty(sMap.get("sixheader")) && num == 0 && !param.get("uid").equals(sMap.get("sixheader"))) {
                 sMap.put("sixheader", param.get("uid"));
                 num ++;
             }
@@ -295,21 +300,27 @@ public class TbCompanyCommonService {
      * @return int
     **/
     public int rebackCompanys(Map<String, Object> param) {
-        int count = 0;
-        // 删除自己对该单位的跟进
-        param.put("saler",param.get("uid"));
-        Response response = companyCommonController.delCompanysSales(param);
-        int resultCode = response.getServerResult().getResultCode();
-        if (resultCode == 200){
-            count = 1;
-        }
-        // 查询该单位是否已经分配销售员
         Map<String,Object> sMap = tbCompanyCommonMapper.queryCompanySales(param);
-        if (!JzbTools.isEmpty(sMap.get("oneheader")) || !JzbTools.isEmpty(sMap.get("twoheader"))  || !JzbTools.isEmpty(sMap.get("threeheader")) ||
-                !JzbTools.isEmpty(sMap.get("fourheader"))  || !JzbTools.isEmpty(sMap.get("fiveheader"))  || !JzbTools.isEmpty(sMap.get("sixheader")) ){
-            return count;
-        }else {
+        //判断是否为主销售
+        if (param.get("uid").equals(sMap.get("oneheader"))){
             return tbCompanyCommonMapper.rebackCompanys(param);
+        }else {
+
+            int count = 0;
+            // 删除自己对该单位的跟进
+            param.put("saler",param.get("uid"));
+            Response response = companyCommonController.delCompanysSales(param);
+            int resultCode = response.getServerResult().getResultCode();
+            if (resultCode == 200){
+                count = 1;
+            }
+            // 查询该单位是否已经分配销售员
+            if (!JzbTools.isEmpty(sMap.get("oneheader")) || !JzbTools.isEmpty(sMap.get("twoheader"))  || !JzbTools.isEmpty(sMap.get("threeheader")) ||
+                    !JzbTools.isEmpty(sMap.get("fourheader"))  || !JzbTools.isEmpty(sMap.get("fiveheader"))  || !JzbTools.isEmpty(sMap.get("sixheader")) ){
+                return count;
+            }else {
+                return tbCompanyCommonMapper.rebackCompanys(param);
+            }
         }
 
     }
@@ -321,6 +332,7 @@ public class TbCompanyCommonService {
      * @return
      */
     public List<Map<String, Object>> getCompanyCommoms(Map<String, Object> param) {
+
 
         // 定义地区list列表
         List<Map<String, Object>> regionList = new ArrayList<>();
@@ -334,6 +346,11 @@ public class TbCompanyCommonService {
                 regionList.add(regionMap);
                 // 等于2代表传入的是市级地区ID
             } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("city")))) {
+                // 查询市级本身
+                Map<String,Object> cmap = new HashMap<>();
+                cmap.put("region",JzbDataType.getString(param.get("city")));
+                regionList.add(cmap);
+
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
 
@@ -354,7 +371,7 @@ public class TbCompanyCommonService {
                         if (!JzbDataType.isEmpty(provinceMap.get(JzbDataType.getString(param.get("city"))))) {
                             // 获取城市下所有的县级信息
                             List<Map<String, Object>> countyMap = (List<Map<String, Object>>) provinceMap.get(JzbDataType.getString(param.get("city")));
-                            Map<String, Object> county = countyMap.get(0);
+                            Map<String, Object> county =  countyMap.get(0);
                             List<Map<String, Object>> cityList = (List<Map<String, Object>>) county.get("list");
                             for (int b = 0; b < cityList.size(); b++) {
                                 // 获取城市下单个的县级信息
@@ -373,6 +390,11 @@ public class TbCompanyCommonService {
             } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
+
+                // 查询本身
+                Map<String, Object> regionProvince = new HashMap<>();
+                regionProvince.put("region", param.get("province"));
+                regionList.add(regionProvince);
 
                 // 获取所有的地区信息
                 Response response = tbCityRedisApi.getCityJson(param);
@@ -410,12 +432,63 @@ public class TbCompanyCommonService {
                     }
                 }
             }
+
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }
 
         List<Map<String, Object>> list = tbCompanyCommonMapper.getCompanyCommoms(param);
-
+        Map<String ,Object> map = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(list.get(i).get("sales"));
+            if (!JzbTools.isEmpty(list.get(i).get("twoheader"))){
+                map.put("uid",list.get(i).get("twoheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("twoheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("threeheader"))){
+                map.put("uid",list.get(i).get("threeheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("threeheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fourheader"))){
+                map.put("uid",list.get(i).get("fourheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fourheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fiveheader"))){
+                map.put("uid",list.get(i).get("fiveheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fiveheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("sixheader"))){
+                map.put("uid",list.get(i).get("twoheadder"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("sixheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }
+            }
+            list.get(i).put("saleslist",sb.toString());
+        }
         return list;
     }
 
@@ -430,33 +503,33 @@ public class TbCompanyCommonService {
         long updtime = System.currentTimeMillis();
         param.put("updtime", updtime);
         param.put("status", "1");
-        if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("oldphone")))) {
-            param.put("companyname", JzbDataType.getString(param.get("cname")));
-            if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("password")))) {
-                // 给新负责人发送短信,系统中不存在的用户
-                param.put("groupid", config.getChangeManagerPwd());
-                param.put("senduid", "addCommon1013");
-                param.put("msgtag", "addCommon1013");
-                companyService.sendRemind(param);
-            } else {
-                // 给新负责人发送短信,系统中存在的用户没有新密码
-                param.put("groupid", config.getChangeManager());
-                param.put("senduid", "addCommon1013");
-                param.put("msgtag", "addCommon1013");
-                companyService.sendRemind(param);
-                // 加入企业部门
-                param.put("cdid", JzbDataType.getString(param.get("cid")) + "0000");
-                param.put("time", updtime);
-                deptMapper.insertDeptUser(param);
-            }
-            // 将要发送的手机号改为旧管理员手机号
-            param.put("relphone", JzbDataType.getString(param.get("oldphone")));
-            // 给老负责人发送撤销管理员信息
-            param.put("groupid", config.getOldManager());
-            param.put("senduid", "addCommon1013");
-            param.put("msgtag", "addCommon1013");
-            companyService.sendRemind(param);
-        }
+//        if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("oldphone")))) {
+//            param.put("companyname", JzbDataType.getString(param.get("cname")));
+//            if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("password")))) {
+//                // 给新负责人发送短信,系统中不存在的用户
+//                param.put("groupid", config.getChangeManagerPwd());
+//                param.put("senduid", "addCommon1013");
+//                param.put("msgtag", "addCommon1013");
+//                companyService.sendRemind(param);
+//            } else {
+//                // 给新负责人发送短信,系统中存在的用户没有新密码
+//                param.put("groupid", config.getChangeManager());
+//                param.put("senduid", "addCommon1013");
+//                param.put("msgtag", "addCommon1013");
+//                companyService.sendRemind(param);
+//                // 加入企业部门
+//                param.put("cdid", JzbDataType.getString(param.get("cid")) + "0000");
+//                param.put("time", updtime);
+//                deptMapper.insertDeptUser(param);
+//            }
+//            // 将要发送的手机号改为旧管理员手机号
+//            param.put("relphone", JzbDataType.getString(param.get("oldphone")));
+//            // 给老负责人发送撤销管理员信息
+//            param.put("groupid", config.getOldManager());
+//            param.put("senduid", "addCommon1013");
+//            param.put("msgtag", "addCommon1013");
+//            companyService.sendRemind(param);
+//        }
         return tbCompanyCommonMapper.updateCompanyListInfo(param);
     }
 
@@ -503,6 +576,7 @@ public class TbCompanyCommonService {
 
     // 退回公海  加入历史私海记录 todo
     public int rebackCompanysToHistory(Map<String, Object> param) {
+
     return tbCompanyCommonMapper.rebackCompanysToHistory(param);
     }
 
@@ -512,5 +586,110 @@ public class TbCompanyCommonService {
 
     public int getCompanyCommonListHistoryCount(Map<String, Object> param) {
         return tbCompanyCommonMapper.getCompanyCommonListHistoryCount(param);
+    }
+
+    public List<Map<String, Object>> queryCompanysToHistory(Map<String, Object> param) {
+        // 定义地区list列表
+        List<Map<String, Object>> regionList = new ArrayList<>();
+        if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
+            // 传入3代表查询县级地区
+            if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("county")))) {
+                // 定义存放每个省市县地区的map
+                Map<String, Object> regionMap = new HashMap<>();
+                // 加入县级地区id到参数对象中
+                regionMap.put("region", JzbDataType.getString(param.get("county")));
+                regionList.add(regionMap);
+                // 等于2代表传入的是市级地区ID
+            } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("city")))) {
+                // 添加查询地区的key
+                param.put("key", "jzb.system.city");
+
+                // 获取所有的地区信息
+                Response response = tbCityRedisApi.getCityJson(param);
+
+                // 将字符串转化为map
+                Map<String, Object> myJsonArray = (Map<String, Object>) JSON.parse(response.getResponseEntity().toString());
+                // 判断返回值中是否存在省信息
+                if (!JzbDataType.isEmpty(myJsonArray.get(JzbDataType.getString(param.get("province"))))) {
+                    // 获取对应省下所有的城市信息
+                    List<Map<String, Object>> myJsonList = (List<Map<String, Object>>) myJsonArray.get(JzbDataType.getString(param.get("province")));
+                    for (int i = 0; i < myJsonList.size(); i++) {
+                        // 获取省份下所有城市的信息
+                        Map<String, Object> provinceMap = myJsonList.get(i);
+
+                        // 如果为传入的城市ID则进行下一步
+                        if (!JzbDataType.isEmpty(provinceMap.get(JzbDataType.getString(param.get("city"))))) {
+                            // 获取城市下所有的县级信息
+                            List<Map<String, Object>> countyMap = (List<Map<String, Object>>) provinceMap.get(JzbDataType.getString(param.get("city")));
+                            Map<String, Object> county =  countyMap.get(0);
+                            List<Map<String, Object>> cityList = (List<Map<String, Object>>) county.get("list");
+                            for (int b = 0; b < cityList.size(); b++) {
+                                // 获取城市下单个的县级信息
+                                Map<String, Object> cityMap = cityList.get(b);
+
+                                // 定义存放每个省市县地区的map
+                                Map<String, Object> regionMap = new HashMap<>();
+
+                                // 将县级ID加入地区map对象中
+                                regionMap.put("region", JzbDataType.getString(cityMap.get("creaid")));
+                                regionList.add(regionMap);
+                            }
+                        }
+                    }
+                }
+            } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
+                // 添加查询地区的key
+                param.put("key", "jzb.system.city");
+
+                // 查询本身
+                Map<String, Object> regionProvince = new HashMap<>();
+                regionProvince.put("region", param.get("province"));
+                regionList.add(regionProvince);
+
+                // 获取所有的地区信息
+                Response response = tbCityRedisApi.getCityJson(param);
+
+                // 将字符串转化为map
+                Map<String, Object> myJsonArray = (Map<String, Object>) JSON.parse(response.getResponseEntity().toString());
+                if (!JzbDataType.isEmpty(myJsonArray.get(JzbDataType.getString(param.get("province"))))) {
+                    List<Map<String, Object>> myJsonList = (List<Map<String, Object>>) myJsonArray.get(JzbDataType.getString(param.get("province")));
+                    for (int i = 0; i < myJsonList.size(); i++) {
+                        // 获取城市信息
+                        Map<String, Object> provinceMap = myJsonList.get(i);
+                        for (Map.Entry<String, Object> entry : provinceMap.entrySet()) {
+                            if (!"list".equals(entry.getKey())) {
+                                String key = entry.getKey();
+                                // 定义存放每个省市县地区的map
+                                Map<String, Object> regionMap = new HashMap<>();
+                                regionMap.put("region", key);
+                                regionList.add(regionMap);
+                                List<Map<String, Object>> cityList = (List<Map<String, Object>>) entry.getValue();
+                                Map<String, Object> cityMap = cityList.get(0);
+                                List<Map<String, Object>> city = (List<Map<String, Object>>) cityMap.get("list");
+                                for (int k = 0; k < city.size(); k++) {
+                                    // 获取城市下单个的县级信息
+                                    Map<String, Object> cityMap1 = city.get(k);
+
+                                    // 定义存放每个省市县地区的map
+                                    Map<String, Object> region = new HashMap<>();
+
+                                    // 将县级ID加入地区map对象中
+                                    region.put("region", JzbDataType.getString(cityMap1.get("creaid")));
+                                    regionList.add(region);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 将所有结果加入参数中传入
+            param.put("list", regionList);
+        }
+        return tbCompanyCommonMapper.queryCompanysToHistory(param);
+    }
+
+    public int queryCompanysToHistoryCount(Map<String, Object> param) {
+        return tbCompanyCommonMapper.queryCompanysToHistoryCount(param);
     }
 }

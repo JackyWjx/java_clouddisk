@@ -77,18 +77,20 @@
     <!--根据id获取角色信息-->
     <select id="queryRoleByUid" parameterType="java.util.Map"
             resultType="java.util.Map">
-            SELECT
-            c.cname as rolename
-            from
-            tb_user_role u
-            left join
-            tb_company_role c
-            on
-            u.crid = c.crid
-            where
-            u.uid = #{uid}
-            and
-            u.cid = #{cid}
+            SELECT G
+                .cname,
+                r.addtime
+            FROM
+                tb_role_relation r
+                LEFT JOIN tb_role_group G ON r.crgid = G.crgid
+            WHERE
+                r.rrid = #{uid}
+                and r.cid = #{cid}
+                and r.status = '1'
+            ORDER BY
+                r.addtime ASC
+                LIMIT 1
+
     </select>
 
     <!-- 修改认证用户user_list表信息 -->

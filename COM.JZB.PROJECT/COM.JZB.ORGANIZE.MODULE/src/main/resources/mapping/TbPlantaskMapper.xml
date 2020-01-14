@@ -116,37 +116,25 @@ ORDER BY
 		count(1)
 	FROM
 		${tabname}
-    where node=#{node} and parentid= '0'
-		<if test="starttime!=null and starttime!=''">
-			and starttime &gt;= #{starttime}
-		</if>
-		<if test="endtime!=null and endtime!=''">
-			and endtime  &lt;= #{endtime}
-		</if>
-		<if test="tasktype!=null and tasktype!=''">
-			and tasktype  &lt;= #{tasktype}
+    where node = '1'
+		AND status = 0
+		<if test="ktime!=null and ktime!=''">
+			and starttime &lt;=${etime} and endtime >=${ktime}
 		</if>
 
-		<if test="taskstatus!=null and taskstatus!=''">
-			and taskstatus  = #{taskstatus}
+		<if test="zhuangtai!=null and zhuangtai!=''">
+			and tasktype  like '%${zhuangtai}%'
 		</if>
-		<if test="acceptors!=null and acceptors!=''">
-			and acceptors  like '%'#{acceptors}'%'
-		</if>
-
-		<if test="executors!=null and executors!=''">
-			and executors  like '%'#{executors}'%'
-		</if>
-
-		<if test="assistants!=null and assistants!=''">
-			and assistants  like '%'#{assistants}'%'
-		</if>
-
-		<if test="outcome!=null and outcome!=''">
-			and outcome  > #{outcome}
-		</if>
-		<if test="uid!=null and uid!=''">
-			and uid = #{uid}
+		<if test="touid!=null and touid!=''">
+			and (
+			acceptors like '%${touid}%'
+			or
+			assistants like'%${touid}%'
+			or
+			executors like '%${touid}%'
+			or
+			uid ='%${touid}%'
+			)
 		</if>
 
     </select>
@@ -424,7 +412,6 @@ ORDER BY
 
 
 	<select id="getPantaskDas" parameterType="java.util.Map" resultType="java.util.Map">
-
    		select planid,
 		cdid,
 		uid,
@@ -447,9 +434,9 @@ ORDER BY
 		sort,progressofwork from tb_plantask
 		where
 		(acceptors like '%${uid}%' or assistants like'%${uid}%' or executors like '%${uid}%' or uid like  '%${uid}%')
-		and (starttime &lt;=${endtime} and endtime >=${starttime}) and status=0 and progressofwork &lt; 100
+		and (starttime &lt;${endtime} and endtime >${starttime}) and status=0 and progressofwork &lt; 100
 		and tasktype not in('已终止')
-		order by endtime asc
+		order by addtime asc
 	</select>
 
 	<select id="getPantaskDasXiangxi" parameterType="java.util.Map" resultType="java.util.Map">
@@ -574,18 +561,35 @@ ORDER BY
 		<if test="zhuangtai!=null and zhuangtai!=''">
 			and tasktype  like '%${zhuangtai}%'
 		</if>
-		<if test="touid!=null and touid!=''">
-			and (
-			acceptors like '%${touid}%'
-			or
-			assistants like'%${touid}%'
-			or
-			executors like '%${touid}%'
-			or
-			uid ='%${touid}%'
-			)
-		</if>
-		order by parentid
+
+
+		<choose>
+			<when test="touid!=null and touid!=''">
+				and (
+				acceptors like '%${touid}%'
+				or
+				assistants like'%${touid}%'
+				or
+				executors like '%${touid}%'
+				or
+				uid ='%${touid}%'
+				)
+			</when>
+			<otherwise>
+				and (
+				acceptors like '%${auid}%'
+				or
+				assistants like'%${auid}%'
+				or
+				executors like '%${auid}%'
+				or
+				uid ='%${auid}%'
+				)
+			</otherwise>
+		</choose>
+
+
+		order by parentid,id asc
 		LIMIT #{pagesize} OFFSET #{pageno}
 	</select>
 </mapper>

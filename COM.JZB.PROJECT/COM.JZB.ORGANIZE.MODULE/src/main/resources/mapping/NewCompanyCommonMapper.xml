@@ -214,38 +214,118 @@
         update
         tb_common_company_list
         SET
-        <if test="cid != null and cid != ''">region = #{region},</if>
-        <if test="uscc != null and uscc != ''">uscc = #{uscc},</if>
-        <if test="reluid != null and reluid != ''">reluid = #{reluid},</if>
-        <if test="phone != null and phone != ''">relphone = #{phone},</if>
-        <if test="telephone != null and telephone != ''">telephone = #{telephone},</if>
-        <if test="relmail != null and relmail != ''">relmail = #{relmail},</if>
-        <if test="logo != null and logo != ''">logo = #{logo},</if>
-        <if test="photo != null and photo != ''">photo = #{photo},</if>
-        <if test="curl != null and curl != ''">curl = #{curl},</if>
-        <if test="fax != null and fax != ''">fax = #{fax},</if>
-        <if test="limitday != null and limitday != ''">limitday = ${limitday},</if>
-        <if test="address != null and address != ''">address = #{address},</if>
-        <if test="range != null and range != ''">range = #{range},</if>
-        <if test="ctype != null and ctype != ''">ctype = #{ctype},</if>
-        <if test="legaleid != null and legaleid != ''">legaleid = #{legaleid},</if>
-        <if test="legaler != null and legaler != ''">legaler = #{legaler},</if>
-        <if test="cardid != null and cardid != ''">cardid = #{cardid},</if>
-        <if test="capital != null and capital != ''">capital = #{capital},</if>
-        <if test="birthday != null and birthday != ''">birthday = ${birthday},</if>
-        <if test="content != null and content != ''">content = #{content},</if>
-        <if test="supervise != null and supervise != ''">supervise = #{supervise},</if>
-        <if test="orgrelation != null and orgrelation != ''">orgrelation = #{orgrelation},</if>
-        <if test="prodesc != null and prodesc != ''">prodesc = #{prodesc},</if>
-        <if test="prolist != null and prolist != ''">prolist = #{prolist},</if>
-        <if test="source != null and source != ''">source = ${source},</if>
-        <if test="summary != null and summary != ''">summary = #{summary},</if>
+        <if test="tcid != null and tcid != ''">
+            tcid = #{tcid},
+        </if>
+        <if test="cid != null and cid != ''">
+            cid = #{cid},
+        </if>
+        <if test="cname != null and cname != ''">
+            cname = #{cname},
+        </if>
+        <if test="nickname != null and nickname != ''">
+            nickname = #{nickname},
+        </if>
+        <if test="region != null and region != ''">
+            region = #{region},
+        </if>
+        <if test="uscc != null and uscc != ''">
+            uscc = #{uscc},
+        </if>
+        <if test="reluid != null and reluid != ''">
+            reluid = #{reluid},
+        </if>
+        <if test="relperson != null and relperson != ''">
+            relperson = #{relperson},
+        </if>
+        <if test="relphone != null and relphone != ''">
+            relphone = #{relphone},
+        </if>
+        <if test="telephone != null and telephone != ''">
+            telephone = #{telephone},
+        </if>
+        <if test="relmail != null and relmail != ''">
+            relmail = #{relmail},
+        </if>
+        <if test="logo != null and logo != ''">
+            logo = #{logo},
+        </if>
+        <if test="photo != null and photo != ''">
+            photo = #{photo},
+        </if>
+        <if test="cstatus != null and cstatus != ''">
+            cstatus = #{cstatus},
+        </if>
+        <if test="curl != null and curl != ''">
+            curl = #{curl},
+        </if>
+        <if test="fax != null and fax != ''">
+            fax = #{fax},
+        </if>
+        <if test="limitday != null">
+            limitday = #{limitday},
+        </if>
+        <if test="address != null and address != ''">
+            address = #{address},
+        </if>
+        <if test="range != null and range != ''">
+            range = #{range},
+        </if>
+        <if test="ctype != null and ctype != ''">
+            ctype = #{ctype},
+        </if>
+        <if test="legaleid != null and legaleid != ''">
+            legaleid = #{legaleid},
+        </if>
+        <if test="legaler != null and legaler != ''">
+            legaler = #{legaler},
+        </if>
+        <if test="cardid != null and cardid != ''">
+            cardid = #{cardid},
+        </if>
+        <if test="capital != null and capital != ''">
+            capital = #{capital},
+        </if>
+        <if test="birthday != null">
+            birthday = #{birthday},
+        </if>
+        <if test="content != null and content != ''">
+            content = #{content},
+        </if>
+        <if test="authstatus != null">
+            authstatus = #{authstatus},
+        </if>
+        <if test="supervise != null and supervise != ''">
+            supervise = #{supervise},
+        </if>
+        <if test="orgrelation != null and orgrelation != ''">
+            orgrelation = #{orgrelation},
+        </if>
+        <if test="prodesc != null and prodesc != ''">
+            prodesc = #{prodesc},
+        </if>
+        <if test="prolist != null and prolist != ''">
+            prolist = #{prolist},
+        </if>
+        <if test="source != null">
+            source = #{source},
+        </if>
+        <if test="adduid != null and adduid != ''">
+            adduid = #{adduid},
+        </if>
+        <if test="addtime != null">
+            addtime = #{addtime},
+        </if>
+        <if test="status != null and status != ''">
+            status = #{status},
+        </if>
+        <if test="summary != null and summary != ''">
+            summary = #{summary},
+        </if>
         upduid = #{upduid},
         updtime = #{updtime}
         WHERE
         cid=#{cid}
-        and
-        tcid = #{tcid}
     </update>
 
     <!--点击删除按钮,进行公海单位删除-->
@@ -259,4 +339,30 @@
         and
         tcid = #{tcid}
     </update>
+
+    <!--添加供应商表记录-->
+    <insert id="addCompanyCommonListSuppler" parameterType="java.util.Map">
+        insert into tb_company_supplier
+        (cid,supid,adduid,addtime,upduid,updtime,summary,relphone,region,mail,relperson,supname,address,status)
+        values (
+        #{cid},
+        #{supid},
+        #{adduid},
+        <choose> <when test="addtime != null and addtime != ''">#{addtime},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="upduid != null and upduid != ''">#{upduid},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="updtime != null and updtime != ''">#{updtime},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="summary != null and summary != ''">#{summary},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="relphone != null and relphone != ''">#{relphone},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="region != null and region != ''">#{region},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="mail != null and upduid != ''">#{mail},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="relperson != null and relperson != ''">#{relperson},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="supname != null and supname != ''">#{supname},</when><otherwise> null,</otherwise></choose>
+        <choose> <when test="address != null and address != ''">#{address},</when><otherwise> null,</otherwise></choose>
+        #{status}
+        )
+    </insert>
+
+    <select id="queryCommonCompanyByUscc" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from tb_company_list where uscc = #{uscc} and status = '1';
+    </select>
 </mapper>
