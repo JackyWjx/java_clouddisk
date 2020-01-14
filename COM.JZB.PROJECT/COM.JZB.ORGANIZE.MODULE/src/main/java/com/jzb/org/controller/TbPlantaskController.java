@@ -613,10 +613,10 @@ public class TbPlantaskController {
                 Long h=m+86400000;//后天
                 if(param.get("time").equals("0")){
                     param.put("starttime",j);
-                    param.put("endtime",m);
+                    param.put("endtime",m-1);
                 }else{
                     param.put("starttime",m);
-                    param.put("endtime",h);
+                    param.put("endtime",h-1);
                 }
                 param.put("uid",userInfo.get("uid").toString());
                 List<Map<String, Object>> records = tbPlantaskService.getPantaskDas(param);
@@ -1054,6 +1054,8 @@ public class TbPlantaskController {
                 param.put("zhuangtai",param.get("zhuangtai").toString().replaceAll("\\[","").replaceAll("\\]",""));
                 param.put("touid",param.get("touid").toString().replaceAll("\\[","").replaceAll("\\]",""));
 
+                param.put("auid",userInfo.get("uid").toString());
+
                 if(param.get("time")!=null) {
                     if (!param.get("time").toString().equals("")) {
                         DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1364,7 +1366,7 @@ public class TbPlantaskController {
                             List shijian= (List) list.get(i).get("valueDate");
                             if(shijian.get(0).toString().equals(shijian.get(1).toString())){
                                 list.get(i).put("starttime",shijian.get(0)+"");
-                                list.get(i).put("endtime",((Long)shijian.get(1))+100+"");
+                                list.get(i).put("endtime",((Long)shijian.get(1))+86399999+"");
                             }else{
                                 list.get(i).put("starttime",shijian.get(0)+"");
                                 list.get(i).put("endtime",shijian.get(1)+"");
@@ -1602,7 +1604,7 @@ public class TbPlantaskController {
      */
     @RequestMapping(value = "/getPlantaskUserXuan", method = RequestMethod.POST)
     @ResponseBody
-    public Response getPlantaskUserXuan(@RequestBody Map<String, Object> param) {
+        public Response getPlantaskUserXuan(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
         String api = "/org/plantask/getPlantaskUserItem";
@@ -1630,7 +1632,7 @@ public class TbPlantaskController {
                 param.put("bumen",param.get("bumen").toString().replaceAll("\\[","").replaceAll("\\]",""));
                 param.put("zhuangtai",param.get("zhuangtai").toString().replaceAll("\\[","").replaceAll("\\]",""));
                 param.put("touid",param.get("touid").toString().replaceAll("\\[","").replaceAll("\\]",""));
-
+                param.put("auid",userInfo.get("uid").toString());
                 if(param.get("time")!=null) {
                     if (!param.get("time").toString().equals("")) {
                         DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");

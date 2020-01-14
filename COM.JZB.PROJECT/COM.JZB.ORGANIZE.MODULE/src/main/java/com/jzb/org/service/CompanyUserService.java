@@ -154,8 +154,14 @@ public class CompanyUserService {
                 regionList.add(regionMap);
                 // 等于2代表传入的是市级地区ID
             } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("city")))) {
+                // 查询市级本身
+                Map<String,Object> cmap = new HashMap<>();
+                cmap.put("region",JzbDataType.getString(param.get("city")));
+                regionList.add(cmap);
+
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
+
 
                 // 获取所有的地区信息
                 Response response = tbCityRedisApi.getCityJson(param);
