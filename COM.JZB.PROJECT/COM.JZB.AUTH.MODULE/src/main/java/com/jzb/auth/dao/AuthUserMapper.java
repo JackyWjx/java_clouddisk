@@ -45,6 +45,9 @@ public interface AuthUserMapper {
      */
     int updateIdentityList(Map<String, Object> param);
 
+
+    int queryIsExists(Map<String, Object> param);
+
     /**
      * 认证身份证user_info表信息修改
      */

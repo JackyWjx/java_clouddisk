@@ -22,6 +22,18 @@ public interface AuthApi {
     @CrossOrigin
     public Response addRegistration(@RequestBody Map<String, Object> param);
 
+
+
+    /**
+     * 查询是否存在
+     *
+     * @param param
+     * @return
+     */
+    @PostMapping("/queryIsExists")
+    @CrossOrigin
+    public Response queryIsExists(@RequestBody Map<String, Object> param);
+
     /**
      * CRM-销售业主-公海-业主下的人员11
      * 点击业主下的人员中的新增人员按钮进行加入员工

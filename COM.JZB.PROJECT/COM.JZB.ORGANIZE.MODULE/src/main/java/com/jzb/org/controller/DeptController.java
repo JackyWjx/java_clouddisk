@@ -458,23 +458,30 @@ public class DeptController {
         try {
             String[] str = {"cdid", "cid", "uid"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                int add = deptService.updateDeptUser(param);
 
-                /** 修改成功后统一手机号码 */
-                if (add > 0 && !JzbTools.isEmpty(param.get("phone"))) {
-                    authApi.updateAllPhoneByUid(param);
-                    Response userInfo1 = authApi.getUserInfo(param);
-                    Map<String, Object> resuMap = (Map<String, Object>) userInfo1.getResponseEntity();
-                    if (!JzbTools.isEmpty(resuMap)) {
-                        // 添加增加缓存必要的参数
-                        resuMap.put("token", "token");
-                        resuMap.put("timeout", "1800000");
-                        resuMap.put("phone", JzbDataType.getString(param.get("phone")));
-                        userRedisApi.cacheUserInfo(resuMap);
+                Response response = authApi.queryIsExists(param);
+                Object count = response.getResponseEntity();
+                if (JzbDataType.getInteger(count) == 0) {
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    int add = deptService.updateDeptUser(param);
+
+                    /** 修改成功后统一手机号码 */
+                    if (add > 0 && !JzbTools.isEmpty(param.get("phone"))) {
+                        authApi.updateAllPhoneByUid(param);
+                        Response userInfo1 = authApi.getUserInfo(param);
+                        Map<String, Object> resuMap = (Map<String, Object>) userInfo1.getResponseEntity();
+                        if (!JzbTools.isEmpty(resuMap)) {
+                            // 添加增加缓存必要的参数
+                            resuMap.put("token", "token");
+                            resuMap.put("timeout", "1800000");
+                            resuMap.put("phone", JzbDataType.getString(param.get("phone")));
+                            userRedisApi.cacheUserInfo(resuMap);
+                        }
                     }
+                    result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                } else {
+                    result = Response.getResponseError();
                 }
-                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             } else {
                 result = Response.getResponseError();
             }
@@ -484,7 +491,6 @@ public class DeptController {
         }
         return result;
     }
-
 
     /**
      * 修改部门用户表
@@ -499,7 +505,7 @@ public class DeptController {
     public Response modifyDeptUserByUid(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            String[] str = {"uid","phone"};
+            String[] str = {"uid", "phone"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 int add = deptService.updateDeptUserByUid(param);
                 result = add > 0 ? Response.getResponseSuccess() : Response.getResponseError();
@@ -526,13 +532,13 @@ public class DeptController {
     public Response removeDeptUser(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            List<Map<String,Object>> list = (List<Map<String, Object>>) param.get("list");
+            List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            for(int i = 0, a = list.size();i < a; i++){
+            for (int i = 0, a = list.size(); i < a; i++) {
                 list.get(i).put("status", "2");
-                list.get(i).put("time",System.currentTimeMillis());
+                list.get(i).put("time", System.currentTimeMillis());
             }
-            result = deptService.updateDeptUserBatch(list) > 0 ?Response.getResponseSuccess(userInfo) :Response.getResponseError();
+            result = deptService.updateDeptUserBatch(list) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -930,6 +936,7 @@ public class DeptController {
 
     /**
      * 云产品市场的查询
+     *
      * @param param
      * @return
      */
@@ -940,7 +947,7 @@ public class DeptController {
         try {
             //获取用户信息
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            List<Map<String,Object>> mapList = deptService.getCompanyProduct(param);
+            List<Map<String, Object>> mapList = deptService.getCompanyProduct(param);
             result = Response.getResponseSuccess(userInfo);
             result.setResponseEntity(mapList);
         } catch (Exception e) {

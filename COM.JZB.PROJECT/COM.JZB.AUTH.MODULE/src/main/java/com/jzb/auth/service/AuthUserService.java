@@ -82,6 +82,9 @@ public class AuthUserService {
     }
 
 
+    public int queryIsExists(Map<String, Object> param){
+        return userMapper.queryIsExists(param);
+    }
 
     /**
      * 认证修改用户数据

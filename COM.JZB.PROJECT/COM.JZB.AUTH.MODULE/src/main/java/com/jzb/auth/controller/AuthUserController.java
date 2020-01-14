@@ -63,6 +63,34 @@ public class AuthUserController {
      * @param param
      * @return
      */
+    @RequestMapping(value = "/queryIsExists", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response queryIsExists(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            /**  验证指定参数为空则返回error */
+            if (JzbCheckParam.haveEmpty(param, new String[]{"phone"})) {
+                response = Response.getResponseError();
+            } else {
+                int count = userService.queryIsExists(param);
+                response = Response.getResponseSuccess();
+                response.setResponseEntity(count > 0 ? 1 : 0);
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+    /**
+     * 统一手机号  czd
+     *
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/updateAllPhoneByUid", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
@@ -206,7 +234,7 @@ public class AuthUserController {
     public Response getUidByUname(@RequestBody Map<String, Object> param) {
         Response response;
         try {
-            List<Map<String,Object>> list  = userService.getUidByUname(param);
+            List<Map<String, Object>> list = userService.getUidByUname(param);
             response = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();
             pageInfo.setList(list);
@@ -217,6 +245,7 @@ public class AuthUserController {
         }
         return response;
     } //
+
     /**
      * 更改个人认证信息
      *
@@ -1025,12 +1054,10 @@ public class AuthUserController {
         return result;
     }
 
-
-
-
     /**
      * 根据用户ids查询用户信息
-     *计划管理
+     * 计划管理
+     *
      * @author lifei
      */
     @RequestMapping(value = "/getUserNameList", method = RequestMethod.POST)
@@ -1038,10 +1065,10 @@ public class AuthUserController {
     public Response getUserNameList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
-            List<Map<String, Object>> userlt=null;
-            if(param.get("ids")==null){
+            List<Map<String, Object>> userlt = null;
+            if (param.get("ids") == null) {
                 result = Response.getResponseError();
-            }else{
+            } else {
                 userlt = userService.getUserNameList(param);
             }
 
@@ -1057,8 +1084,5 @@ public class AuthUserController {
         }
         return result;
     }
-
-
-
 
 } // End class AuthUserController

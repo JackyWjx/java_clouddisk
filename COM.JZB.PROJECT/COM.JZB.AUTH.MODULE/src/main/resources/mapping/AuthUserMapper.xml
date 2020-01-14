@@ -167,6 +167,10 @@
     </select>
 
 
+    <!-- 查询是否存在 -->
+    <select id="queryIsExists" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_user_key where keyid=#{phone}
+    </select>
 
 
 

@@ -200,7 +200,7 @@
             <if test=" mail !=null and item.mail!=''">mail =#{mail},</if>
             updtime = #{time}
             WHERE
-            uid =#{uid} AND cid=#{cid} AND cdid=#{cdid}
+            uid =#{uid}
     </update>
 
     <update id="updateDeptUserByUid">
