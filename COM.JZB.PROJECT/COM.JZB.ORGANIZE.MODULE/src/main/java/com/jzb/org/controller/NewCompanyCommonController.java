@@ -86,8 +86,10 @@ public class NewCompanyCommonController {
                 param.put("updtime", System.currentTimeMillis());
                 param.put("uid", JzbDataType.getString(userInfo.get("uid")));
                 param.put("adduid", JzbDataType.getString(userInfo.get("uid")));
-                result = newCompanyCommonService.addCompanyCommonList(param) > 0 ?
-                        Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                result = newCompanyCommonService.addCompanyCommonList(param) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                Map<String,Object> map = new HashMap<>();
+                map.put("cid",param.get("cid"));
+                result.setResponseEntity(map);
 
         } catch (Exception e) {
             JzbTools.logError(e);
@@ -110,6 +112,9 @@ public class NewCompanyCommonController {
     public Response modifyCompanyCommonList(@RequestBody Map<String, Object> param) {
         Response result;
         try {
+            param.remove("birthday");
+            param.put("relphone",param.get("phone"));
+            param.put("relperson",param.get("managername"));
             // 修改数据
             int count = tbCompanyCommonService.modifyCompanyCommon(param);
             // 获取用户信息
@@ -120,6 +125,7 @@ public class NewCompanyCommonController {
                 Map<String, Object> map = companyService.getEnterpriseData(param);
                 companyController.comHasCompanyKey(map);
                 // 修改公海单位信息
+
                 newCompanyCommonService.modifyCompanyCommonList(param);
             } else {
                 result = Response.getResponseError();
@@ -153,5 +159,33 @@ public class NewCompanyCommonController {
         }
         return result;
     }
+
+
+
+   /**
+    * @Author Reed
+    * @Description // 添加供应商
+    * @Date 15:29 2020/1/13
+    * @Param [param]
+    * @return com.jzb.base.message.Response
+   **/
+    @RequestMapping(value = "/addCompanyCommonListSuppler", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response addCompanyCommonListSuppler(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+
+            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            param.put("adduid",userInfo.get("uid"));
+            result = newCompanyCommonService.addCompanyCommonListSuppler(param) > 0 ?
+                    Response.getResponseSuccess(userInfo) : Response.getResponseError();
+
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
 
 }

@@ -154,9 +154,11 @@
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status = '2'
+        and tpcl.status = '1'
         ) a where 1=1
         <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
-            and a.oneheader = #{uid}
+            and a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid} or a.fiveheader = #{uid}
+            or a.sixheader = #{uid}
         </if>
         <if test="province != null and province != ''">
             and a.region IN
@@ -211,10 +213,11 @@
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status = '2'
+        and tpcl.status = '1'
         ) a where 1=1
-
         <if test="uid!=null and uid !='' and uid!='JZBDCDCJZBDC'">
-            and a.oneheader=#{uid}
+            and a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid} or a.fiveheader = #{uid}
+            or a.sixheader = #{uid}
         </if>
         <if test="province != null and province != ''">
             and a.region IN
@@ -393,7 +396,7 @@
     <update id="rebackCompanys" parameterType="java.util.Map">
 
         update tb_common_company_list set status='1' where cid=#{cid};
-        DELETE FROM tb_private_company_list WHERE cid = #{cid} and status = '1'
+        update  tb_private_company_list  set status = '4' WHERE cid = #{cid} and status = '1'
 
     </update>
 
@@ -406,6 +409,11 @@
         DISTINCT
         tcc.cid,
         '' as oneheader,
+        '' as twoheader,
+        '' as threeheader,
+        '' as fourheader,
+        '' as fiveheader,
+        '' as sixheader,
         '' as sales,
         tcc.status,
         tcc.relmail,
@@ -459,6 +467,11 @@
         DISTINCT
         tcc.cid,
         tpcl.oneheader,
+        tpcl.twoheader,
+        tpcl.threeheader,
+        tpcl.fourheader,
+        tpcl.fiveheader,
+        tpcl.sixheader,
         (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
         tcc.status,
         tcc.relmail,
@@ -521,35 +534,66 @@
         update
         tb_company_list
         set
-        <if test="cname != null and cname != ''">cname=#{cname},</if>
-        <if test="region != null and region != ''">region=#{region},</if>
-        <if test="manager != null and manager != ''">manager=#{uid},</if>
-        <if test="logo != null and logo != ''">logo=#{logo},</if>
-        <if test="uscc != null and uscc != ''">uscc=#{uscc},</if>
-        <if test="photo != null and photo != ''">photo=#{photo},</if>
-        <if test="authid != null and authid != ''">authid=${authid},</if>
-        <if test="summary != null and summary != ''">summary=#{summary},</if>
-        updtime=#{updtime}
-        where
-        cid = #{cid};
-        update
-        tb_company_info
-        set
-        <if test="curl != null and curl != ''">curl=#{curl},</if>
-        <if test="fax != null and fax != ''">fax=#{fax},</if>
-        <if test="limitday != null and limitday != ''">limitday=#{limitday},</if>
-        <if test="address != null and address != ''">address=#{address},</if>
-        <if test="range != null and range != ''">range=#{range},</if>
-        <if test="ctype != null and ctype != ''">ctype=#{ctype},</if>
-        <if test="legaler != null and legaler != ''">legaler=#{legaler},</if>
-        <if test="cardid != null and cardid != ''">cardid=#{cardid},</if>
-        <if test="capital != null and capital != ''">capital=#{capital},</if>
-        <if test="birthday != null and birthday != ''">birthday=${birthday},</if>
-        <if test="content != null and content != ''">content=#{content},</if>
-        <if test="license != null and license != ''">license=#{license},</if>
-        <if test="idcardup != null and idcardup != ''">idcardup=#{idcardup},</if>
-        <if test="idecarddown != null and idecarddown != ''">idecarddown=#{idecarddown},</if>
-        <if test="authorg != null and authorg != ''">authorg=#{authorg},</if>
+        <if test="cname != null and cname != ''">
+            cname = #{cname},
+        </if>
+        <if test="nickname != null and nickname != ''">
+            nickname = #{nickname},
+        </if>
+        <if test="region != null and region != ''">
+            region = #{region},
+        </if>
+        <if test="uscc != null and uscc != ''">
+            uscc = #{uscc},
+        </if>
+        <if test="idx != null">
+            idx = #{idx},
+        </if>
+        <if test="relperson != null and relperson != ''">
+            relperson = #{relperson},
+        </if>
+        <if test="relphone != null and relphone != ''">
+            relphone = #{relphone},
+        </if>
+        <if test="telephone != null and telephone != ''">
+            telephone = #{telephone},
+        </if>
+        <if test="relmail != null and relmail != ''">
+            relmail = #{relmail},
+        </if>
+        <if test="reguid != null and reguid != ''">
+            reguid = #{reguid},
+        </if>
+        <if test="regtime != null">
+            regtime = #{regtime},
+        </if>
+        <if test="manager != null and manager != ''">
+            manager = #{manager},
+        </if>
+        <if test="logo != null and logo != ''">
+            logo = #{logo},
+        </if>
+        <if test="photo != null and photo != ''">
+            photo = #{photo},
+        </if>
+        <if test="authid != null">
+            authid = #{authid},
+        </if>
+        <if test="ouid != null and ouid != ''">
+            ouid = #{ouid},
+        </if>
+        <if test="upduid != null and upduid != ''">
+            upduid = #{upduid},
+        </if>
+        <if test="status != null and status != ''">
+            status = #{status},
+        </if>
+        <if test="summary != null and summary != ''">
+            summary = #{summary},
+        </if>
+        <if test="oldcid != null and oldcid != ''">
+            oldcid = #{oldcid},
+        </if>
         updtime=#{updtime}
         where
         cid = #{cid};
@@ -632,6 +676,63 @@
         #{pagesize}
         offset
         #{pageno}
+    </select>
+
+    <select id="queryCompanysToHistoryCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from (
+        SELECT
+        DISTINCT
+        tcc.cid,
+        tpcl.oneheader,
+        tpcl.twoheader,
+        tpcl.threeheader,
+        tpcl.fourheader,
+        tpcl.fiveheader,
+        tpcl.sixheader,
+        (select cname from tb_dept_user where uid=tpcl.oneheader limit 1) sales,
+        tcc.status,
+        tcl.cname,
+        tcl.manager,
+        tcl.region,
+        tdu.cname username,
+        tdu.phone userphone,
+        ( SELECT dictvalue FROM tb_company_property WHERE cid = tcc.cid AND typeid = 't111111' limit 1) companyLevel,
+        tcl.authid,
+        tcl.logo,
+        tcl.relmail,
+        tci.address
+        FROM
+        tb_common_company_list tcc
+        INNER JOIN tb_company_list tcl ON tcl.cid = tcc.cid
+        LEFT JOIN tb_private_company_list tpcl ON tcc.cid = tpcl.cid
+        LEFT JOIN tb_dept_user tdu ON tdu.cid = tcc.cid
+        AND tdu.uid = tcl.manager
+        LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
+        LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
+        WHERE
+        tcc.status = '2'
+        and tpcl.status = '2' ||
+         ''
+        ) a where 1=1
+        <if test="uid!=null and uid !='' and uid!='JZBDCDCJZBDC'">
+            and a.oneheader=#{uid}
+        </if>
+        <if test="province != null and province != ''">
+            and a.region IN
+            <foreach separator="," close=")" open="(" index="index" item="item" collection="list">
+                #{item.region}
+            </foreach>
+        </if>
+        <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
+            and (a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid}
+            or a.fiveheader = #{uid}  or a.sixheader = #{uid})
+        </if>
+        <if test="companyLevel!=null and companyLevel !='' and companyLevel!='全部'">
+            and a.companyLevel=#{companyLevel}
+        </if>
+        <if test="keyword!=null and keyword !=''">
+            and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
+        </if>
     </select>
 
     <select id="getCompanyCommonListHistory" parameterType="java.util.Map" resultType="java.util.Map"  >
