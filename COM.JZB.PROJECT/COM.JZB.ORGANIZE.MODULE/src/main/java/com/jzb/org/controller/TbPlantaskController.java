@@ -1054,6 +1054,8 @@ public class TbPlantaskController {
                 param.put("zhuangtai",param.get("zhuangtai").toString().replaceAll("\\[","").replaceAll("\\]",""));
                 param.put("touid",param.get("touid").toString().replaceAll("\\[","").replaceAll("\\]",""));
 
+                param.put("auid",userInfo.get("uid").toString());
+
                 if(param.get("time")!=null) {
                     if (!param.get("time").toString().equals("")) {
                         DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1602,7 +1604,7 @@ public class TbPlantaskController {
      */
     @RequestMapping(value = "/getPlantaskUserXuan", method = RequestMethod.POST)
     @ResponseBody
-    public Response getPlantaskUserXuan(@RequestBody Map<String, Object> param) {
+        public Response getPlantaskUserXuan(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
         String api = "/org/plantask/getPlantaskUserItem";
@@ -1630,7 +1632,7 @@ public class TbPlantaskController {
                 param.put("bumen",param.get("bumen").toString().replaceAll("\\[","").replaceAll("\\]",""));
                 param.put("zhuangtai",param.get("zhuangtai").toString().replaceAll("\\[","").replaceAll("\\]",""));
                 param.put("touid",param.get("touid").toString().replaceAll("\\[","").replaceAll("\\]",""));
-
+                param.put("auid",userInfo.get("uid").toString());
                 if(param.get("time")!=null) {
                     if (!param.get("time").toString().equals("")) {
                         DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");

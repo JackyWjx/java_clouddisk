@@ -562,15 +562,32 @@ ORDER BY
 			and tasktype  like '%${zhuangtai}%'
 		</if>
 
-			and (
-			acceptors like '%${touid}%'
-			or
-			assistants like'%${touid}%'
-			or
-			executors like '%${touid}%'
-			or
-			uid ='%${touid}%'
-			)
+
+		<choose>
+			<when test="touid!=null and touid!=''">
+				and (
+				acceptors like '%${touid}%'
+				or
+				assistants like'%${touid}%'
+				or
+				executors like '%${touid}%'
+				or
+				uid ='%${touid}%'
+				)
+			</when>
+			<otherwise>
+				and (
+				acceptors like '%${auid}%'
+				or
+				assistants like'%${auid}%'
+				or
+				executors like '%${auid}%'
+				or
+				uid ='%${auid}%'
+				)
+			</otherwise>
+		</choose>
+
 
 		order by parentid,id asc
 		LIMIT #{pagesize} OFFSET #{pageno}
