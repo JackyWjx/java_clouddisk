@@ -423,12 +423,15 @@ public class TbCompanyCommonService {
         List<Map<String, Object>> list = tbCompanyCommonMapper.getCompanyCommoms(param);
         Map<String ,Object> map = new HashMap<>();
         for (int i = 0; i < list.size(); i++) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(list.get(i).get("sales"));
             if (!JzbTools.isEmpty(list.get(i).get("twoheader"))){
                 map.put("uid",list.get(i).get("twoheader"));
                 Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
                 Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("twoheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
                 }
             }
             if (!JzbTools.isEmpty(list.get(i).get("threeheader"))){
@@ -437,6 +440,7 @@ public class TbCompanyCommonService {
                 Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("threeheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
                 }
             }
             if (!JzbTools.isEmpty(list.get(i).get("fourheader"))){
@@ -445,6 +449,7 @@ public class TbCompanyCommonService {
                 Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("fourheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
                 }
             }
             if (!JzbTools.isEmpty(list.get(i).get("fiveheader"))){
@@ -453,6 +458,7 @@ public class TbCompanyCommonService {
                 Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("fiveheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
                 }
             }
             if (!JzbTools.isEmpty(list.get(i).get("sixheader"))){
@@ -461,9 +467,10 @@ public class TbCompanyCommonService {
                 Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("sixheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
                 }
             }
-
+            list.get(i).put("saleslist",sb.toString());
         }
         return list;
     }
