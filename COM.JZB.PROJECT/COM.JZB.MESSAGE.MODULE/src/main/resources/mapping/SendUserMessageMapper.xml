@@ -24,22 +24,22 @@
     <!-- 查询 -->
     <select id="queryUserMessage" resultType="java.util.Map" parameterType="java.util.Map">
             SELECT
-	tsum.msgid,
-	tsum.msgtype,
-	tsum.receiveuid,
-	tsum.sendtime,
-	tsum.status,
-	tsum.summary,
-	tml.addtime
-FROM
-	tb_send_user_message tsum
-	INNER JOIN tb_message_list tml ON tsum.msgid = tml.msgid
-WHERE
-	tsum.msgtype = '4'
-	AND tsum.receiveuid = #{receiveuid}
- 	<!-- 'RCBHPFQILATZ'-->
-	ORDER BY tml.addtime DESC
-            limit  #{pagesize}  offset #{pageno}
+            tsum.msgid,
+            tsum.msgtype,
+            tsum.receiveuid,
+            tsum.sendtime,
+            tsum.status,
+            tsum.summary,
+            tml.addtime
+        FROM
+            tb_send_user_message tsum
+            INNER JOIN tb_message_list tml ON tsum.msgid = tml.msgid
+        WHERE
+            tsum.msgtype = '4'
+            AND tsum.receiveuid = #{receiveuid}
+            <!-- 'RCBHPFQILATZ'-->
+            ORDER BY tml.addtime DESC
+                    limit  #{pagesize}  offset #{pageno}
     </select>
 
     <!-- 查询总数 -->
@@ -56,17 +56,25 @@ WHERE
     <update id="updateSendCount"  parameterType="java.util.Map">
         update  tb_send_user_message set  status = '4'  where    msgtype  = '4' and msgid in
         <foreach item="msgid" collection="list" open="(" separator="," close=")">
-            (#{msgid})
+            #{msgid}
         </foreach>
     </update>
 
-    <!-- 改成已读 -->
-    <delete id="deleteSend"  parameterType="java.util.Map">
-        delete  from  tb_send_user_message   where msgid in
+    <!-- 改为删除状态 -->
+<!--    <delete id="deleteSend"  parameterType="java.util.Map">-->
+<!--        delete  from  tb_send_user_message    where msgid in-->
+<!--        <foreach item="msgid" collection="list" open="(" separator="," close=")">-->
+<!--            (#{msgid})-->
+<!--        </foreach>-->
+<!--    </delete>-->
+    <update id="deleteSend"  parameterType="java.util.Map">
+        update  tb_send_user_message set  status = '8'  where msgtype = '4' and msgid in
         <foreach item="msgid" collection="list" open="(" separator="," close=")">
-            (#{msgid})
+            #{msgid}
         </foreach>
-    </delete>
+    </update>
+
+
 
     <!-- 模糊查询 -->
     <select id="searchSendUserMessage" resultType="java.util.Map" parameterType="java.util.Map">

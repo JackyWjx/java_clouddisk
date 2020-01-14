@@ -566,11 +566,11 @@ public class TbPlantaskController {
                     if (recordJson.containsKey(tempNodeId)) {
                         // add children
                         recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
-                        System.out.println("-0-0-0-0-00-0---------------"+ tempNodeId + "\t\t" + tempNode.toString());
+                        //System.out.println("-0-0-0-0-00-0---------------"+ tempNodeId + "\t\t" + tempNode.toString());
                     } else {
                         // Error node
                         //recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
-                        System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
+                        //System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
                     }
                 }
 
@@ -607,6 +607,7 @@ public class TbPlantaskController {
         Map<String, Object> userInfo = null;
         String api = "/org/plantask/addPlantaskItem";
         childCategoryList = new ArrayList<Map<String, Object>>();
+        treestr=new StringBuffer();
         boolean flag = true;
         try {
             // 判断参数为空返回404
@@ -756,7 +757,7 @@ public class TbPlantaskController {
     }
 
     static List<Map<String, Object>> childCategoryList = new ArrayList<Map<String, Object>>();
-
+    static StringBuffer treestr=new StringBuffer();
     /**
      * 递归 lifei
      * @param allCategoryList
@@ -764,14 +765,23 @@ public class TbPlantaskController {
      */
     public static List<Map<String, Object>> getChildCategory(List<Map<String, Object>> allCategoryList){
         for (Map<String, Object> category : allCategoryList) {
+            //System.out.println(category.get("children"));
+           // System.out.println(category.toString());
             // 判断是否存在子节点
            List<Map<String,Object>> list= (List<Map<String, Object>>) category.get("children");
-            if (list.size()>0) {
+
+            treestr.append(category.get("parentid").toString()+",");
+            //System.out.println(treestr.toString());
+           if (list.size()>0) {
                 // 递归遍历下一级
-                getChildCategory(list);
-                childCategoryList.add(category);
+               //category.put("treepath",treestr.toString());
+               childCategoryList.add(category);
+               getChildCategory(list);
             }else{
-                childCategoryList.add(category);
+               //System.out.println("hjeihe");
+               //category.put("treepath",treestr.toString());
+               childCategoryList.add(category);
+               treestr=new StringBuffer();
             }
 
         }
@@ -1116,6 +1126,7 @@ public class TbPlantaskController {
 //                    map.put( "status" ,map.get("status")==null?"":map.get("status").toString());
 //                    map.put( "dutyid" ,map.get("dutyid")==null?"":map.get("dutyid").toString().trim().split(","));
 //                    map.put("gname",map.get("dutyid")==null?"":map.get("dutyid").toString().trim().split(","));
+                    hm.put( "tasktype" ,map.get("tasktype")==null?"":map.get("tasktype").toString());
                     hm.put("planid", map.get("planid")==null?"":map.get("planid").toString());
                     if(map.get("starttime")!=null&&map.get("endtime")!=null){
                         hm.put("date",  JzbDateUtil.toDateString(JzbDataType.getLong(map.get("starttime")), JzbDateStr.yyyy_MM_dd)+"至"+JzbDateUtil.toDateString(JzbDataType.getLong(map.get("endtime")), JzbDateStr.yyyy_MM_dd));
@@ -1130,7 +1141,7 @@ public class TbPlantaskController {
                     hm.put("input",map.get("progressofwork")==null?"0":map.get("progressofwork").toString());
                     hm.put("starttime",map.get("starttime"));
                     hm.put("endtime",map.get("endtime"));
-                    hm.put("assistants",map.get("assistants").toString().split(","));
+                    hm.put("assistants",(map.get("assistants").toString().trim()).split(","));
                     ret.add(hm);
                 }
                 // 定义返回结果
@@ -1445,7 +1456,7 @@ public class TbPlantaskController {
 
                 List<Map<String, Object>> duList = deptService.queryDeptUser(param);
                 Long en=System.currentTimeMillis();
-                System.out.println(en-st);
+                //System.out.println(en-st);
                 HashSet h = new HashSet();
                 for (Map<String,Object> map : duList) {
                     //System.out.println(map.get("cname")+ " : " +map.get("uid"));
@@ -1454,8 +1465,8 @@ public class TbPlantaskController {
                     addmap.put("uid",map.get("uid"));
                     h.add(addmap);
                 }
-                en=System.currentTimeMillis();
-                System.out.println(en-st);
+                //en=System.currentTimeMillis();
+                //System.out.println(en-st);
                 // 定义返回结果
                 response = Response.getResponseSuccess(userInfo);
                 response.setResponseEntity(h);
@@ -1619,6 +1630,7 @@ public class TbPlantaskController {
                     //node.put();
                     node.put("cdid",record.get("cdid")==null?"":record.get("cdid").toString().trim().split(","));
                     node.put( "uid" ,record.get("uid")==null?"":record.get("uid").toString());
+                    node.put( "id" ,record.get("id")==null?"":record.get("id").toString());
                     node.put( "acceptorsname" ,record.get("acceptors")==null?"":record.get("acceptors").toString());
                     node.put( "executorsname" ,record.get("executors")==null?"":record.get("executors").toString());
                     node.put( "assistantsname" ,record.get("assistants")==null?"":(record.get("assistants").toString().trim().equals("")?new String []{}:record.get("assistants").toString().trim().split(",")));
@@ -1697,11 +1709,11 @@ public class TbPlantaskController {
                     if (recordJson.containsKey(tempNodeId)) {
                         // add children
                         recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
-                        System.out.println("-0-0-0-0-00-0---------------"+ tempNodeId + "\t\t" + tempNode.toString());
+                        //System.out.println("-0-0-0-0-00-0---------------"+ tempNodeId + "\t\t" + tempNode.toString());
                     } else {
                         // Error node
                         //recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
-                        System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
+                        //System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
                     }
                 }
 
@@ -2042,5 +2054,265 @@ public class TbPlantaskController {
         }
         return response;
     }
+
+
+
+
+
+
+
+    /**
+     * @param
+     * @return
+     * @deprecated 赛选子找父
+     */
+    @RequestMapping(value = "/getPlantaskUserXuan", method = RequestMethod.POST)
+    @ResponseBody
+    public Response getPlantaskUserXuan(@RequestBody Map<String, Object> param) {
+        Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/org/plantask/getPlantaskUserItem";
+        boolean flag = true;
+        try {
+            // 判断参数为空返回404
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 判断参数为空返回404
+            // type=y 代表年计划
+            // type=m 代表月份
+            // type=d 代表天
+            // type=w 代表周
+            // dept=1 代表部门
+            // dept=0 代表个人
+            if (JzbCheckParam.haveEmpty(param, new String[]{"pageno","pagesize","type","dept"})) {
+                response = Response.getResponseError();
+            } else {
+
+                param.put("bumen",param.get("bumen").toString().replaceAll("\\[","").replaceAll("\\]",""));
+                param.put("zhuangtai",param.get("zhuangtai").toString().replaceAll("\\[","").replaceAll("\\]",""));
+                param.put("touid",param.get("touid").toString().replaceAll("\\[","").replaceAll("\\]",""));
+
+                if(param.get("time")!=null) {
+                    if (!param.get("time").toString().equals("")) {
+                        DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(format1.parse(param.get("time").toString()));
+                        //代表周
+                        if (param.get("type").toString().equals("w")) {
+                            //获取周
+                            int lastDay = cal.getActualMaximum(Calendar.DAY_OF_WEEK);
+                            cal.add(Calendar.DATE, 7);
+
+                            param.put("ktime", format1.parse(param.get("time").toString()).getTime());
+                            param.put("etime", cal.getTimeInMillis()-1);
+                            //System.out.println("一周" + param.get("ktime"));
+                            //System.out.println("一周" + param.get("etime"));
+                        } else if (param.get("type").toString().equals("m")) {
+                            cal.setTime(format1.parse(param.get("time").toString()));
+                            //获取某月最大天数
+                            int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                            //设置日历中月份的最大天数
+                            cal.set(Calendar.DAY_OF_MONTH, lastDay);
+                            cal.set(Calendar.HOUR_OF_DAY, 23);
+                            cal.set(Calendar.MINUTE, 59);
+                            cal.set(Calendar.SECOND, 59);
+                            cal.set(Calendar.MILLISECOND, 999);
+                            param.put("ktime", format1.parse(param.get("time").toString()).getTime());
+                            param.put("etime", cal.getTimeInMillis());
+                            //System.out.println("一月" + param.get("ktime"));
+                            //System.out.println("一月" + param.get("etime"));
+                        } else if (param.get("type").toString().equals("y")) {
+                            cal.setTime(format1.parse(param.get("time").toString()));
+                            //获取年最大天数
+                            int lastDay = cal.getActualMaximum(Calendar.DAY_OF_YEAR);
+                            //设置日历中月份的最大天数
+                            cal.set(Calendar.DAY_OF_YEAR, lastDay);
+                            cal.set(Calendar.HOUR_OF_DAY, 23);
+                            cal.set(Calendar.MINUTE, 59);
+                            cal.set(Calendar.SECOND, 59);
+                            cal.set(Calendar.MILLISECOND, 999);
+
+                            param.put("ktime", format1.parse(param.get("time").toString()).getTime());
+                            param.put("etime", cal.getTimeInMillis());
+                            //System.out.println("一年" + param.get("ktime"));
+                            //System.out.println("一年" + param.get("etime"));
+                        } else {
+                            cal.setTime(format1.parse(param.get("time").toString()));
+                            cal.set(Calendar.HOUR_OF_DAY, 23);
+                            cal.set(Calendar.MINUTE, 59);
+                            cal.set(Calendar.SECOND, 59);
+                            cal.set(Calendar.MILLISECOND, 999);
+                            param.put("ktime", format1.parse(param.get("time").toString()).getTime());
+                            param.put("etime", cal.getTimeInMillis());
+                            //System.out.println("一天" + param.get("ktime"));
+                            //System.out.println("一天" + param.get("etime"));
+                        }
+                    }else{
+                        if (param.get("type").toString().equals("m")) {
+                            param.put("ktime", JzbDateUtil.getCurrentMonthFirstDay());
+                            param.put("etime", JzbDateUtil.getCurrentMonthLastDay());
+                        }else if(param.get("type").toString().equals("w")){
+                            param.put("ktime", JzbDateUtil.getFirstDayOfWeek(new Date()));
+                            param.put("etime", JzbDateUtil.getLastDayOfWeek(new Date()));
+                        }else if(param.get("type").toString().equals("d")){
+                            param.put("ktime", JzbDateUtil.getFirstDayOfDay(new Date()));
+                            param.put("etime", JzbDateUtil.getLastDayOfDay(new Date()));
+                        }else if (param.get("type").toString().equals("y")){
+                            param.put("ktime",JzbDateUtil.getCurrYearFirst().getTime());
+                            param.put("etime",JzbDateUtil.getCurrYearLast().getTime());
+                        }
+                    }
+                }
+                //参照tbTempitemController
+                JzbPageConvert.setPageRows(param);
+                param.put("node",param.get("dept").toString());
+                param.put("tabname","tb_plantask");
+                List<Map<String, Object>> records = tbPlantaskService.getPantaskZifu(param);
+                if(records.size()==0){
+                    response = Response.getResponseSuccess(userInfo);
+                    response.setResponseEntity(new String[]{});
+                    return response;
+                }
+
+                int count = tbPlantaskService.getPantaskCount(param);
+                // Result JSON
+                JSONArray result = new JSONArray();
+                // record temp json
+                JSONObject recordJson = new JSONObject();
+                // Unknown json
+                JSONObject unknownRecord = new JSONObject();
+                // root id
+                String firstParent = "0000000";
+
+                for (int i = 0, l = records.size(); i < l; i++) {
+                    Map<String, Object> record = records.get(i);
+                    // if parentid is null.
+                    String parentId;
+                    if (record.get("parentid") == null) {
+
+                        parentId = "0000000";
+                    } else {
+                        parentId = record.get("parentid").toString();
+                    }
+                    // set default JSON and childern node
+                    JSONObject node = new JSONObject();
+                    node.put("planid", record.get("planid")==null?"":record.get("planid").toString());
+                    node.put("plancontent", record.get("plancontent")==null?"":record.get("plancontent").toString());
+                    node.put("parentid", parentId);
+                    //node.put();
+                    node.put("cdid",record.get("cdid")==null?"":record.get("cdid").toString().trim().split(","));
+                    node.put( "uid" ,record.get("uid")==null?"":record.get("uid").toString());
+                    node.put( "id" ,record.get("id")==null?"":record.get("id").toString());
+                    node.put( "acceptorsname" ,record.get("acceptors")==null?"":record.get("acceptors").toString());
+                    node.put( "executorsname" ,record.get("executors")==null?"":record.get("executors").toString());
+                    node.put( "assistantsname" ,record.get("assistants")==null?"":(record.get("assistants").toString().trim().equals("")?new String []{}:record.get("assistants").toString().trim().split(",")));
+                    node.put( "outcome" ,record.get("outcome")==null?"":record.get("outcome").toString());
+                    node.put( "tasktype" ,record.get("tasktype")==null?"":record.get("tasktype").toString());
+                    node.put( "taskstatus" ,record.get("taskstatus")==null?"":record.get("taskstatus").toString());
+                    node.put( "notes" ,record.get("notes")==null?"":record.get("notes").toString());
+                    node.put( "path" ,record.get("path")==null?"":record.get("path").toString());
+                    node.put( "filenames" ,record.get("filenames")==null?"":record.get("filenames").toString());
+                    node.put( "addid" ,record.get("addid")==null?"":record.get("addid").toString());
+                    node.put( "review" ,record.get("review")==null?"":record.get("review").toString());
+                    node.put( "parentid" ,record.get("parentid")==null?"":record.get("parentid").toString());
+                    node.put( "sort" ,record.get("sort")==null?"":record.get("sort").toString());
+                    node.put( "node" ,record.get("node")==null?"":record.get("node").toString());
+                    node.put( "addtime" ,record.get("addtime")==null?"":record.get("addtime").toString());
+                    node.put( "uptime" ,record.get("uptime")==null?"":record.get("uptime").toString());
+                    node.put( "starttime" ,record.get("starttime")==null?"":record.get("starttime").toString());
+                    node.put( "endtime" ,record.get("endtime")==null?"":record.get("endtime").toString());
+                    node.put( "progressofwork" ,record.get("progressofwork")==null?"":record.get("progressofwork").toString());
+                    if (record.get("starttime")!=null && record.get("endtime")!=null){
+                        String [] valuedate={record.get("starttime").toString(),record.get("endtime").toString()};
+                        node.put("valueDate",valuedate);
+                    }else{
+                        node.put("valueDate","");
+                    }
+                    node.put( "status" ,record.get("status")==null?"":record.get("status").toString());
+                    node.put( "dutyid" ,record.get("dutyid")==null?"":record.get("dutyid").toString().trim().split(","));
+                    node.put("dutyid",record.get("dutyid")==null?"":record.get("dutyid").toString().trim().split(","));
+                    node.put("children", new JSONArray());
+
+
+                    // if root node
+                    if (parentId.equals(firstParent)) {
+                        result.add(node);
+                        recordJson.put(record.get("planid").toString(), node);
+
+                        // if parent exist
+                    } else if (recordJson.containsKey(parentId)) {
+                        // add children
+                        recordJson.getJSONObject(parentId).getJSONArray("children").add(node);
+                        recordJson.put(record.get("planid").toString(), node);
+                        // Unknown relation node
+                    } else {
+                        String nodeId = record.get("planid").toString();
+                        if (unknownRecord.containsKey(parentId)) {
+                            // add children
+                            unknownRecord.getJSONObject(parentId).getJSONArray("children").add(node);
+                            recordJson.put(nodeId, node);
+                        } else {
+                            // find subnode
+                            for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                                JSONObject tempNode = (JSONObject) entry.getValue();
+                                if (tempNode.getString("parentid").equals(nodeId)) {
+                                    node.getJSONArray("children").add(tempNode);
+                                    recordJson.put(tempNode.get("planid").toString(), tempNode);
+                                    unknownRecord.remove(tempNode.get("planid").toString());
+                                    break;
+                                }
+                            }
+                            unknownRecord.put(nodeId, node);
+                        }
+                    }
+                }
+                // unknownRecord add to result
+                // find subnode
+                for (Map.Entry<String, Object> entry : unknownRecord.entrySet()) {
+                    JSONObject tempNode = (JSONObject) entry.getValue();
+                    String tempNodeId = tempNode.getString("parentid");
+                    if (recordJson.containsKey(tempNodeId)) {
+                        // add children
+                        recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
+                        //System.out.println("-0-0-0-0-00-0---------------"+ tempNodeId + "\t\t" + tempNode.toString());
+                    } else {
+                        // Error node
+                        //recordJson.getJSONObject(tempNodeId).getJSONArray("children").add(tempNode);
+                        //System.out.println("========================ERROR>> " + tempNodeId + "\t\t" + tempNode.toString());
+                        //tempNode.setString("parentid";
+                        tempNode.put("parentid","0000000");
+                        result.add(tempNode);
+
+                    }
+                }
+
+                PageInfo inf=new PageInfo();
+                inf.setPages(count);
+                // 定义返回结果
+                response = Response.getResponseSuccess(userInfo);
+                //System.out.println(result==null?"[]":result);
+                response.setResponseEntity(result);
+
+            }
+        } catch (Exception e) {
+            flag = false;
+            // 打印异常信息
+            e.printStackTrace();
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getMethodType Method", e.toString()));
+        }
+
+
+        return response;
+    }
+
+
+
+
 
 }

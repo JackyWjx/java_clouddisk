@@ -7,6 +7,7 @@
 WITH RECURSIVE item AS (
 (
 	SELECT
+		id,
 		planid,
 		cdid,
 		uid,
@@ -62,6 +63,7 @@ WITH RECURSIVE item AS (
 )
 	UNION all
 	SELECT
+		itema.id,
 		itema.planid,
 		itema.cdid,
 		itema.uid,
@@ -105,7 +107,7 @@ SELECT
 FROM
 	item
 ORDER BY
-	item.sort asc
+	item.id asc
 
     </select>
 
@@ -360,14 +362,7 @@ ORDER BY
 					null,
 				</otherwise>
 			</choose>
-			<choose>
-				<when test="item.progressofwork !=null and item.progressofwork !=''">
-					#{item.progressofwork}
-				</when>
-				<otherwise>
-					null
-				</otherwise>
-			</choose>
+			0
 		)
 		</foreach>
 	</insert>
@@ -391,9 +386,9 @@ ORDER BY
 		<if test="item.path != null and item.path!=''">path=#{item.path},</if>
 		<if test="item.filenames != null and item.filenames!=''">filenames=#{item.filenames},</if>
 		<if test="item.review != null and item.review!=''">review=#{item.review},</if>
-		<if test="item.parentid != null and item.parentid!=''">parentid=#{item.parentid},</if>
 		<if test="item.sort != null and item.sort!=''">sort=#{item.sort},</if>
-		<if test="item.node != null and item.node!=''">node=#{item.node},</if>
+			<if test="item.node != null and item.node!=''">node=#{item.node},</if>
+			<if test="item.notes != null and item.notes!=''">notes=#{item.notes},</if>
 		<if test="item.status != null and item.status!=''">status=#{item.status},</if>
 		<if test="item.addtime != null and item.addtime!=''">addtime=#{item.addtime},</if>
 		<if test="item.uptime != null and item.uptime!=''">uptime=#{item.uptime}</if>
@@ -451,16 +446,10 @@ ORDER BY
 		parentid,
 		sort,progressofwork from tb_plantask
 		where
-		((
-		acceptors like '%${uid}%'
-		or
-		assistants like'%${uid}%'
-		or
-		executors like '%${uid}%'
-		or
-		uid like  '%${uid}%'
-		)  and starttime &lt;= #{starttime} and endtime &gt;= #{endtime}
-		and status=0)or progressofwork &lt; 100
+		(acceptors like '%${uid}%' or assistants like'%${uid}%' or executors like '%${uid}%' or uid like  '%${uid}%')
+		and (starttime &lt;=${endtime} and endtime >=${starttime}) and status=0 and progressofwork &lt; 100
+		and tasktype not in('已终止')
+		order by endtime asc
 	</select>
 
 	<select id="getPantaskDasXiangxi" parameterType="java.util.Map" resultType="java.util.Map">
@@ -497,8 +486,6 @@ ORDER BY
 			<if test="tasktype != null and tasktype!=''">tasktype=#{tasktype},</if>
 			<if test="uptime != null and uptime!=''">uptime=#{uptime}</if>
 			where planid=#{planid}
-
-
 	</update>
 
 
@@ -508,11 +495,6 @@ ORDER BY
 		where uid='${uid}' and cid='JZB0001'
 	</select>
 
-	<select id="selcdidFus" parameterType="java.util.Map">
-		select cdid,pcdid,cname
-		from tb_company_dept
-		where cid='JZB0001' and cdid=#{cdid}
-	</select>
 
 
 		<!--通过父级找子级-->
@@ -554,4 +536,56 @@ ORDER BY
 
 
 	</update>
+
+
+	<select id="getPantaskZifu" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		id,
+		planid,
+		cdid,
+		uid,
+		dutyid,
+		plancontent,
+		starttime,
+		endtime,
+		acceptors,
+		executors,
+		assistants,
+		outcome,
+		tasktype,
+		taskstatus,
+		notes,
+		PATH,
+		filenames,
+		addid,
+		review,
+		parentid,
+		sort,
+		progressofwork
+		FROM
+		tb_plantask
+		WHERE
+		node = '1'
+		AND status = 0
+		<if test="ktime!=null and ktime!=''">
+			and starttime &lt;=${etime} and endtime >=${ktime}
+		</if>
+
+		<if test="zhuangtai!=null and zhuangtai!=''">
+			and tasktype  like '%${zhuangtai}%'
+		</if>
+		<if test="touid!=null and touid!=''">
+			and (
+			acceptors like '%${touid}%'
+			or
+			assistants like'%${touid}%'
+			or
+			executors like '%${touid}%'
+			or
+			uid ='%${touid}%'
+			)
+		</if>
+		order by parentid
+		LIMIT #{pagesize} OFFSET #{pageno}
+	</select>
 </mapper>
