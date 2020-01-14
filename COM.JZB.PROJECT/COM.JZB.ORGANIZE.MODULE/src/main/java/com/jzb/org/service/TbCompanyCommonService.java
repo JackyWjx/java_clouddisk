@@ -92,6 +92,11 @@ public class TbCompanyCommonService {
                 regionList.add(regionMap);
                 // 等于2代表传入的是市级地区ID
             } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("city")))) {
+                // 查询市级本身
+                Map<String,Object> cmap = new HashMap<>();
+                cmap.put("region",JzbDataType.getString(param.get("city")));
+                regionList.add(cmap);
+
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
 
@@ -328,6 +333,7 @@ public class TbCompanyCommonService {
      */
     public List<Map<String, Object>> getCompanyCommoms(Map<String, Object> param) {
 
+
         // 定义地区list列表
         List<Map<String, Object>> regionList = new ArrayList<>();
         if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
@@ -340,6 +346,11 @@ public class TbCompanyCommonService {
                 regionList.add(regionMap);
                 // 等于2代表传入的是市级地区ID
             } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("city")))) {
+                // 查询市级本身
+                Map<String,Object> cmap = new HashMap<>();
+                cmap.put("region",JzbDataType.getString(param.get("city")));
+                regionList.add(cmap);
+
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
 
@@ -360,7 +371,7 @@ public class TbCompanyCommonService {
                         if (!JzbDataType.isEmpty(provinceMap.get(JzbDataType.getString(param.get("city"))))) {
                             // 获取城市下所有的县级信息
                             List<Map<String, Object>> countyMap = (List<Map<String, Object>>) provinceMap.get(JzbDataType.getString(param.get("city")));
-                            Map<String, Object> county = countyMap.get(0);
+                            Map<String, Object> county =  countyMap.get(0);
                             List<Map<String, Object>> cityList = (List<Map<String, Object>>) county.get("list");
                             for (int b = 0; b < cityList.size(); b++) {
                                 // 获取城市下单个的县级信息
@@ -379,6 +390,11 @@ public class TbCompanyCommonService {
             } else if (!JzbDataType.isEmpty(JzbDataType.getString(param.get("province")))) {
                 // 添加查询地区的key
                 param.put("key", "jzb.system.city");
+
+                // 查询本身
+                Map<String, Object> regionProvince = new HashMap<>();
+                regionProvince.put("region", param.get("province"));
+                regionList.add(regionProvince);
 
                 // 获取所有的地区信息
                 Response response = tbCityRedisApi.getCityJson(param);
@@ -416,6 +432,7 @@ public class TbCompanyCommonService {
                     }
                 }
             }
+
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }

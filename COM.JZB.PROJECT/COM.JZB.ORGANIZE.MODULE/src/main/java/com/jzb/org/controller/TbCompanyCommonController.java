@@ -833,14 +833,10 @@ public class TbCompanyCommonController {
                 List<Map<String, Object>> list = tbCompanyCommonService.getCompanyCommoms(param);
 
                 // 遍历获取地区调用redis返回
-                for (int i = 0, l = list.size(); i < l; i++) {
-                    Map<String, Object> map = new HashMap<>();
-                    //根据地区id从缓存中获取地区的信息
-                    Response regionInfo = regionBaseApi.getRegionInfo(list.get(i));
-                    // 转map
-                    if (regionInfo != null) {
-                        list.get(i).put("region", regionInfo.getResponseEntity());
-                    }
+                for (int i = 0; i < list.size(); i++) {
+                    Map<String, Object> companyMap = list.get(i);
+                    Response region = regionBaseApi.getRegionInfo(companyMap);
+                    companyMap.put("region", region.getResponseEntity());
                 }
 
                 int count = tbCompanyCommonService.getCount(param);
