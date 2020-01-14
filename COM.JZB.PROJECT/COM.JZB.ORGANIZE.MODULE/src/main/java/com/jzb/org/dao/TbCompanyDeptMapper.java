@@ -16,5 +16,18 @@ public interface TbCompanyDeptMapper {
      */
     List<Map<String,Object>> getDeptUser(Map<String, Object> param);
 
+    List<Map<String,Object>> getDeptUserOnlyOne(Map<String, Object> param);
+
     int getDeptUserCount(Map<String, Object> param);
+
+    int getDeptUserCountOnlyOne(Map<String, Object> param);
+    /**
+     * 查询该用户所负责的部门
+     *
+     */
+    List<Map<String,Object>> getDeptForUser(Map<String,Object> param);
+    /**
+     * 查询这些部门下的所有员工
+     */
+    List<String> getUserForDept(List<Map<String,Object>>param);
 }

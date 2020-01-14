@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.org.api.redis.TbCityRedisApi;
+import com.jzb.org.dao.CockpitMapper;
 import com.jzb.org.dao.TbCompanyDeptMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class TbCompanyDeptService {
     private TbCompanyDeptMapper tbCompanyDeptMapper;
     @Autowired
     private TbCityRedisApi tbCityRedisApi;
+    @Autowired
+    private CockpitMapper cockpitMapper;
     /**
      * 包含下级的查询  根据用户id去查部门负责人id
      * @param param
@@ -117,7 +120,28 @@ public class TbCompanyDeptService {
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }
-        List<Map<String,Object>> list = tbCompanyDeptMapper.getDeptUser(param);
+        //查询该用户的负责的部门
+        List<Map<String,Object>> deptForUser = tbCompanyDeptMapper.getDeptForUser(param);
+        //查询部门下面所有的子部门
+        List<Map<String,Object>> lists = new ArrayList<>();
+        for (int i = 0,j=deptForUser.size(); i <j ; i++) {
+            List<Map<String, Object>> deptChild = cockpitMapper.getDeptChild(deptForUser.get(i));
+            for (Map<String,Object> map :deptChild){
+                lists.add(map);
+            }
+        }
+
+        List<Map<String,Object>> list = null;
+        if(lists.size()>0){
+            //查询所有员工属于这些子部门的
+            List<String> userForDept = tbCompanyDeptMapper.getUserForDept(lists);
+            param.put("userForDept",userForDept);
+            //查询这些员工的跟...
+            list = tbCompanyDeptMapper.getDeptUser(param);
+        }else {
+            list = tbCompanyDeptMapper.getDeptUserOnlyOne(param);
+
+        }
         return list;
     }
 
@@ -214,7 +238,27 @@ public class TbCompanyDeptService {
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }
-        int userCount = tbCompanyDeptMapper.getDeptUserCount(param);
+        //查询该用户的负责的部门
+        List<Map<String,Object>> deptForUser = tbCompanyDeptMapper.getDeptForUser(param);
+        //查询部门下面所有的子部门
+        List<Map<String,Object>> lists = new ArrayList<>();
+        for (int i = 0,j=deptForUser.size(); i <j ; i++) {
+            List<Map<String, Object>> deptChild = cockpitMapper.getDeptChild(deptForUser.get(i));
+            for (Map<String,Object> map :deptChild){
+                lists.add(map);
+            }
+        }
+
+        int userCount = 0;
+        if(lists.size()>0){
+            //查询所有员工属于这些子部门的
+            List<String> userForDept = tbCompanyDeptMapper.getUserForDept(lists);
+            param.put("userForDept",userForDept);
+            //查询这些员工的跟...
+            userCount = tbCompanyDeptMapper.getDeptUserCount(param);
+        }else {
+            userCount = tbCompanyDeptMapper.getDeptUserCountOnlyOne(param);
+        }
         return userCount;
     }
 }
