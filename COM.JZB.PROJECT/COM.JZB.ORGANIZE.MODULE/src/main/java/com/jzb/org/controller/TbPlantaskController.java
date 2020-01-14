@@ -613,10 +613,10 @@ public class TbPlantaskController {
                 Long h=m+86400000;//后天
                 if(param.get("time").equals("0")){
                     param.put("starttime",j);
-                    param.put("endtime",m);
+                    param.put("endtime",m-1);
                 }else{
                     param.put("starttime",m);
-                    param.put("endtime",h);
+                    param.put("endtime",h-1);
                 }
                 param.put("uid",userInfo.get("uid").toString());
                 List<Map<String, Object>> records = tbPlantaskService.getPantaskDas(param);
@@ -1364,7 +1364,7 @@ public class TbPlantaskController {
                             List shijian= (List) list.get(i).get("valueDate");
                             if(shijian.get(0).toString().equals(shijian.get(1).toString())){
                                 list.get(i).put("starttime",shijian.get(0)+"");
-                                list.get(i).put("endtime",((Long)shijian.get(1))+100+"");
+                                list.get(i).put("endtime",((Long)shijian.get(1))+86399999+"");
                             }else{
                                 list.get(i).put("starttime",shijian.get(0)+"");
                                 list.get(i).put("endtime",shijian.get(1)+"");
