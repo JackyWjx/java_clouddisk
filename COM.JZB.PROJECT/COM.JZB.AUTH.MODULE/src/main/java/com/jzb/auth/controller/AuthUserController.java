@@ -8,6 +8,7 @@ import com.jzb.auth.service.AuthUserService;
 import com.jzb.base.constant.JzbMessageCode;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.code.JzbDataCheck;
+import com.jzb.base.entity.auth.UserInfo;
 import com.jzb.base.message.JzbReturnCode;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
@@ -665,34 +666,39 @@ public class AuthUserController {
             // 获取当前毫秒值
             long updtime = System.currentTimeMillis();
             param.put("updtime", updtime);
-            // 获取用户资料
+            param.put("phone", param.get("relphone"));
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-            param.put("uid", JzbDataType.getString(userInfo.get("uid")));
-            int count = userService.modifyUserBasicData(param);
+            if (userService.queryIsExists(param)== 0||userInfo.get("uid").toString().equals(userService.queryuidByPhone(param))) {
+                // 获取用户资料
+                param.put("uid", JzbDataType.getString(userInfo.get("uid")));
+                int count = userService.modifyUserBasicData(param);
 
-            /** 如果修改成功则统一  czd*/
-            if (count > 0 && !JzbTools.isEmpty(param.get("relphone"))) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("uid", JzbDataType.getString(userInfo.get("uid")));
-                map.put("phone", JzbDataType.getString(param.get("relphone")));
-                userService.updateUserPhoneNo1(map);
-                deptUserApi.modifyDeptUser(map);
-                Map<String, Object> resuMap = userService.getUserInfo(map);
-                if (!JzbTools.isEmpty(resuMap)) {
-                    // 添加增加缓存必要的参数
-                    resuMap.put("token", "token");
-                    resuMap.put("timeout", "1800000");
-                    resuMap.put("phone", JzbDataType.getString(map.get("phone")));
-                    userRedisApi.cacheUserInfo(resuMap);
+                /** 如果修改成功则统一  czd*/
+                if (count > 0 && !JzbTools.isEmpty(param.get("relphone"))) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("uid", JzbDataType.getString(userInfo.get("uid")));
+                    map.put("phone", JzbDataType.getString(param.get("relphone")));
+                    userService.updateUserPhoneNo1(map);
+                    deptUserApi.modifyDeptUser(map);
+                    Map<String, Object> resuMap = userService.getUserInfo(map);
+                    if (!JzbTools.isEmpty(resuMap)) {
+                        // 添加增加缓存必要的参数
+                        resuMap.put("token", "token");
+                        resuMap.put("timeout", "1800000");
+                        resuMap.put("phone", JzbDataType.getString(map.get("phone")));
+                        userRedisApi.cacheUserInfo(resuMap);
+                    }
                 }
-            }
-
-            if (count != 0) {
-                comHasUserKey(param);
-                result = Response.getResponseSuccess(userInfo);
+                if (count != 0) {
+                    comHasUserKey(param);
+                    result = Response.getResponseSuccess(userInfo);
+                } else {
+                    result = Response.getResponseError();
+                }
             } else {
                 result = Response.getResponseError();
             }
+
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();

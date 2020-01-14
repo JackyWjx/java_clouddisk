@@ -88,6 +88,13 @@ public interface AuthUserMapper {
     List<Map> searchSendCodeByRelphone(Map map);
 
     /**
+     * cha id
+     *
+     * @param map
+     * @return
+     */
+   String queryuidByPhone(Map map);
+    /**
      * 新增用户信息,用户注册信息
      *
      * @param map

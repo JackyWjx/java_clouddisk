@@ -15,6 +15,11 @@
     </update>
 
 
+    <select id="queryuidByPhone" parameterType="java.util.Map" resultType="java.lang.String">
+        select uid from tb_user_key where keyid=#{phone} limit 1
+    </select>
+
+
     <!--查询根据手机号or regid 查询uid-->
     <select id="queryUidByPhoneOrRegid" parameterType="java.util.Map" resultType="java.lang.String">
     SELECT

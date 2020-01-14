@@ -276,6 +276,16 @@ public class AuthUserService {
     }
 
     /**
+     * cha id
+     *
+     * @param map
+     * @return
+     */
+    public String queryuidByPhone(Map map){
+        return userMapper.queryuidByPhone(map);
+    }
+
+    /**
      * 查询用户所有权限
      *
      * @param param
