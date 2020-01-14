@@ -50,4 +50,13 @@ public interface TbTrackUserListMapper {
      * @return
      */
     List<Map<String, Object>> findCnameLike(Map<String, Object> param);
+
+    /**
+     * 修改tb_track_user_list内的trackid
+     */
+    Integer updateTrackIdByUid (Map<String,Object> param);
+    /**
+     * 修改tb_track_user_list内的trackid为空
+     */
+    Integer updateTrackIdByUidIsNull (Map<String,Object> param);
 }

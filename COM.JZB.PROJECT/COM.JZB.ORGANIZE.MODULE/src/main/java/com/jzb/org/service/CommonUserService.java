@@ -4,11 +4,11 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.dao.CommonUserMapper;
+import com.jzb.org.dao.TbTrackUserListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -27,6 +27,9 @@ public class CommonUserService {
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private TbTrackUserListMapper tbTrackUserListMapper;
 
     // 添加公海用户
     public int addCommUser(Map<String, Object> paramp) {
@@ -76,10 +79,12 @@ public class CommonUserService {
     // 用户关联单位
     public int relCompanyUser(Map<String, Object> param) {
         param.put("uid",param.get("resuid"));
+        tbTrackUserListMapper.updateTrackIdByUid(param);
         return userMapper.relCompanyUser(param);
     }
     // 用户取消关联单位
     public int cancelCompanyUser(Map<String, Object> param) {
+        tbTrackUserListMapper.updateTrackIdByUidIsNull(param);
         return userMapper.cancelCompanyUser(param);
     }
 
