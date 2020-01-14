@@ -143,4 +143,14 @@
         <if test="keyword!=''">and cname ~ #{keyword}</if>
     </select>
 
+    <!--修改tb_track_user_list内的单位名称-->
+    <update id="updateTrackIdByUid">
+        update tb_track_user_list  set trackcid =#{cid} where customer = #{uid}
+    </update>
+
+    <!--制空tb_track_user_list内的单位名称-->
+    <update id="updateTrackIdByUidIsNull">
+        update tb_track_user_list  set trackcid =Null where customer = #{uid}
+    </update>
+
 </mapper>
