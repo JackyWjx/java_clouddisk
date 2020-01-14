@@ -668,6 +668,9 @@
             and (a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid}
             or a.fiveheader = #{uid}  or a.sixheader = #{uid})
         </if>
+        <if test="keyword!=null and keyword !=''">
+            and (a.cname ~ #{keyword} or a.sales ~ #{keyword})
+        </if>
         limit
         #{pagesize}
         offset
@@ -710,7 +713,8 @@
         and tpcl.status = '2'
         ) a where 1=1
         <if test="uid!=null and uid !='' and uid!='JZBDCDCJZBDC'">
-            and a.oneheader=#{uid}
+            and (a.oneheader = #{uid} or a.twoheader = #{uid} or a.threeheader = #{uid} or a.fourheader = #{uid}
+            or a.fiveheader = #{uid}  or a.sixheader = #{uid})
         </if>
         <if test="province != null and province != ''">
             and a.region IN
