@@ -86,6 +86,7 @@
             WHERE
                 r.rrid = #{uid}
                 and r.cid = #{cid}
+                and r.status = '1'
             ORDER BY
                 r.addtime ASC
                 LIMIT 1

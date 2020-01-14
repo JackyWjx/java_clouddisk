@@ -323,7 +323,7 @@
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status != '4'
-        and tpcl.status in ('1','2')
+        and tpcl.status = '1'
         ) a where 1=1
         <if test="status != null and status != ''">
             and a.status = #{status}
@@ -395,7 +395,7 @@
     <!--退回公海-->
     <update id="rebackCompanys" parameterType="java.util.Map">
 
-        update tb_common_company_list set status='1' where cid=#{cid};
+        update tb_common_company_list set status='1' where cid=#{cid} and status = '2';
         update  tb_private_company_list  set status = '4' WHERE cid = #{cid} and status = '1'
 
     </update>
@@ -501,7 +501,7 @@
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
         tcc.status != '4'
-        and tpcl.status in ('1','2')
+        and tpcl.status = '1'
         ) a where 1=1
         <if test="status != null and status != ''">
             and a.status = #{status}
@@ -665,7 +665,7 @@
         LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
-        tcc.status = '2'
+        tcc.status = '1'
         and tpcl.status = '2'
         ) a where 1=1
         <if test="uid != null and uid != '' and  uid !='JZBDCDCJZBDC'">
@@ -710,9 +710,8 @@
         LEFT JOIN tb_company_property tcp ON tcp.cid = tcc.cid
         LEFT JOIN tb_company_info tci ON tcl.cid = tci.cid
         WHERE
-        tcc.status = '2'
-        and tpcl.status = '2' ||
-         ''
+        tcc.status = '1'
+        and tpcl.status = '2'
         ) a where 1=1
         <if test="uid!=null and uid !='' and uid!='JZBDCDCJZBDC'">
             and a.oneheader=#{uid}
