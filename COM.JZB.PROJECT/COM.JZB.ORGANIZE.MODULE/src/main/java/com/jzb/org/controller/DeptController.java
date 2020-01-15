@@ -460,8 +460,10 @@ public class DeptController {
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 Response response = authApi.queryIsExists(param);
+                Response response1 = authApi.queryUidByPhone(param);
                 Object count = response.getResponseEntity();
-                if (JzbDataType.getInteger(count) == 0||param.get("uid").toString().equals(authApi.queryUidByPhone(param))) {
+                Object uid = response1.getResponseEntity();
+                if (JzbDataType.getInteger(count) == 0||param.get("uid").toString().equals(uid.toString())) {
                     int add = deptService.updateDeptUser(param);
 
                     /** 修改成功后统一手机号码 */
