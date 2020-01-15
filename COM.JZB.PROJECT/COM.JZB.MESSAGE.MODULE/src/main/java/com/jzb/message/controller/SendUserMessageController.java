@@ -50,7 +50,6 @@ public class SendUserMessageController {
             info.setPages(JzbDataType.getInteger(map.get("pageno")) == 0 ? 1 : JzbDataType.getInteger(map.get("pageno")));
             response = Response.getResponseSuccess((Map)map.get("userinfo"));
             // 获取所有信息
-            map.put("receiveuid",((Map) map.get("userinfo")).get("uid"));
             list = service.queryUserMessage(map);
             for (int i = 0 ; i < list.size() ;i++){
                 Map<String , Object> summaryMap  = JSONObject.fromObject( list.get(i).get("summary").toString());
