@@ -29,5 +29,5 @@ public interface TbCompanyDeptMapper {
     /**
      * 查询这些部门下的所有员工
      */
-    List<String> getUserForDept(List<Map<String,Object>>param);
+    List<String> getUserForDept(Map<String,Object>param);
 }

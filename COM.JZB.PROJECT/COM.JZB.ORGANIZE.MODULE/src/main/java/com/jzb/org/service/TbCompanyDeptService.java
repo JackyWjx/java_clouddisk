@@ -134,7 +134,8 @@ public class TbCompanyDeptService {
         List<Map<String,Object>> list = null;
         if(lists.size()>0){
             //查询所有员工属于这些子部门的
-            List<String> userForDept = tbCompanyDeptMapper.getUserForDept(lists);
+            param.put("lists",lists);
+            List<String> userForDept = tbCompanyDeptMapper.getUserForDept(param);
             param.put("userForDept",userForDept);
             //查询这些员工的跟...
             list = tbCompanyDeptMapper.getDeptUser(param);
@@ -252,7 +253,8 @@ public class TbCompanyDeptService {
         int userCount = 0;
         if(lists.size()>0){
             //查询所有员工属于这些子部门的
-            List<String> userForDept = tbCompanyDeptMapper.getUserForDept(lists);
+            param.put("lists",lists);
+            List<String> userForDept = tbCompanyDeptMapper.getUserForDept(param);
             param.put("userForDept",userForDept);
             //查询这些员工的跟...
             userCount = tbCompanyDeptMapper.getDeptUserCount(param);
