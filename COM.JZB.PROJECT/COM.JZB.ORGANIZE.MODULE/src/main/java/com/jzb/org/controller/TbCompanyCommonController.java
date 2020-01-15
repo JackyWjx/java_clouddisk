@@ -10,6 +10,7 @@ import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbTimeConvert;
 import com.jzb.base.util.JzbTools;
 import com.jzb.org.api.api.DeptUserControllerApi;
+import com.jzb.org.api.auth.AuthInfoApi;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.dao.TbCompanyListMapper;
@@ -43,6 +44,9 @@ public class TbCompanyCommonController {
 
     @Autowired
     private TbCompanyCommonService tbCompanyCommonService;
+
+    @Autowired
+    private AuthInfoApi authInfoApi;
 
     @Autowired
     private TbCityRedisApi tbCityRedisApi;
@@ -567,7 +571,10 @@ public class TbCompanyCommonController {
                 if (count > 0) {
                     Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                     result = Response.getResponseSuccess(userInfo);
-                } else {
+                } else if (count == -1){
+                    result = Response.getResponseError();
+                    result.setResponseEntity("销售员已存在");
+                }else  {
                     result = Response.getResponseError();
                     result.setResponseEntity("销售员名额已满");
                 }

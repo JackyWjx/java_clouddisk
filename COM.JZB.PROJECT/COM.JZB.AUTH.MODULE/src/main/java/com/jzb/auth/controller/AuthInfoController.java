@@ -66,4 +66,45 @@ public class AuthInfoController {
         }
         return response;
     }
+
+    /**
+     * @Author Reed
+     * @Description //
+     * @Date 15:38 2020/1/15
+     * @Param [param]
+     * @return com.jzb.base.message.Response
+    **/
+    @RequestMapping(value = "/queryUserInfoByUid",method = RequestMethod.POST)
+    @CrossOrigin
+    public Response queryUserInfoByUid(@RequestBody Map<String,Object> param){
+        Response response;
+        Map<String, Object> userInfo = null;
+        boolean flag = true;
+        String  api="/userInfo/getUsersList";
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            Map<String, Object> userMap = authInfoService.queryUserInfoByUid(param);
+            response = Response.getResponseSuccess();
+            response.setResponseEntity(userMap);
+        } catch (Exception e) {
+            flag=false;
+            // 返回错误
+            JzbTools.logError(e);
+            response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryUserInfoByUid Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return response;
+    }
 }

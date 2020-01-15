@@ -10,4 +10,6 @@ import java.util.Map;
 public interface AuthInfoMapper {
 
     Map<String, Object> getUserByUids(Map<String, Object> whereMap);
+
+    Map<String, Object> queryUserInfoByUid(Map<String, Object> param);
 }

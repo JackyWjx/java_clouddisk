@@ -207,7 +207,7 @@ public class NewCompanyCommonService {
 //            param.put("senduid", "addCommon1013");
 //            companyService.sendRemind(param);
 //        }
-        if (!JzbTools.isEmpty(param.get("relphone"))){
+        if (!JzbTools.isEmpty(param.get("relperson"))){
             Map<String,Object> umap = new HashMap<>();
             umap.put("uname",param.get("relperson"));
             umap.put("phone",param.get("relphone"));

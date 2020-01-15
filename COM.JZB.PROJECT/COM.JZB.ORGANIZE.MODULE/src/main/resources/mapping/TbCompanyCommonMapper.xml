@@ -823,6 +823,28 @@
 
     </select>
 
+    <select id="queryCompanySalesByUid" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            oneheader,
+            twoheader,
+            threeheader,
+            fourheader,
+            fiveheader,
+            sixheader
+        FROM
+            tb_private_company_list
+        WHERE
+            cid = #{cid}
+            AND ( oneheader IS NULL OR oneheader != #{uid} )
+            AND ( twoheader IS NULL OR twoheader != #{uid} )
+            AND ( threeheader IS NULL OR threeheader != #{uid} )
+            AND ( fourheader IS NULL OR fourheader != #{uid} )
+            AND ( fiveheader IS NULL OR fiveheader != #{uid} )
+            AND ( sixheader IS NULL OR sixheader != #{uid} )
+            and status = '1'
+            LIMIT 1
+    </select>
+
 
 
 </mapper>

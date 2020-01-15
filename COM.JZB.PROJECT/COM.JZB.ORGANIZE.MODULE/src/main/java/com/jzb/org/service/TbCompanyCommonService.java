@@ -5,6 +5,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.auth.AuthInfoApi;
 import com.jzb.org.api.base.RegionBaseApi;
 import com.jzb.org.api.redis.TbCityRedisApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
@@ -33,6 +34,9 @@ public class TbCompanyCommonService {
     private TbCompanyCommonMapper tbCompanyCommonMapper;
 
     @Autowired
+    private AuthInfoApi authInfoApi;
+
+    @Autowired
     private TbCompanyCommonController companyCommonController;
 
 
@@ -54,6 +58,7 @@ public class TbCompanyCommonService {
     @Autowired
     private CompanyService companyService;
 
+
     /**
      * 查询不带条件的业主单位全部（不带条件）
      *
@@ -61,7 +66,89 @@ public class TbCompanyCommonService {
      * @return
      */
     public List<Map<String, Object>> queryCompanyCommon(Map<String, Object> param) {
-        return tbCompanyCommonMapper.queryCompanyCommon(param);
+        List<Map<String,Object>> list =   tbCompanyCommonMapper.queryCompanyCommon(param);
+        Map<String ,Object> map = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(list.get(i).get("sales"));
+            if (!JzbTools.isEmpty(list.get(i).get("twoheader"))){
+                map.put("uid",list.get(i).get("twoheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("twoheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("twoheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("threeheader"))){
+                map.put("uid",list.get(i).get("threeheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("threeheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("threeheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fourheader"))){
+                map.put("uid",list.get(i).get("fourheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fourheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fourheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fiveheader"))){
+                map.put("uid",list.get(i).get("fiveheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fiveheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fiveheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("sixheader"))){
+                map.put("uid",list.get(i).get("sixheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("sixheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("sixheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            list.get(i).put("saleslist",sb.toString());
+        }
+        return list;
     }
 
     /**
@@ -182,7 +269,90 @@ public class TbCompanyCommonService {
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }
-        return tbCompanyCommonMapper.queryCompanyCommonByKeyWord(param);
+        List<Map<String,Object>> list = tbCompanyCommonMapper.queryCompanyCommonByKeyWord(param);
+        Map<String ,Object> map = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(list.get(i).get("sales"));
+            if (!JzbTools.isEmpty(list.get(i).get("twoheader"))) {
+                map.put("uid", list.get(i).get("twoheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("twoheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("twoheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("threeheader"))) {
+                map.put("uid", list.get(i).get("threeheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("threeheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("threeheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fourheader"))) {
+                map.put("uid", list.get(i).get("fourheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fourheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fourheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fiveheader"))) {
+                map.put("uid", list.get(i).get("fiveheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fiveheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fiveheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("sixheader"))) {
+                map.put("uid", list.get(i).get("sixheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("sixheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("sixheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            list.get(i).put("saleslist",sb.toString());
+        }
+
+        return list;
     }
 
     /**
@@ -262,33 +432,42 @@ public class TbCompanyCommonService {
         // 查询该单位是否已经分配销售员
         Map<String, Object> sMap = tbCompanyCommonMapper.queryCompanySales(param);
 
+        // 查询销售是否已存在
+        Map<String,Object> umap = tbCompanyCommonMapper.queryCompanySalesByUid(param);
+
         // 第一次分配销售员
         if (JzbTools.isEmpty(sMap)) {
             param.put("oneheader", param.get("uid"));
             count = tbCompanyCommonMapper.updateCompanys(param);
-        } else {
-            if (JzbTools.isEmpty(sMap.get("oneheader")) && !param.get("uid").equals(sMap.get("oneheader"))) {
+        } else if (!JzbTools.isEmpty(sMap) && !JzbTools.isEmpty(umap)){
+            if (JzbTools.isEmpty(sMap.get("oneheader"))) {
                 sMap.put("oneheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("twoheader")) && num == 0 && !param.get("uid").equals(sMap.get("twoheader")) ) {
+            } else if (JzbTools.isEmpty(sMap.get("twoheader")) && num == 0  ) {
                 sMap.put("twoheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("threeheader")) && num == 0 && !param.get("uid").equals(sMap.get("threeheader"))) {
+            } else if (JzbTools.isEmpty(sMap.get("threeheader")) && num == 0 ) {
                 sMap.put("threeheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("fourheader")) && num == 0 && !param.get("uid").equals(sMap.get("fourheader"))) {
+            } else if (JzbTools.isEmpty(sMap.get("fourheader")) && num == 0) {
                 sMap.put("fourheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("fiveheader")) && num == 0 && !param.get("uid").equals(sMap.get("fiveheader"))) {
+            } else if (JzbTools.isEmpty(sMap.get("fiveheader")) && num == 0 ) {
                 sMap.put("fiveheader", param.get("uid"));
                 num ++;
-            } else if (JzbTools.isEmpty(sMap.get("sixheader")) && num == 0 && !param.get("uid").equals(sMap.get("sixheader"))) {
+            } else if (JzbTools.isEmpty(sMap.get("sixheader")) && num == 0) {
                 sMap.put("sixheader", param.get("uid"));
                 num ++;
             }
-            count = tbCompanyCommonMapper.updateCompanysAddSales(sMap);
+            if (num==0){
+                count = - 2;
+            }else {
+                count = tbCompanyCommonMapper.updateCompanysAddSales(sMap);
+            }
             num = 0;
-    }
+    }else {
+            count = -1;
+        }
         return count ;
     }
 
@@ -449,6 +628,12 @@ public class TbCompanyCommonService {
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("twoheader", serviceMap.get("cname"));
                     sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("twoheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
                 }
             }
             if (!JzbTools.isEmpty(list.get(i).get("threeheader"))){
@@ -458,6 +643,12 @@ public class TbCompanyCommonService {
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("threeheader", serviceMap.get("cname"));
                     sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("threeheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
                 }
             }
             if (!JzbTools.isEmpty(list.get(i).get("fourheader"))){
@@ -467,6 +658,12 @@ public class TbCompanyCommonService {
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("fourheader", serviceMap.get("cname"));
                     sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fourheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
                 }
             }
             if (!JzbTools.isEmpty(list.get(i).get("fiveheader"))){
@@ -476,15 +673,27 @@ public class TbCompanyCommonService {
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("fiveheader", serviceMap.get("cname"));
                     sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fiveheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
                 }
             }
             if (!JzbTools.isEmpty(list.get(i).get("sixheader"))){
-                map.put("uid",list.get(i).get("twoheadder"));
+                map.put("uid",list.get(i).get("sixheader"));
                 Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
                 Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
                 if (!JzbTools.isEmpty(serviceMap)) {
                     list.get(i).put("sixheader", serviceMap.get("cname"));
                     sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("sixheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
                 }
             }
             list.get(i).put("saleslist",sb.toString());
@@ -581,7 +790,89 @@ public class TbCompanyCommonService {
     }
 
     public List<Map<String, Object>> getCompanyCommonListHistory(Map<String, Object> param) {
-        return tbCompanyCommonMapper.getCompanyCommonListHistory(param);
+        List<Map<String,Object>> list =   tbCompanyCommonMapper.getCompanyCommonListHistory(param);
+        Map<String ,Object> map = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(list.get(i).get("sales"));
+            if (!JzbTools.isEmpty(list.get(i).get("twoheader"))) {
+                map.put("uid", list.get(i).get("twoheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("twoheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("twoheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("threeheader"))) {
+                map.put("uid", list.get(i).get("threeheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("threeheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("threeheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fourheader"))) {
+                map.put("uid", list.get(i).get("fourheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fourheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fourheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fiveheader"))) {
+                map.put("uid", list.get(i).get("fiveheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fiveheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fiveheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("sixheader"))) {
+                map.put("uid", list.get(i).get("sixheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("sixheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                } else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String, Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("sixheader", userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            list.get(i).put("saleslist",sb.toString());
+        }
+        return list;
     }
 
     public int getCompanyCommonListHistoryCount(Map<String, Object> param) {
@@ -686,7 +977,89 @@ public class TbCompanyCommonService {
             // 将所有结果加入参数中传入
             param.put("list", regionList);
         }
-        return tbCompanyCommonMapper.queryCompanysToHistory(param);
+        List<Map<String,Object>> list = tbCompanyCommonMapper.queryCompanysToHistory(param);
+        Map<String ,Object> map = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(list.get(i).get("sales"));
+            if (!JzbTools.isEmpty(list.get(i).get("twoheader"))){
+                map.put("uid",list.get(i).get("twoheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("twoheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("twoheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("threeheader"))){
+                map.put("uid",list.get(i).get("threeheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("threeheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("threeheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fourheader"))){
+                map.put("uid",list.get(i).get("fourheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fourheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fourheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("fiveheader"))){
+                map.put("uid",list.get(i).get("fiveheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("fiveheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("fiveheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            if (!JzbTools.isEmpty(list.get(i).get("sixheader"))){
+                map.put("uid",list.get(i).get("sixheader"));
+                Response serviceRegion = userRedisServiceApi.getCacheUserInfo(map);
+                Map<String, Object> serviceMap = (Map<String, Object>) serviceRegion.getResponseEntity();
+                if (!JzbTools.isEmpty(serviceMap)) {
+                    list.get(i).put("sixheader", serviceMap.get("cname"));
+                    sb.append(",").append(serviceMap.get("cname"));
+                }else {
+                    Response response = authInfoApi.queryUserInfoByUid(map);
+                    Map<String,Object> userMap = (Map<String, Object>) response.getResponseEntity();
+                    list.get(i).put("sixheader",userMap.get("cname"));
+                    sb.append(",").append(userMap.get("cname"));
+                    userRedisServiceApi.cacheUserInfo(userMap);
+                }
+            }
+            list.get(i).put("saleslist",sb.toString());
+        }
+        return list;
     }
 
     public int queryCompanysToHistoryCount(Map<String, Object> param) {

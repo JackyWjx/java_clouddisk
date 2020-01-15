@@ -9,4 +9,17 @@
         DISTINCT cname,portrait
         from tb_user_list WHERE status='1' and uid = #{truid}
     </select>
+
+    <!---->
+    <select id="queryUserInfoByUid" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        id, uid, regid, idcard, cname, nickname, passwd, relphone,
+        relmail, sex, portrait, authid, sign, regtime, authtime, updtime,
+         status, summary, source, areaid, age, job, projectname, works, des, olduid
+        from tb_user_list
+      where uid = #{uid}
+      and status = '1'
+
+    </select>
+
 </mapper>
