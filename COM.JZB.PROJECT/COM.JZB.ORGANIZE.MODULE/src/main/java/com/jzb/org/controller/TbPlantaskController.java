@@ -1390,7 +1390,7 @@ public class TbPlantaskController {
                                     }else{
                                         list.get(i).put("tasktype","未开始");
                                     }
-                                }else if(progressofwork==100&&(!list.get(i).get("tasktype").toString().equals("已终止"))){
+                                }else if(progressofwork==100&&(!list.get(i).get("tasktype").toString().equals("已终止"))&&(!list.get(i).get("tasktype").toString().equals("已完成"))){
                                     if(endtime<dtime){
                                         list.get(i).put("tasktype","逾期完成");
                                     }
