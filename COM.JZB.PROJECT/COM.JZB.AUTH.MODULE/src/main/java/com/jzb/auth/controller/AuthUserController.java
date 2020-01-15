@@ -86,6 +86,36 @@ public class AuthUserController {
         return response;
     }
 
+
+    /**
+     * 统一手机号  czd
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/queryUidByPhone", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response queryUidByPhone(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            /**  验证指定参数为空则返回error */
+            if (JzbCheckParam.haveEmpty(param, new String[]{"phone"})) {
+                response = Response.getResponseError();
+            } else {
+                String count = userService.queryuidByPhone(param);
+                response = Response.getResponseSuccess();
+                response.setResponseEntity(count);
+            }
+        } catch (Exception ex) {
+            JzbTools.logError(ex);
+            response = Response.getResponseError();
+        }
+        return response;
+    }
+
+
     /**
      * 统一手机号  czd
      *
