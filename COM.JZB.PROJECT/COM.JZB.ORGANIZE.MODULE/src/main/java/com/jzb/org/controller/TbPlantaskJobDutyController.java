@@ -63,17 +63,17 @@ public class TbPlantaskJobDutyController {
                 if (!JzbCheckParam.haveEmpty(param, new String[]{"crid"})) {
                     //根据部门id查询其下的角色
                     List<Map<String, Object>> list = tbPlantaskJobPositionService.selectRoleByDeptid(param);
-                    if(list.size()>0){
+                    if (list.size() > 0) {
                         param.put("crid", list);
-                    }else {
-                        Map<String,Object> map = new HashMap<>();
-                        map.put("crid","");
+                    } else {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("crid", "");
                         list.add(map);
                         param.put("crid", list);
                     }
                     resultId = tbPlantaskJobDutyService.getAllIdByCid(param);
                     count = tbPlantaskJobDutyService.getAllCount(param);
-                }else {
+                } else {
                     resultId = tbPlantaskJobDutyService.getAllIdByCidNotParam(param);
                     count = tbPlantaskJobDutyService.getAllCountParam(param);
                 }
@@ -256,8 +256,8 @@ public class TbPlantaskJobDutyController {
                 //此时lists已变成id的样子
                 //行插入
                 param.put("lists", lists);
-                param.put("adduid",userInfo==null?lists.get(0).get("adduid"):userInfo.get("uid"));
-                param.put("addtime",System.currentTimeMillis());
+                param.put("adduid", userInfo == null ? lists.get(0).get("adduid") : userInfo.get("uid"));
+                param.put("addtime", System.currentTimeMillis());
                 //字典库
                 param.put("list", res);
                 //角色字典库
@@ -303,47 +303,47 @@ public class TbPlantaskJobDutyController {
                 List<Map<String, Object>> lists = (List<Map<String, Object>>) param.get("list");
 
 
-                for (int i = 0,j=lists.size(); i < j; i++) {
-                    if("".equals(lists.get(i).get("crid"))){
+                for (int i = 0, j = lists.size(); i < j; i++) {
+                    if ("".equals(lists.get(i).get("crid"))) {
                         String crid = JzbRandom.getRandomChar(26);
                         //角色不存在，新创建的
-                        lists.get(i).put("crid",crid);
-                        lists.get(i).put("content",lists.get(i).get("crcontent"));
+                        lists.get(i).put("crid", crid);
+                        lists.get(i).put("content", lists.get(i).get("crcontent"));
                         tbPlantaskJobPositionService.addRoleAndDept(lists.get(i));
                     }
-                    if("".equals(lists.get(i).get("dutyid"))){
+                    if ("".equals(lists.get(i).get("dutyid"))) {
                         String dutyid = JzbRandom.getRandomChar(26);
                         //职责不存在，新创建的
-                        lists.get(i).put("dutyid",dutyid);
-                        Map<String,Object> dictionary =  new HashMap<>();
-                        dictionary.put("uniqueid",dutyid);
-                        dictionary.put("content",lists.get(i).get("dutycontent"));
+                        lists.get(i).put("dutyid", dutyid);
+                        Map<String, Object> dictionary = new HashMap<>();
+                        dictionary.put("uniqueid", dutyid);
+                        dictionary.put("content", lists.get(i).get("dutycontent"));
                         tbPlantaskJobDutyService.insertDictionary(dictionary);
                     }
-                    if("".equals(lists.get(i).get("outputid"))){
+                    if ("".equals(lists.get(i).get("outputid"))) {
                         //说明output进行了修改
                         List<String> list = new ArrayList<>();
                         list.add(JzbDataType.getString(lists.get(i).get("outputcontent")));
-                        Map<String,Object> map = new HashMap<>();
-                        map.put("contentList",list);
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("contentList", list);
                         List<Map<String, Object>> resultList = tbPlantaskJobDutyService.selectExistContent(map);
-                        if(resultList.size()>0){
+                        if (resultList.size() > 0) {
                             //该值已经存在不需要插入了
-                            lists.get(i).put("outputid",resultList.get(0).get("outputid"));
-                        }else {
+                            lists.get(i).put("outputid", resultList.get(0).get("outputid"));
+                        } else {
                             String outputid = JzbRandom.getRandomChar(26);
                             //输出不存在，新创建的
-                            lists.get(i).put("outputid",outputid);
-                            Map<String,Object> dictionary =  new HashMap<>();
-                            dictionary.put("uniqueid",outputid);
-                            dictionary.put("content",lists.get(i).get("outputcontent"));
+                            lists.get(i).put("outputid", outputid);
+                            Map<String, Object> dictionary = new HashMap<>();
+                            dictionary.put("uniqueid", outputid);
+                            dictionary.put("content", lists.get(i).get("outputcontent"));
                             tbPlantaskJobDutyService.insertDictionary(dictionary);
                         }
 
                     }
 
                 }
-                param.put("lists",lists);
+                param.put("lists", lists);
                 param.put("upuid", userInfo.get("uid"));
                 param.put("uptime", System.currentTimeMillis());
 
@@ -423,11 +423,11 @@ public class TbPlantaskJobDutyController {
             }
 
 
-                List<Map<String, Object>> list = tbPlantaskJobDutyService.selectDutyByCid(param);
-                response = Response.getResponseSuccess();
-                PageInfo pageInfo = new PageInfo();
-                pageInfo.setList(list);
-                response.setPageInfo(pageInfo);
+            List<Map<String, Object>> list = tbPlantaskJobDutyService.selectDutyByCid(param);
+            response = Response.getResponseSuccess();
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            response.setPageInfo(pageInfo);
 
         } catch (Exception ex) {
             flag = false;
@@ -462,17 +462,14 @@ public class TbPlantaskJobDutyController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"crid"})) {
-                response = Response.getResponseError();
-                logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getContractTemplate Method", "[param error] or [param is null]"));
-            } else {
 
-                List<Map<String, Object>> list = tbPlantaskJobPositionService.selectRoleByDeptid(param);
-                response = Response.getResponseSuccess();
-                PageInfo pageInfo = new PageInfo();
-                pageInfo.setList(list);
-                response.setPageInfo(pageInfo);
-            }
+
+            List<Map<String, Object>> list = tbPlantaskJobPositionService.selectRoleByDeptid(param);
+            response = Response.getResponseSuccess();
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+            response.setPageInfo(pageInfo);
+
         } catch (Exception ex) {
             flag = false;
             JzbTools.logError(ex);
@@ -509,17 +506,17 @@ public class TbPlantaskJobDutyController {
             //1.查询所有角色
             List<Map<String, Object>> roles = tbPlantaskJobPositionService.getRoles(param);
             //根据角色查询全部职责
-            param.put("list",roles);
+            param.put("list", roles);
             List<Map<String, Object>> list = tbPlantaskJobDutyService.selectAllDutyByRole(param);
-            for(int i = 0 ,j = roles.size();i<j;i++){
-                List<Map<String,Object>> tempList = new ArrayList<>();
-                for(int a = 0 ,b = list.size();a<b;a++){
-                    if(roles.get(i).get("crid").equals(list.get(a).get("crid"))){
+            for (int i = 0, j = roles.size(); i < j; i++) {
+                List<Map<String, Object>> tempList = new ArrayList<>();
+                for (int a = 0, b = list.size(); a < b; a++) {
+                    if (roles.get(i).get("crid").equals(list.get(a).get("crid"))) {
                         tempList.add(list.get(a));
                     }
                 }
-                roles.get(i).put("children",tempList);
-                roles.get(i).put("dutyid",roles.get(i).get("crid"));
+                roles.get(i).put("children", tempList);
+                roles.get(i).put("dutyid", roles.get(i).get("crid"));
             }
             response = Response.getResponseSuccess();
             PageInfo pageInfo = new PageInfo();
