@@ -6,6 +6,7 @@ import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.*;
 import com.jzb.operate.api.base.RegionBaseApi;
+import com.jzb.operate.api.message.OptMsgApi;
 import com.jzb.operate.api.org.DeptOrgApi;
 import com.jzb.operate.api.org.NewTbCompanyListApi;
 import com.jzb.operate.api.org.TbDeptUserListApi;
@@ -15,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -52,6 +52,9 @@ public class TbTravelApprovalController {
 
     @Autowired
     NewTbCompanyListApi newTbCompanyListApi;
+
+    @Autowired
+    private OptMsgApi optMsgApi;
     /**
      * 日志记录对象
      */
@@ -80,19 +83,28 @@ public class TbTravelApprovalController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"list", "travelid", "version","aptype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list", "travelid", "version", "aptype"})) {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> approvalList = (List<Map<String, Object>>) param.get("list");
                 //获取审批类型
-                Integer apType = JzbDataType.getInteger(param.get("aptype"));
+                int apType = JzbDataType.getInteger(param.get("aptype"));
 
                 for (int i = 0, a = approvalList.size(); i < a; i++) {
                     approvalList.get(i).put("travelid", param.get("travelid"));
                     approvalList.get(i).put("apid", JzbRandom.getRandomChar(12));
-                    Integer idx = (Integer) approvalList.get(i).get("idx");
+                    int idx = JzbDataType.getInteger(approvalList.get(i).get("idx"));
                     if (idx == 1) {
                         approvalList.get(i).put("trstatus", 2);
+                        // 消息业务
+
+                        String sendUid = approvalList.get(i).get("truid").toString().trim();
+                        Map<String, Object> argMap = getOptMsgArg(idx, sendUid, apType, false, true);
+//                        setMap.put("senduid", sendUid);
+//                        setMap.put("msg", apType == 1 ? "您有一条出差申请审批待处理" : "您有一条报销申请审批待处理"); // 消息内容
+//                        setMap.put("code",apType == 1 ? "CCSP" : "BXSP");
+//                        setMap.put("topic_name", sendUid + "/opt/appro"); // 主题
+                        optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     } else {
                         approvalList.get(i).put("trstatus", 1);
                     }
@@ -103,15 +115,15 @@ public class TbTravelApprovalController {
                     travelApprovalService.save(approvalList.get(i));
                 }
                 // 添加抄送人
-                if(!JzbTools.isEmpty(param.get("ccuid"))){
+                if (!JzbTools.isEmpty(param.get("ccuid"))) {
                     List<String> ccuidList = (List<String>) param.get("ccuid");
-                    param.put("ccuid",StrUtil.list2String(ccuidList,","));
-                }else {
-                    param.put("ccuid","");
+                    param.put("ccuid", StrUtil.list2String(ccuidList, ","));
+                } else {
+                    param.put("ccuid", "");
                 }
-                if(apType == 1){
+                if (apType == 1) {
                     param.put("trastatus", "2"); // 设置出差状态
-                }else {
+                } else {
                     param.put("rebstatus", "2"); //设置报销状态
                 }
                 travelPlanService.updateTravelRecord(param);
@@ -133,34 +145,6 @@ public class TbTravelApprovalController {
         return response;
     }
 
-    /**
-     * 批量修改出差报销申请 (预留)
-     *
-     * @param param
-     * @return
-     */
-    @CrossOrigin
-    @Transactional
-    @RequestMapping(value = "/updateTravelApproval", method = RequestMethod.POST)
-    public Response updateTravelApproval(@RequestBody Map<String, Object> param) {
-
-        Response response;
-
-        try {
-            List<Map<String, Object>> approvalList = (List<Map<String, Object>>) param.get("list");
-            for (Map<String, Object> approval : approvalList) {
-
-                approval.put("travelid", param.get("travelid"));
-                travelApprovalService.update(approval);
-            }
-
-            travelPlanService.updateTravelRecord(param);
-            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
-        } catch (Exception e) {
-            response = Response.getResponseError();
-        }
-        return response;
-    }
 
     /**
      * 同意出差申请
@@ -188,12 +172,14 @@ public class TbTravelApprovalController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version","aptype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version", "aptype"})) {
                 response = Response.getResponseError();
             } else {
                 Integer isOk = (Integer) param.get("isOk");
                 //获取审批类型
                 Integer apType = JzbDataType.getInteger(param.get("aptype"));
+                // 用于设置发消息的map参数
+                Map<String, Object> argMap;
                 if (isOk == 1) {// 同意
                     Map<String, Object> whereMap = new HashMap<>();
                     whereMap.put("trtime", System.currentTimeMillis());//审批时间
@@ -203,7 +189,8 @@ public class TbTravelApprovalController {
                     whereMap.put("apid", param.get("apid"));
                     int i = travelApprovalService.update(whereMap);
                     //判断是否是最后一个审批人
-                    String lastApid = travelApprovalService.getMaxIdxApid(param);
+                    Map<String, Object> lastMap = travelApprovalService.getMaxIdxApid(param);
+                    String lastApid = lastMap.get("apid").toString();
                     boolean isLast = param.get("apid").equals(lastApid);
                     Map<String, Object> query = new HashMap<>();
                     if (i > 0 && !isLast) { // 将下一个审批人的审批状态改为2
@@ -213,26 +200,46 @@ public class TbTravelApprovalController {
                         query.put("trstatus", 2);
                         query.put("trtime", System.currentTimeMillis());
                         travelApprovalService.update(query);
-                    }else if (i > 0 && isLast && apType == 1)  { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
-                        query.put("rebversion",JzbRandom.getRandom(8));
-                        query.put("aptype",2);
-                        query.put("travelid",param.get("travelid"));
+
+                        //发消息通知下一个审批人 审批人id
+                        String sendUid = lastMap.get("truid").toString();
+                        argMap = getOptMsgArg(0, sendUid, apType, false, true);
+                        optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
+                    } else if (i > 0 && isLast && apType == 1) { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
+                        query.put("rebversion", JzbRandom.getRandom(8));
+                        query.put("aptype", 2);
+                        query.put("travelid", param.get("travelid"));
                         travelPlanService.updateTravelRecord(query);
+
+                        // 最后一个出差申请审批通过发消息通知出差申请人 申请人id
+                        String sendUid = param.get("applyuid").toString();
+                        argMap = getOptMsgArg(0, sendUid, apType, true, true);
+                        optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
+                    } else if (i > 0 && isLast && apType == 2) {
+                        // 最后一个报销申请审批通过发消息通知报销申请人
+                        String sendUid = param.get("applyuid").toString();
+                        argMap = getOptMsgArg(0, sendUid, apType, true, true);
+                        optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     }
                 } else {// 退回
                     Map<String, Object> uMap = new HashMap<>();
                     String randomVersion = JzbRandom.getRandom(8);
-                    if(apType == 1){
+                    if (apType == 1) {
                         // 更新 出差版本号 和 出差申请状态
                         uMap.put("traversion", randomVersion);
                         uMap.put("trastatus", 1);
-                    }else {
+                    } else {
                         // 更新 报销版本号 和 报销申请状态
                         uMap.put("rebversion", randomVersion);
                         uMap.put("rebstatus", 1);
                     }
-                    uMap.put("travelid",param.get("travelid"));
+                    uMap.put("travelid", param.get("travelid"));
                     travelPlanService.updateTravelRecord(uMap);
+
+                    // 出差 / 报销申请被退回发消息通知  申请人
+                    String sendUid = param.get("applyuid").toString();
+                    argMap = getOptMsgArg(0, sendUid, apType, true, false);
+                    optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                 }
                 response = Response.getResponseSuccess(userInfo);
             }
@@ -251,6 +258,55 @@ public class TbTravelApprovalController {
         return response;
     }
 
+    private Map<String, Object> getOptMsgArg(int idx, String sendUid, int apType, boolean lastFlag, boolean agreeFlag) {
+        Map<String, Object> setMap = new HashMap<>();
+        if (agreeFlag) {
+            if (idx == 1 || !lastFlag) {
+                setMap.put("senduid", sendUid);
+                setMap.put("msg", apType == 1 ? "您有一条出差申请审批待处理" : "您有一条报销申请审批待处理"); // 消息内容
+                setMap.put("code", apType == 1 ? "CCSP" : "BXSP");
+                setMap.put("topic_name", sendUid + "/opt/appro"); // 主题
+            } else if (lastFlag) {
+                setMap.put("senduid", sendUid);
+                setMap.put("msg", apType == 1 ? "您的出差申请已通过审批" : "您的报销申请已通过审批");
+                setMap.put("code", apType == 1 ? "CCSQ" : "BXSQ");
+                setMap.put("topic_name", sendUid + "/opt/apply");
+            }
+        } else {
+            setMap.put("senduid", sendUid);
+            setMap.put("msg", apType == 1 ? "您的出差申请被打回" : "您的报销申请被打回");
+            setMap.put("code", apType == 1 ? "UN_CCSQ" : "UN_BXSQ");
+            setMap.put("topic_name", sendUid + "/opt/apply");
+        }
+        return setMap;
+    }
+
+    /**
+     * 批量修改出差报销申请 (预留)
+     *
+     * @param param
+     * @return
+     */
+    @CrossOrigin
+    @Transactional
+    @RequestMapping(value = "/updateTravelApproval", method = RequestMethod.POST)
+    public Response updateTravelApproval(@RequestBody Map<String, Object> param) {
+        Response response;
+        try {
+            List<Map<String, Object>> approvalList = (List<Map<String, Object>>) param.get("list");
+            for (Map<String, Object> approval : approvalList) {
+
+                approval.put("travelid", param.get("travelid"));
+                travelApprovalService.update(approval);
+            }
+
+            travelPlanService.updateTravelRecord(param);
+            response = Response.getResponseSuccess((Map<String, Object>) param.get("userinfo"));
+        } catch (Exception e) {
+            response = Response.getResponseError();
+        }
+        return response;
+    }
 
     /**
      * 查询显示出差申请
@@ -333,7 +389,7 @@ public class TbTravelApprovalController {
     @ResponseBody
     @CrossOrigin
     @Transactional
-    public Response getTravelRecordList(@RequestBody Map<String, Object> param) {
+    public Response getTravelApprovalList(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
         String api = "/operate/travelApproval/getTravelApprovalList";
@@ -400,26 +456,26 @@ public class TbTravelApprovalController {
                         query.put("deid", detailsList.get(j).get("deid"));
                         //情报收集
                         travelInfoList = travelInfoService.list(query);
-                        for (int l = 0, d = travelInfoList.size();l < d;l++){
+                        for (int l = 0, d = travelInfoList.size(); l < d; l++) {
                             List<String> proList = new ArrayList<>();
-                            if(!JzbTools.isEmpty(travelInfoList.get(l).get("prolist"))) {
+                            if (!JzbTools.isEmpty(travelInfoList.get(l).get("prolist"))) {
                                 proList = StrUtil.string2List(travelInfoList.get(l).get("prolist").toString(), ",");
-                                travelInfoList.get(l).put("prolist",proList);
-                            }else {
-                                travelInfoList.get(l).put("prolist",proList);
+                                travelInfoList.get(l).put("prolist", proList);
+                            } else {
+                                travelInfoList.get(l).put("prolist", proList);
                             }
                         }
                         detailsList.get(j).put("travelinfolist", travelInfoList);
                         //出差资料
                         detailsList.get(j).put("traveldatalist", travelDataService.list(query));
                         //预计产出
-                        Integer produce =  (Integer) detailsList.get(j).get("produce");
+                        Integer produce = (Integer) detailsList.get(j).get("produce");
                         List<Map<String, Object>> produceMaps = travelProduceService.list(null);
                         List<Integer> produceList = PrindexUtil.getPrindex(produce, produceMaps);
                         //筛选过滤 获取出差详情的产出资料
                         List<Map<String, Object>> selectedProduce = new ArrayList<>();
                         for (Integer k : produceList) {
-                            for(Map<String, Object> map : produceMaps){
+                            for (Map<String, Object> map : produceMaps) {
                                 Integer prindex = (Integer) map.get("prindex");
                                 if (k.equals(prindex)) {
                                     selectedProduce.add(map);

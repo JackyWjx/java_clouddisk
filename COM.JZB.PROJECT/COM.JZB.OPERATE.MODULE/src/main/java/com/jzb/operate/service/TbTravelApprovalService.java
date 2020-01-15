@@ -53,12 +53,12 @@ public class TbTravelApprovalService {
 	 * @param map
 	 * @return
 	 */
-	public String getMaxIdxApid(Map<String, Object> map){
+	public Map<String,Object> getMaxIdxApid(Map<String, Object> map){
 		return travelApprovalDao.getMaxApid(map);
 	}
 	
 	public int batchRemove(String[] ids){
 		return travelApprovalDao.batchRemove(ids);
 	}
-	
+
 }

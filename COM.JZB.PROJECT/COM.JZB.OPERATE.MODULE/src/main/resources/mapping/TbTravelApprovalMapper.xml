@@ -48,9 +48,9 @@
 		  		</where>
 	</select>
 
-    <select id="getMaxApid" resultType="java.lang.String" parameterType="java.util.Map">
+    <select id="getMaxApid" resultType="java.util.Map" parameterType="java.util.Map">
 
-        select apid from tb_travel_approval
+        select apid,truid from tb_travel_approval
             where travelid = #{travelid} and version = #{version} order by idx desc limit 1
 
     </select>
