@@ -461,7 +461,7 @@ public class DeptController {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 Response response = authApi.queryIsExists(param);
                 Object count = response.getResponseEntity();
-                if (JzbDataType.getInteger(count) == 0||userInfo.get("uid").toString().equals(authApi.queryUidByPhone(param))) {
+                if (JzbDataType.getInteger(count) == 0||param.get("uid").toString().equals(authApi.queryUidByPhone(param))) {
                     int add = deptService.updateDeptUser(param);
 
                     /** 修改成功后统一手机号码 */
