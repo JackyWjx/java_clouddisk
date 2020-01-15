@@ -212,12 +212,12 @@ public class TbTravelApprovalController {
                         travelPlanService.updateTravelRecord(query);
 
                         // 最后一个出差申请审批通过发消息通知出差申请人 申请人id
-                        String sendUid = param.get("applyuid").toString();
+                        String sendUid = JzbDataType.getString(param.get("applyuid"));
                         argMap = getOptMsgArg(0, sendUid, apType, true, true);
                         optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     } else if (i > 0 && isLast && apType == 2) {
                         // 最后一个报销申请审批通过发消息通知报销申请人
-                        String sendUid = param.get("applyuid").toString();
+                        String sendUid = JzbDataType.getString(param.get("applyuid"));
                         argMap = getOptMsgArg(0, sendUid, apType, true, true);
                         optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     }
