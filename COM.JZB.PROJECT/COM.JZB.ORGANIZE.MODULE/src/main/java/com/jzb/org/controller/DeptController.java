@@ -478,9 +478,14 @@ public class DeptController {
                             userRedisApi.cacheUserInfo(resuMap);
                         }
                     }
-                    result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                    if(add>0){
+                        result=Response.getResponseSuccess(userInfo);
+                    }else {
+                        result=Response.getResponseError();
+                    }
                 } else {
                     result = Response.getResponseError();
+                    result.setResponseEntity("该手机号已存在");
                 }
             } else {
                 result = Response.getResponseError();

@@ -697,6 +697,8 @@ public class AuthUserController {
                 }
             } else {
                 result = Response.getResponseError();
+                result.setResponseEntity("该手机号已存在");
+
             }
 
         } catch (Exception e) {

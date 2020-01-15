@@ -4,6 +4,7 @@ package com.jzb.org.api.auth;
 import com.jzb.base.message.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 @FeignClient(name = "jzb-auth")
 @RequestMapping(value = "/auth")
+@Repository
 public interface AuthApi {
     /**
      * 注册的第二步操作创建用户
