@@ -572,7 +572,7 @@ ORDER BY
 				or
 				executors like '%${touid}%'
 				or
-				uid ='%${touid}%'
+				uid ='${touid}'
 				)
 			</when>
 			<otherwise>
@@ -583,7 +583,7 @@ ORDER BY
 				or
 				executors like '%${auid}%'
 				or
-				uid ='%${auid}%'
+				uid ='${auid}'
 				)
 			</otherwise>
 		</choose>
