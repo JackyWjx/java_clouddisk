@@ -244,4 +244,10 @@ public interface DeptMapper {
      * @return
      */
     List<Map<String, Object>> getCompanyProduct(Map<String, Object> param);
+    /**
+     * 云产品市场单位的查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getCompanys(Map<String, Object> param);
 }

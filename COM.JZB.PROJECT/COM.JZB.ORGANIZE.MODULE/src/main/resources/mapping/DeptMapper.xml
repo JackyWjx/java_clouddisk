@@ -536,17 +536,48 @@
     </select>
 
     <select id="getCompanyProduct" parameterType="java.util.Map" resultType="java.util.Map">
-        select
+        select a.* from ( select
         DISTINCT
         tcp.manurl,
         tpl.cname,
         tpl.plid,
-        tpl.logo
+        tpl.logo,
+        tcp.cid,
+        (select cname from tb_company_list where cid=tcp.cid) as companyname
+        from
+        tb_product_list tpl
+        LEFT JOIN tb_company_product tcp ON tpl.pid = tcp.pid and tpl.cid = tcp.cid
+        where
+        tpl.status = '1' and tcp.status = '1' and tpl.appid is null
+
+        <if test="plid!=null and plid!='' and plid!=0">
+            and tpl.plid=#{plid}
+        </if>
+        <if test="cid!=null and cid!=''">
+            and tcp.cid=#{cid}
+        </if>
+        ) a
+        <if test="keyword!=null and keyword!=''">
+            where  (a.cname ~ #{keyword} or a.companyname ~ #{keyword})
+        </if>
+    </select>
+
+
+    <!-- 查询有产品的单位 -->
+    <select id="getCompanys" parameterType="java.util.Map" resultType="java.util.Map">
+                select a.* from (select
+        DISTINCT
+				tcp.cid,
+				(select cname from tb_company_list where cid=tcp.cid) as companyname
         from
         tb_product_list tpl
         LEFT JOIN  tb_company_product tcp ON tpl.pid = tcp.pid and tpl.cid = tcp.cid
         where
         tpl.status = '1' and tcp.status = '1' and tpl.appid is null
+				) a  where a.companyname is not null and a.companyname!=''
     </select>
+
+
+
 
 </mapper>
