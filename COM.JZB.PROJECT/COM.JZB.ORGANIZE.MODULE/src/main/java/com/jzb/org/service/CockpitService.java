@@ -153,8 +153,7 @@ public class CockpitService {
                 String starttime = timeToFormat(JzbDataType.getString(daysList.get(i).get("starttime")));
                 allDeptUser.get(i).put("num",starttime);
             }
-            list = allDeptUser;
-
+            list = AllCount(allDeptUser);
 //
         }
 
@@ -166,7 +165,7 @@ public class CockpitService {
             for (int i = 0; i < wList.size(); i++) {
                 wList.get(i).put("num",JzbDataType.getString("第"+(i+1)+"周"));
             }
-            list = wList;
+            list = AllCount(wList);
 
         }
 
@@ -181,7 +180,7 @@ public class CockpitService {
                     clist.get(i).put("num",JzbDataType.getString(mlist.get(i).get("num"))+"月");
                     break;
                 }
-                list = clist;
+                list = AllCount(clist);
             }
         }
         return list;
@@ -405,4 +404,40 @@ public class CockpitService {
         String format = sdf.format(new Date(Long.valueOf(time)));
         return format;
     }
+
+    private List<Map<String,Object>> AllCount(List<Map<String,Object>> list){
+        Map<String,Object> map = new HashMap<>();
+        int connectcount = 0;
+        int deepconnectcount = 0;
+        int goodcommentcount = 0;
+        int pubcount = 0;
+        int returnmoney = 0;
+        int signcount = 0;
+        int signmoney = 0;
+        int takemenucount = 0;
+        int trainingcount = 0;
+        for (int i = 0; i < list.size(); i++) {
+            Map<String,Object> lmap = list.get(i);
+            connectcount += JzbDataType.getInteger(lmap.get("connectcount"));
+            deepconnectcount += JzbDataType.getInteger(lmap.get("deepconnectcount"));
+            goodcommentcount += JzbDataType.getInteger(lmap.get("goodcommentcount"));
+            pubcount += JzbDataType.getInteger(lmap.get("pubcount"));
+            returnmoney += JzbDataType.getInteger(lmap.get("returnmoney"));
+            signmoney += JzbDataType.getInteger(lmap.get("signmoney"));
+            takemenucount += JzbDataType.getInteger(lmap.get("takemenucount"));
+            trainingcount += JzbDataType.getInteger(lmap.get("trainingcount"));
+        }
+        map.put("connectcount",connectcount);
+        map.put("deepconnectcount",deepconnectcount);
+        map.put("goodcommentcount",goodcommentcount);
+        map.put("pubcount",pubcount);
+        map.put("returnmoney",returnmoney);
+        map.put("signmoney",signmoney);
+        map.put("takemenucount",takemenucount);
+        map.put("trainingcount",trainingcount);
+        map.put("num","总计");
+        list.add(map);
+        return list;
+    }
+
 }

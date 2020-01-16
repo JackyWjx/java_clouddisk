@@ -225,7 +225,7 @@ public class DeptService {
     public List<Map<String, Object>> queryDeptUser(Map<String, Object> map) {
         List<Map<String, Object>> deptList = deptMapper.queryDeptUser(map);
         int size = deptList.size();
-        List<Map<String, Object>> result = new ArrayList<>(size);
+        List<Map<String, Object>> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             Map<String, Object> deptMap = deptList.get(i);
             Response resp = userRedisServiceApi.getCacheUserInfo(deptMap);

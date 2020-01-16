@@ -365,4 +365,8 @@
     <select id="queryCommonCompanyByUscc" parameterType="java.util.Map" resultType="java.util.Map">
         select * from tb_company_list where uscc = #{uscc} and status = '1';
     </select>
+
+    <select id="queryAuthCompanyByUscc" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from  tb_company_list where  uscc = #{uscc} and status = '1' and authid in (8,16,32,64);
+    </select>
 </mapper>

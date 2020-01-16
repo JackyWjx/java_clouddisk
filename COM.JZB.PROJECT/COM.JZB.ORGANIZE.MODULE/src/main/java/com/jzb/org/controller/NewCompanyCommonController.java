@@ -125,9 +125,11 @@ public class NewCompanyCommonController {
                 Map<String, Object> map = companyService.getEnterpriseData(param);
                 companyController.comHasCompanyKey(map);
                 // 修改公海单位信息
-
                 newCompanyCommonService.modifyCompanyCommonList(param);
-            } else {
+            } else if (count == -1){
+                result = Response.getResponseSuccess(userInfo);
+                result.setResponseEntity("单位已经认证");
+            }else {
                 result = Response.getResponseError();
             }
         } catch (Exception e) {

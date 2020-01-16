@@ -191,6 +191,7 @@ public class NewCompanyCommonService {
      * @DateTime: 2019/9/20 18:00
      */
     public int addCompanyCommonList(Map<String, Object> param) {
+        int count = 0;
 //        if (JzbDataType.isMap(param.get("send"))) {
 //            Map<String, Object> send = (Map<String, Object>) param.get("send");
 //            if (!JzbTools.isEmpty(send.get("relphone"))) {
@@ -215,9 +216,23 @@ public class NewCompanyCommonService {
             umap.put("userinfo",param.get("userinfo"));
             userController.addCommonUser(umap);
         }
+        if (param.get("authid").equals("0")){
             newCompanyCommonMapper.insertTbCompanyList(param);
             newCompanyCommonMapper.insertTbInfo(param);
-        return newCompanyCommonMapper.insertCompanyCommonList(param);
+            count =  newCompanyCommonMapper.insertCompanyCommonList(param);
+        }else {
+            // 根据单位统一社会信用代码查找是否已被认证
+            List<Map<String,Object>> plist =  newCompanyCommonMapper.queryAuthCompanyByUscc(param);
+            if (!JzbTools.isEmpty(plist)){
+                // 该单位已被认证
+                count = -1;
+            }else {
+                newCompanyCommonMapper.insertTbCompanyList(param);
+                newCompanyCommonMapper.insertTbInfo(param);
+                count =  newCompanyCommonMapper.insertCompanyCommonList(param);
+            }
+        }
+        return count;
     }
 
     /**

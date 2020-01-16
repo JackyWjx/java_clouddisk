@@ -12,6 +12,7 @@ import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
 import com.jzb.org.controller.TbCompanyCommonController;
 import com.jzb.org.dao.DeptMapper;
+import com.jzb.org.dao.NewCompanyCommonMapper;
 import com.jzb.org.dao.TbCompanyCommonMapper;
 import com.jzb.org.dao.TbCompanyListMapper;
 import net.sf.json.JSONArray;
@@ -57,6 +58,9 @@ public class TbCompanyCommonService {
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private NewCompanyCommonMapper newCompanyCommonMapper;
 
 
     /**
@@ -709,6 +713,7 @@ public class TbCompanyCommonService {
      * @DateTime: 2019/10/11
      */
     public int modifyCompanyCommon(Map<String, Object> param) {
+        int count = 0;
         long updtime = System.currentTimeMillis();
         param.put("updtime", updtime);
         param.put("status", "1");
@@ -739,7 +744,20 @@ public class TbCompanyCommonService {
 //            param.put("msgtag", "addCommon1013");
 //            companyService.sendRemind(param);
 //        }
-        return tbCompanyCommonMapper.updateCompanyListInfo(param);
+        if (param.get("authid").equals("0")){
+            count = tbCompanyCommonMapper.updateCompanyListInfo(param);
+        }else {
+            // 判断该单位是否已经被认证
+            List<Map<String,Object>> plist =  newCompanyCommonMapper.queryAuthCompanyByUscc(param);
+            if (JzbTools.isEmpty(plist)){
+                // 未被认证过
+                count = tbCompanyCommonMapper.updateCompanyListInfo(param);
+            }else {
+                // 已被认证
+                count = -1;
+            }
+        }
+        return count;
     }
 
 
@@ -783,7 +801,7 @@ public class TbCompanyCommonService {
         return tbCompanyCommonMapper.updateCompanysAddSales(map);
     }
 
-    // 退回公海  加入历史私海记录 todo
+    // 退回公海  加入历史私海记录
     public int rebackCompanysToHistory(Map<String, Object> param) {
 
     return tbCompanyCommonMapper.rebackCompanysToHistory(param);
