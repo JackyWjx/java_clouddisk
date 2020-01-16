@@ -391,7 +391,7 @@
     <!--退回公海-->
     <update id="rebackCompanys" parameterType="java.util.Map">
 
-        update tb_common_company_list set status='1' where cid=#{cid} and status = '2';
+        update tb_common_company_list set status='1' where cid=#{cid};
         update  tb_private_company_list  set status = '4' WHERE cid = #{cid} and status = '1'
 
     </update>
