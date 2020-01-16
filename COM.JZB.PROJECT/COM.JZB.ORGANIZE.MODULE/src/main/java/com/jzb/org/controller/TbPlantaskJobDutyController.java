@@ -500,6 +500,10 @@ public class TbPlantaskJobDutyController {
             List<Map<String, Object>> roles = tbPlantaskJobPositionService.getRoles(param);
             //根据角色查询全部职责
             param.put("list", roles);
+            if(roles.size()==0){
+                response = Response.getResponseSuccess();
+                return response;
+            }
             List<Map<String, Object>> list = tbPlantaskJobDutyService.selectAllDutyByRole(param);
             for (int i = 0, j = roles.size(); i < j; i++) {
                 List<Map<String, Object>> tempList = new ArrayList<>();
