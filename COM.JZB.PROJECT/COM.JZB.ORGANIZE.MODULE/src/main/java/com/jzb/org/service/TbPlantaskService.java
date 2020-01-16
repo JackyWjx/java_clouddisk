@@ -75,5 +75,9 @@ public class TbPlantaskService {
     public List<Map<String, Object>> getPantaskZifu(Map<String, Object> param) {
         return tbPlantaskMapper.getPantaskZifu(param);
     }
+
+    public List<Map<String, Object>> seluid() {
+        return tbPlantaskMapper.seluid();
+    }
 }
 

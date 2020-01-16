@@ -482,7 +482,10 @@ ORDER BY
 		where uid='${uid}' and cid='JZB0001'
 	</select>
 
-
+	<select id="seluid"  resultType="java.util.Map">
+	 select uid,cname from tb_dept_user
+		where   cid='JZB0001'
+	</select>
 
 		<!--通过父级找子级-->
 	<select id="selFu" parameterType="java.util.Map" resultType="java.util.Map">
@@ -592,4 +595,5 @@ ORDER BY
 		order by parentid,id asc
 		LIMIT #{pagesize} OFFSET #{pageno}
 	</select>
+
 </mapper>
