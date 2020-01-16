@@ -229,18 +229,11 @@ public class TbPlantaskJobDutyController {
                         if (lists.get(i).get("dutycontent").equals(list.get(a).get("content"))) {
                             lists.get(i).put("dutyid", list.get(a).get("uniqueid"));
                         }
-                        if (lists.get(i).get("workcontent").equals(list.get(a).get("content"))) {
-                            lists.get(i).put("workid", list.get(a).get("uniqueid"));
-                        }
+
                         if (lists.get(i).get("outputcontent").equals(list.get(a).get("content"))) {
                             lists.get(i).put("outputid", list.get(a).get("uniqueid"));
                         }
-                        if (lists.get(i).get("workstandardcontent").equals(list.get(a).get("content"))) {
-                            lists.get(i).put("workstandardid", list.get(a).get("uniqueid"));
-                        }
-                        if (lists.get(i).get("kpicontent").equals(list.get(a).get("content"))) {
-                            lists.get(i).put("kpiid", list.get(a).get("uniqueid"));
-                        }
+
 
                     }
                 }
