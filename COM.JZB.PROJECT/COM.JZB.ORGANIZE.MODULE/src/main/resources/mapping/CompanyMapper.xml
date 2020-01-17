@@ -378,6 +378,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
     <select id="queryApplyList" parameterType="java.util.Map"
             resultType="java.util.Map">
         SELECT
+        DISTINCT
         resuid
         from
         tb_invite_user

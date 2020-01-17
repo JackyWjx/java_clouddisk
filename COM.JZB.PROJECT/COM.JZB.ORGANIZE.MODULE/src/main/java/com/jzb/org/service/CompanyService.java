@@ -237,16 +237,6 @@ public class CompanyService {
         Map<String, Object> result = new HashMap(2);
         int type = Integer.parseInt(map.get("type").toString());
         String cname = map.get("cname").toString();
-        //type的种类
-        Map<String,Object> map1 = companyMapper.getAddCompany(map);
-        Response response = personBoardApi.getCname(map);
-        Map<String,Object> entity = (Map<String, Object>) response.getResponseEntity();
-        map1.put("senduid", map1.get("senduid"));
-        map1.put("msg", "申请加入单位：\""+map.get("cname")+"\"单位管理员您好,\""+entity.get("cname")+"\"用户申请加入您的单位，请登录进行审批该用户");
-        map1.put("code", "JRDW");
-        map1.put("topic_name", map1.get("senduid") + "/org/addCompany");
-        //发送系统平台消息 并添加存储到数据库
-        messageApi.sendShortMsg(SendSysMsgUtil.setMsgArg(map1));
 
         int found = 1;
         int join = 2;
@@ -360,6 +350,17 @@ public class CompanyService {
         } else {
             message = "6";
         }
+        //type的种类
+        Map<String,Object> map1 = companyMapper.getAddCompany(map);
+        Response response = personBoardApi.getCname(map);
+        Map<String,Object> entity = (Map<String, Object>) response.getResponseEntity();
+        map1.put("senduid", map1.get("senduid"));
+        map1.put("msg", "申请加入单位：\""+map.get("cname")+"\"单位管理员您好,\""+entity.get("cname")+"\"用户申请加入您的单位，请登录进行审批该用户");
+        map1.put("code", "JRDW");
+        map1.put("topic_name", map1.get("senduid") + "/org/addCompany");
+        //发送系统平台消息 并添加存储到数据库
+        messageApi.sendShortMsg(SendSysMsgUtil.setMsgArg(map1));
+
         Map<String, Object> result = new HashMap<>(2);
         result.put("message", message);
         result.put("cid", cid);
