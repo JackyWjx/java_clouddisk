@@ -90,6 +90,20 @@
             crgid =#{crgid};
       update tb_role_relation set status = '2' where crgid = #{crgid};
     </update>
+
+
+
+
+    <!-- 查询是否管理员角色组 -->
+    <select id="queryIsBase" parameterType="java.util.Map" resultType="java.lang.String">
+        select crgid from tb_role_group where crgid=#{crgid} and status='4' limit 1
+    </select>
+
+
+
+
+
+
     <!--修改角色组信息-->
     <update id="updateRoleGroup1">
         UPDATE tb_role_group
@@ -261,12 +275,12 @@
                 LEFT JOIN tb_user_list u ON u.uid = re.rrid
                 LEFT JOIN tb_company_role cr ON cr.crid = re.rrid
               WHERE re.status = '1' AND re.crgid = trg.crgid AND re.rrtype = '2'
-            )
+            ),case status when '4' then 1 ELSE 0 end isbase
         FROM
             tb_role_group trg
         WHERE
             cid = #{cid}
-            AND status = '1'
+            AND (status = '1' or status ='4')
         ORDER BY
             cid
         LIMIT #{pagesize}  OFFSET #{start}
@@ -303,6 +317,35 @@
         ORDER BY rrtype,re.id
         LIMIT #{pagesize} OFFSET #{start}
     </select>
+
+
+    <!--czd 查询该用户是否管理员角色组人员-->
+    <select id="queryIsBasePerson" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from (
+      SELECT
+        re.rrid,
+        CASE
+        rrtype
+        WHEN '4' THEN
+        u.cname
+        WHEN '2' THEN
+        cr.cname
+        ELSE re.rrid
+        END as rrmc,u.summary,u.relphone
+        FROM
+        tb_role_relation re
+        LEFT JOIN tb_user_list u ON u.uid = re.rrid
+        LEFT JOIN tb_company_role cr ON cr.crid = re.rrid
+        WHERE re.status='1' AND re.crgid = (select crgid from tb_role_group where cid=#{cid} and cid='JZB0001' and status='4' limit 1)
+        AND re.rrtype='4'
+        ORDER BY rrtype,re.id
+				) rg where rg.rrid=#{uid}
+    </select>
+
+
+
+
+
 
     <!--查询角色组菜单表是否有数据-->
     <select id="queryRoleMenuAuth" resultType="java.lang.Integer">

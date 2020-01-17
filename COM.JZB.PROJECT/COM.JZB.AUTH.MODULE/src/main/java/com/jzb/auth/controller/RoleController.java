@@ -1,11 +1,16 @@
 package com.jzb.auth.controller;
 
+import com.jzb.auth.api.organize.CompanyListApi;
 import com.jzb.auth.service.RoleService;
 import com.jzb.base.data.JzbDataType;
+import com.jzb.base.entity.auth.UserInfo;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +34,67 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
+
+    @Autowired
+    private CompanyListApi companyListApi;
+
+    /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(RoleController.class);
+
+
+
+    /**
+     * 查询该用户是否管理员角色组下人czd
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getIsBaseByUid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getIsBaseByUid(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/auth/role/getIsBaseByUid";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            String[] str = {"cid", "uid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                int count = roleService.queryIsBasePerson(param);
+                result = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            flag=false;
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getIsBaseByUid Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
     /**
      * 根据企业id获取角色组信息
      *
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getRoleGroup",method = RequestMethod.POST)
+    @RequestMapping(value = "/getRoleGroup", method = RequestMethod.POST)
     @CrossOrigin
     public Response getRoleGroup(@RequestBody Map<String, Object> param) {
         Response result;
@@ -232,8 +291,14 @@ public class RoleController {
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("uid", userInfo.get("uid"));
-                roleService.updateRoleGroup(param);
-                result = Response.getResponseSuccess(userInfo);
+                String crgid = roleService.queryIsBase(param);
+                if (JzbTools.isEmpty(crgid)) {
+                    roleService.updateRoleGroup(param);
+                    result = Response.getResponseSuccess(userInfo);
+                } else {
+                    result = Response.getResponseError();
+                    result.setResponseEntity("该角色组是管理员角色组，不能删除！");
+                }
             } else {
                 result = Response.getResponseError();
             }
@@ -337,10 +402,18 @@ public class RoleController {
         try {
             String[] str = {"crgid", "cid", "rrid", "rrtype"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
-                param.put("uid", userInfo.get("uid"));
-                int add = roleService.updateRoleRelation(param);
-                result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                Response response = companyListApi.getManagerByCid(param);
+                String manager=JzbDataType.getString(response.getResponseEntity());
+                String uid=JzbDataType.getString(param.get("rrid"));
+                String crgid = roleService.queryIsBase(param);
+                if(uid.equals(manager)&&!JzbTools.isEmpty(crgid)){
+                    result=Response.getResponseError();
+                }else {
+                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+                    param.put("uid", userInfo.get("uid"));
+                    int add = roleService.updateRoleRelation(param);
+                    result = add > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+                }
             } else {
                 result = Response.getResponseError();
             }
@@ -350,7 +423,6 @@ public class RoleController {
         }
         return result;
     }
-
 
     /**
      * 添加企业角色表信息（角色表）
@@ -390,7 +462,6 @@ public class RoleController {
         }
         return result;
     }
-
 
     /**
      * 修改角色信息
@@ -646,6 +717,7 @@ public class RoleController {
      * 查询计支宝企业内 文档管理 角色
      * 用户 给 体系建设 内超级管理员 权限
      * 查询当前用户 是否有超级权限
+     *
      * @param param
      * @Author: lifeigetGroupUser
      * @DateTime: 2019/12/19 14:07
@@ -653,7 +725,7 @@ public class RoleController {
     @RequestMapping(value = "/getDocMsgPower", method = RequestMethod.POST)
     @CrossOrigin
     public Response getDocMsgPower(@RequestBody Map<String, Object> param) {
-        Response result=null;
+        Response result = null;
         try {
             String[] str = {"uid"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
@@ -669,6 +741,5 @@ public class RoleController {
         }
         return result;
     }
-
 
 }

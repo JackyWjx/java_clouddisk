@@ -67,6 +67,13 @@ public interface RoleMapper {
     int queryRoleMenuAuth(Map<String, Object> map);
 
     /**
+     * czd 查询该用户是否管理员角色组人员
+     * @param map
+     * @return
+     */
+    int queryIsBasePerson(Map<String, Object> map);
+
+    /**
      * 批量保存角色组菜单表
      *
      * @param map
@@ -129,6 +136,13 @@ public interface RoleMapper {
      * @return
      */
     int updateRoleGroup(Map<String, Object> map);
+
+    /**
+     * 查询是否管理员角色组
+     * @param map
+     * @return
+     */
+    String queryIsBase(Map<String,Object> map);
 
 
     /**

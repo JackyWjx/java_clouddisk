@@ -35,6 +35,35 @@ public class TbCompanyListController {
      * @param param
      * @return
      */
+    @RequestMapping(value = "/getManagerByCid", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response getManagerByCid(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cid"})) {
+                result = Response.getResponseError();
+            } else {
+                String cid = tbCompanyListService.queryManagerByCid(param);
+                result=Response.getResponseSuccess();
+                result.setResponseEntity(cid);
+            }
+        } catch (Exception e) {
+            //打印错误信息
+            JzbTools.logError(e);
+            result = Response.getResponseError();
+        }
+        return result;
+    }
+
+
+
+
+    /**
+     * 所有业主-销售统计分析
+     *
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/getCompanyList", method = RequestMethod.POST)
     @CrossOrigin
     public Response getCompanyList(@RequestBody Map<String, Object> param) {

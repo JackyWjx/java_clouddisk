@@ -96,6 +96,16 @@ public class RoleService implements Service {
 
 
     /**
+     * czd 查询该用户是否管理员角色组人员
+     * @param map
+     * @return
+     */
+    public int queryIsBasePerson(Map<String, Object> map){
+        return roleMapper.queryIsBasePerson(map);
+    }
+
+
+    /**
      * 保存角色组信息
      */
     public Map<String, Object> insertRoleGroup(Map<String, Object> map) {
@@ -388,6 +398,16 @@ public class RoleService implements Service {
      */
     public List<Map<String, Object>> queryRoleMenuAuth(Map<String, Object> map) {
         return roleMapper.queryRoleMenuAuthList(map);
+    }
+
+
+    /**
+     * 查询是否管理员角色组
+     * @param map
+     * @return
+     */
+    public String queryIsBase(Map<String,Object> map){
+        return roleMapper.queryIsBase(map);
     }
 
 

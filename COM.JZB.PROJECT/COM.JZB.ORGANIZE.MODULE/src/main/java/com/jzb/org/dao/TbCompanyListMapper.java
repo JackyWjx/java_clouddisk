@@ -24,6 +24,13 @@ public interface TbCompanyListMapper {
      */
     int getCount(Map<String, Object> param);
 
+    /**
+     * 查询该单位下的管理员
+     * @param param
+     * @return
+     */
+    String queryManagerByCid(Map<String, Object> param);
+
 
     /**
      * 获取今天添加业主的数量
