@@ -9,6 +9,8 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.resource.service.TbPolicyTypeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,11 @@ public class TbPolicyTypeController {
     private TbPolicyTypeService tbPolicyTypeService;
 
     /**
+     * 日志记录对象
+     */
+    private final static Logger logger = LoggerFactory.getLogger(TbPolicyTypeController.class);
+
+    /**
      * 查询政策类型（父子级）
      * @param params
      * @return
@@ -39,6 +46,9 @@ public class TbPolicyTypeController {
         Response result;
         try {
 
+            Map<String, Object> userInfo = null;
+            String api = "/policyType/getPolicyType";
+            boolean flag = true;
             // 获取返回jsonArray
             JSONArray objects = tbPolicyTypeService.queryPolicyType(params);
 
