@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.data.date.JzbDateStr;
 import com.jzb.base.data.date.JzbDateUtil;
+import com.jzb.base.log.JzbLoggerUtil;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
@@ -36,32 +37,45 @@ public class TbPolicyTypeController {
 
     /**
      * 查询政策类型（父子级）
-     * @param params
+     * @param param
      * @return
      */
     @RequestMapping(value = "/getPolicyType",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public Response getPolicyType(@RequestBody(required = false) Map<String ,Object> params){
+    public Response getPolicyType(@RequestBody(required = false) Map<String ,Object> param){
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/policyType/getPolicyType";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
 
-            Map<String, Object> userInfo = null;
-            String api = "/policyType/getPolicyType";
-            boolean flag = true;
             // 获取返回jsonArray
-            JSONArray objects = tbPolicyTypeService.queryPolicyType(params);
+            JSONArray objects = tbPolicyTypeService.queryPolicyType(param);
 
             // 定义返回结果
             result = Response.getResponseSuccess();
             result.setResponseEntity(objects);
 
         }catch (Exception e){
-
+            flag = false;
             // 打印异常信息
-            e.printStackTrace();
+            JzbTools.logError(e);
             result=Response.getResponseError();
-
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getPolicyType Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -79,7 +93,17 @@ public class TbPolicyTypeController {
     @CrossOrigin
     public Response getPolicyTypes(@RequestBody Map<String,Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/policyType/getPolicyTypes";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             //查询运营管理中的菜单类别
             List<Map<String, Object>> list = tbPolicyTypeService.getPolicyTypes(param);
 
@@ -93,15 +117,22 @@ public class TbPolicyTypeController {
             pageInfo.setList(list);
 
             // 定义返回结果
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             result = Response.getResponseSuccess(userInfo);
 
             // 设置返回pageinfo
             result.setPageInfo(pageInfo);
         } catch (Exception ex) {
+            flag = false;
             //错误信息
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getPolicyTypes Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
 
@@ -118,13 +149,22 @@ public class TbPolicyTypeController {
     @CrossOrigin
     public Response savePolicyType(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/policyType/savePolicyType";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             //如果有空值，返回404
             if (JzbCheckParam.haveEmpty(param, new String[]{"cname"})) {
                 result = Response.getResponseError();
             } else {
                 //定义返回的结果
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 param.put("adduid",userInfo.get("cname"));
                 //添加一条记录
                 int count = tbPolicyTypeService.savePolicyType(param);
@@ -138,9 +178,17 @@ public class TbPolicyTypeController {
                 }
             }
         } catch (Exception ex) {
+            flag = false;
             //错误信息
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "savePolicyType Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -157,7 +205,17 @@ public class TbPolicyTypeController {
     @CrossOrigin
     public Response updatePolicyType(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/policyType/updatePolicyType";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             //如果有空值，返回404
             if (JzbCheckParam.haveEmpty(param, new String[]{"typeid", "cname"})) {
                 result = Response.getResponseError();
@@ -168,7 +226,6 @@ public class TbPolicyTypeController {
                 //如果返回值大于0，修改成功
                 if (count > 0) {
                     //定义返回的结果
-                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                     result = Response.getResponseSuccess(userInfo);
                 } else {
                     //如果返回值小于等于0.修改失败
@@ -176,9 +233,17 @@ public class TbPolicyTypeController {
                 }
             }
         } catch (Exception ex) {
+            flag = false;
             //错误信息
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updatePolicyType Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -193,7 +258,17 @@ public class TbPolicyTypeController {
     @CrossOrigin
     public Response updateStatus(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/policyType/updateStatus";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             //如果有空值，返回404
             if (JzbCheckParam.haveEmpty(param, new String[]{"typeid"})) {
                 result = Response.getResponseError();
@@ -203,7 +278,6 @@ public class TbPolicyTypeController {
                 //如果返回值大于0，修改成功
                 if (count > 0) {
                     //定义返回的结果
-                    Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                     result = Response.getResponseSuccess(userInfo);
                 } else {
                     //如果返回值小于等于0.修改失败
@@ -211,9 +285,17 @@ public class TbPolicyTypeController {
                 }
             }
         } catch (Exception ex) {
+            flag = false;
             //错误信息
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateStatus Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
