@@ -172,10 +172,179 @@
                     NULL,
                 </otherwise>
             </choose>
-
-
             );
         </foreach>
+    </insert>
+
+    <!--插入我的方法论菜单-->
+    <insert id="addMymethod" parameterType="java.util.Map" >
+            insert into tb_company_method
+            (cid,projectid,methodid,cname,parentid,plantime,days,score,remark,idx,adduid,addtime,upduid,updtime,status,summary,money,
+            information,
+            constraintcondition,numberone)
+            values (
+            <choose>
+                <when test="cid!=null and cid!=''">
+                    #{cid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="projectid!=null and projectid!=''">
+                    #{projectid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="methodid!=null and methodid!=''">
+                    #{methodid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="cname!=null and cname!=''">
+                    #{cname},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="parentid!=null and parentid!=''">
+                    #{parentid},
+                </when>
+                <otherwise>
+                    '0000000' ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="plantime!=null and plantime!=''">
+                    #{plantime},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="days!=null and days!=''">
+                    #{days},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="score!=null and score!=''">
+                    #{score},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="remark!=null and remark!=''">
+                    #{remark},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="idx!=null and idx!=''">
+                    #{idx},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="adduid!=null and adduid!=''">
+                    #{adduid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="addtime!=null and addtime!=''">
+                    #{addtime},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="upduid!=null and upduid!=''">
+                    #{upduid},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="updtime!=null and updtime!=''">
+                    #{updtime},
+                </when>
+                <otherwise>
+                    NULL ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="status!=null and status!=''">
+                    #{status},
+                </when>
+                <otherwise>
+                    1 ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="summary!=null and summary!=''">
+                    #{summary},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="money!=null and money!=''">
+                    #{money},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="information!=null and information!=''">
+                    #{information},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="constraintcondition!=null and constraintcondition!=''">
+                    #{constraintcondition},
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="numberone!=null and numberone!=''">
+                    #{numberone}
+                </when>
+                <otherwise>
+                    NULL,
+                </otherwise>
+            </choose>
+            );
+
     </insert>
 
     <!-- 查询方法论 -->
@@ -249,6 +418,77 @@
         modt.idx ASC
     </select>
 
+    <!-- 查询我的方法论 -->
+    <select id="queryMyCompanyMethod" parameterType="java.util.Map" resultType="java.util.Map">
+        WITH RECURSIVE modt AS (
+        SELECT
+        cid,
+        projectid,
+        methodid,
+        parentid,
+        cname,
+        plantime,
+        days,
+        score,
+        remark,
+        idx,
+        adduid,
+        addtime,
+        upduid,
+        updtime,
+        status,
+        summary,
+        money,
+        information,
+        constraintCondition,
+        numberone
+        FROM
+        tb_company_method
+        WHERE
+        parentid = '0000000'
+
+        <if test="cid!=null and cid!=''">
+            and cid = #{cid}
+        </if>
+        <if test="projectid!=null and projectid!=''">
+            and projectid = #{projectid}
+        </if>
+        AND status = '3'
+        UNION ALL
+        SELECT
+        tmt.cid,
+        tmt.projectid,
+        tmt.methodid,
+        tmt.parentid,
+        tmt.cname,
+        tmt.plantime,
+        tmt.days,
+        tmt.score,
+        tmt.remark,
+        tmt.idx,
+        tmt.adduid,
+        tmt.addtime,
+        tmt.upduid,
+        tmt.updtime,
+        tmt.status,
+        tmt.summary,
+        tmt.money,
+        tmt.information,
+        tmt.constraintCondition,
+        tmt.numberone
+        FROM
+        tb_company_method tmt
+        JOIN modt ON tmt.parentid = modt.methodid
+        AND tmt.status = '3'
+        )
+        SELECT
+        modt.*
+        FROM
+        modt
+        ORDER BY
+        modt.idx ASC
+    </select>
+
     <!-- 修改方法论状态 -->
     <update id="updateCompanyMethodStatus" parameterType="java.util.Map">
         update tb_company_method set status=#{status} where cid=#{cid}
@@ -300,16 +540,174 @@
     <delete id="delCompanyMethod" parameterType="java.lang.String" >
         delete from tb_company_method
             where
+            status = '1'
+            and
             numberone in (${numberone})
             ;
             delete from tb_company_method_data
             where
+            status = '1'
+            and
             numberone in (${numberone})
             ;
-
     </delete>
 
+    <update id="delMyCompanyMethod" parameterType="java.util.Map">
+        update   tb_company_method
+        set status = '4'
+        where status  = '3'
+        and  numberone in (${numberone});
 
+        update  tb_company_method_data
+        set status = '4'
+        where status = '3'
+        and  numberone in (${numberone});
+
+    </update>
+
+    <insert id="addMyMethodData" parameterType="java.util.Map">
+        insert into
+        tb_company_method_data(dataid,typeid,cname,typedesc,idx,ouid,addtime,updtime,status,summary,parentid,paststandards,information,grade,projectid,numberone,cid)
+        values
+           (
+            <choose>
+                <when test="dataid!=null">
+                    #{dataid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="typeid!=null">
+                    #{typeid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="cname!=null">
+                    #{cname},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="typedesc!=null">
+                    #{typedesc},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="idx!=null">
+                    #{idx},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="ouid!=null">
+                    #{ouid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="addtime!=null">
+                    #{addtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="updtime!=null">
+                    #{updtime},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="status!=null">
+                    #{status},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="summary!=null">
+                    #{summary},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="parentid!=null">
+                    #{parentid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="paststandards!=null">
+                    #{paststandards},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="information!=null">
+                    #{information},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="grade!=null">
+                    #{grade},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="projectid!=null">
+                    #{projectid},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="numberone!=null">
+                    #{numberone},
+                </when>
+                <otherwise>
+                    null ,
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="cid!=null">
+                    #{cid}
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
+            )
+    </insert>
 
     <insert id="addMethodData" parameterType="java.util.List">
         insert into
@@ -482,11 +880,36 @@
     </select>
 
 
+    <select id="getMyCompanyMethoddataAll" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            typeid,
+            cname,
+            context,
+            addtime,
+            typedesc,
+            idx,
+            parentid,
+            paststandards,
+            information,
+            grade,
+            dataid,
+            numberone
+        FROM
+            tb_company_method_data
+        WHERE
+            status = '3'
+            AND typeid in (${ typeids })
+            and cid=#{cid}
+            and projectid=#{projectid}
+    </select>
+
+
     <delete id="delcidsandprojectid" parameterType="java.util.Map">
     delete from tb_company_method_data
     where
+    status = '1'
         <if test="cid!=null and cid!=''">
-            cid=#{cid}
+          and  cid=#{cid}
         </if>
         <if test="projectid!=null and projectid!=''">
           and  projectid=#{projectid}
@@ -494,14 +917,191 @@
      ;
         delete from tb_company_method
         where
+         status = '1'
         <if test="cid!=null and cid!=''">
-            cid=#{cid}
+            and cid=#{cid}
         </if>
         <if test="projectid!=null and projectid!=''">
             and  projectid=#{projectid}
         </if>
     </delete>
 
+    <select id="queryMyMethodData" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        id, dataid, typeid, cname, context, datafile, typedesc, idx, ouid, addtime, upduid, updtime, status, summary, parentid, paststandards, information, grade, projectid, numberone, cid
+        from tb_company_method_data
+        where 1 = 1
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="dataid != null and dataid != ''">
+                and dataid = #{dataid}
+            </if>
+            <if test="typeid != null and typeid != ''">
+                and typeid = #{typeid}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="parentid != null and parentid != ''">
+                and parentid = #{parentid}
+            </if>
+            <if test="projectid != null and projectid != ''">
+                and projectid = #{projectid}
+            </if>
+
+            <if test="cid != null and cid != ''">
+                and cid = #{cid}
+            </if>
+
+    </select>
+
+    <select id="queryMyMethod" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        id, cid, projectid, methodid, parentid, cname, plantime, days, score, remark, idx, adduid, addtime, upduid, updtime, status, summary, money, information, constraintcondition, numberone
+        from tb_company_method
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="cid != null and cid != ''">
+                and cid = #{cid}
+            </if>
+            <if test="projectid != null and projectid != ''">
+                and projectid = #{projectid}
+            </if>
+            <if test="methodid != null and methodid != ''">
+                and methodid = #{methodid}
+            </if>
+            <if test="parentid != null and parentid != ''">
+                and parentid = #{parentid}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+
+        </where>
+    </select>
+    <!--修改我的方法论同级-->
+    <update id="updateMyMethodType" parameterType="java.util.Map">
+        update tb_company_method
+        <set>
+            <if test="cname != null and cname != ''">
+                cname = #{cname},
+            </if>
+            <if test="plantime != null">
+                plantime = #{plantime},
+            </if>
+            <if test="days != null">
+                days = #{days},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="idx != null">
+                idx = #{idx},
+            </if>
+            <if test="adduid != null and adduid != ''">
+                adduid = #{adduid},
+            </if>
+            <if test="addtime != null">
+                addtime = #{addtime},
+            </if>
+            <if test="upduid != null and upduid != ''">
+                upduid = #{upduid},
+            </if>
+            <if test="updtime != null">
+                updtime = #{updtime},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="summary != null and summary != ''">
+                summary = #{summary},
+            </if>
+            <if test="money != null and money != ''">
+                money = #{money},
+            </if>
+            <if test="information != null and information != ''">
+                information = #{information},
+            </if>
+            <if test="constraintcondition != null and constraintcondition != ''">
+                constraintcondition = #{constraintcondition},
+            </if>
+        </set>
+        where methodid = #{methodid}
+        and status = '3'
+    </update>
+
+    <update id="updateMyMethodData" parameterType="java.util.Map">
+        update tb_company_method_data
+        <set>
+            <if test="dataid != null and dataid != ''">
+                dataid = #{dataid},
+            </if>
+            <if test="typeid != null and typeid != ''">
+                typeid = #{typeid},
+            </if>
+            <if test="cname != null and cname != ''">
+                cname = #{cname},
+            </if>
+            <if test="context != null and context != ''">
+                context = #{context},
+            </if>
+            <if test="datafile != null and datafile != ''">
+                datafile = #{datafile},
+            </if>
+            <if test="typedesc != null and typedesc != ''">
+                typedesc = #{typedesc},
+            </if>
+            <if test="idx != null">
+                idx = #{idx},
+            </if>
+            <if test="ouid != null and ouid != ''">
+                ouid = #{ouid},
+            </if>
+            <if test="addtime != null">
+                addtime = #{addtime},
+            </if>
+            <if test="upduid != null and upduid != ''">
+                upduid = #{upduid},
+            </if>
+            <if test="updtime != null">
+                updtime = #{updtime},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="summary != null and summary != ''">
+                summary = #{summary},
+            </if>
+            <if test="parentid != null and parentid != ''">
+                parentid = #{parentid},
+            </if>
+            <if test="paststandards != null and paststandards != ''">
+                paststandards = #{paststandards},
+            </if>
+            <if test="information != null and information != ''">
+                information = #{information},
+            </if>
+            <if test="grade != null and grade != ''">
+                grade = #{grade},
+            </if>
+            <if test="projectid != null and projectid != ''">
+                projectid = #{projectid},
+            </if>
+            <if test="numberone != null and numberone != ''">
+                numberone = #{numberone},
+            </if>
+            <if test="cid != null and cid != ''">
+                cid = #{cid},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
 
 </mapper>

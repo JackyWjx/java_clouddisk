@@ -539,7 +539,7 @@ public class TbMethodTypeController {
                     }
                 }
                 param.put("typeids",sb.toString());
-                // 添加返回值大于0 则添加成功
+                // 添加返回值大于0 则删除成功
                 int count = tbMethodTypeService.delMethodType(param);
                 if (count > 0) {
                     // 定义返回结果

@@ -399,7 +399,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
     <insert id="addCompanyToCommon" parameterType="java.util.Map" >
             insert into tb_common_company_list(tcid, cid, cname, nickname, region, uscc, reluid, relperson, relphone, telephone, relmail, logo, photo, cstatus, curl, fax, limitday, address, range, ctype, legaleid, legaler, cardid, capital, birthday, content, authstatus, supervise, orgrelation, prodesc, prolist, source, adduid, addtime, upduid, updtime, status, summary)
         values
-        (#{tcid}, #{cid}, #{cname}, #{nickname}, #{region}, #{uscc}, #{reluid}, #{relperson}, #{relphone}, #{telephone}, #{relmail}, #{logo}, #{photo}, #{cstatus}, #{curl}, #{fax}, #{limitday}, #{address}, #{range}, #{ctype}, #{legaleid}, #{legaler}, #{cardid}, #{capital}, #{birthday}, #{content}, #{authstatus}, #{supervise}, #{orgrelation}, #{prodesc}, #{prolist}, #{source}, #{adduid}, #{addtime}, #{upduid}, #{updtime}, #{status}, #{summary})
+        (#{tcid}, #{cid}, #{cname}, #{nickname}, #{region}, #{uscc}, #{reluid}, #{relperson}, #{relphone}, #{telephone}, #{relmail}, #{logo}, #{photo}, #{cstatus}, #{curl}, #{fax}, #{limitday}, #{address}, #{range}, #{ctype}, #{legaleid}, #{legaler}, #{cardid}, #{capital}, #{birthday}, #{content}, #{authid}, #{supervise}, #{orgrelation}, #{prodesc}, #{prolist}, #{source}, #{adduid}, #{addtime}, #{upduid}, #{updtime}, #{status}, #{summary})
 
     </insert>
 
@@ -493,8 +493,8 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
             <if test="content != null and content != ''">
                 content = #{content},
             </if>
-            <if test="authstatus != null">
-                authstatus = #{authstatus},
+            <if test="authid != null">
+                authid = #{authid},
             </if>
             <if test="supervise != null and supervise != ''">
                 supervise = #{supervise},

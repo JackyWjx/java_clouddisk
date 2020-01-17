@@ -744,9 +744,13 @@ public class TbCompanyCommonService {
 //            param.put("msgtag", "addCommon1013");
 //            companyService.sendRemind(param);
 //        }
+
         if (param.get("authid").equals("0")){
             count = tbCompanyCommonMapper.updateCompanyListInfo(param);
-        }else {
+        }else if (JzbTools.isEmpty(param.get("authid"))){
+            param.remove("authid");
+            count = tbCompanyCommonMapper.updateCompanyListInfo(param);
+        } else {
             // 判断该单位是否已经被认证
             List<Map<String,Object>> plist =  newCompanyCommonMapper.queryAuthCompanyByUscc(param);
             if (JzbTools.isEmpty(plist)){

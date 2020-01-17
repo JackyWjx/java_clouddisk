@@ -99,7 +99,7 @@
         INSERT INTO tb_common_company_list (tcid, cid, cname,
         nickname, region, uscc, reluid, relperson, relphone, telephone,
          relmail, logo, photo, cstatus, curl, fax, limitday, address, range,
-          ctype, legaleid, legaler, cardid, capital, birthday, content, authstatus,
+          ctype, legaleid, legaler, cardid, capital, birthday, content, authid,
           supervise, orgrelation, prodesc, prolist, source, adduid, addtime, upduid,
            updtime,  summary,status)
 
@@ -131,7 +131,7 @@
         <choose><when test="tcid != null and tcid != ''"> #{capital},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{birthday},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{content},</when> <otherwise>null, </otherwise></choose>
-        <choose><when test="tcid != null and tcid != ''"> #{authstatus},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{authid},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{supervise},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{orgrelation},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{prodesc},</when> <otherwise>null, </otherwise></choose>
@@ -292,8 +292,8 @@
         <if test="content != null and content != ''">
             content = #{content},
         </if>
-        <if test="authstatus != null">
-            authstatus = #{authstatus},
+        <if test="authid != null">
+            authid = #{authid},
         </if>
         <if test="supervise != null and supervise != ''">
             supervise = #{supervise},
