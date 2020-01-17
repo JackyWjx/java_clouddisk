@@ -13,6 +13,7 @@ import com.jzb.base.util.JzbTools;
 
 import com.jzb.base.util.SendSysMsgUtil;
 import com.jzb.org.api.auth.AuthApi;
+import com.jzb.org.api.auth.PersonBoardApi;
 import com.jzb.org.api.message.MessageApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
@@ -48,6 +49,9 @@ public class CompanyService {
 
     @Autowired
     private AuthApi authApi;
+
+    @Autowired
+    private PersonBoardApi personBoardApi;
 
     /**
      * 查询redis缓存企业对象
@@ -235,8 +239,10 @@ public class CompanyService {
         String cname = map.get("cname").toString();
         //type的种类
         Map<String,Object> map1 = companyMapper.getAddCompany(map);
+        Response response = personBoardApi.getCname(map);
+        Map<String,Object> entity = (Map<String, Object>) response.getResponseEntity();
         map1.put("senduid", map1.get("senduid"));
-        map1.put("msg", "您有一条加入单位的消息未处理");
+        map1.put("msg", "申请加入单位：\""+map.get("cname")+"\"单位管理员您好,\""+entity.get("cname")+"\"用户申请加入您的单位，请登录进行审批该用户");
         map1.put("code", "JRDW");
         map1.put("topic_name", map1.get("senduid") + "/org/addCompany");
         //发送系统平台消息 并添加存储到数据库

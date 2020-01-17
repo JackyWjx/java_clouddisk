@@ -7,7 +7,9 @@ import com.jzb.base.message.Response;
 import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbIdEntification;
 import com.jzb.base.util.JzbTools;
+import com.jzb.base.util.SendSysMsgUtil;
 import com.jzb.org.api.base.RegionBaseApi;
+import com.jzb.org.api.message.MessageApi;
 import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.api.redis.UserRedisServiceApi;
 import com.jzb.org.config.OrgConfigProperties;
@@ -48,6 +50,9 @@ public class CompanyController {
 
     @Autowired
     OrgConfigProperties orgConfigProperties;
+
+    @Autowired
+    private MessageApi messageApi;
 
     /**
      * 开放平台调用接口获取企业地址,地区信息
@@ -640,12 +645,24 @@ public class CompanyController {
                     param.put("msgtag", "Proposer1007");
                     param.put("senduid", "Proposer1007");
                     sendResult = companyService.sendRemind(param);
+                    Map<String,Object> map1 =new HashMap<>();
+                    map1.put("senduid", param.get("uid"));
+                    map1.put("msg", "\""+param.get("cname")+"\"您好,您申请加入\""+param.get("companyname")+"\"单位已通过");
+                    map1.put("code", "JRDW");
+                    map1.put("topic_name", param.get("uid") + "/org/addCompany");
+                    //发送系统平台消息 并添加存储到数据库
+                    messageApi.sendShortMsg(SendSysMsgUtil.setMsgArg(map1));
                 } else {
                     // 发送拒绝通过信息模板
                     param.put("groupid", orgConfigProperties.getApplicantRefuse());
                     param.put("msgtag", "Proposer1008");
                     param.put("senduid", "Proposer1008");
                     sendResult = companyService.sendRemind(param);
+                    Map<String,Object> map1 =new HashMap<>();
+                    map1.put("senduid", param.get("uid"));
+                    map1.put("msg", "\""+param.get("cname")+"\"您好,您申请加入\""+param.get("companyname")+"\"单位已拒绝");
+                    map1.put("code", "JRDW");
+                    map1.put("topic_name", param.get("uid") + "/org/addCompany");
                 }
                 result.setResponseEntity(sendResult);
             } else {
@@ -675,6 +692,15 @@ public class CompanyController {
             // 获取网关层前台传入的list
             List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
 
+            for (int i = 0; i < list.size(); i++) {
+                Map<String,Object> map1 =new HashMap<>();
+                map1.put("senduid", list.get(i).get("uid"));
+                map1.put("msg", "\""+list.get(i).get("cname")+"\"您好,您申请加入\""+list.get(i).get("companyname")+"\"单位已通过");
+                map1.put("code", "JRDW");
+                map1.put("topic_name", list.get(i).get("uid") + "/org/addCompany");
+                //发送系统平台消息 并添加存储到数据库
+                messageApi.sendShortMsg(SendSysMsgUtil.setMsgArg(map1));
+            }
             // 返回批量修改成员数*/
             int count = companyService.modifyBatchProposer(list);
             if (count > 0) {
