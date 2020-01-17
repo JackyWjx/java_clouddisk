@@ -36,6 +36,19 @@ public interface RoleMapper {
     List<Map<String, Object>> queryRoleList(Map<String, Object> map);
 
     /**
+     * 添加管理员角色组
+     * @param map
+     * @return
+     */
+    int  insertRoleBaseGroup(Map<String, Object> map);
+
+    /**
+     * 查询该角色组是否存在管理员角色组czd
+     * @param map
+     * @return
+     */
+    String queryIsBaseGroupByCid(Map<String, Object> map);
+    /**
      * 获取角色组角色关联表总数
      *
      * @param map

@@ -34,7 +34,6 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-
     @Autowired
     private CompanyListApi companyListApi;
 
@@ -42,8 +41,6 @@ public class RoleController {
      * 日志记录对象
      */
     private final static Logger logger = LoggerFactory.getLogger(RoleController.class);
-
-
 
     /**
      * 查询该用户是否管理员角色组下人czd
@@ -74,7 +71,7 @@ public class RoleController {
                 result = Response.getResponseError();
             }
         } catch (Exception e) {
-            flag=false;
+            flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getIsBaseByUid Method", e.toString()));
@@ -84,6 +81,41 @@ public class RoleController {
                     userInfo.get("msgTag").toString(), "User Login Message"));
         } else {
             logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
+    /**
+     * 保存管理员角色组信息
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/saveRoleBaseGroup", method = RequestMethod.POST)
+    @CrossOrigin
+    public Response saveRoleBaseGroup(@RequestBody Map<String, Object> param) {
+        Response result;
+        try {
+            String[] str = {"cid","uid"};
+            if (JzbCheckParam.allNotEmpty(param, str)) {
+                String cid=JzbDataType.getString(param.get("cid"));
+                if(JzbTools.isEmpty(cid)){
+                    long addTime = System.currentTimeMillis();
+                    String newCrgId = JzbDataType.getString(param.get("cid")) + 9999;
+                    param.put("addTime", addTime);
+                    param.put("crgId",newCrgId);
+                    int count = roleService.insertRoleBaseGroup(param);
+                    result = count > 0 ? Response.getResponseSuccess() : Response.getResponseError();
+                }else {
+                    result=Response.getResponseError();
+                }
+
+            } else {
+                result = Response.getResponseError();
+            }
+        } catch (Exception e) {
+            JzbTools.logError(e);
+            result = Response.getResponseError();
         }
         return result;
     }
@@ -403,12 +435,12 @@ public class RoleController {
             String[] str = {"crgid", "cid", "rrid", "rrtype"};
             if (JzbCheckParam.allNotEmpty(param, str)) {
                 Response response = companyListApi.getManagerByCid(param);
-                String manager=JzbDataType.getString(response.getResponseEntity());
-                String uid=JzbDataType.getString(param.get("rrid"));
+                String manager = JzbDataType.getString(response.getResponseEntity());
+                String uid = JzbDataType.getString(param.get("rrid"));
                 String crgid = roleService.queryIsBase(param);
-                if(uid.equals(manager)&&!JzbTools.isEmpty(crgid)){
-                    result=Response.getResponseError();
-                }else {
+                if (uid.equals(manager) && !JzbTools.isEmpty(crgid)) {
+                    result = Response.getResponseError();
+                } else {
                     Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                     param.put("uid", userInfo.get("uid"));
                     int add = roleService.updateRoleRelation(param);

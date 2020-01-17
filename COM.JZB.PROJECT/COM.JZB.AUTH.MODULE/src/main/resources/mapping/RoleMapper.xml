@@ -4,6 +4,21 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.auth.dao.RoleMapper">
 
+
+    <!--新建管理员角色组-->
+    <insert id="insertRoleBaseGroup" parameterType="java.util.Map">
+        INSERT INTO tb_role_group ( cid, crgid, cname, ouid, addtime, status )
+        VALUES
+            (#{cid},#{crgId},#{cname},#{uid},#{addTime},'4')
+    </insert>
+
+    <!-- 查询该角色组是否存在管理员角色组czd -->
+    <select id="queryIsBaseGroupByCid" parameterType="java.util.Map" resultType="java.lang.String">
+        select crgid from tb_role_group where cid=#{cid} and status='4'
+    </select>
+
+
+
     <!--新建角色组-->
     <insert id="insertRoleGroup" parameterType="java.util.Map">
         INSERT INTO tb_role_group ( cid, crgid, cname, ouid, addtime, status )

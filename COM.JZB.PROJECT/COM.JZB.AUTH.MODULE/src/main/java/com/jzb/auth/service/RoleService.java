@@ -62,6 +62,28 @@ public class RoleService implements Service {
         return roleMapper.queryRelationCount(map);
     }
 
+
+
+
+    /**
+     * 添加管理员角色组
+     * @param map
+     * @return
+     */
+    public int  insertRoleBaseGroup(Map<String, Object> map){
+        return roleMapper.insertRoleBaseGroup(map);
+    }
+
+
+    /**
+     * 查询该角色组是否存在管理员角色组czd
+     * @param map
+     * @return
+     */
+    public String queryIsBaseGroupByCid(Map<String, Object> map){
+        return roleMapper.queryIsBaseGroupByCid(map);
+    }
+
     /**
      * 获取角色组角色关联表信息
      *
