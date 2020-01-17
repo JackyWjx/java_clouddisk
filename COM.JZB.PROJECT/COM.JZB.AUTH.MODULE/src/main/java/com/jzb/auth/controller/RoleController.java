@@ -440,6 +440,7 @@ public class RoleController {
                 String crgid = roleService.queryIsBase(param);
                 if (uid.equals(manager) && !JzbTools.isEmpty(crgid)) {
                     result = Response.getResponseError();
+                    result.setResponseEntity("该用户是单位超级管理员，不能移出管理员角色组！");
                 } else {
                     Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                     param.put("uid", userInfo.get("uid"));
