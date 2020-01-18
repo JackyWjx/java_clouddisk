@@ -145,8 +145,8 @@
                      and trackuid = #{trackuid}
                  </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{item.starttime}
-                    and addtime &lt;= #{item.endtime}
+                    and tracktime &gt;= #{item.starttime}
+                    and tracktime &lt;= #{item.endtime}
                 </if>
 
                 <if test="cdid != null and cdid != ''">
@@ -159,10 +159,10 @@
                     )
                 </if>
                 <if test="zero != null and zero != ''">
-                    and addtime &gt;= #{zero}
+                    and tracktime &gt;= #{zero}
                 </if>
                 <if test="twelve != null and twelve != ''">
-                    and addtime &lt;= #{twelve}
+                    and tracktime &lt;= #{twelve}
                 </if>
                  ) ,
             ( SELECT COUNT ( 1 ) AS trainingcount FROM tb_track_user_list WHERE trackres = '32' AND status = '1'
@@ -170,8 +170,8 @@
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{item.starttime}
-                    and addtime &lt;= #{item.endtime}
+                    and tracktime &gt;= #{item.starttime}
+                    and tracktime &lt;= #{item.endtime}
                 </if>
 
                 <if test="cdid != null and cdid != ''">
@@ -184,19 +184,19 @@
                     )
                 </if>
                 <if test="zero != null and zero != ''">
-                    and addtime &gt;= #{zero}
+                    and tracktime &gt;= #{zero}
                 </if>
                 <if test="twelve != null and twelve != ''">
-                    and addtime &lt;= #{twelve}
+                    and tracktime &lt;= #{twelve}
                 </if>
                 ),
-            ( SELECT COUNT ( 1 ) AS connectcount FROM tb_track_user_list WHERE tracktype IN ( 4, 8, 16 ) AND status = '1'
+            ( SELECT COUNT ( 1 ) AS connectcount FROM tb_track_user_list WHERE (tracktype IN ( 4, 8, 16  ) or tracktype is null) AND status = '1'
                 <if test="trackuid != null and trackuid != ''">
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{item.starttime}
-                    and addtime &lt;= #{item.endtime}
+                    and tracktime &gt;= #{item.starttime}
+                    and tracktime &lt;= #{item.endtime}
                 </if>
 
                 <if test="cdid != null and cdid != ''">
@@ -209,10 +209,10 @@
                     )
                 </if>
                 <if test="zero != null and zero != ''">
-                    and addtime &gt;= #{zero}
+                    and tracktime &gt;= #{zero}
                 </if>
                 <if test="twelve != null and twelve != ''">
-                    and addtime &lt;= #{twelve}
+                    and tracktime &lt;= #{twelve}
                 </if>
                 ),
             ( SELECT COUNT ( 1 ) AS deepconnectcount FROM tb_track_user_list WHERE trackres = '2' AND status = '1'
@@ -220,8 +220,8 @@
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{item.starttime}
-                    and addtime &lt;= #{item.endtime}
+                    and tracktime &gt;= #{item.starttime}
+                    and tracktime &lt;= #{item.endtime}
                 </if>
 
                 <if test="cdid != null and cdid != ''">
@@ -234,10 +234,10 @@
                     )
                 </if>
                 <if test="zero != null and zero != ''">
-                    and addtime &gt;= #{zero}
+                    and tracktime &gt;= #{zero}
                 </if>
                 <if test="twelve != null and twelve != ''">
-                    and addtime &lt;= #{twelve}
+                    and tracktime &lt;= #{twelve}
                 </if>
                 ),
             ( SELECT COUNT ( 1 ) AS pubcount FROM tb_connection_publish_list WHERE status = '1'
@@ -259,10 +259,10 @@
                     )
                 </if>
                 <if test="zero != null and zero != ''">
-                    and addtime &gt;= #{zero}
+                    and tracktime &gt;= #{zero}
                 </if>
                 <if test="twelve != null and twelve != ''">
-                    and addtime &lt;= #{twelve}
+                    and tracktime &lt;= #{twelve}
                 </if>
                 ),
             ( SELECT COUNT ( 1 ) AS takeMenucount FROM tb_track_user_list WHERE trackres = '64' AND status = '1'
@@ -270,8 +270,8 @@
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{item.starttime}
-                    and addtime &lt;= #{item.endtime}
+                    and tracktime &gt;= #{item.starttime}
+                    and tracktime &lt;= #{item.endtime}
                 </if>
 
                 <if test="cdid != null and cdid != ''">
@@ -284,10 +284,10 @@
                     )
                 </if>
                 <if test="zero != null and zero != ''">
-                    and addtime &gt;= #{zero}
+                    and tracktime &gt;= #{zero}
                 </if>
                 <if test="twelve != null and twelve != ''">
-                    and addtime &lt;= #{twelve}
+                    and tracktime &lt;= #{twelve}
                 </if>
                 ),
             ( SELECT COUNT ( 1 ) AS goodCommentcount FROM tb_track_user_list WHERE trackres = '128' AND status = '1'
@@ -295,8 +295,8 @@
                     and trackuid = #{trackuid}
                 </if>
                 <if test="starttime != null and starttime != ''">
-                    and addtime &gt;= #{item.starttime}
-                    and addtime &lt;= #{item.endtime}
+                    and tracktime &gt;= #{item.starttime}
+                    and tracktime &lt;= #{item.endtime}
                 </if>
 
                 <if test="cdid != null and cdid != ''">
@@ -309,18 +309,18 @@
                     )
                 </if>
                 <if test="zero != null and zero != ''">
-                    and addtime &gt;= #{zero}
+                    and tracktime &gt;= #{zero}
                 </if>
                 <if test="twelve != null and twelve != ''">
-                    and addtime &lt;= #{twelve}
+                    and tracktime &lt;= #{twelve}
                 </if>
                 )
             FROM
 	  tb_track_user_list
             where status = '1'
             <if test="starttime != null and starttime != ''">
-                and addtime &gt;= #{item.starttime}
-                and addtime &lt;= #{item.endtime}
+                and tracktime &gt;= #{item.starttime}
+                and tracktime &lt;= #{item.endtime}
             </if>
             <if test="cdid != null and cdid != ''">
                 and trackuid in (

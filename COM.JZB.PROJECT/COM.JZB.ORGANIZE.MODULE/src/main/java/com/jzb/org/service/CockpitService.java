@@ -153,7 +153,7 @@ public class CockpitService {
                 String starttime = timeToFormat(JzbDataType.getString(daysList.get(i).get("starttime")));
                 allDeptUser.get(i).put("num",starttime);
             }
-            list = AllCount(allDeptUser);
+            list = allDeptUser;
 //
         }
 
@@ -165,7 +165,7 @@ public class CockpitService {
             for (int i = 0; i < wList.size(); i++) {
                 wList.get(i).put("num",JzbDataType.getString("第"+(i+1)+"周"));
             }
-            list = AllCount(wList);
+            list = wList;
 
         }
 
@@ -180,8 +180,8 @@ public class CockpitService {
                     clist.get(i).put("num",JzbDataType.getString(mlist.get(i).get("num"))+"月");
                     break;
                 }
-                list = AllCount(clist);
             }
+            list = clist;
         }
         return list;
     }

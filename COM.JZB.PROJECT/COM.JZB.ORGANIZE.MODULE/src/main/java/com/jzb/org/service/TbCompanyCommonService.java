@@ -745,7 +745,7 @@ public class TbCompanyCommonService {
 //            companyService.sendRemind(param);
 //        }
 
-        if (param.get("authid").equals("0")){
+        if (!JzbTools.isEmpty(param.get("authid")) && param.get("authid").equals("0")){
             count = tbCompanyCommonMapper.updateCompanyListInfo(param);
         }else if (JzbTools.isEmpty(param.get("authid"))){
             param.remove("authid");

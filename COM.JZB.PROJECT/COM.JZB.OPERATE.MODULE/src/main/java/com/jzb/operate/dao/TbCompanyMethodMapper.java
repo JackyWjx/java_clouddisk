@@ -70,4 +70,6 @@ public interface TbCompanyMethodMapper {
     int addMyMethodDataBrother(Map<String, Object> param);
 
     int updateMyMethodData(Map<String, Object> param);
+
+    List<Map<String, Object>> queryMyMethodType(Map<String, Object> param);
 }

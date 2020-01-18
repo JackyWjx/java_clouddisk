@@ -643,7 +643,7 @@ public class TbCompanyMethodController {
     public Response addMyMethodTypeBrother(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String api = "/methodType/addMyMethodTypeBrother";
+        String api = "/operate/companyMethod/addMyMethodTypeBrother";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -698,7 +698,7 @@ public class TbCompanyMethodController {
     public Response updateMyMethodType(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String api = "/methodType/updateMyMethodType";
+        String api = "/operate/companyMethod/updateMyMethodType";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -753,7 +753,7 @@ public class TbCompanyMethodController {
     public Response addMyMethodDataBrother(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String api = "/methodData/addMyMethodDataBrother";
+        String api = "/operate/companyMethod/addMyMethodDataBrother";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -769,7 +769,6 @@ public class TbCompanyMethodController {
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addMethodTypeBrother Method", "[param error] or [param is null]"));
             } else {
                 String dataid = param.get("typeid") + JzbRandom.getRandomCharCap(4);
-
 
                 param.put("dataid", dataid);
                 // 添加返回值大于0 则添加成功
@@ -812,7 +811,7 @@ public class TbCompanyMethodController {
     public Response addMyMethodDataSon(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String api = "/methodData/addMyMethodDataSon";
+        String api = "/operate/companyMethod/addMyMethodDataSon";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -823,7 +822,7 @@ public class TbCompanyMethodController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 验证指定值为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"cname", "ouid", "parentid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"cname", "typeid", "parentid"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addMyMethodDataSon Method", "[param error] or [param is null]"));
             } else {
@@ -869,7 +868,7 @@ public class TbCompanyMethodController {
     public Response updateMethodData(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String api = "/methodData/updateMyMethodData";
+        String api = "/operate/companyMethod/updateMyMethodData";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
@@ -880,7 +879,7 @@ public class TbCompanyMethodController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 验证指定值为空则返回404
-            if (JzbCheckParam.haveEmpty(param, new String[]{"typeid", "dataid"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"dataid"})) {
                 result = Response.getResponseError();
                 logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMyMethodData Method", "[param error] or [param is null]"));
             } else {
@@ -909,6 +908,54 @@ public class TbCompanyMethodController {
         }
         return result;
     }
+
+    /**
+     * 获取我的方法论类别
+     *
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/queryMyMethodType", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    @Transactional
+    public Response queryMyMethodType(@RequestBody Map<String, Object> param) {
+        Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/operate/companyMethod/queryMyMethodType";
+        boolean flag = true;
+        try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
+            // 验证指定值为空则返回404
+
+            param.put("adduid",userInfo.get("uid"));
+                // 修改返回值大于0 则修改成功
+                List<Map<String,Object>> list  = tbCompanyMethodService.queryMyMethodType(param);
+            PageInfo pageInfo = new PageInfo();
+            pageInfo.setList(list);
+                result = Response.getResponseSuccess(userInfo);
+        } catch (Exception e) {
+            flag = false;
+            // 打印异常信息
+            e.printStackTrace();
+            result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateMethodData Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
+        return result;
+    }
+
 
 
     /**

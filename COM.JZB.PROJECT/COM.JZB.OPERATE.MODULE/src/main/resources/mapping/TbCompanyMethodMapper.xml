@@ -567,7 +567,8 @@
 
     <insert id="addMyMethodData" parameterType="java.util.Map">
         insert into
-        tb_company_method_data(dataid,typeid,cname,typedesc,idx,ouid,addtime,updtime,status,summary,parentid,paststandards,information,grade,projectid,numberone,cid)
+        tb_company_method_data(dataid,typeid,cname,typedesc,idx,ouid,addtime,
+        updtime,status,summary,parentid,paststandards,information,grade,projectid,numberone,cid)
         values
            (
             <choose>
@@ -961,9 +962,6 @@
         id, cid, projectid, methodid, parentid, cname, plantime, days, score, remark, idx, adduid, addtime, upduid, updtime, status, summary, money, information, constraintcondition, numberone
         from tb_company_method
         <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
             <if test="cid != null and cid != ''">
                 and cid = #{cid}
             </if>
@@ -1039,12 +1037,6 @@
     <update id="updateMyMethodData" parameterType="java.util.Map">
         update tb_company_method_data
         <set>
-            <if test="dataid != null and dataid != ''">
-                dataid = #{dataid},
-            </if>
-            <if test="typeid != null and typeid != ''">
-                typeid = #{typeid},
-            </if>
             <if test="cname != null and cname != ''">
                 cname = #{cname},
             </if>
@@ -1060,9 +1052,6 @@
             <if test="idx != null">
                 idx = #{idx},
             </if>
-            <if test="ouid != null and ouid != ''">
-                ouid = #{ouid},
-            </if>
             <if test="addtime != null">
                 addtime = #{addtime},
             </if>
@@ -1072,14 +1061,8 @@
             <if test="updtime != null">
                 updtime = #{updtime},
             </if>
-            <if test="status != null and status != ''">
-                status = #{status},
-            </if>
             <if test="summary != null and summary != ''">
                 summary = #{summary},
-            </if>
-            <if test="parentid != null and parentid != ''">
-                parentid = #{parentid},
             </if>
             <if test="paststandards != null and paststandards != ''">
                 paststandards = #{paststandards},
@@ -1090,18 +1073,33 @@
             <if test="grade != null and grade != ''">
                 grade = #{grade},
             </if>
-            <if test="projectid != null and projectid != ''">
-                projectid = #{projectid},
-            </if>
-            <if test="numberone != null and numberone != ''">
-                numberone = #{numberone},
-            </if>
-            <if test="cid != null and cid != ''">
-                cid = #{cid},
-            </if>
         </set>
-        where id = #{id}
+        where dataid = #{dataid}
+        and status = '3'
     </update>
 
+    <!--查询我的方法论类别-->
+    <select id="queryMyMethodType" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        id, cid, projectid, methodid, parentid, cname, plantime, days, score, remark, idx, adduid, addtime, upduid, updtime, status, summary, money, information, constraintcondition, numberone
+        from tb_company_method
+        where 1= 1
+            <if test="cid != null and cid != ''">
+                and cid = #{cid}
+            </if>
+            <if test="projectid != null and projectid != ''">
+                and projectid = #{projectid}
+            </if>
+            <if test="methodid != null and methodid != ''">
+                and methodid = #{methodid}
+            </if>
+            <if test="parentid != null and parentid != ''">
+                and parentid = #{parentid}
+            </if>
+            <if test="adduid != null and adduid != ''">
+                and adduid = #{adduid}
+            </if>
+                and status = '3'
+    </select>
 
 </mapper>

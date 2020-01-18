@@ -144,6 +144,7 @@ public class TbCompanyMethodService {
         }
         param.put("addtime",time);
         param.put("updtime",time);
+        param.put("status",'3');
         return tbCompanyMethodMapper.addMyMethodData(param);
     }
 
@@ -151,5 +152,9 @@ public class TbCompanyMethodService {
         Long time = System.currentTimeMillis();
         param.put("updtime", time);
         return tbCompanyMethodMapper.updateMyMethodData(param);
+    }
+
+    public List<Map<String, Object>> queryMyMethodType(Map<String, Object> param) {
+        return tbCompanyMethodMapper.queryMyMethodType(param);
     }
 }

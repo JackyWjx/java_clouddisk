@@ -31,6 +31,7 @@
         l.uscc,
         l.relperson,
         l.relphone,
+        l.telephone,
         l.relmail,
         l.reguid,
         l.regtime,
@@ -54,7 +55,11 @@
         i.license,
         i.cardid,
         s.systemname,
-        s.curl
+        s.curl,
+        co.supervise,
+        co.orgrelation,
+        co.prodesc,
+        co.prolist
         from
         tb_company_list l
         left join
@@ -65,6 +70,10 @@
         tb_company_sysconfig s
         on
         l.cid = s.cid
+        left join
+        tb_common_company_list co
+        on
+        l.cid = co.cid
         where
         l.cid = #{cid}
     </select>

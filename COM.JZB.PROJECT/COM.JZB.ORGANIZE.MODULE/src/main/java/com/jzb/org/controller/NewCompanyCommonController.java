@@ -8,6 +8,7 @@ import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
+import com.jzb.org.api.redis.OrgRedisServiceApi;
 import com.jzb.org.service.CompanyService;
 import com.jzb.org.service.NewCompanyCommonService;
 import com.jzb.org.service.TbCompanyCommonService;
@@ -27,6 +28,9 @@ import java.util.Map;
 public class NewCompanyCommonController {
     @Autowired
     private NewCompanyCommonService newCompanyCommonService;
+
+    @Autowired
+    private OrgRedisServiceApi orgRedisServiceApi;
 
     @Autowired
     private TbCompanyCommonService tbCompanyCommonService;
@@ -126,6 +130,12 @@ public class NewCompanyCommonController {
                 companyController.comHasCompanyKey(map);
                 // 修改公海单位信息
                 newCompanyCommonService.modifyCompanyCommonList(param);
+                // 修改 单位表信息
+                tbCompanyCommonService.updateCompany(param);
+
+                // 修改redis缓存单位数据
+                orgRedisServiceApi.updateIdCompanyData(param);
+
             } else if (count == -1){
                 result = Response.getResponseSuccess(userInfo);
                 result.setResponseEntity("单位已经认证");

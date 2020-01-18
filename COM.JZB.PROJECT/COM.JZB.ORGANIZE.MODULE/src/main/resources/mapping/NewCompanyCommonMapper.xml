@@ -316,9 +316,6 @@
         <if test="addtime != null">
             addtime = #{addtime},
         </if>
-        <if test="status != null and status != ''">
-            status = #{status},
-        </if>
         <if test="summary != null and summary != ''">
             summary = #{summary},
         </if>
