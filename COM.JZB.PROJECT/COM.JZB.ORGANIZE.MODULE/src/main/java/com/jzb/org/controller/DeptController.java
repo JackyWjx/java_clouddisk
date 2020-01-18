@@ -540,8 +540,10 @@ public class DeptController {
         try {
             List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            /**  获取用户id和单位id */
             String[] uids = new String[list.size()];
             String[] cids = new String[list.size()];
+            /**  用来修改缓存参数 */
             Map<String, Object> map = new HashMap<>();
             for (int i = 0, a = list.size(); i < a; i++) {
                 list.get(i).put("status", "2");
@@ -553,6 +555,7 @@ public class DeptController {
             int con = deptService.updateDeptUserBatch(list);
             result = con > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             if (con > 0) {
+                /**  如果部门删除成功就判断该用户是否存在该单位其他部门，若没有，则修改缓存单位id */
                 for (int i = 0; i < uids.length; i++) {
                     map.put("cid", cids[i]);
                     map.put("uid", uids[i]);
@@ -560,6 +563,7 @@ public class DeptController {
                     if (count > 0) {
                         map.put("uid", uids[i]);
                         map.put("cid", null);
+                        /**  修改缓存 */
                         userRedisApi.updateUserInfo(map);
                     }
                 }
