@@ -733,6 +733,7 @@ public class TbTravelPlanController {
                             Map<String, Object> uParam = new HashMap<>();
                             uParam.put("userinfo", userInfo);
                             uParam.put("truid", truids[n]);
+                            uParam.put("cid", userInfo.get("cid"));
                             resApi = tbDeptUserListApi.queryPersonNameByuid(uParam);
                             Map<String, Object> objectMap = (Map<String, Object>) resApi.getPageInfo().getList().get(0);
                             String unameStr = objectMap.get("uname").toString();

@@ -351,13 +351,13 @@ public class CompanyService {
             message = "6";
         }
         //type的种类
-        Map<String,Object> map1 = companyMapper.getAddCompany(map);
+        Map<String, Object> map1 = companyMapper.getAddCompany(map);
         Response response = personBoardApi.getCname(map);
-        Map<String,Object> entity = (Map<String, Object>) response.getResponseEntity();
+        Map<String, Object> entity = (Map<String, Object>) response.getResponseEntity();
         map1.put("senduid", map1.get("senduid"));
-        map1.put("msg", "申请加入单位：\""+map.get("cname")+"\"单位管理员您好,\""+entity.get("cname")+"\"用户申请加入您的单位，请登录进行审批该用户");
+        map1.put("msg", "申请加入单位：\"" + map.get("cname") + "\"单位管理员您好,\"" + entity.get("cname") + "\"用户申请加入您的单位，请登录进行审批该用户");
         map1.put("code", "JRDW");
-        map1.put("topic_name", map1.get("senduid") + "/org/addCompany");
+        map1.put("topic_name", map1.get("cid") + "/" + map1.get("senduid") + "/org/addCompany");
         //发送系统平台消息 并添加存储到数据库
         messageApi.sendShortMsg(SendSysMsgUtil.setMsgArg(map1));
 
@@ -871,7 +871,7 @@ public class CompanyService {
         return companyMapper.insertCompanyCommon(param);
     }
 
-    public int queryCnameIsNot(Map<String, Object> param){
+    public int queryCnameIsNot(Map<String, Object> param) {
         return companyMapper.queryCnameIsNot(param);
     }
 

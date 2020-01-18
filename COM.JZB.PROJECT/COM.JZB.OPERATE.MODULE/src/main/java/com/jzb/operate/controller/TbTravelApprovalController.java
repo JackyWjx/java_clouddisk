@@ -99,11 +99,7 @@ public class TbTravelApprovalController {
                         // 消息业务
 
                         String sendUid = approvalList.get(i).get("truid").toString().trim();
-                        Map<String, Object> argMap = getOptMsgArg(idx, sendUid, apType, false, true);
-//                        setMap.put("senduid", sendUid);
-//                        setMap.put("msg", apType == 1 ? "您有一条出差申请审批待处理" : "您有一条报销申请审批待处理"); // 消息内容
-//                        setMap.put("code",apType == 1 ? "CCSP" : "BXSP");
-//                        setMap.put("topic_name", sendUid + "/opt/appro"); // 主题
+                        Map<String, Object> argMap = getOptMsgArg(idx, JzbDataType.getString(userInfo.get("cid")), sendUid, apType, false, true);
                         optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     } else {
                         approvalList.get(i).put("trstatus", 1);
@@ -178,6 +174,8 @@ public class TbTravelApprovalController {
                 Integer isOk = (Integer) param.get("isOk");
                 //获取审批类型
                 Integer apType = JzbDataType.getInteger(param.get("aptype"));
+                // topic主题前缀
+                String cid = JzbDataType.getString(userInfo.get("cid"));
                 // 用于设置发消息的map参数
                 Map<String, Object> argMap;
                 if (isOk == 1) {// 同意
@@ -203,7 +201,7 @@ public class TbTravelApprovalController {
 
                         //发消息通知下一个审批人 审批人id
                         String sendUid = lastMap.get("truid").toString();
-                        argMap = getOptMsgArg(0, sendUid, apType, false, true);
+                        argMap = getOptMsgArg(0, cid, sendUid, apType, false, true);
                         optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     } else if (i > 0 && isLast && apType == 1) { // 如果是最后是最后一个审批人,则更新rebversion(审批版本号),审批类型
                         query.put("rebversion", JzbRandom.getRandom(8));
@@ -213,12 +211,12 @@ public class TbTravelApprovalController {
 
                         // 最后一个出差申请审批通过发消息通知出差申请人 申请人id
                         String sendUid = JzbDataType.getString(param.get("applyuid"));
-                        argMap = getOptMsgArg(0, sendUid, apType, true, true);
+                        argMap = getOptMsgArg(0, cid, sendUid, apType, true, true);
                         optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     } else if (i > 0 && isLast && apType == 2) {
                         // 最后一个报销申请审批通过发消息通知报销申请人
                         String sendUid = JzbDataType.getString(param.get("applyuid"));
-                        argMap = getOptMsgArg(0, sendUid, apType, true, true);
+                        argMap = getOptMsgArg(0, cid, sendUid, apType, true, true);
                         optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     }
                 } else {// 退回
@@ -238,7 +236,7 @@ public class TbTravelApprovalController {
 
                     // 出差 / 报销申请被退回发消息通知  申请人
                     String sendUid = param.get("applyuid").toString();
-                    argMap = getOptMsgArg(0, sendUid, apType, true, false);
+                    argMap = getOptMsgArg(0, cid, sendUid, apType, true, false);
                     optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                 }
                 response = Response.getResponseSuccess(userInfo);
@@ -258,25 +256,25 @@ public class TbTravelApprovalController {
         return response;
     }
 
-    private Map<String, Object> getOptMsgArg(int idx, String sendUid, int apType, boolean lastFlag, boolean agreeFlag) {
+    private Map<String, Object> getOptMsgArg(int idx, String cid, String sendUid, int apType, boolean lastFlag, boolean agreeFlag) {
         Map<String, Object> setMap = new HashMap<>();
         if (agreeFlag) {
             if (idx == 1 || !lastFlag) {
                 setMap.put("senduid", sendUid);
-                setMap.put("msg", apType == 1 ? "您有一条出差申请审批待处理" : "您有一条报销申请审批待处理"); // 消息内容
+                setMap.put("msg", apType == 1 ? "您有一条出差申请审批[待处理]" : "您有一条报销申请审批[待处理]"); // 消息内容
                 setMap.put("code", apType == 1 ? "CCSP" : "BXSP");
-                setMap.put("topic_name", sendUid + "/opt/appro"); // 主题
+                setMap.put("topic_name", cid + "/" + sendUid + "/opt/appro"); // 主题
             } else if (lastFlag) {
                 setMap.put("senduid", sendUid);
-                setMap.put("msg", apType == 1 ? "您的出差申请已通过审批" : "您的报销申请已通过审批");
+                setMap.put("msg", apType == 1 ? "您的出差申请[已通过审批]" : "您的报销申请[已通过审批]");
                 setMap.put("code", apType == 1 ? "CCSQ" : "BXSQ");
-                setMap.put("topic_name", sendUid + "/opt/apply");
+                setMap.put("topic_name", cid + "/" + sendUid + "/opt/apply");
             }
         } else {
             setMap.put("senduid", sendUid);
-            setMap.put("msg", apType == 1 ? "您的出差申请被打回" : "您的报销申请被打回");
+            setMap.put("msg", apType == 1 ? "注意:您的出差申请被[退回]" : "注意:您的报销申请被[退回]");
             setMap.put("code", apType == 1 ? "UN_CCSQ" : "UN_BXSQ");
-            setMap.put("topic_name", sendUid + "/opt/apply");
+            setMap.put("topic_name", cid + "/" + sendUid + "/opt/apply");
         }
         return setMap;
     }

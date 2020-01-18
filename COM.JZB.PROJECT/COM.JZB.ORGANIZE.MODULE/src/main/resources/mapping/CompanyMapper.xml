@@ -1115,6 +1115,7 @@ INSERT INTO tb_invite_user (reqtype,cid,uid,reqtime,resuid,status) VALUES
 
     <select id="getAddCompany" parameterType="java.util.Map" resultType="java.util.Map">
         select
+        cid,
         reguid as senduid
         from
         tb_company_list
