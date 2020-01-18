@@ -238,6 +238,8 @@ public interface DeptMapper {
 
     String getCompanyName(Map<String, Object> map);
 
+
+    int queryIsCompanyDepByUid(Map<String,Object> param);
     /**
      * 云产品市场的查询
      * @param param

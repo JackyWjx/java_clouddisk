@@ -1007,6 +1007,11 @@ public class DeptService {
         return mapList;
     }
 
+
+    public int queryIsCompanyDepByUid(Map<String,Object> param){
+        return deptMapper.queryIsCompanyDepByUid(param);
+    }
+
     /**
      * 云产品市场单位的查询
      * @param param

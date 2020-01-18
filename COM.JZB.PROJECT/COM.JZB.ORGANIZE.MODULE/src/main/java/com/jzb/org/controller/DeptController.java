@@ -463,7 +463,7 @@ public class DeptController {
                 Response response1 = authApi.queryUidByPhone(param);
                 Object count = response.getResponseEntity();
                 Object uid = response1.getResponseEntity();
-                if (JzbDataType.getInteger(count) == 0||param.get("uid").toString().equals(uid.toString())) {
+                if (JzbDataType.getInteger(count) == 0 || param.get("uid").toString().equals(uid.toString())) {
                     int add = deptService.updateDeptUser(param);
 
                     /** 修改成功后统一手机号码 */
@@ -479,10 +479,10 @@ public class DeptController {
                             userRedisApi.cacheUserInfo(resuMap);
                         }
                     }
-                    if(add>0){
-                        result=Response.getResponseSuccess(userInfo);
-                    }else {
-                        result=Response.getResponseError();
+                    if (add > 0) {
+                        result = Response.getResponseSuccess(userInfo);
+                    } else {
+                        result = Response.getResponseError();
                     }
                 } else {
                     result = Response.getResponseError();
@@ -540,11 +540,30 @@ public class DeptController {
         try {
             List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
             Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            String[] uids = new String[list.size()];
+            String[] cids = new String[list.size()];
+            Map<String, Object> map = new HashMap<>();
             for (int i = 0, a = list.size(); i < a; i++) {
                 list.get(i).put("status", "2");
                 list.get(i).put("time", System.currentTimeMillis());
+                uids[i] = JzbDataType.getString(list.get(i).get("uid"));
+                cids[i] = JzbDataType.getString(list.get(i).get("cid"));
             }
-            result = deptService.updateDeptUserBatch(list) > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+
+            int con = deptService.updateDeptUserBatch(list);
+            result = con > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
+            if (con > 0) {
+                for (int i = 0; i < uids.length; i++) {
+                    map.put("cid", cids[i]);
+                    map.put("uid", uids[i]);
+                    int count = deptService.queryIsCompanyDepByUid(map);
+                    if (count > 0) {
+                        map.put("uid", uids[i]);
+                        map.put("cid", null);
+                        userRedisApi.updateUserInfo(map);
+                    }
+                }
+            }
         } catch (Exception e) {
             JzbTools.logError(e);
             result = Response.getResponseError();
@@ -963,7 +982,6 @@ public class DeptController {
         }
         return result;
     }
-
 
     /**
      * 云产品市场单位的查询

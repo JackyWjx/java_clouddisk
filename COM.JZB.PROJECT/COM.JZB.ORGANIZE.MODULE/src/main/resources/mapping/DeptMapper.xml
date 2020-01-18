@@ -3,6 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.org.dao.DeptMapper">
+
+    <!-- 查询改用户在该单位下是否有部门 -->
+    <select id="queryIsCompanyDepByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_dept_user where cid=#{cid} and uid=#{uid} and status='1'
+    </select>
+
+
     <!--新建部门-->
     <insert id="insertCompanyDept">
         INSERT INTO tb_company_dept (cid,cdid,pcdid,cname,duid,addtime,status,summary,ouid,updtime,idx)
