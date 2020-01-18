@@ -84,6 +84,7 @@
         on
         d.cid = c.cid
         where
+        d.status='1' and
         d.uid = #{uid}
         and c.cid is not null    </select>
 
