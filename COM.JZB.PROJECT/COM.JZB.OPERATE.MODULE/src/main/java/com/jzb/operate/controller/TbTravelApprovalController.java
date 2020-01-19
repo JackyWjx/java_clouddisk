@@ -83,7 +83,7 @@ public class TbTravelApprovalController {
             } else {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
-            if (JzbCheckParam.haveEmpty(param, new String[]{"list", "travelid", "version", "aptype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"list", "travelid", "version", "aptype","cid"})) {
                 response = Response.getResponseError();
             } else {
                 List<Map<String, Object>> approvalList = (List<Map<String, Object>>) param.get("list");
@@ -99,7 +99,7 @@ public class TbTravelApprovalController {
                         // 消息业务
 
                         String sendUid = approvalList.get(i).get("truid").toString().trim();
-                        Map<String, Object> argMap = getOptMsgArg(idx, JzbDataType.getString(userInfo.get("cid")), sendUid, apType, false, true);
+                        Map<String, Object> argMap = getOptMsgArg(idx, JzbDataType.getString(param.get("cid")), sendUid, apType, false, true);
                         optMsgApi.sendOptSysMsg(SendSysMsgUtil.setMsgArg(argMap));
                     } else {
                         approvalList.get(i).put("trstatus", 1);
@@ -168,14 +168,14 @@ public class TbTravelApprovalController {
                 logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
 
-            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version", "aptype"})) {
+            if (JzbCheckParam.haveEmpty(param, new String[]{"isOk", "travelid", "idx", "apid", "version", "aptype", "cid"})) {
                 response = Response.getResponseError();
             } else {
                 Integer isOk = (Integer) param.get("isOk");
                 //获取审批类型
                 Integer apType = JzbDataType.getInteger(param.get("aptype"));
                 // topic主题前缀
-                String cid = JzbDataType.getString(userInfo.get("cid"));
+                String cid = JzbDataType.getString(param.get("cid"));
                 // 用于设置发消息的map参数
                 Map<String, Object> argMap;
                 if (isOk == 1) {// 同意
