@@ -231,6 +231,9 @@
         <if test="uname != null and uname != ''">
             and  uname  like CONCAT('%',#{uname},'%')
         </if>
+        <if test="isrelation != null and isrelation != ''">
+            and  isrelation = #{isrelation}
+        </if>
         order by id desc
         <if test="pagesize != null and pagesize != '' and pagesize != 0 ">
             limit #{pagesize}
@@ -264,6 +267,9 @@
         </if>
         <if test="uname != null and uname != ''">
             and  uname  like CONCAT('%',#{uname},'%')
+        </if>
+        <if test="isrelation != null and isrelation != ''">
+            and  isrelation = #{isrelation}
         </if>
     </select>
 
