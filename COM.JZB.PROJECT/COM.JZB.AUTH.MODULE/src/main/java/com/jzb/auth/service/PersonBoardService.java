@@ -22,4 +22,13 @@ public class PersonBoardService {
     public Map<String, Object> getAuthCount(Map<String, Object> param) {
         return boardMapper.getAuthCount(param);
     }
+
+    /**
+     * 申请加入单位查询加入单位人的姓名
+     * @param param
+     * @return
+     */
+    public Map<String, Object> getCname(Map<String, Object> param) {
+        return boardMapper.getCname(param);
+    }
 }

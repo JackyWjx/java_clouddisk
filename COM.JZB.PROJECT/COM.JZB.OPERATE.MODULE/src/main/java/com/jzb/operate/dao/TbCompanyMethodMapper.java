@@ -25,6 +25,13 @@ public interface TbCompanyMethodMapper {
     List<Map<String, Object>> queryCompanyMethod(Map<String, Object> list);
 
     /**
+     * 查询我的单位方法论
+     * @param list
+     * @return
+     */
+    List<Map<String, Object>> queryMyCompanyMethod(Map<String, Object> list);
+
+    /**
      * 设置方法论状态
      * @param list
      * @return
@@ -38,9 +45,31 @@ public interface TbCompanyMethodMapper {
 
     List<Map<String, Object>> getCompanyMethoddataAll(Map<String, Object> param);
 
+    List<Map<String, Object>> getMyCompanyMethoddataAll(Map<String, Object> param);
+
     int delCompanyMethod(String param);
+
+    int delMyCompanyMethod(String param);
 
     void delCompanyMethod(Map<String, Object> map);
 
     void delcidsandprojectid(Map<String, Object> map);
+
+    Map<String, Object> queryMyMethodData(Map<String, Object> datalist);
+
+    int addMyMethodData(Map<String, Object> stringObjectMap);
+
+    Map<String, Object> queryMyMethod(Map<String, Object> stringObjectMap);
+
+    int addMymethod(Map<String, Object> stringObjectMap);
+
+    int addMyMethodTypeBrother(Map<String, Object> param);
+
+    int updateMyMethodType(Map<String, Object> param);
+
+    int addMyMethodDataBrother(Map<String, Object> param);
+
+    int updateMyMethodData(Map<String, Object> param);
+
+    List<Map<String, Object>> queryMyMethodType(Map<String, Object> param);
 }

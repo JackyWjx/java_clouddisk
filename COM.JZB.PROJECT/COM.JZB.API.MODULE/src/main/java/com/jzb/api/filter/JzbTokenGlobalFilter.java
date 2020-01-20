@@ -199,6 +199,7 @@ public class JzbTokenGlobalFilter implements GlobalFilter, Ordered {
 
         //---- begin config
         GATEWAY_WHITE_LIST.put("/JZB-CONFIG/config/city/getCityList", "");
+        GATEWAY_WHITE_LIST.put("/JZB-CONFIG/config/city/getCityJsonThreeLever", "");
         //---- end config
 
         //---- begin org

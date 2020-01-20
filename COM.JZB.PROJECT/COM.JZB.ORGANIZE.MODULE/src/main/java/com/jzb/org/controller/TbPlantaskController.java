@@ -676,6 +676,9 @@ public class TbPlantaskController {
                     hm.put("starttime",map.get("starttime"));
                     hm.put("endtime",map.get("endtime"));
                     hm.put("assistants",(map.get("assistants")==null?"":map.get("assistants").toString().trim()).split(","));
+                    hm.put( "acceptors" ,map.get("acceptors")==null?"":map.get("acceptors").toString().split(","));
+                    hm.put( "executors" ,map.get("executors")==null?"":map.get("executors").toString().split(","));
+
                     ret.add(hm);
                 }
                 // 定义返回结果
@@ -1278,7 +1281,7 @@ public class TbPlantaskController {
     /**
      * @param
      * @return TbTempItemController
-     * @deprecated 周计划 年机会 部门计划 月计划 通用查询
+     * @deprecated 通用插入数据
      */
     @RequestMapping(value = "/addPlantaskUserItem", method = RequestMethod.POST)
     @ResponseBody
@@ -1390,7 +1393,7 @@ public class TbPlantaskController {
                                     }else{
                                         list.get(i).put("tasktype","未开始");
                                     }
-                                }else if(progressofwork==100&&(!list.get(i).get("tasktype").toString().equals("已终止"))){
+                                }else if(progressofwork==100&&(!list.get(i).get("tasktype").toString().equals("已终止"))&&(!list.get(i).get("tasktype").toString().equals("已完成"))){
                                     if(endtime<dtime){
                                         list.get(i).put("tasktype","逾期完成");
                                     }

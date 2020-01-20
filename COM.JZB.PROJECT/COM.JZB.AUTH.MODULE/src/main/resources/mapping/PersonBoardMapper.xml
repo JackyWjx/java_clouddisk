@@ -11,4 +11,14 @@
         count(1) higher from tb_user_list where authid = 4 and status = '1'
     </select>
 
+    <!--申请加入单位查询加入单位人的姓名-->
+    <select id="getCname" parameterType="java.util.Map" resultType="java.util.Map">
+     select
+     cname
+     from
+     tb_user_list
+     where
+     uid = #{uid}
+    </select>
+
 </mapper>

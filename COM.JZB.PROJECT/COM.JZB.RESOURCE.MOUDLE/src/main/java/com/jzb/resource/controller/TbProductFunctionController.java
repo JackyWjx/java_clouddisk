@@ -53,7 +53,17 @@ public class TbProductFunctionController {
     @CrossOrigin
     public Response getTbProductFunction(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/TbProductFunction/getTbProductFunction";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             //判断分页参数是否为空
             if (JzbCheckParam.haveEmpty(param, new String[]{"pagesize", "pageno"})) {
                 result = Response.getResponseError();
@@ -73,9 +83,17 @@ public class TbProductFunctionController {
                 result.setPageInfo(pageInfo);
             }
         } catch (Exception ex) {
+            flag = false;
             //错误信息
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getPolicyType Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -91,7 +109,17 @@ public class TbProductFunctionController {
     @CrossOrigin
     public Response saveTbProductFunction(@RequestBody(required = false) Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/TbProductFunction/saveTbProductFunction";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             //获取map中的list
             List<Map<String, Object>> paramList = (List) param.get("list");
             //循环设置创建时间和修改时间
@@ -111,9 +139,17 @@ public class TbProductFunctionController {
                 result = Response.getResponseSuccess();
             }
         } catch (Exception e) {
+            flag = false;
             //错误信息
             JzbTools.logError(e);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getPolicyType Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -128,7 +164,17 @@ public class TbProductFunctionController {
     @CrossOrigin
     public Response updateTbProductFunction(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/TbProductFunction/updateTbProductFunction";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             //获取map中的list
             List<Map<String, Object>> paramList = (List) param.get("list");
             //循环设置创建时间和修改时间
@@ -139,15 +185,22 @@ public class TbProductFunctionController {
             int count = tbProductFunctionService.updateTbProductFunction(paramList);
             //如果返回值大于0，表示添加成功,否则就是添加失败
             if (count > 0) {
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 result = Response.getResponseSuccess(userInfo);
             } else {
                 result = Response.getResponseError();
             }
         } catch (Exception e) {
+            flag=false;
             //错误信息
             JzbTools.logError(e);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getPolicyType Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }
@@ -163,7 +216,17 @@ public class TbProductFunctionController {
     @CrossOrigin
     public Response getProductFunction(@RequestBody Map<String, Object> param) {
         Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/TbProductFunction/getProductFunction";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             List<Map<String, Object>> list = tbProductFunctionService.getProductFunction(param);
 
             // Result JSON
@@ -248,7 +311,6 @@ public class TbProductFunctionController {
             }
 
             // 设置返回响应结果
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
             response = Response.getResponseSuccess(userInfo);
             //判断是pc端还是电脑端
             Map<String, Object> map = new HashMap<>();
@@ -268,10 +330,17 @@ public class TbProductFunctionController {
 
             //response.setResponseEntity(result);
         } catch (Exception e) {
+            flag=false;
             JzbTools.logError(e);
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getPolicyType Method", e.toString()));
         }
-
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
+        }
         return response;
     }
 
@@ -285,7 +354,17 @@ public class TbProductFunctionController {
     @CrossOrigin
     public Response delProductFunction(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/TbProductFunction/delProductFunction";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             List<Map<String, Object>> list = tbProductFunctionService.getProductFunctions(param);
             //如果这个功能不存在，就说明前端还没有添加过来，那就在前端用js删除就可以了
             if (list == null || list.size() <= 0) {
@@ -296,9 +375,17 @@ public class TbProductFunctionController {
                 result = count > 0 ? Response.getResponseSuccess() : Response.getResponseError();
             }
         } catch (Exception e) {
+            flag=false;
             //打印错误信息
             JzbTools.logError(e);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getPolicyType Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }

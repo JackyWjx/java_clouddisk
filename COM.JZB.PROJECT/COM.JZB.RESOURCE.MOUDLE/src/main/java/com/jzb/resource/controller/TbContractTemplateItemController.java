@@ -246,14 +246,31 @@ public class TbContractTemplateItemController {
     @Transactional
     public Response updateContractTemplateItem(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/resource/contractTemplateItem/updateContractTemplateItem";
+        boolean flag = true;
         try {
-
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             List<Map<String, Object>> list = (List<Map<String, Object>>) param.get("list");
 
             result = tbContractTemplateItemService.updateContractTemplateItem(param) > 0 ? Response.getResponseSuccess((Map<String, Object>) param.get("userinfo")) : Response.getResponseError();
         } catch (Exception ex) {
+            flag=false;
             JzbTools.logError(ex);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "updateContractTemplateItem Method", ex.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     }

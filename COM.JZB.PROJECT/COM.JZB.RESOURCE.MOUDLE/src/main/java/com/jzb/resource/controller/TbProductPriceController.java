@@ -47,12 +47,20 @@ public class TbProductPriceController {
     @CrossOrigin
     public Response addPriceService(@RequestBody Map<String, Object> param) {
         Response response;
+        Map<String, Object> userInfo = null;
+        String api = "/resource/productPrice/addPriceService";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             if (JzbCheckParam.haveEmpty(param, new String[]{"pid", "plid"})) {
                 response = Response.getResponseError();
             } else {
-                //获取用户信息
-                Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
                 //添加数据
                 param.put("ouid", userInfo.get("uid"));
                 int count = tbProductPriceService.addPriceService(param);
@@ -60,10 +68,13 @@ public class TbProductPriceController {
                 response = count > 0 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
             }
         } catch (Exception e) {
+            flag = false;
             //打印错误信息
             JzbTools.logError(e);
             response = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "addPriceService Method", e.toString()));
         }
+
         return response;
     }
 

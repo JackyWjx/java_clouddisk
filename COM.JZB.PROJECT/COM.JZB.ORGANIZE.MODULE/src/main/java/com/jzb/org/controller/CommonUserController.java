@@ -5,6 +5,7 @@ import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.PageInfo;
 import com.jzb.base.message.Response;
 import com.jzb.base.office.JzbExcelOperater;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbPageConvert;
 import com.jzb.base.util.JzbRandom;
 import com.jzb.base.util.JzbTools;
@@ -211,6 +212,10 @@ public class CommonUserController {
                 // 将所有结果加入参数中传入
                 param.put("list", regionList);
             }
+            if(!JzbCheckParam.haveEmpty(param,new String[]{"isrelation"})){
+                param.put("isrelation",JzbDataType.getInteger(param.get("isrelation")));
+            }
+
             // 查询用户总数
             count = count > 0 ? count:userService.getCount(param);
 

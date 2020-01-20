@@ -176,7 +176,7 @@
 
     <!--获取区-->
     <select id="getCounty" parameterType="java.util.Map" resultType="java.util.Map">
-    select * from tb_city_list where county is not  null and status='1' and pcode=#{pcode} and ccode=#{ccode} ORDER BY spell
+    select creaid,pcode,province,ccode,city,tcode,spell,county,idx from tb_city_list where county is not  null and status='1' and pcode=#{pcode} and ccode=#{ccode} ORDER BY spell
     </select>
 
 

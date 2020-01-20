@@ -126,6 +126,14 @@
         SELECT
         DISTINCT
         tcc.cid,
+        tcc.relmail,
+        tcc.relperson,
+        tcc.orgrelation,
+        tcc.prolist,
+        tcc.supervise,
+        tcc.relphone,
+        tcc.prodesc,
+        tcc.region,
         tpcl.oneheader,
         tpcl.twoheader,
         tpcl.threeheader,
@@ -235,7 +243,73 @@
 
     <!-- 修改单位信息 -->
     <update id="updateCompany" parameterType="java.util.Map">
-        update tb_company_list set cname=#{cname} ,region=#{region} where cid=#{cid}
+        update tb_company_list
+        <set>
+            <if test="cid != null and cid != ''">
+                cid = #{cid},
+            </if>
+            <if test="cname != null and cname != ''">
+                cname = #{cname},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="region != null and region != ''">
+                region = #{region},
+            </if>
+            <if test="uscc != null and uscc != ''">
+                uscc = #{uscc},
+            </if>
+            <if test="idx != null">
+                idx = #{idx},
+            </if>
+            <if test="relperson != null and relperson != ''">
+                relperson = #{relperson},
+            </if>
+            <if test="relphone != null and relphone != ''">
+                relphone = #{relphone},
+            </if>
+            <if test="telephone != null and telephone != ''">
+                telephone = #{telephone},
+            </if>
+            <if test="relmail != null and relmail != ''">
+                relmail = #{relmail},
+            </if>
+            <if test="reguid != null and reguid != ''">
+                reguid = #{reguid},
+            </if>
+            <if test="regtime != null">
+                regtime = #{regtime},
+            </if>
+            <if test="manager != null and manager != ''">
+                manager = #{manager},
+            </if>
+            <if test="logo != null and logo != ''">
+                logo = #{logo},
+            </if>
+            <if test="photo != null and photo != ''">
+                photo = #{photo},
+            </if>
+            <if test="authid != null">
+                authid = #{authid},
+            </if>
+            <if test="ouid != null and ouid != ''">
+                ouid = #{ouid},
+            </if>
+            <if test="upduid != null and upduid != ''">
+                upduid = #{upduid},
+            </if>
+            <if test="updtime != null">
+                updtime = #{updtime},
+            </if>
+            <if test="summary != null and summary != ''">
+                summary = #{summary},
+            </if>
+            <if test="oldcid != null and oldcid != ''">
+                oldcid = #{oldcid},
+            </if>
+        </set>
+         where cid=#{cid}
     </update>
 
 
@@ -391,7 +465,7 @@
     <!--退回公海-->
     <update id="rebackCompanys" parameterType="java.util.Map">
 
-        update tb_common_company_list set status='1' where cid=#{cid} and status = '2';
+        update tb_common_company_list set status='1' where cid=#{cid};
         update  tb_private_company_list  set status = '4' WHERE cid = #{cid} and status = '1'
 
     </update>
@@ -580,9 +654,6 @@
         </if>
         <if test="upduid != null and upduid != ''">
             upduid = #{upduid},
-        </if>
-        <if test="status != null and status != ''">
-            status = #{status},
         </if>
         <if test="summary != null and summary != ''">
             summary = #{summary},
@@ -821,6 +892,28 @@
             and a.oneheader = #{uid}
         </if>
 
+    </select>
+
+    <select id="queryCompanySalesByUid" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            oneheader,
+            twoheader,
+            threeheader,
+            fourheader,
+            fiveheader,
+            sixheader
+        FROM
+            tb_private_company_list
+        WHERE
+            cid = #{cid}
+            AND ( oneheader IS NULL OR oneheader != #{uid} )
+            AND ( twoheader IS NULL OR twoheader != #{uid} )
+            AND ( threeheader IS NULL OR threeheader != #{uid} )
+            AND ( fourheader IS NULL OR fourheader != #{uid} )
+            AND ( fiveheader IS NULL OR fiveheader != #{uid} )
+            AND ( sixheader IS NULL OR sixheader != #{uid} )
+            and status = '1'
+            LIMIT 1
     </select>
 
 

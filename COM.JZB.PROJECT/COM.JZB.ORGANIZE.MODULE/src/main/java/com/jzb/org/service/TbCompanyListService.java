@@ -47,6 +47,16 @@ public class TbCompanyListService {
         return companyList;
     }
 
+
+    /**
+     * 查询该单位下的管理员
+     * @param param
+     * @return
+     */
+    public   String queryManagerByCid(Map<String, Object> param){
+        return  tbCompanyListMapper.queryManagerByCid(param);
+    }
+
     /**
      * 所有业主-销售统计分析查询出来的总数
      * @param param

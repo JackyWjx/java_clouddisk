@@ -225,7 +225,7 @@ public class DeptService {
     public List<Map<String, Object>> queryDeptUser(Map<String, Object> map) {
         List<Map<String, Object>> deptList = deptMapper.queryDeptUser(map);
         int size = deptList.size();
-        List<Map<String, Object>> result = new ArrayList<>(size);
+        List<Map<String, Object>> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             Map<String, Object> deptMap = deptList.get(i);
             Response resp = userRedisServiceApi.getCacheUserInfo(deptMap);
@@ -1004,21 +1004,20 @@ public class DeptService {
      */
     public List<Map<String, Object>> getCompanyProduct(Map<String, Object> param) {
         List<Map<String,Object>> mapList = deptMapper.getCompanyProduct(param);
-         List<Map<String,Object>> mapList1 = productLineService.getProductLineList(param);
-        for (int i = 0; i < mapList1.size(); i++) {
-            for (int j = 0; j < mapList.size(); j++) {
-                if (mapList1.get(i).get("plid") == mapList.get(j).get("plid")) {
-                    if (mapList1.get(i).get("children") == null) {
-                        mapList1.get(i).put("children", new ArrayList<>());
-                        List list = (List) mapList1.get(i).get("children");
-                        list.add(mapList.get(j));
-                    } else {
-                        List list = (List) mapList1.get(i).get("children");
-                        list.add(mapList.get(j));
-                    }
-                }
-            }
-        }
-        return mapList1;
+        return mapList;
+    }
+
+
+    public int queryIsCompanyDepByUid(Map<String,Object> param){
+        return deptMapper.queryIsCompanyDepByUid(param);
+    }
+
+    /**
+     * 云产品市场单位的查询
+     * @param param
+     * @return
+     */
+    public List<Map<String, Object>> getCompanys(Map<String, Object> param){
+        return deptMapper.getCompanys(param);
     }
 }

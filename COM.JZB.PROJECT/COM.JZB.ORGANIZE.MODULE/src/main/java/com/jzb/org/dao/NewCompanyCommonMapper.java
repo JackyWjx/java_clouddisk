@@ -62,4 +62,6 @@ public interface NewCompanyCommonMapper {
     int addCompanyCommonListSuppler(Map<String, Object> param);
 
     List<Map<String,Object>> queryCommonCompanyByUscc(Map<String, Object> umap);
+
+    List<Map<String, Object>> queryAuthCompanyByUscc(Map<String, Object> param);
 }

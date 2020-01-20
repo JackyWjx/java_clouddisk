@@ -238,10 +238,18 @@ public interface DeptMapper {
 
     String getCompanyName(Map<String, Object> map);
 
+
+    int queryIsCompanyDepByUid(Map<String,Object> param);
     /**
      * 云产品市场的查询
      * @param param
      * @return
      */
     List<Map<String, Object>> getCompanyProduct(Map<String, Object> param);
+    /**
+     * 云产品市场单位的查询
+     * @param param
+     * @return
+     */
+    List<Map<String, Object>> getCompanys(Map<String, Object> param);
 }

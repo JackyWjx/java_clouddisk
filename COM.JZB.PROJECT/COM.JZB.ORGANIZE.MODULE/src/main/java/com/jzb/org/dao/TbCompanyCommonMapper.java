@@ -126,4 +126,6 @@ public interface TbCompanyCommonMapper {
     List<Map<String, Object>> queryCompanysToHistory(Map<String, Object> param);
 
     int queryCompanysToHistoryCount(Map<String, Object> param);
+
+    Map<String, Object> queryCompanySalesByUid(Map<String, Object> param);
 }

@@ -62,6 +62,11 @@
     </select>
 
 
+    <!-- 查询该单位管理员id -->
+    <select id="queryManagerByCid" parameterType="java.util.Map" resultType="java.lang.String">
+        select manager from tb_company_list where cid=#{cid} and status='1'
+    </select>
+
     <select id="getCount" parameterType="java.util.Map" resultType="int">
 
         select

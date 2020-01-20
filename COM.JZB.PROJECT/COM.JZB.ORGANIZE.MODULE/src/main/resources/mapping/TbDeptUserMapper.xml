@@ -16,7 +16,7 @@
     </select>
 
     <select id="queryPersonNameByuid" parameterType="java.util.Map" resultType="java.util.Map">
-       select DISTINCT cname as uname from tb_dept_user  where status='1' and uid = #{truid}
+       select DISTINCT cname as uname from tb_dept_user  where status='1' and uid = #{truid} and cid =#{cid}
     </select>
 
     <select id="getUsernameByUids" parameterType="java.util.Map"  resultType="java.lang.String">

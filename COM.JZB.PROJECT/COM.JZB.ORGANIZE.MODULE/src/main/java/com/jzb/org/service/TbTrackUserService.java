@@ -326,6 +326,20 @@ public class TbTrackUserService {
             }
             param.put("list",list);
         }
+        // todo
+        // 多部门查询
+        if (!JzbTools.isEmpty(param.get("cdidList"))) {
+            List<Map<String, Object>> cdidList = (List<Map<String, Object>>) param.get("cdidList");
+            List<Map<String, Object>> Alist = new ArrayList<>();
+            for (int i = 0; i < cdidList.size(); i++) {
+                // 根据部门id查询部门的下级部门
+                List<Map<String, Object>> clist = cockpitMapper.getDeptChild(param);
+                for (int i1 = 0; i1 < clist.size(); i1++) {
+                    Alist.add(clist.get(i));
+                }
+            }
+        }
+
         return userMapper.getTrackCountOnSales(param);
     }
 }

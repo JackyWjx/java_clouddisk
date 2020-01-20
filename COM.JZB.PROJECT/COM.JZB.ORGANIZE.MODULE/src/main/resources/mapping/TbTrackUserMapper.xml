@@ -312,7 +312,7 @@
             and tt.trackuname ~ #{trackuname}
         </if>
         <if test="cdid != null and cdid != ''">
-            and customer in (
+            and trackuid in (
             select uid from tb_dept_user where cdid in
             <foreach collection="list" separator="," item="item" index="index" open="(" close=")">
                 #{item.cdid}

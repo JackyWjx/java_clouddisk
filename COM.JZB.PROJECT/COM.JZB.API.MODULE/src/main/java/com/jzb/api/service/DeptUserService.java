@@ -236,6 +236,18 @@ public class DeptUserService {
         for (Map<String, Object> map : tempMap.values()) {
             result.add(map);
         }
+        List<Map<String,Object>> nList = new ArrayList<>();
+        for (int i = 0; i < result.size(); i++) {
+            Map<String, Object> deptMap = result.get(i);
+            if (JzbDataType.getString(deptMap.get("status")).equals("2")){
+                nList.add(deptMap);
+                result.remove(i);
+                i --;
+            }
+        }
+        for (int i = 0; i < nList.size(); i++) {
+            result.add(nList.get(i));
+        }
         return result;
     }
 

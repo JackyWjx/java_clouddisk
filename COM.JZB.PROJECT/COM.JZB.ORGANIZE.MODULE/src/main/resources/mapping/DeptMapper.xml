@@ -3,6 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzb.org.dao.DeptMapper">
+
+    <!-- 查询改用户在该单位下是否有部门 -->
+    <select id="queryIsCompanyDepByUid" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from tb_dept_user where cid=#{cid} and uid=#{uid} and status='1'
+    </select>
+
+
     <!--新建部门-->
     <insert id="insertCompanyDept">
         INSERT INTO tb_company_dept (cid,cdid,pcdid,cname,duid,addtime,status,summary,ouid,updtime,idx)
@@ -379,16 +386,20 @@
 
     <!--根据用户id获取用户部门信息和在职状态总数-->
     <select id="queryDeptUserCount" resultType="java.lang.Integer">
-        SELECT COUNT( 1 )
+       SELECT DISTINCT
+        count(1)
         FROM
         tb_company_dept cd
         INNER JOIN tb_dept_user du ON cd.status = '1'
         AND du.cid = cd.cid
         AND du.cdid = cd.cdid
-        WHERE du.status != '4'
-        <if test=" cid !=null and cid !='' "> and cd.cid =#{cid} </if>
+        WHERE
+        du.status != '4'
+        AND du.addtime IN ( SELECT MAX ( addtime ) FROM tb_dept_user WHERE status in('1','2') GROUP BY uid, cid, cdid )
         <if test=" status !=null and status !='' ">and du.status=#{status}</if>
+        <if test=" cid !=null and cid !='' "> and cd.cid =#{cid} </if>
         AND ( du.cname LIKE'%${value}%' OR du.phone LIKE'%${value}%' )
+
     </select>
 
     <!--根据用户姓名或手机号获取用户部门信息和在职状态-->
@@ -415,7 +426,7 @@
         AND du.cdid = cd.cdid
         WHERE
         du.status != '4'
-        AND du.addtime IN ( SELECT MAX ( addtime ) FROM tb_dept_user WHERE status = '1' GROUP BY uid, cid, cdid )
+        AND du.addtime IN ( SELECT MAX ( addtime ) FROM tb_dept_user WHERE status in('1','2') GROUP BY uid, cid, cdid )
         <if test=" cid !=null and cid !='' ">and cd.cid = #{cid}</if>
         <if test=" cdid !=null and cdid !='' ">and cd.cdid=#{cdid}</if>
         <if test=" status !=null and status !='' ">and du.status=#{status}</if>
@@ -532,17 +543,48 @@
     </select>
 
     <select id="getCompanyProduct" parameterType="java.util.Map" resultType="java.util.Map">
-        select
+        select a.* from ( select
         DISTINCT
         tcp.manurl,
         tpl.cname,
         tpl.plid,
-        tpl.logo
+        tpl.logo,
+        tcp.cid,
+        (select cname from tb_company_list where cid=tcp.cid) as companyname
+        from
+        tb_product_list tpl
+        LEFT JOIN tb_company_product tcp ON tpl.pid = tcp.pid and tpl.cid = tcp.cid
+        where
+        tpl.status = '1' and tcp.status = '1' and tpl.appid is null
+
+        <if test="plid!=null and plid!='' and plid!=0">
+            and tpl.plid=#{plid}
+        </if>
+        <if test="cid!=null and cid!=''">
+            and tcp.cid=#{cid}
+        </if>
+        ) a
+        <if test="keyword!=null and keyword!=''">
+            where  (a.cname ~ #{keyword} or a.companyname ~ #{keyword})
+        </if>
+    </select>
+
+
+    <!-- 查询有产品的单位 -->
+    <select id="getCompanys" parameterType="java.util.Map" resultType="java.util.Map">
+                select a.* from (select
+        DISTINCT
+				tcp.cid,
+				(select cname from tb_company_list where cid=tcp.cid) as companyname
         from
         tb_product_list tpl
         LEFT JOIN  tb_company_product tcp ON tpl.pid = tcp.pid and tpl.cid = tcp.cid
         where
         tpl.status = '1' and tcp.status = '1' and tpl.appid is null
+				) a  where a.companyname is not null and a.companyname!=''
     </select>
+
+
+
 
 </mapper>

@@ -26,7 +26,6 @@ import java.util.Map;
 @RestController
 public class AdvertController {
 
-
     @Autowired
     private AdvertService advertService;
 
@@ -34,7 +33,6 @@ public class AdvertController {
      * 日志记录对象
      */
     private final static Logger logger = LoggerFactory.getLogger(AdvertController.class);
-
 
     /**
      * 返回结果集
@@ -48,7 +46,6 @@ public class AdvertController {
         response.setPageInfo(pageInfo);
     }
 
-
     /**
      * 广告系统查询
      *
@@ -58,24 +55,24 @@ public class AdvertController {
     public Response queryAdvertisingList(@RequestBody Map<String, Object> param) {
         Response response;
         Map<String, Object> userInfo = null;
-        String  api="/advertising/queryAdvertisingList";
+        String api = "/advertising/queryAdvertisingList";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             List<Map<String, Object>> list = advertService.queryAdvertisingList();
             // 定义返回结果
             response = Response.getResponseSuccess(userInfo);
             setPageInfoList(list, response);
         } catch (Exception e) {
-            flag=false;
+            flag = false;
             JzbTools.logError(e);
-            response=Response.getResponseError();
+            response = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "queryAdvertisingList Method", e.toString()));
         }
         if (userInfo != null) {
@@ -98,15 +95,15 @@ public class AdvertController {
     public Response getAdvertList(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String  api="/advertising/getAdvertList";
+        String api = "/advertising/getAdvertList";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             int count = JzbDataType.getInteger(param.get("count"));
             // 获取推广信息总数
@@ -123,7 +120,7 @@ public class AdvertController {
             pageInfo.setTotal(count > 0 ? count : adverList.size());
             result.setPageInfo(pageInfo);
         } catch (Exception e) {
-            flag=false;
+            flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getAdvertList Method", e.toString()));
@@ -148,15 +145,15 @@ public class AdvertController {
     public Response modifyAdvertData(@RequestBody Map<String, Object> param) {
         Response result;
         Map<String, Object> userInfo = null;
-        String  api="/advertising/modifyAdvertData";
+        String api = "/advertising/modifyAdvertData";
         boolean flag = true;
         try {
             if (param.get("userinfo") != null) {
                 userInfo = (Map<String, Object>) param.get("userinfo");
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "INFO",
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
                         userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
             } else {
-                logger.info(JzbLoggerUtil.getApiLogger( api, "1", "ERROR", "", "", "", "", "User Login Message"));
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
             }
             // 获取用户信息
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
@@ -170,7 +167,7 @@ public class AdvertController {
             }
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
-            flag=false;
+            flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
             logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "modifyAdvertData Method", e.toString()));
@@ -194,7 +191,17 @@ public class AdvertController {
     @CrossOrigin
     public Response getAdvertListPass(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/advertising/getAdvertListPass";
+        boolean flag = true;
         try {
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             int count = JzbDataType.getInteger(param.get("count"));
             // 获取推广信息总数
             count = count < 0 ? 0 : count;
@@ -210,8 +217,16 @@ public class AdvertController {
             pageInfo.setTotal(count > 0 ? count : adverList.size());
             result.setPageInfo(pageInfo);
         } catch (Exception e) {
+            flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "getAdvertListPass Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     } // End getAdvertList
@@ -226,16 +241,32 @@ public class AdvertController {
     @CrossOrigin
     public Response removeAdvertData(@RequestBody Map<String, Object> param) {
         Response result;
+        Map<String, Object> userInfo = null;
+        String api = "/advertising/removeAdvertData";
+        boolean flag = true;
         try {
-            // 获取用户信息
-            Map<String, Object> userInfo = (Map<String, Object>) param.get("userinfo");
+            if (param.get("userinfo") != null) {
+                userInfo = (Map<String, Object>) param.get("userinfo");
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "INFO",
+                        userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(), userInfo.get("msgTag").toString(), "User Login Message"));
+            } else {
+                logger.info(JzbLoggerUtil.getApiLogger(api, "1", "ERROR", "", "", "", "", "User Login Message"));
+            }
             param.put("uid", JzbDataType.getString(userInfo.get("uid")));
             // 获取修改成功值
             int count = advertService.removeAdvertData(param);
             result = count == 1 ? Response.getResponseSuccess(userInfo) : Response.getResponseError();
         } catch (Exception e) {
+            flag = false;
             JzbTools.logError(e);
             result = Response.getResponseError();
+            logger.error(JzbLoggerUtil.getErrorLogger(userInfo == null ? "" : userInfo.get("msgTag").toString(), "removeAdvertData Method", e.toString()));
+        }
+        if (userInfo != null) {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", flag ? "INFO" : "ERROR", userInfo.get("ip").toString(), userInfo.get("uid").toString(), userInfo.get("tkn").toString(),
+                    userInfo.get("msgTag").toString(), "User Login Message"));
+        } else {
+            logger.info(JzbLoggerUtil.getApiLogger(api, "2", "ERROR", "", "", "", "", "User Login Message"));
         }
         return result;
     } // End modifyAdvertData

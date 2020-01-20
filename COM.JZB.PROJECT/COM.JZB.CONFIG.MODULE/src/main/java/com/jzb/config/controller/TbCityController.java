@@ -2,6 +2,7 @@ package com.jzb.config.controller;
 
 import com.jzb.base.data.JzbDataType;
 import com.jzb.base.message.Response;
+import com.jzb.base.util.JzbCheckParam;
 import com.jzb.base.util.JzbTools;
 import com.jzb.config.service.TbCityService;
 import net.sf.json.JSONObject;
@@ -303,7 +304,7 @@ public class TbCityController {
             /** 返回格式map */
             Map<String, Object> provinceCodeMap = new HashMap<>();
             /** 满足前端格式 */
-            List<Map<String,Object>> list;
+            List<Map<String, Object>> list;
             /** 所有省 */
             List<Map<String, Object>> provinceList = tbCityService.getProvince(params);
             for (int i = 0, l = provinceList.size(); i < l; i++) {
@@ -315,23 +316,23 @@ public class TbCityController {
                 /**  根据Pcode查询出的市集合 */
                 List<Map<String, Object>> cityList = tbCityService.getCity(queryCityAndCountyMap);
                 /**  市结构 */
-                Map<String,Object> cityMap=new HashMap<>();
+                Map<String, Object> cityMap = new HashMap<>();
                 /**  遍历市查询区县 */
                 for (int i1 = 0, l1 = cityList.size(); i1 < l1; i1++) {
                     /**  传参查询区县 */
-                    queryCityAndCountyMap.put("ccode",cityList.get(i1).get("ccode"));
+                    queryCityAndCountyMap.put("ccode", cityList.get(i1).get("ccode"));
                     /**  区县结构 */
-                    Map<String,Object> countyMap=new HashMap<>();
+                    Map<String, Object> countyMap = new HashMap<>();
                     /**  根据省和市查出来的区县 */
                     List<Map<String, Object>> countyList = tbCityService.getCounty(queryCityAndCountyMap);
-                    countyMap.put("list",countyList);
-                    list=new ArrayList<>();
+                    countyMap.put("list", countyList);
+                    list = new ArrayList<>();
                     list.add(countyMap);
                     /**  前端需要的格式 */
-                    cityMap.put(JzbDataType.getString(cityList.get(i1).get("creaid")),list);
+                    cityMap.put(JzbDataType.getString(cityList.get(i1).get("creaid")), list);
                 }
-                cityMap.put("list",cityList);
-                list=new ArrayList<>();
+                cityMap.put("list", cityList);
+                list = new ArrayList<>();
                 list.add(cityMap);
                 provinceCodeMap.put(JzbDataType.getString(provinceList.get(i).get("creaid")), list);
             }
@@ -345,6 +346,39 @@ public class TbCityController {
 //        long tome=System.currentTimeMillis()-time;
 //        System.out.println(tome/1000);
 
+        return response;
+    }
+
+    /**
+     * 查询省市
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCityJsonThreeLever",method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public Response getCityJsonThreeLevel(@RequestBody(required = false) Map<String, Object> param) {
+        Response response;
+        try {
+            List<Map<String,Object>> list=new ArrayList<>();
+            if(!JzbCheckParam.haveEmpty(param,new String[]{"pcode","ccode"})){
+                param.put("pcode",JzbDataType.getInteger(param.get("pcode")));
+                param.put("ccode",JzbDataType.getInteger(param.get("ccode")));
+                list=tbCityService.getCounty(param);
+            }
+            if(!JzbCheckParam.haveEmpty(param,new String[]{"pcode"})&&JzbCheckParam.haveEmpty(param,new String[]{"ccode"})){
+                param.put("pcode",JzbDataType.getInteger(param.get("pcode")));
+                list=tbCityService.getCity(param);
+            }
+            if(JzbCheckParam.haveEmpty(param,new String[]{"pcode"})){
+                list=tbCityService.getProvince(param);
+            }
+            response=Response.getResponseSuccess();
+            response.setResponseEntity(list);
+        }catch (Exception ex){
+            JzbTools.isEmpty(ex);
+            response=Response.getResponseError();
+        }
         return response;
     }
 

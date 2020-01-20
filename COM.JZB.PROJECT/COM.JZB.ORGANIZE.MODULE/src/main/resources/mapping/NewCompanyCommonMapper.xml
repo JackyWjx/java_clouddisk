@@ -99,7 +99,7 @@
         INSERT INTO tb_common_company_list (tcid, cid, cname,
         nickname, region, uscc, reluid, relperson, relphone, telephone,
          relmail, logo, photo, cstatus, curl, fax, limitday, address, range,
-          ctype, legaleid, legaler, cardid, capital, birthday, content, authstatus,
+          ctype, legaleid, legaler, cardid, capital, birthday, content, authid,
           supervise, orgrelation, prodesc, prolist, source, adduid, addtime, upduid,
            updtime,  summary,status)
 
@@ -131,7 +131,7 @@
         <choose><when test="tcid != null and tcid != ''"> #{capital},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{birthday},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{content},</when> <otherwise>null, </otherwise></choose>
-        <choose><when test="tcid != null and tcid != ''"> #{authstatus},</when> <otherwise>null, </otherwise></choose>
+        <choose><when test="tcid != null and tcid != ''"> #{authid},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{supervise},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{orgrelation},</when> <otherwise>null, </otherwise></choose>
         <choose><when test="tcid != null and tcid != ''"> #{prodesc},</when> <otherwise>null, </otherwise></choose>
@@ -292,8 +292,8 @@
         <if test="content != null and content != ''">
             content = #{content},
         </if>
-        <if test="authstatus != null">
-            authstatus = #{authstatus},
+        <if test="authid != null">
+            authid = #{authid},
         </if>
         <if test="supervise != null and supervise != ''">
             supervise = #{supervise},
@@ -315,9 +315,6 @@
         </if>
         <if test="addtime != null">
             addtime = #{addtime},
-        </if>
-        <if test="status != null and status != ''">
-            status = #{status},
         </if>
         <if test="summary != null and summary != ''">
             summary = #{summary},
@@ -364,5 +361,9 @@
 
     <select id="queryCommonCompanyByUscc" parameterType="java.util.Map" resultType="java.util.Map">
         select * from tb_company_list where uscc = #{uscc} and status = '1';
+    </select>
+
+    <select id="queryAuthCompanyByUscc" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from  tb_company_list where  uscc = #{uscc} and status = '1' and authid in (8,16,32,64);
     </select>
 </mapper>
